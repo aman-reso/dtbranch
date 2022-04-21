@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class MoreItems extends StatelessWidget {
@@ -16,15 +17,15 @@ class MoreItems extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: Colors.grey,
+            color: greyColor,
           ),
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
           Text(
             text,
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+            style: const TextStyle(
+                color: textColor, fontWeight: FontWeight.bold, fontSize: 16),
           )
         ],
       ),

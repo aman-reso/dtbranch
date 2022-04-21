@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/articlescreen.dart';
 import 'package:primevideo/component/smalltext.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class DownloadPage extends StatefulWidget {
   const DownloadPage({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class _DownloadPageState extends State<DownloadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: appBgColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -25,7 +25,7 @@ class _DownloadPageState extends State<DownloadPage> {
               ),
               const Text("Downloads",
                   style: TextStyle(
-                      color: Colors.white,
+                      color: textColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 15)),
               SizedBox(
@@ -49,12 +49,12 @@ class _DownloadPageState extends State<DownloadPage> {
                     //   width: MediaQuery.of(context).size.width * 0.15,
                     //   height: MediaQuery.of(context).size.height * 0.05,
                     //   decoration: BoxDecoration(
-                    //       color: Colors.blueGrey[500],
+                    //       color:blueGrey500,
                     //       borderRadius: BorderRadius.circular(03)),
                     //   child: const Center(
                     //     child: Text(
                     //       "Edit",
-                    //       style: TextStyle(color: Colors.white),
+                    //       style: TextStyle(color:textColor),
                     //     ),
                     //   ),
                     // )
@@ -78,12 +78,12 @@ class _DownloadPageState extends State<DownloadPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ArticleScreen()));
+                                  builder: (context) => const ArticleScreen()));
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.14,
-                          color: Colors.blueGrey[900],
+                          color: blueGrey900,
                           child: Row(
                             children: [
                               Container(
@@ -104,7 +104,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                     const Text(
                                       "The Family Man",
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: textColor,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     const SizedBox(
@@ -140,7 +140,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                               Text(
                                                 "prime",
                                                 style: TextStyle(
-                                                    color: Colors.blue,
+                                                    color: bluetext,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
@@ -176,7 +176,7 @@ class _DownloadPageState extends State<DownloadPage> {
       height: MediaQuery.of(context).size.height * 0.05,
       child: Icon(
         icon,
-        color: Colors.grey,
+        color: greyColor,
         size: 40,
       ),
     );

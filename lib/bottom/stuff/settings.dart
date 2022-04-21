@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:primevideo/component/settingstext.dart';
 import 'package:primevideo/component/smalltext.dart';
 import 'package:primevideo/component/textfield.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class SettingsUI extends StatefulWidget {
   const SettingsUI({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _SettingsUIState extends State<SettingsUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff0e171e),
+      backgroundColor: appBgColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
           child: Column(
@@ -28,8 +29,7 @@ class _SettingsUIState extends State<SettingsUI> {
             child: const Center(
               child: Text(
                 "Settings",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -72,7 +72,7 @@ class _SettingsUIState extends State<SettingsUI> {
                                     },
                                     child: const Icon(
                                       Icons.keyboard_arrow_up_outlined,
-                                      color: Colors.grey,
+                                      color: greyColor,
                                     ),
                                   )
                                 : InkWell(
@@ -83,7 +83,7 @@ class _SettingsUIState extends State<SettingsUI> {
                                     },
                                     child: const Icon(
                                       Icons.keyboard_arrow_down_outlined,
-                                      color: Colors.grey,
+                                      color: greyColor,
                                     ),
                                   )
                           ],
@@ -118,14 +118,14 @@ class _SettingsUIState extends State<SettingsUI> {
                                             borderRadius:
                                                 BorderRadius.circular(07),
                                             border:
-                                                Border.all(color: Colors.grey)),
+                                                Border.all(color: greyColor)),
                                         child: Center(
                                           child: TextButton(
                                               onPressed: () {},
                                               child: const Text(
                                                 "CHANGE PASSWORD",
                                                 style: TextStyle(
-                                                    color: Colors.blue,
+                                                    color: bluetext,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               )),
@@ -165,10 +165,10 @@ class _SettingsUIState extends State<SettingsUI> {
                                 child: Switch(
                                   onChanged: toggleSwitch1,
                                   value: isSwitched1,
-                                  activeColor: Colors.blue,
-                                  activeTrackColor: Colors.blue[200],
-                                  inactiveThumbColor: Colors.grey,
-                                  inactiveTrackColor: Colors.blueGrey,
+                                  activeColor: bluetext,
+                                  activeTrackColor: blueColor200,
+                                  inactiveThumbColor: greyColor,
+                                  inactiveTrackColor: blueGreyColor,
                                 )),
                           ],
                         )
@@ -189,7 +189,7 @@ class _SettingsUIState extends State<SettingsUI> {
                           ],
                         ),
                         Column(
-                          children: [],
+                          children: const [],
                         )
                       ],
                     ),
@@ -234,7 +234,7 @@ class _SettingsUIState extends State<SettingsUI> {
     return const Padding(
       padding: EdgeInsets.only(top: 10, bottom: 10),
       child: Divider(
-        color: Colors.white,
+        color: textColor,
       ),
     );
   }

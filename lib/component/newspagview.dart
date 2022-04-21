@@ -1,8 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/articlescreen.dart';
-import 'package:primevideo/bottom/home/tv_show_tab.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class NewsSlider extends StatefulWidget {
@@ -54,7 +53,7 @@ class _NewsSliderState extends State<NewsSlider> {
                   })),
           Positioned(
             bottom: 05,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.03,
               child: Row(
@@ -65,12 +64,11 @@ class _NewsSliderState extends State<NewsSlider> {
                     return Container(
                         width: 8,
                         height: 8,
-                        margin: EdgeInsets.symmetric(horizontal: 2.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 2.0),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: currentIndex == index
-                                ? Colors.grey
-                                : Color.fromRGBO(0, 0, 0, 0.7)));
+                            color:
+                                currentIndex == index ? greyColor : greyShade));
                   }).toList()),
             ),
           )

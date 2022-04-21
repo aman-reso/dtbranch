@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class News extends StatelessWidget {
@@ -15,7 +16,7 @@ class News extends StatelessWidget {
           Text(
             text,
             style: const TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white),
+                fontWeight: FontWeight.bold, fontSize: 17, color: textColor),
           ),
         ],
       ),

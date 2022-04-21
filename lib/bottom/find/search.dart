@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/find/searchscreen.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -24,8 +24,10 @@ class _SearchPageState extends State<SearchPage> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SearchItems()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SearchItems()));
                 },
                 child: Padding(
                   padding:
@@ -34,17 +36,14 @@ class _SearchPageState extends State<SearchPage> {
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.08,
                     decoration: BoxDecoration(
-                        color: Color(0xff0e1c29),
+                        color: btnPrimaryblue,
                         border: Border.all(
-                          color: Color(0xff24303c),
+                          color: borderColor,
                         ),
                         borderRadius: BorderRadius.circular(05)),
                     child: const ListTile(
-                      leading: Icon(Icons.search, color: Colors.white),
-                      trailing: Icon(
-                        Icons.mic_outlined,
-                        color: Colors.white,
-                      ),
+                      leading: Icon(Icons.search, color: textColor),
+                      trailing: Icon(Icons.mic_outlined, color: textColor),
                       title: Text(
                         "Search by actor, title...",
                         style: TextStyle(
@@ -60,7 +59,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: Text(
                   "Browsed by",
                   style: TextStyle(
-                      color: Colors.white,
+                      color: textColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 17),
                 ),
@@ -76,7 +75,7 @@ class _SearchPageState extends State<SearchPage> {
                         width: MediaQuery.of(context).size.width * 0.45,
                         height: MediaQuery.of(context).size.height * 0.08,
                         decoration: BoxDecoration(
-                            color: Color(0xff0e1c29),
+                            color: btnPrimaryblue,
                             borderRadius: BorderRadius.circular(05)),
                         child: text(),
                       ),
@@ -88,7 +87,7 @@ class _SearchPageState extends State<SearchPage> {
                         width: MediaQuery.of(context).size.width * 0.45,
                         height: MediaQuery.of(context).size.height * 0.08,
                         decoration: BoxDecoration(
-                            color: Color(0xff0e1c29),
+                            color: btnPrimaryblue,
                             borderRadius: BorderRadius.circular(05)),
                         child: text(),
                       ),
@@ -117,7 +116,7 @@ class _SearchPageState extends State<SearchPage> {
                         width: MediaQuery.of(context).size.width * 0.45,
                         height: MediaQuery.of(context).size.height * 0.08,
                         decoration: BoxDecoration(
-                            color: Color(0xff0e1c29),
+                            color: btnPrimaryblue,
                             borderRadius: BorderRadius.circular(05)),
                         child: text(),
                       ),
@@ -130,7 +129,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: Text(
                   "Genres",
                   style: TextStyle(
-                      color: Colors.white,
+                      color: textColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 17),
                 ),
@@ -145,7 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: Text(
                   "Language",
                   style: TextStyle(
-                      color: Colors.white,
+                      color: textColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 17),
                 ),
@@ -168,12 +167,12 @@ class _SearchPageState extends State<SearchPage> {
         setState(() => isSeeMore2 = !isSeeMore2);
       },
       child: isSeeMore2
-          ? SizedBox()
-          : Padding(
+          ? const SizedBox()
+          : const Padding(
               padding: EdgeInsets.only(left: 15, top: 10),
               child: Text(
                 "see more",
-                style: TextStyle(color: Colors.blue),
+                style: TextStyle(color: bluetext),
               ),
             ),
     );
@@ -212,12 +211,12 @@ class _SearchPageState extends State<SearchPage> {
         setState(() => isSeeMore = !isSeeMore);
       },
       child: isSeeMore
-          ? SizedBox()
-          : Padding(
+          ? const SizedBox()
+          : const Padding(
               padding: EdgeInsets.only(left: 15, top: 10),
               child: Text(
                 "see more",
-                style: TextStyle(color: Colors.blue),
+                style: TextStyle(color: bluetext),
               ),
             ),
     );
@@ -254,7 +253,7 @@ class _SearchPageState extends State<SearchPage> {
     return const Center(
       child: Text(
         "Divine Originals",
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -262,9 +261,7 @@ class _SearchPageState extends State<SearchPage> {
   divider() {
     return const Padding(
       padding: EdgeInsets.only(left: 15, right: 15),
-      child: Divider(
-        color: Colors.white,
-      ),
+      child: Divider(color: textColor),
     );
   }
 
@@ -284,7 +281,7 @@ class _SearchPageState extends State<SearchPage> {
             onTap: ontap,
             child: const Icon(
               Icons.chevron_right_outlined,
-              color: Colors.white,
+              color: textColor,
               size: 30,
             ),
           )

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/detailsscreen.dart';
 import 'package:primevideo/bottom/video_screen.dart';
@@ -7,6 +6,7 @@ import 'package:primevideo/component/moreitems.dart';
 import 'package:primevideo/component/movies.dart';
 import 'package:primevideo/component/news.dart';
 import 'package:primevideo/component/smalltext.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class ArticleScreen extends StatefulWidget {
   const ArticleScreen({Key? key}) : super(key: key);
@@ -36,7 +36,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: const Color(0xff0e171e),
+        backgroundColor: appBgColor,
         body: SafeArea(
           child: Stack(
             children: [
@@ -60,7 +60,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         child: Text(
                           "KGF : Chapter - 1",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: textColor,
                               fontSize: 28,
                               fontWeight: FontWeight.bold),
                         ),
@@ -70,7 +70,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         child: Text(
                           "prime",
                           style: TextStyle(
-                              color: Colors.blue,
+                              color: bluetext,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
@@ -80,7 +80,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         child: Text(
                           "included with Prime",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: textColor,
                             fontSize: 12,
                           ),
                         ),
@@ -92,7 +92,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                           width: MediaQuery.of(context).size.width * 0.95,
                           height: MediaQuery.of(context).size.height * 0.07,
                           decoration: BoxDecoration(
-                              color: Colors.lightBlue[800],
+                              color: lightBlue800,
                               borderRadius: BorderRadius.circular(07)),
                           child: Column(
                             children: [
@@ -101,7 +101,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                   const SizedBox(width: 5),
                                   const Icon(
                                     Icons.play_arrow_rounded,
-                                    color: Colors.white,
+                                    color: textColor,
                                     size: 45,
                                   ),
                                   const SizedBox(
@@ -114,7 +114,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                       Text(
                                         "Continue watching",
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: textColor,
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -123,8 +123,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                       ),
                                       Text("169 min left",
                                           style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 11))
+                                              color: textColor, fontSize: 11))
                                     ],
                                   )
                                 ],
@@ -134,10 +133,10 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                     const EdgeInsets.only(left: 05, right: 05),
                                 child: LinearProgressIndicator(
                                   value: 0.5,
-                                  backgroundColor: Colors.lightBlue[200],
+                                  backgroundColor: lightBlue200,
                                   valueColor:
                                       const AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
+                                          textColor),
                                 ),
                               )
                             ],
@@ -154,7 +153,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => VideoScreen()));
+                                    builder: (context) => const VideoScreen()));
                           }),
                           iconUI(Icons.save_alt, "Download", () {}),
                           iconUI(Icons.add, "Watchlist", () {}),
@@ -176,7 +175,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                             EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                         child: Text(
                           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummmy tex ever since.",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: textColor),
                         ),
                       ),
                       Padding(
@@ -202,17 +201,16 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                   width: 50,
                                   height: 17,
                                   decoration: BoxDecoration(
-                                      color: Colors.transparent,
+                                      color: transParentColor,
                                       border: Border.all(
-                                        color: Colors.blueGrey,
+                                        color: blueGreyColor,
                                       ),
                                       borderRadius: BorderRadius.circular(03)),
                                   child: Center(
                                       child: Text(
                                     "U/A 13+",
                                     style: TextStyle(
-                                        color: Colors.blueGrey[500],
-                                        fontSize: 10),
+                                        color: blueGrey500, fontSize: 10),
                                   )),
                                 ),
                                 const SizedBox(
@@ -222,17 +220,16 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                   width: 50,
                                   height: 17,
                                   decoration: BoxDecoration(
-                                      color: Colors.transparent,
+                                      color: transParentColor,
                                       border: Border.all(
-                                        color: Colors.blueGrey,
+                                        color: blueGreyColor,
                                       ),
                                       borderRadius: BorderRadius.circular(03)),
                                   child: Center(
                                       child: Text(
                                     "4K UHD",
                                     style: TextStyle(
-                                        color: Colors.blueGrey[500],
-                                        fontSize: 10),
+                                        color: blueGrey500, fontSize: 10),
                                   )),
                                 ),
                                 const SizedBox(
@@ -241,7 +238,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                 Icon(
                                   Icons.message_outlined,
                                   size: 18,
-                                  color: Colors.blueGrey[500],
+                                  color: blueGrey500,
                                 )
                               ],
                             ),
@@ -268,7 +265,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                         },
                                         child: const Icon(
                                           Icons.keyboard_arrow_up_outlined,
-                                          color: Colors.grey,
+                                          color: greyColor,
                                         ),
                                       )
                                     : InkWell(
@@ -279,7 +276,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                         },
                                         child: const Icon(
                                           Icons.keyboard_arrow_down_outlined,
-                                          color: Colors.grey,
+                                          color: greyColor,
                                         ),
                                       )
                               ],
@@ -308,7 +305,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height * 0.28,
-                        color: Color(0xff262e39),
+                        color: textBlue,
                         child: Column(
                           children: [
                             const SizedBox(
@@ -323,7 +320,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                 children: const [
                                   Icon(
                                     Icons.play_arrow_rounded,
-                                    color: Colors.grey,
+                                    color: greyColor,
                                     size: 40,
                                   ),
                                   SizedBox(
@@ -332,7 +329,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                                   Text(
                                     "Trailer",
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: textColor,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
                                   )
@@ -380,7 +377,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
               ),
             ),
           ],
-          indicatorColor: Colors.white,
+          indicatorColor: textColor,
           indicatorWeight: 2,
         ));
   }
@@ -394,12 +391,12 @@ class _ArticleScreenState extends State<ArticleScreen> {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(color: Colors.grey),
+                color: transParentColor,
+                border: Border.all(color: greyColor),
                 borderRadius: BorderRadius.circular(55)),
             child: Icon(
               icon,
-              color: Colors.grey,
+              color: greyColor,
             ),
           ),
         ),
@@ -408,7 +405,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
         ),
         Text(
           text,
-          style: const TextStyle(color: Colors.white, fontSize: 11),
+          style: const TextStyle(color: textColor, fontSize: 11),
         )
       ],
     );
@@ -430,15 +427,15 @@ class _ArticleScreenState extends State<ArticleScreen> {
                 width: 40,
                 height: 17,
                 decoration: BoxDecoration(
-                    color: Colors.transparent,
+                    color: transParentColor,
                     border: Border.all(
-                      color: Colors.blueGrey,
+                      color: blueGreyColor,
                     ),
                     borderRadius: BorderRadius.circular(03)),
                 child: Center(
                     child: Text(
                   "IMDb",
-                  style: TextStyle(color: Colors.blueGrey[500], fontSize: 10),
+                  style: TextStyle(color: blueGrey500, fontSize: 10),
                 )),
               ),
             ],
@@ -464,7 +461,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DetailsScreen()));
+                                builder: (context) => const DetailsScreen()));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.3,
@@ -483,7 +480,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                         child: const Center(
                           child: Text(
                             "Allu Arjun",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: textColor),
                           ),
                         ),
                       ),
@@ -519,7 +516,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       child: const Center(
                         child: Text(
                           "Allu Arjun",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: textColor),
                         ),
                       ),
                     ),
@@ -535,7 +532,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     const Text(
                       "Directors",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                          color: textColor, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(
                       height: 10,
@@ -543,8 +540,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     Text(
                       "Lorem lpsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500. Lorem Ipsum has been the industry standard dummy text ever since the 1500. Lorem Ipsum has been the industry standard dummy text ever since the 1500.",
                       maxLines: 7,
-                      style:
-                          TextStyle(color: Colors.blueGrey[500], fontSize: 12),
+                      style: TextStyle(color: blueGrey500, fontSize: 12),
                       overflow: TextOverflow.ellipsis,
                     )
                   ],
@@ -564,8 +560,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text("Genres",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           const SizedBox(height: 05),
           tabRow(),
           const Padding(
@@ -573,8 +568,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
             child: DividerUI(),
           ),
           const Text("Genres",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           const SizedBox(height: 05),
           tabRow(),
           const Padding(
@@ -582,8 +576,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
             child: DividerUI(),
           ),
           const Text("Genres",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           const SizedBox(height: 05),
           tabRow(),
           const Padding(
@@ -591,8 +584,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
             child: DividerUI(),
           ),
           const Text("Genres",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           const SizedBox(height: 05),
           tabRow(),
           const Padding(
@@ -600,8 +592,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
             child: DividerUI(),
           ),
           const Text("Genres",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           const SizedBox(height: 05),
           tabRow(),
           const Padding(
@@ -609,8 +600,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
             child: DividerUI(),
           ),
           const Text("Genres",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           const SizedBox(height: 05),
           tabRow(),
           const Padding(
@@ -618,8 +608,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
             child: DividerUI(),
           ),
           const Text("Genres",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
           const SizedBox(height: 05),
           tabRow(),
           const Padding(
@@ -632,12 +621,12 @@ class _ArticleScreenState extends State<ArticleScreen> {
           const Text(
             "Customer reviews",
             style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                color: textColor, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           const Text(
             "We don't have any customer reviews.",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: textColor),
           ),
           const SizedBox(
             height: 30,
@@ -645,12 +634,12 @@ class _ArticleScreenState extends State<ArticleScreen> {
           const Text(
             "Did you know?",
             style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                color: textColor, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           const Text(
             "Lorem Ipsum is simply dummy text of the printing and typesettings industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s. Lorem Ipsum has been the industry standard dummy text ever since the 1500s. Lorem Ipsum has been the industry standard dummy text ever since the 1500s.",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: textColor),
           ),
         ],
       ),
@@ -679,17 +668,17 @@ class _ArticleScreenState extends State<ArticleScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            lanText("Available languages", Colors.white),
+            lanText("Available languages", textColor),
             lanSubtext("Language can be changed while the video is playing.",
-                Colors.blueGrey),
-            lanText("Audio", Colors.white),
-            lanSubtext("हिन्दी (original)", Colors.blueGrey),
+                blueGreyColor),
+            lanText("Audio", textColor),
+            lanSubtext("हिन्दी (original)", blueGreyColor),
             const Padding(
               padding: EdgeInsets.only(left: 15, top: 05),
               child: DividerUI(),
             ),
-            lanText("Subtitles", Colors.white),
-            lanSubtext("English", Colors.blueGrey)
+            lanText("Subtitles", textColor),
+            lanSubtext("English", blueGreyColor)
           ],
         ));
   }

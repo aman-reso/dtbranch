@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/component/channel_news_text.dart';
 import 'package:primevideo/component/channel_text.dart';
 import 'package:primevideo/component/movies.dart';
 import 'package:primevideo/component/news.dart';
 import 'package:primevideo/component/newspagview.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class ChannelsPage extends StatefulWidget {
   const ChannelsPage({Key? key}) : super(key: key);
@@ -27,7 +27,7 @@ class _ChannelsPageState extends State<ChannelsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff0e171e),
+      backgroundColor: appBgColor,
       body: SingleChildScrollView(
         child: Column(
           children: [

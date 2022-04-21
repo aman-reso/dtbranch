@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/component/divider.dart';
 import 'package:primevideo/component/smalltext.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class SearchItems extends StatefulWidget {
   const SearchItems({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _SearchItemsState extends State<SearchItems> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff0e171e),
+      backgroundColor: appBgColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
           child: Column(
@@ -33,7 +33,7 @@ class _SearchItemsState extends State<SearchItems> {
                   },
                   child: const Icon(
                     Icons.arrow_back_ios_rounded,
-                    color: Colors.grey,
+                    color: greyColor,
                     size: 30,
                   ),
                 ),
@@ -44,15 +44,12 @@ class _SearchItemsState extends State<SearchItems> {
                   width: MediaQuery.of(context).size.width * 0.75,
                   height: MediaQuery.of(context).size.height * 0.065,
                   child: TextField(
-                      style: const TextStyle(color: Colors.black),
+                      style: const TextStyle(color: blackColor),
                       controller: search,
                       onChanged: _runfilter,
                       decoration: InputDecoration(
                         suffixIcon: searchItems.isEmpty
-                            ? const Icon(
-                                Icons.mic_outlined,
-                                color: Colors.black,
-                              )
+                            ? const Icon(Icons.mic_outlined, color: blackColor)
                             : InkWell(
                                 onTap: () {
                                   setState(() {
@@ -62,24 +59,24 @@ class _SearchItemsState extends State<SearchItems> {
                                 },
                                 child: const Icon(
                                   Icons.close_outlined,
-                                  color: Colors.black,
+                                  color: blackColor,
                                 ),
                               ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: textColor,
                         disabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(07),
                             ),
                             borderSide:
-                                BorderSide(color: Colors.yellow, width: 2)),
+                                BorderSide(color: yellowColor, width: 2)),
                         enabledBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(07.0)),
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                          borderSide: BorderSide(color: greyColor, width: 1),
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(07)),
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                          borderSide: BorderSide(color: greyColor, width: 1),
                         ),
                       )),
                 ),
@@ -90,7 +87,7 @@ class _SearchItemsState extends State<SearchItems> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.86,
             child: searchItems.isEmpty
-                ? SizedBox()
+                ? const SizedBox()
                 : ListView.builder(
                     itemCount: 5,
                     itemBuilder: (context, index) {
@@ -99,14 +96,14 @@ class _SearchItemsState extends State<SearchItems> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             SmallText("prime video"),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
-                            DividerUI()
+                            const DividerUI()
                           ],
                         ),
                       );

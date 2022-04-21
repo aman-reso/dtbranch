@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class TextFieldUI extends StatefulWidget {
@@ -19,36 +19,36 @@ class _TextFieldUIState extends State<TextFieldUI> {
         width: MediaQuery.of(context).size.width * 0.8,
         height: MediaQuery.of(context).size.height * 0.07,
         child: TextField(
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: textColor),
             obscureText: true,
             decoration: InputDecoration(
               hintText: widget.text,
               hintStyle: TextStyle(
-                color: Colors.blueGrey[500],
+                color: blueGrey500,
                 fontSize: 15,
               ),
               prefixIcon: const Icon(
                 Icons.lock,
-                color: Colors.grey,
+                color: greyColor,
               ),
               suffixIcon: const Icon(
                 Icons.remove_red_eye_outlined,
-                color: Colors.grey,
+                color: greyColor,
               ),
               filled: true,
-              fillColor: Colors.transparent,
+              fillColor: transParentColor,
               disabledBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(07),
                   ),
-                  borderSide: BorderSide(color: Colors.yellow, width: 2)),
+                  borderSide: BorderSide(color: yellowColor, width: 2)),
               enabledBorder: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(07.0)),
-                borderSide: BorderSide(color: Colors.grey, width: 1),
+                borderSide: BorderSide(color: greyColor, width: 1),
               ),
               focusedBorder: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(07)),
-                borderSide: BorderSide(color: Colors.grey, width: 1),
+                borderSide: BorderSide(color: greyColor, width: 1),
               ),
             )),
       ),

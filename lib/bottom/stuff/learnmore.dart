@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class LearnMore extends StatefulWidget {
   const LearnMore({Key? key}) : super(key: key);
@@ -11,8 +11,8 @@ class LearnMore extends StatefulWidget {
 class _LearnMoreState extends State<LearnMore> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xff0e171e),
+    return const Scaffold(
+      backgroundColor: appBgColor,
     );
   }
 }

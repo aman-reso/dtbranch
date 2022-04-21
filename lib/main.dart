@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/bottombarscreen.dart';
+import 'package:primevideo/utils/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'PrimeVideo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: bluetext,
         ),
         home: const BottomBarUI());
   }

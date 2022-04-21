@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class DividerUI extends StatelessWidget {
   const DividerUI({Key? key}) : super(key: key);
@@ -7,7 +7,7 @@ class DividerUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Divider(
-      color: Colors.white,
+      color: textColor,
     );
   }
 }

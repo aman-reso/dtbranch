@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class ChannelNewsText extends StatefulWidget {
@@ -21,11 +21,11 @@ class _ChannelNewsTextState extends State<ChannelNewsText> {
           Text(
             widget.text,
             style: const TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white),
+                fontWeight: FontWeight.bold, fontSize: 17, color: textColor),
           ),
           const Icon(
             Icons.chevron_right_sharp,
-            color: Colors.white,
+            color: textColor,
           )
         ],
       ),

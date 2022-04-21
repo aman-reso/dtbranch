@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/stuff/editprofile.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class ManageProfile extends StatefulWidget {
   const ManageProfile({Key? key}) : super(key: key);
@@ -12,14 +13,14 @@ class _ManageProfileState extends State<ManageProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff0e171e),
+      backgroundColor: appBgColor,
       appBar: AppBar(
         backgroundColor: const Color(0xff0e171e),
-        leading: Icon(
+        leading: const Icon(
           Icons.arrow_back,
-          color: Colors.transparent,
+          color: transParentColor,
         ),
-        title: Text(
+        title: const Text(
           "Edit profiles",
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
@@ -36,21 +37,23 @@ class _ManageProfileState extends State<ManageProfile> {
                 radius: 22,
                 child: Image.asset('assets/images/profile.png'),
               ),
-              title: Text(
+              title: const Text(
                 "Anand",
                 style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                    color: textColor),
               ),
               trailing: InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => EditProfile()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const EditProfile()));
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.edit_outlined,
-                  color: Colors.grey,
+                  color: greyColor,
                 ),
               ),
             );

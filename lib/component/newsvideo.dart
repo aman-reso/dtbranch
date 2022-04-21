@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/articlescreen.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class NewsVideos extends StatefulWidget {
@@ -46,26 +46,26 @@ class _NewsVideosState extends State<NewsVideos> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       IconButton(
                           onPressed: () {},
                           icon: const Icon(
                             Icons.play_circle_outline_sharp,
-                            color: Colors.white,
+                            color: textColor,
                             size: 30,
                           )),
                       Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           height: MediaQuery.of(context).size.height * 0.007,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(05),
                                   bottomRight: Radius.circular(05))),
-                          child: LinearProgressIndicator(
+                          child: const LinearProgressIndicator(
                             value: 0.5,
-                            backgroundColor: Colors.black,
+                            backgroundColor: blackColor,
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+                                AlwaysStoppedAnimation<Color>(lightBlue),
                           )),
                     ],
                   ),
@@ -90,7 +90,7 @@ class _NewsVideosState extends State<NewsVideos> {
               //           onPressed: () {},
               //           icon: const Icon(
               //             Icons.play_circle_outline_sharp,
-              //             color: Colors.white,
+              //             color: textColor,
               //             size: 30,
               //           )),
               //     ),
@@ -99,7 +99,7 @@ class _NewsVideosState extends State<NewsVideos> {
               //       child: Container(
               //         width: MediaQuery.of(context).size.width * 0.5,
               //         height: MediaQuery.of(context).size.height * 0.02,
-              //         color: Colors.white,
+              //         color: textColor,
               //       ),
               //     )
               //   ],

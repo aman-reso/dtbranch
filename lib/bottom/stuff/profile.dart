@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/stuff/createprofilepage.dart';
 import 'package:primevideo/bottom/stuff/learnmore.dart';
 import 'package:primevideo/bottom/stuff/manage_profile.dart';
 import 'package:primevideo/bottom/stuff/settings.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff0e171e),
+      backgroundColor: appBgColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -66,13 +66,13 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Row(
                 children: [
                   const CircleAvatar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: textColor,
                   ),
                   const SizedBox(width: 10),
                   const Text(
                     "Anand",
                     style: TextStyle(
-                        color: Colors.white,
+                        color: textColor,
                         fontWeight: FontWeight.w600,
                         fontSize: 18),
                   ),
@@ -85,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                           child: const Icon(
                             Icons.keyboard_arrow_up_outlined,
-                            color: Colors.grey,
+                            color: greyColor,
                           ),
                         )
                       : InkWell(
@@ -96,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                           child: const Icon(
                             Icons.keyboard_arrow_down_outlined,
-                            color: Colors.grey,
+                            color: greyColor,
                           ),
                         )
                 ],
@@ -115,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               child: const Icon(
                 Icons.settings,
-                color: Colors.white,
+                color: textColor,
               ),
             ),
           ),
@@ -138,13 +138,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                     width: 30,
                     height: 30,
-                    child: CircleAvatar(backgroundColor: Colors.white)),
+                    child: CircleAvatar(backgroundColor: textColor)),
                 SizedBox(
                   width: 10,
                 ),
                 Text("Chirag",
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold))
+                        color: textColor, fontWeight: FontWeight.bold))
               ],
             ),
           ),
@@ -155,13 +155,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                     width: 30,
                     height: 30,
-                    child: CircleAvatar(backgroundColor: Colors.white)),
+                    child: CircleAvatar(backgroundColor: textColor)),
                 SizedBox(
                   width: 10,
                 ),
                 Text("Kids",
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold))
+                        color: textColor, fontWeight: FontWeight.bold))
               ],
             ),
           ),
@@ -169,24 +169,26 @@ class _ProfilePageState extends State<ProfilePage> {
             height: 10,
           ),
           const Divider(
-            color: Colors.white,
+            color: textColor,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 10, top: 10),
             child: InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CreateProfile()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreateProfile()));
               },
               child: Row(
                 children: const [
-                  Icon(Icons.add, color: Colors.grey, size: 35),
+                  Icon(Icons.add, color: greyColor, size: 35),
                   SizedBox(
                     width: 10,
                   ),
                   Text("Create profile",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold))
+                          color: textColor, fontWeight: FontWeight.bold))
                 ],
               ),
             ),
@@ -195,18 +197,20 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.only(left: 10, top: 10),
             child: InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ManageProfile()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ManageProfile()));
               },
               child: Row(
                 children: const [
-                  Icon(Icons.create_outlined, color: Colors.grey, size: 35),
+                  Icon(Icons.create_outlined, color: greyColor, size: 35),
                   SizedBox(
                     width: 10,
                   ),
                   Text("Manage profile",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold))
+                          color: textColor, fontWeight: FontWeight.bold))
                 ],
               ),
             ),
@@ -216,17 +220,17 @@ class _ProfilePageState extends State<ProfilePage> {
             child: InkWell(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LearnMore()));
+                    MaterialPageRoute(builder: (context) => const LearnMore()));
               },
               child: Row(
                 children: const [
-                  Icon(Icons.info, color: Colors.grey, size: 35),
+                  Icon(Icons.info, color: greyColor, size: 35),
                   SizedBox(
                     width: 10,
                   ),
                   Text("Learn more about profile",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold))
+                          color: textColor, fontWeight: FontWeight.bold))
                 ],
               ),
             ),
@@ -244,10 +248,10 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           const Text(
             "Watchlist",
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            style: TextStyle(color: textColor, fontSize: 18),
           ),
           const Divider(
-            color: Colors.white,
+            color: textColor,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
@@ -257,19 +261,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   "5 videos",
                   style: TextStyle(
-                    color: Colors.blueGrey[500],
+                    color: blueGrey500,
                   ),
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width * 0.15,
                   height: MediaQuery.of(context).size.height * 0.05,
                   decoration: BoxDecoration(
-                      color: Colors.blueGrey[500],
+                      color: blueGrey500,
                       borderRadius: BorderRadius.circular(03)),
                   child: const Center(
                     child: Text(
                       "Filter",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: textColor),
                     ),
                   ),
                 )
@@ -290,7 +294,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.14,
-                    color: Colors.blueGrey[900],
+                    color: blueGrey900,
                     child: Row(
                       children: [
                         Column(
@@ -306,12 +310,12 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Spacer(),
+                                  const Spacer(),
                                   IconButton(
                                       onPressed: () {},
                                       icon: const Icon(
                                         Icons.play_circle_outlined,
-                                        color: Colors.white,
+                                        color: textColor,
                                         size: 35,
                                       )),
                                   Container(
@@ -320,17 +324,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.007,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           borderRadius: BorderRadius.only(
                                               bottomLeft: Radius.circular(05),
                                               bottomRight:
                                                   Radius.circular(05))),
-                                      child: LinearProgressIndicator(
+                                      child: const LinearProgressIndicator(
                                         value: 0.5,
-                                        backgroundColor: Colors.black,
+                                        backgroundColor: blackColor,
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
-                                                Colors.lightBlue),
+                                                lightBlue),
                                       )),
                                 ],
                               ),
@@ -345,7 +349,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               const Text(
                                 "The Family Man",
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: textColor,
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(
@@ -377,7 +381,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         Text(
                                           "prime",
                                           style: TextStyle(
-                                              color: Colors.blue,
+                                              color: bluetext,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ],
@@ -407,7 +411,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Text(
       text,
       style: TextStyle(
-        color: Colors.blueGrey[500],
+        color: blueGrey500,
       ),
     );
   }
@@ -418,7 +422,7 @@ class _ProfilePageState extends State<ProfilePage> {
       height: MediaQuery.of(context).size.height * 0.05,
       child: Icon(
         icon,
-        color: Colors.grey,
+        color: greyColor,
         size: 30,
       ),
     );

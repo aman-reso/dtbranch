@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff0e171e),
+      backgroundColor: appBgColor,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
           child: SizedBox(
@@ -27,7 +27,7 @@ class _EditProfileState extends State<EditProfile> {
             const Text("Edit Profile",
                 style: TextStyle(
                     fontSize: 17,
-                    color: Colors.white,
+                    color: textColor,
                     fontWeight: FontWeight.w700)),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.04,
@@ -40,7 +40,7 @@ class _EditProfileState extends State<EditProfile> {
                 onPressed: () {},
                 child: const Text(
                   "Change",
-                  style: TextStyle(color: Colors.grey, fontSize: 17),
+                  style: TextStyle(color: greyColor, fontSize: 17),
                 )),
             textfiledbuild(context),
             SizedBox(
@@ -55,16 +55,16 @@ class _EditProfileState extends State<EditProfile> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Remove profile",
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                        style: TextStyle(color: textColor, fontSize: 15),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 05,
                       ),
                       Text(
                         "The account holder's profile can't be removed",
-                        style: TextStyle(color: Colors.blueGrey[300]),
+                        style: TextStyle(color: blueGrey300),
                       )
                     ],
                   ),
@@ -78,12 +78,12 @@ class _EditProfileState extends State<EditProfile> {
               width: MediaQuery.of(context).size.width * 0.85,
               height: MediaQuery.of(context).size.height * 0.065,
               decoration: BoxDecoration(
-                  color: Color(0xff0e1c29),
+                  color: btnPrimaryblue,
                   borderRadius: BorderRadius.circular(05)),
               child: Center(
                 child: Text(
                   "Save",
-                  style: TextStyle(color: Colors.blueGrey[600], fontSize: 17),
+                  style: TextStyle(color: blueGrey600, fontSize: 17),
                 ),
               ),
             ),
@@ -98,26 +98,25 @@ class _EditProfileState extends State<EditProfile> {
       width: MediaQuery.of(context).size.width * 0.85,
       height: MediaQuery.of(context).size.height * 0.065,
       child: TextField(
-          style: const TextStyle(color: Colors.black),
+          style: const TextStyle(color: blackColor),
           onEditingComplete: () {},
           decoration: const InputDecoration(
             hintText: "Enter Name",
-            hintStyle:
-                TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            hintStyle: TextStyle(color: greyColor, fontWeight: FontWeight.bold),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: textColor,
             disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(07),
                 ),
-                borderSide: BorderSide(color: Colors.yellow, width: 2)),
+                borderSide: BorderSide(color: yellowColor, width: 2)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(07.0)),
-              borderSide: BorderSide(color: Colors.grey, width: 1),
+              borderSide: BorderSide(color: greyColor, width: 1),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(07)),
-              borderSide: BorderSide(color: Colors.grey, width: 1),
+              borderSide: BorderSide(color: greyColor, width: 1),
             ),
           )),
     );

@@ -7,6 +7,7 @@ import 'package:primevideo/bottom/home/hometab.dart';
 import 'package:primevideo/bottom/home/kids.dart';
 import 'package:primevideo/bottom/home/movies.dart';
 import 'package:primevideo/bottom/home/tv_show_tab.dart';
+import 'package:primevideo/utils/colors.dart';
 
 List<String> images = [
   'assets/images/action_jection.jpg',
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
       child: DefaultTabController(
         length: 4,
         child: Scaffold(
-          backgroundColor: const Color(0xff0e171e),
+          backgroundColor: appBgColor,
           body: SafeArea(
             child: SingleChildScrollView(
               child: Column(
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                   const Text(
                     "prime video",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
+                        fontWeight: FontWeight.bold, color: textColor),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
@@ -99,45 +100,45 @@ class _HomePageState extends State<HomePage> {
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: [
-          Container(
+          SizedBox(
             height: 180,
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       "PrimeVideoApp",
                       style: TextStyle(
-                          color: Colors.black,
+                          color: blackColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 16),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
                   "Do you want to exit?",
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: greyColor),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    raisedButton("NO", Colors.white, Colors.black, () {
+                    raisedButton("NO", textColor, blackColor, () {
                       Navigator.pop(context);
                     }),
                     const SizedBox(
                       width: 10,
                     ),
-                    raisedButton("YES", Colors.blueGrey[800], Colors.white, () {
+                    raisedButton("YES", blugGreyDark, textColor, () {
                       exit(0);
                     })
                   ],
@@ -148,15 +149,15 @@ class _HomePageState extends State<HomePage> {
           Positioned(
               top: -30,
               child: CircleAvatar(
-                  backgroundColor: Colors.white,
+                  backgroundColor: textColor,
                   radius: 40,
                   child: Container(
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: textColor,
                       borderRadius: BorderRadius.circular(55),
-                      image: DecorationImage(
+                      image: const DecorationImage(
                           image: AssetImage('assets/icons/alert.png'),
                           fit: BoxFit.fill),
                     ),
@@ -194,7 +195,7 @@ class _HomePageState extends State<HomePage> {
           ),
         )
       ],
-      indicatorColor: Colors.white,
+      indicatorColor: textColor,
       indicatorWeight: 2,
     );
   }
@@ -214,12 +215,12 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         width: 80,
         height: 40,
-        decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
+        decoration:
+            BoxDecoration(color: color, borderRadius: BorderRadius.circular(10),
+                // ignore: prefer_const_literals_to_create_immutables
+                boxShadow: [
+              const BoxShadow(
+                color: black26,
                 blurRadius: 05.0,
               )
             ]),

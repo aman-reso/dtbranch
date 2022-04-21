@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 class ChannelText extends StatelessWidget {
   // ignore: prefer_const_constructors_in_immutables
@@ -13,7 +14,7 @@ class ChannelText extends StatelessWidget {
         children: [
           Text(
             "Eros Now",
-            style: TextStyle(color: Colors.blueGrey[300], fontSize: 11),
+            style: TextStyle(color: blueGrey300, fontSize: 11),
           )
         ],
       ),

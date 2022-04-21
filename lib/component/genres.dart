@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class GenresNews extends StatefulWidget {
@@ -37,7 +38,7 @@ class _GenresNewsState extends State<GenresNews> {
                     height: MediaQuery.of(context).size.height * 0.22,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(03),
-                        color: Colors.black,
+                        color: blackColor,
                         image: DecorationImage(
                             image: AssetImage(widget.image), fit: BoxFit.fill)),
                   ),
@@ -45,7 +46,7 @@ class _GenresNewsState extends State<GenresNews> {
                       bottom: 03,
                       child: Text(
                         widget.text,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: textColor),
                       ))
                 ],
               ),

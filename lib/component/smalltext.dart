@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:primevideo/utils/colors.dart';
 
 // ignore: must_be_immutable
 class SmallText extends StatefulWidget {
@@ -16,7 +17,7 @@ class _SmallTextState extends State<SmallText> {
     return Text(
       widget.text,
       style: TextStyle(
-        color: Colors.blueGrey[500],
+        color: blueGrey500,
       ),
     );
   }

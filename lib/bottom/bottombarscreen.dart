@@ -29,7 +29,11 @@ class _BottomBarUIState extends State<BottomBarUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: blackColor,
-      body: tabs.elementAt(tabindex),
+      // body: tabs.elementAt(tabindex),
+      body: IndexedStack(
+        index: tabindex,
+        children: tabs,
+      ),
       bottomNavigationBar: bottombar(),
     );
   }

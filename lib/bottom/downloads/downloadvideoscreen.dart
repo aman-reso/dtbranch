@@ -1,17 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:primevideo/bottom/articlescreen.dart';
-import 'package:primevideo/bottom/downloads/downloadvideoscreen.dart';
+import 'package:primevideo/bottom/episodearticle.dart';
 import 'package:primevideo/component/smalltext.dart';
 import 'package:primevideo/utils/colors.dart';
 
-class DownloadPage extends StatefulWidget {
-  const DownloadPage({Key? key}) : super(key: key);
+class DownloadVideosList extends StatefulWidget {
+  const DownloadVideosList({Key? key}) : super(key: key);
 
   @override
-  State<DownloadPage> createState() => _DownloadPageState();
+  State<DownloadVideosList> createState() => _DownloadVideosListState();
 }
 
-class _DownloadPageState extends State<DownloadPage> {
+class _DownloadVideosListState extends State<DownloadVideosList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,7 @@ class _DownloadPageState extends State<DownloadPage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.03,
               ),
-              const Text("Downloads",
+              const Text("The Family Man",
                   style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.bold,
@@ -46,19 +46,19 @@ class _DownloadPageState extends State<DownloadPage> {
                         SmallText("150 MB")
                       ],
                     ),
-                    // Container(
-                    //   width: MediaQuery.of(context).size.width * 0.15,
-                    //   height: MediaQuery.of(context).size.height * 0.05,
-                    //   decoration: BoxDecoration(
-                    //       color:blueGrey500,
-                    //       borderRadius: BorderRadius.circular(03)),
-                    //   child: const Center(
-                    //     child: Text(
-                    //       "Edit",
-                    //       style: TextStyle(color:textColor),
-                    //     ),
-                    //   ),
-                    // )
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      decoration: BoxDecoration(
+                          color: blueGrey500,
+                          borderRadius: BorderRadius.circular(03)),
+                      child: const Center(
+                        child: Text(
+                          "Edit",
+                          style: TextStyle(color: textColor),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -69,18 +69,16 @@ class _DownloadPageState extends State<DownloadPage> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.8,
                 child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: 5,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 05),
                       child: InkWell(
                         onTap: () {
-                          print("object");
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => DownloadVideosList()));
+                                  builder: (context) => EpisodeScreens()));
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,
@@ -88,15 +86,57 @@ class _DownloadPageState extends State<DownloadPage> {
                           color: blueGrey900,
                           child: Row(
                             children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.14,
-                                decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                        image:
-                                            AssetImage('assets/images/kgf.jpg'),
-                                        fit: BoxFit.fill)),
+                              Column(
+                                children: [
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.14,
+                                    decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/images/kgf.jpg'),
+                                            fit: BoxFit.fill)),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Spacer(),
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.play_circle_outlined,
+                                              color: textColor,
+                                              size: 35,
+                                            )),
+                                        Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.5,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.007,
+                                            decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    bottomLeft:
+                                                        Radius.circular(05),
+                                                    bottomRight:
+                                                        Radius.circular(05))),
+                                            child:
+                                                const LinearProgressIndicator(
+                                              value: 0.5,
+                                              backgroundColor: blackColor,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      lightBlue),
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -104,7 +144,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      "The Family Man",
+                                      "1. Exile",
                                       style: TextStyle(
                                           color: textColor,
                                           fontWeight: FontWeight.bold),
@@ -114,11 +154,11 @@ class _DownloadPageState extends State<DownloadPage> {
                                     ),
                                     Row(
                                       children: [
-                                        SmallText("5 episode"),
+                                        text("2021"),
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        SmallText("150 MB")
+                                        text("50  mmmin")
                                       ],
                                     ),
                                     const SizedBox(
@@ -149,9 +189,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                             ],
                                           ),
                                         ),
-                                        listIcon(
-                                          Icons.chevron_right_sharp,
-                                        )
+                                        listIcon(Icons.more_vert_rounded, () {})
                                       ],
                                     )
                                   ],
@@ -172,14 +210,26 @@ class _DownloadPageState extends State<DownloadPage> {
     );
   }
 
-  listIcon(icon) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.1,
-      height: MediaQuery.of(context).size.height * 0.05,
-      child: Icon(
-        icon,
-        color: greyColor,
-        size: 40,
+  text(text) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: blueGrey500,
+      ),
+    );
+  }
+
+  listIcon(icon, VoidCallback ontap) {
+    return InkWell(
+      onTap: ontap,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.1,
+        height: MediaQuery.of(context).size.height * 0.05,
+        child: Icon(
+          icon,
+          color: greyColor,
+          size: 30,
+        ),
       ),
     );
   }

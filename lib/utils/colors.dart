@@ -22,3 +22,11 @@ const greyShade = Color.fromRGBO(0, 0, 0, 0.7);
 const btnPrimaryblue = Color(0xff0e1c29);
 const borderColor = Color(0xff24303c);
 const textBlue = Color(0xff262e39);
+const blueshade = Color(0xff15abea);
+const blue300 = Color(0xff1a90e5);
+const blue900 = Color(0xff2156de);
+final List<Color> gradiant = [blueshade, blue300, blue900];
+
+// final Color pink = Color(0xffEE0979);
+// final Color orange = Color(0xffFF6A00);
+// final List<Color> gradiant = [pink, orange];

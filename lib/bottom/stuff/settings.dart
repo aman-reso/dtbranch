@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:primevideo/auth/login.dart';
+import 'package:primevideo/bottom/stuff/about_us.dart';
 import 'package:primevideo/component/settingstext.dart';
 import 'package:primevideo/component/smalltext.dart';
 import 'package:primevideo/component/textfield.dart';
@@ -196,11 +198,26 @@ class _SettingsUIState extends State<SettingsUI> {
                     divider(),
                     SettingUIText("Clear video search history"),
                     divider(),
-                    SettingUIText("Signed in as"),
-                    const SizedBox(
-                      height: 07,
+                    SizedBox(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()));
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SettingUIText("Signed in as"),
+                            const SizedBox(
+                              height: 07,
+                            ),
+                            SmallText("Sign out"),
+                          ],
+                        ),
+                      ),
                     ),
-                    SmallText("Sign out"),
                     divider(),
                     SettingUIText("Rate us"),
                     const SizedBox(
@@ -214,7 +231,14 @@ class _SettingsUIState extends State<SettingsUI> {
                     ),
                     SmallText("Share app with your friends"),
                     divider(),
-                    SettingUIText("About us"),
+                    InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AboutUs()));
+                        },
+                        child: SettingUIText("About us")),
                     divider(),
                     SettingUIText("Privacy pollicy"),
                     divider(),

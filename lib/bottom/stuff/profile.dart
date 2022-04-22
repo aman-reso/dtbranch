@@ -14,6 +14,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool show = false;
+  bool showmore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,166 @@ class _ProfilePageState extends State<ProfilePage> {
             show
                 ? Positioned(top: 70, child: profiledetails(context))
                 : const SizedBox(),
+            showmore
+                ? Positioned(
+                    bottom: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.55,
+                      color: blueGrey900,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 25),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Action Jaction",
+                                style: TextStyle(
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 17,
+                                    decoration: BoxDecoration(
+                                        color: transParentColor,
+                                        border: Border.all(
+                                          color: blueGreyColor,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(03)),
+                                    child: Center(
+                                        child: Text(
+                                      "U/A 13+",
+                                      style: TextStyle(
+                                          color: blueGrey500, fontSize: 10),
+                                    )),
+                                  ),
+                                  SizedBox(
+                                    width: 05,
+                                  ),
+                                  Icon(
+                                    Icons.message_outlined,
+                                    color: blueGrey500,
+                                    size: 20,
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            rowfielddetails(
+                                Icons.play_arrow_rounded, "Watch Now", () {}),
+                            SizedBox(height: 10),
+                            InkWell(
+                              onTap: () {},
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.refresh_sharp,
+                                        color: blueGreyColor, size: 27),
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    Text("Start over",
+                                        style: TextStyle(
+                                          color: textColor,
+                                          fontSize: 17,
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            rowfielddetails(Icons.play_arrow_outlined,
+                                "Watch Trailer", () {}),
+                            SizedBox(height: 10),
+                            rowfielddetails(
+                                Icons.add, "Add tp Watchlist", () {}),
+                            SizedBox(height: 10),
+                            rowfielddetails(
+                                Icons.download_outlined, "Download", () {}),
+                            SizedBox(height: 13),
+                            InkWell(
+                              onTap: () {},
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.share_outlined,
+                                        color: blueGreyColor, size: 27),
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    Text("Share",
+                                        style: TextStyle(
+                                          color: textColor,
+                                          fontSize: 17,
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 13),
+                            InkWell(
+                              onTap: () {},
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.info_outline,
+                                        color: blueGreyColor, size: 27),
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    Text("View details",
+                                        style: TextStyle(
+                                          color: textColor,
+                                          fontSize: 17,
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : SizedBox()
+          ],
+        ),
+      ),
+    );
+  }
+
+  InkWell rowfielddetails(IconData icon, String text, VoidCallback ontap) {
+    return InkWell(
+      onTap: ontap,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Row(
+          children: [
+            Icon(icon, color: blueGreyColor, size: 35),
+            SizedBox(
+              width: 10,
+            ),
+            Text(text,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 17,
+                ))
           ],
         ),
       ),
@@ -128,7 +289,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * 0.4,
-      color: const Color(0xff0e171e),
+      color: appBgColor,
       child: Column(
         children: [
           Padding(
@@ -387,9 +548,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ],
                                     ),
                                   ),
-                                  listIcon(
-                                    Icons.more_vert_rounded,
-                                  )
+                                  listIcon(Icons.more_vert_rounded, () {
+                                    if (showmore == false) {
+                                      setState(() {
+                                        showmore = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        showmore = false;
+                                      });
+                                    }
+                                  })
                                 ],
                               )
                             ],
@@ -416,14 +585,17 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  listIcon(icon) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.1,
-      height: MediaQuery.of(context).size.height * 0.05,
-      child: Icon(
-        icon,
-        color: greyColor,
-        size: 30,
+  listIcon(icon, VoidCallback ontap) {
+    return InkWell(
+      onTap: ontap,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.1,
+        height: MediaQuery.of(context).size.height * 0.05,
+        child: Icon(
+          icon,
+          color: greyColor,
+          size: 30,
+        ),
       ),
     );
   }

@@ -29,7 +29,44 @@ class _VideoScreenState extends State<VideoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Chewie(controller: chewieController),
+      body: Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.5,
+            //child: Chewie(controller: chewieController),
+            child: VideoPlayer(videoPlayerController),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    print(videoPlayerController.position.toString());
+                  },
+                  icon: Icon(Icons.fast_rewind)),
+              IconButton(
+                  onPressed: forward10Seconds, icon: Icon(Icons.fast_forward))
+            ],
+          )
+        ],
+      ),
     );
+  }
+
+  Future forward10Seconds() async => goToPosition(
+      (currentPosition) => currentPosition - Duration(seconds: 10));
+  Future rewind10Seconds() async => goToPosition(
+      (currentPosition) => currentPosition - Duration(seconds: 10));
+  Future goToPosition(
+    Duration Function(Duration currentPosition) builder,
+  ) async {
+    final currentPosition = await videoPlayerController.position;
+    final newPosition = builder(currentPosition!);
+
+    await videoPlayerController.seekTo(newPosition);
   }
 }

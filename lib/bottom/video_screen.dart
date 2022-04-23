@@ -21,9 +21,9 @@ class _VideoScreenState extends State<VideoScreen> {
     videoPlayerController = VideoPlayerController.network(
         'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
     chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      aspectRatio: videoPlayerController.value.aspectRatio,
-    );
+        videoPlayerController: videoPlayerController,
+        aspectRatio: videoPlayerController.value.aspectRatio,
+        autoPlay: true);
   }
 
   @override
@@ -34,8 +34,8 @@ class _VideoScreenState extends State<VideoScreen> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.5,
-            //child: Chewie(controller: chewieController),
-            child: VideoPlayer(videoPlayerController),
+            child: Chewie(controller: chewieController),
+            //child: VideoPlayer(videoPlayerController),
           ),
           SizedBox(
             height: 30,
@@ -45,11 +45,35 @@ class _VideoScreenState extends State<VideoScreen> {
             children: [
               IconButton(
                   onPressed: () {
-                    print(videoPlayerController.position.toString());
+                    print('Chewiw Controll : ' +
+                        chewieController
+                            .videoPlayerController.value.duration.inSeconds
+                            .toString());
+
+                    print("VideoPlayer : " +
+                        videoPlayerController.value.duration.inSeconds
+                            .toString());
+
+                    print("VideoPlayer current value : " +
+                        videoPlayerController.value.position.inSeconds
+                            .toString());
+
+                    print(videoPlayerController.value.position -
+                        Duration(seconds: 10));
+
+                    videoPlayerController.value.position.inSeconds - 5;
+                    videoPlayerController.seekTo(
+                        videoPlayerController.value.position -
+                            Duration(seconds: 5));
                   },
                   icon: Icon(Icons.fast_rewind)),
               IconButton(
-                  onPressed: forward10Seconds, icon: Icon(Icons.fast_forward))
+                  onPressed: () {
+                    videoPlayerController.seekTo(
+                        videoPlayerController.value.position +
+                            Duration(seconds: 5));
+                  },
+                  icon: Icon(Icons.fast_forward))
             ],
           )
         ],

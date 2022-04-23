@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:primevideo/bottom/bottombarscreen.dart';
+import 'package:primevideo/bottom/video_screen.dart';
 import 'package:primevideo/utils/colors.dart';
 
 void main() {
@@ -13,11 +14,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'PrimeVideo',
-        theme: ThemeData(
-          primarySwatch: bluetext,
-        ),
-        home: const BottomBarUI());
+      debugShowCheckedModeBanner: false,
+      title: 'PrimeVideo',
+      theme: ThemeData(
+        primarySwatch: bluetext,
+      ),
+      home: const BottomBarUI(),
+
+      //home: VideoScreen(),
+    );
   }
 }

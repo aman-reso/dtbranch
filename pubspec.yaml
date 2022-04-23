@@ -41,7 +41,7 @@ dependencies:
   readmore: ^2.1.0
   fluttertoast: ^8.0.9
   otp_text_field: ^1.1.1
-  better_player: ^0.0.81
+ 
 
 dev_dependencies:
   flutter_test:

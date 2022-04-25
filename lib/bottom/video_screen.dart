@@ -1,5 +1,7 @@
+import 'package:better_player/better_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoScreen extends StatefulWidget {
@@ -10,10 +12,37 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  late VideoPlayerController videoPlayerController;
-  late ChewieController chewieController;
+  // late VideoPlayerController videoPlayerController;
+  // late ChewieController chewieController;
+
+  late BetterPlayerController _betterPlayerController;
+  late BetterPlayerDataSource _betterPlayerDataSource;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    BetterPlayerConfiguration betterPlayerConfiguration =
+        const BetterPlayerConfiguration(
+            aspectRatio: 16 / 9,
+            fit: BoxFit.contain,
+            autoPlay: true,
+            looping: true,
+            deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.portraitUp
+        ]);
+
+    _betterPlayerDataSource = BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4");
+
+    _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+    _betterPlayerController.setupDataSource(_betterPlayerDataSource);
+  }
+
+  /*@override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -24,12 +53,24 @@ class _VideoScreenState extends State<VideoScreen> {
         videoPlayerController: videoPlayerController,
         aspectRatio: videoPlayerController.value.aspectRatio,
         autoPlay: true);
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        children: [
+          const SizedBox(
+            height: 8,
+          ),
+          AspectRatio(
+              aspectRatio: 16 / 9,
+              child: BetterPlayer(
+                controller: _betterPlayerController,
+              )),
+        ],
+      ),
+      /* body: Column(
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -77,20 +118,20 @@ class _VideoScreenState extends State<VideoScreen> {
             ],
           )
         ],
-      ),
+      ),*/
     );
   }
 
-  Future forward10Seconds() async => goToPosition(
-      (currentPosition) => currentPosition - Duration(seconds: 10));
-  Future rewind10Seconds() async => goToPosition(
-      (currentPosition) => currentPosition - Duration(seconds: 10));
-  Future goToPosition(
-    Duration Function(Duration currentPosition) builder,
-  ) async {
-    final currentPosition = await videoPlayerController.position;
-    final newPosition = builder(currentPosition!);
+  // Future forward10Seconds() async => goToPosition(
+  //     (currentPosition) => currentPosition - Duration(seconds: 10));
+  // Future rewind10Seconds() async => goToPosition(
+  //     (currentPosition) => currentPosition - Duration(seconds: 10));
+  // Future goToPosition(
+  //   Duration Function(Duration currentPosition) builder,
+  // ) async {
+  //   final currentPosition = await videoPlayerController.position;
+  //   final newPosition = builder(currentPosition!);
 
-    await videoPlayerController.seekTo(newPosition);
-  }
+  //   await videoPlayerController.seekTo(newPosition);
+  // }
 }

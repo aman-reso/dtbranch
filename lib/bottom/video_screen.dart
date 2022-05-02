@@ -58,17 +58,12 @@ class _VideoScreenState extends State<VideoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 8,
-          ),
-          AspectRatio(
-              aspectRatio: 16 / 9,
-              child: BetterPlayer(
-                controller: _betterPlayerController,
-              )),
-        ],
+      body: Center(
+        child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: BetterPlayer(
+              controller: _betterPlayerController,
+            )),
       ),
       /* body: Column(
         children: [

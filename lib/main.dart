@@ -1,7 +1,5 @@
+import 'package:dtlive/pages/splash.dart';
 import 'package:flutter/material.dart';
-import 'package:primevideo/bottom/bottombarscreen.dart';
-import 'package:primevideo/bottom/video_screen.dart';
-import 'package:primevideo/utils/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,18 +8,12 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'PrimeVideo',
-      theme: ThemeData(
-        primarySwatch: bluetext,
-      ),
-      home: const BottomBarUI(),
-
-      //home: VideoScreen(),
+    return const MaterialApp(
+       debugShowCheckedModeBanner: false,
+      home:  Splash(),
     );
   }
 }
+

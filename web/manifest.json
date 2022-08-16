@@ -1,6 +1,6 @@
 {
-    "name": "primevideo",
-    "short_name": "primevideo",
+    "name": "dtlive",
+    "short_name": "dtlive",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -3,6 +3,7 @@ import 'package:dtlive/utils/myimage.dart';
 import 'package:dtlive/utils/mytext.dart';
 import 'package:dtlive/widget/homelandscap.dart';
 import 'package:dtlive/widget/homeportrait.dart';
+import 'package:dtlive/widget/homesqure.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -53,6 +54,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
             child: TabBar(
               indicatorColor: white,
               isScrollable: true,
+              physics:const AlwaysScrollableScrollPhysics(),
               unselectedLabelColor: white,
               labelStyle: GoogleFonts.inter(
                   fontSize: 12,
@@ -65,7 +67,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                   child: MyText(
                       color: white,
                       text: tabname[index],
-                      fontsize: 14,
+                      fontsize: 12,
                       maxline: 1,
                       overflow: TextOverflow.ellipsis,
                       fontwaight: FontWeight.w600,
@@ -86,14 +88,42 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                     width: MediaQuery.of(context).size.width,
                     child: Stack(
                       children: const [
+                        HomeSqure(),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Stack(
+                      children: const [
+                        Homelandscap(),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Stack(
+                      children: const [
                         HomePortrait(),
                       ],
                     ),
                   ),
-                  const Center(child: Text("News")),
-                  const Center(child: Text("Sport")),
-                  const Center(child: Text("Tv Show")),
-                  const Center(child: Text("Kids")),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Stack(
+                      children: const [
+                        Homelandscap(),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Stack(
+                      children: const [
+                        HomePortrait(),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

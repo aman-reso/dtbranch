@@ -4,14 +4,14 @@ import 'package:dtlive/utils/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class HomePortrait extends StatefulWidget {
-  const HomePortrait({Key? key}) : super(key: key);
+class ChannelsPortrait extends StatefulWidget {
+  const ChannelsPortrait({Key? key}) : super(key: key);
 
   @override
-  State<HomePortrait> createState() => HomePortraitState();
+  State<ChannelsPortrait> createState() => ChannelsPortraitState();
 }
 
-class HomePortraitState extends State<HomePortrait> {
+class ChannelsPortraitState extends State<ChannelsPortrait> {
   List<String> pageviewImgList = <String>[
     "ic_homebanner.png",
     "ic_homebanner.png",
@@ -69,12 +69,13 @@ class HomePortraitState extends State<HomePortrait> {
       child: Column(
         children: [
           homebanner(),
-          recentlyAdded(),
-          actionMovies(),
-          topRatedIMDBMovies(),
-          originalSpecialSeries(),
-          best2022(),
-          orignalSpecialMovi(),
+          sonyTvTopShow(),
+          sonyTvTopSonyLatestMovies(),
+          ddGirnarshow(),
+          topMovies(),
+          movieGenres(),
+          namasteBharat(),
+          tvGeners(),
         ],
       ),
     );
@@ -130,10 +131,10 @@ class HomePortraitState extends State<HomePortrait> {
     );
   }
 
-  Widget recentlyAdded() {
+  Widget sonyTvTopShow() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 210,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -141,20 +142,38 @@ class HomePortraitState extends State<HomePortrait> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: 65,
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Recently Addes Movies",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: "Sony SAB",
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: "Sony Tv Top Show",
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -191,10 +210,10 @@ class HomePortraitState extends State<HomePortrait> {
     );
   }
 
-  Widget actionMovies() {
+  Widget sonyTvTopSonyLatestMovies() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -202,20 +221,38 @@ class HomePortraitState extends State<HomePortrait> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: 65,
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Action Movies",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: "India TV",
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: "Sony Tv Top Sony Latest Movies",
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -252,10 +289,10 @@ class HomePortraitState extends State<HomePortrait> {
     );
   }
 
-  Widget topRatedIMDBMovies() {
+  Widget ddGirnarshow() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -263,20 +300,38 @@ class HomePortraitState extends State<HomePortrait> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: 65,
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Top Rated IMDB Movies",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: "ABP News",
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: "DD Girnar show",
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -313,10 +368,10 @@ class HomePortraitState extends State<HomePortrait> {
     );
   }
 
-  Widget originalSpecialSeries() {
+  Widget topMovies() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -324,20 +379,38 @@ class HomePortraitState extends State<HomePortrait> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: 65,
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Original Special Series",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: "Times Now India",
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: "Top Movies",
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -374,10 +447,10 @@ class HomePortraitState extends State<HomePortrait> {
     );
   }
 
-  Widget best2022() {
+  Widget movieGenres() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -385,20 +458,38 @@ class HomePortraitState extends State<HomePortrait> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: 65,
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Best of 2022",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: "Animal Planets",
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: "Movie Genres",
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -435,10 +526,10 @@ class HomePortraitState extends State<HomePortrait> {
     );
   }
 
-  Widget orignalSpecialMovi() {
+  Widget namasteBharat() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -446,20 +537,117 @@ class HomePortraitState extends State<HomePortrait> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: 65,
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Original Special Movies",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: "India TV",
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: "Namaste Bharat",
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 150,
+            child: ListView.builder(
+              itemCount: specialOrignalMovi.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
+                  child: Container(
+                    width: 110,
+                    height: 130,
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: MyImage(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          fit: BoxFit.fill,
+                          imagePath: specialOrignalMovi[index]),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+   Widget tvGeners() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 220,
+      alignment: Alignment.center,
+      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 65,
+            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: "Disney Cartton",
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: "TV Geners",
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
+              ),
             ),
           ),
           SizedBox(

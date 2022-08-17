@@ -3,7 +3,6 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/mytext.dart';
 import 'package:dtlive/widget/mysvg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

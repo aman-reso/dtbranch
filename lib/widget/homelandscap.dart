@@ -2,6 +2,7 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/myimage.dart';
 import 'package:dtlive/utils/mytext.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Homelandscap extends StatefulWidget {
   const Homelandscap({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class Homelandscap extends StatefulWidget {
 }
 
 class HomelandscapState extends State<Homelandscap> {
- List<String> pageviewImgList = <String>[
+  List<String> pageviewImgList = <String>[
     "ic_homebanner.png",
     "ic_homebanner.png",
     "ic_homebanner.png",
@@ -32,7 +33,7 @@ class HomelandscapState extends State<Homelandscap> {
     "ic_actionmovi2.png",
   ];
 
-   List<String> toprelatedList = <String>[
+  List<String> toprelatedList = <String>[
     "ic_toprelated1.png",
     "ic_toprelated2.png",
     "ic_toprelated1.png",
@@ -59,7 +60,6 @@ class HomelandscapState extends State<Homelandscap> {
     "ic_actionmovi1.png",
     "ic_actionmovi2.png",
   ];
-  
 
   PageController pageController = PageController();
 
@@ -81,26 +81,52 @@ class HomelandscapState extends State<Homelandscap> {
   }
 
   Widget homebanner() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 200,
-      child: PageView.builder(
-        itemCount: pageviewImgList.length,
-        controller: pageController,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: white,
-            child: MyImage(
+    return Stack(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: 200,
+          child: PageView.builder(
+            itemCount: pageviewImgList.length,
+            controller: pageController,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                fit: BoxFit.fill,
-                imagePath: pageviewImgList[index]),
-          );
-        },
-      ),
+                color: white,
+                child: MyImage(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    fit: BoxFit.fill,
+                    imagePath: pageviewImgList[index]),
+              );
+            },
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: 200,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: SmoothPageIndicator(
+                controller: pageController,
+                count: pageviewImgList.length,
+                axisDirection: Axis.horizontal,
+                effect: const ExpandingDotsEffect(
+                    spacing: 5.0,
+                    radius: 5.0,
+                    dotWidth: 5.0,
+                    dotHeight: 5.0,
+                    dotColor: Colors.grey,
+                    activeDotColor: bottomnavigationText),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -108,7 +134,7 @@ class HomelandscapState extends State<Homelandscap> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 180,
-       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -329,7 +355,7 @@ class HomelandscapState extends State<Homelandscap> {
     );
   }
 
-   Widget best2022() {
+  Widget best2022() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 180,
@@ -385,7 +411,7 @@ class HomelandscapState extends State<Homelandscap> {
     );
   }
 
-   Widget orignalSpecialMovi() {
+  Widget orignalSpecialMovi() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 180,

@@ -4,54 +4,19 @@ import 'package:dtlive/utils/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class HomePortrait extends StatefulWidget {
-  const HomePortrait({Key? key}) : super(key: key);
+class HomeSqure extends StatefulWidget {
+  const HomeSqure({Key? key}) : super(key: key);
 
   @override
-  State<HomePortrait> createState() => HomePortraitState();
+  State<HomeSqure> createState() => HomeSqureState();
 }
 
-class HomePortraitState extends State<HomePortrait> {
+class HomeSqureState extends State<HomeSqure> {
   List<String> pageviewImgList = <String>[
     "ic_homebanner.png",
     "ic_homebanner.png",
     "ic_homebanner.png",
     "ic_homebanner.png",
-  ];
-
-  List<String> recentmoviList = <String>[
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-  ];
-
-  List<String> actionmoviList = <String>[
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-  ];
-
-  List<String> toprelatedList = <String>[
-    "ic_toprelated1.png",
-    "ic_toprelated2.png",
-    "ic_toprelated1.png",
-    "ic_toprelated2.png",
-  ];
-
-  List<String> orignalspecialList = <String>[
-    "ic_orignalspecial1.png",
-    "ic_orignalspecial2.png",
-    "ic_orignalspecial1.png",
-    "ic_orignalspecial2.png",
-  ];
-
-  List<String> best2022List = <String>[
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
   ];
 
   List<String> specialOrignalMovi = <String>[
@@ -133,7 +98,7 @@ class HomePortraitState extends State<HomePortrait> {
   Widget recentlyAdded() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 210,
+      height: 230,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -141,7 +106,7 @@ class HomePortraitState extends State<HomePortrait> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: 60,
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
@@ -159,7 +124,7 @@ class HomePortraitState extends State<HomePortrait> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 150,
+            height: 170,
             child: ListView.builder(
               itemCount: specialOrignalMovi.length,
               scrollDirection: Axis.horizontal,
@@ -167,8 +132,8 @@ class HomePortraitState extends State<HomePortrait> {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
                   child: Container(
-                    width: 110,
-                    height: 130,
+                    width: 160,
+                    height: 170,
                     decoration: BoxDecoration(
                       color: white,
                       borderRadius: BorderRadius.circular(5),
@@ -194,7 +159,7 @@ class HomePortraitState extends State<HomePortrait> {
   Widget actionMovies() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -220,7 +185,7 @@ class HomePortraitState extends State<HomePortrait> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 150,
+            height: 170,
             child: ListView.builder(
               itemCount: specialOrignalMovi.length,
               scrollDirection: Axis.horizontal,
@@ -228,8 +193,8 @@ class HomePortraitState extends State<HomePortrait> {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
                   child: Container(
-                    width: 110,
-                    height: 130,
+                    width: 160,
+                    height: 170,
                     decoration: BoxDecoration(
                       color: white,
                       borderRadius: BorderRadius.circular(5),
@@ -255,7 +220,7 @@ class HomePortraitState extends State<HomePortrait> {
   Widget topRatedIMDBMovies() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -281,7 +246,7 @@ class HomePortraitState extends State<HomePortrait> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 150,
+            height: 170,
             child: ListView.builder(
               itemCount: specialOrignalMovi.length,
               scrollDirection: Axis.horizontal,
@@ -289,8 +254,8 @@ class HomePortraitState extends State<HomePortrait> {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
                   child: Container(
-                    width: 110,
-                    height: 130,
+                    width: 160,
+                    height: 170,
                     decoration: BoxDecoration(
                       color: white,
                       borderRadius: BorderRadius.circular(5),
@@ -316,7 +281,7 @@ class HomePortraitState extends State<HomePortrait> {
   Widget originalSpecialSeries() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -342,7 +307,7 @@ class HomePortraitState extends State<HomePortrait> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 150,
+            height: 170,
             child: ListView.builder(
               itemCount: specialOrignalMovi.length,
               scrollDirection: Axis.horizontal,
@@ -350,8 +315,8 @@ class HomePortraitState extends State<HomePortrait> {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
                   child: Container(
-                    width: 110,
-                    height: 130,
+                    width: 160,
+                    height: 170,
                     decoration: BoxDecoration(
                       color: white,
                       borderRadius: BorderRadius.circular(5),
@@ -377,7 +342,7 @@ class HomePortraitState extends State<HomePortrait> {
   Widget best2022() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -403,7 +368,7 @@ class HomePortraitState extends State<HomePortrait> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 150,
+            height: 170,
             child: ListView.builder(
               itemCount: specialOrignalMovi.length,
               scrollDirection: Axis.horizontal,
@@ -411,8 +376,8 @@ class HomePortraitState extends State<HomePortrait> {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
                   child: Container(
-                    width: 110,
-                    height: 130,
+                    width: 160,
+                    height: 170,
                     decoration: BoxDecoration(
                       color: white,
                       borderRadius: BorderRadius.circular(5),
@@ -438,7 +403,7 @@ class HomePortraitState extends State<HomePortrait> {
   Widget orignalSpecialMovi() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 220,
       alignment: Alignment.center,
       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
@@ -464,7 +429,7 @@ class HomePortraitState extends State<HomePortrait> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 150,
+            height: 170,
             child: ListView.builder(
               itemCount: specialOrignalMovi.length,
               scrollDirection: Axis.horizontal,
@@ -472,8 +437,8 @@ class HomePortraitState extends State<HomePortrait> {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
                   child: Container(
-                    width: 110,
-                    height: 130,
+                    width: 160,
+                    height: 170,
                     decoration: BoxDecoration(
                       color: white,
                       borderRadius: BorderRadius.circular(5),

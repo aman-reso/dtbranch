@@ -1,3 +1,5 @@
+import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/widget/channelsportrait.dart';
 import 'package:flutter/material.dart';
 
 class Channels extends StatefulWidget {
@@ -10,6 +12,17 @@ class Channels extends StatefulWidget {
 class ChannelsState extends State<Channels> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: primary,
+      body: SingleChildScrollView(
+        child: Column(
+          children: const [
+            // Channelslandscap(),
+            // ChannelsSqure()
+            ChannelsPortrait()
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -20,18 +20,18 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
     "ic_recentmovi2.png",
     "ic_recentmovi1.png",
     "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
+    "ic_orignalspecial1.png",
+    "ic_orignalspecial2.png",
+    "ic_orignalspecial1.png",
+    "ic_orignalspecial2.png",
+    "ic_actionmovi1.png",
+    "ic_actionmovi2.png",
+    "ic_actionmovi1.png",
+    "ic_actionmovi2.png",
+    "ic_toprelated1.png",
+    "ic_toprelated2.png",
+    "ic_toprelated1.png",
+    "ic_toprelated2.png",
   ];
   @override
   Widget build(BuildContext context) {
@@ -46,6 +46,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
             child: Container(
               width: 200,
               height: 50,
+              margin: const EdgeInsets.only(bottom: 10),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: white,
@@ -79,12 +80,16 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
             ),
           ),
           Expanded(
-            child: TabBarView(
-              controller: tabController,
-              children: [
-                moviTab(),
-                tvShowTab(),
-              ],
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: TabBarView(
+                controller: tabController,
+                children: [
+                  moviTab(),
+                  tvShowTab(),
+                ],
+              ),
             ),
           ),
         ],
@@ -122,7 +127,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: moviGridList[index]),
                   ),
                 ),
@@ -188,7 +193,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: moviGridList[index]),
                   ),
                 ),

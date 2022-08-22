@@ -175,7 +175,7 @@ class HomelandscapState extends State<Homelandscap> {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: recentmoviList[index]),
                   ),
                 );
@@ -231,7 +231,7 @@ class HomelandscapState extends State<Homelandscap> {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: actionmoviList[index]),
                   ),
                 );
@@ -287,7 +287,7 @@ class HomelandscapState extends State<Homelandscap> {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: toprelatedList[index]),
                   ),
                 );
@@ -343,7 +343,7 @@ class HomelandscapState extends State<Homelandscap> {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: best2022List[index]),
                   ),
                 );
@@ -399,7 +399,7 @@ class HomelandscapState extends State<Homelandscap> {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: orignalspecialList[index]),
                   ),
                 );
@@ -455,7 +455,7 @@ class HomelandscapState extends State<Homelandscap> {
                     child: MyImage(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         imagePath: specialOrignalMovi[index]),
                   ),
                 );

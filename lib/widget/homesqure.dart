@@ -4,6 +4,8 @@ import 'package:dtlive/utils/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../pages/detailpage.dart';
+
 class HomeSqure extends StatefulWidget {
   const HomeSqure({Key? key}) : super(key: key);
 
@@ -56,15 +58,27 @@ class HomeSqureState extends State<HomeSqure> {
             controller: pageController,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: white,
-                child: MyImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.fill,
-                    imagePath: pageviewImgList[index]),
+              return InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const DetailPage();
+                      },
+                    ),
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: white,
+                  child: MyImage(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      fit: BoxFit.cover,
+                      imagePath: pageviewImgList[index]),
+                ),
               );
             },
           ),
@@ -143,7 +157,7 @@ class HomeSqureState extends State<HomeSqure> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -204,7 +218,7 @@ class HomeSqureState extends State<HomeSqure> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -265,7 +279,7 @@ class HomeSqureState extends State<HomeSqure> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -326,7 +340,7 @@ class HomeSqureState extends State<HomeSqure> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -387,7 +401,7 @@ class HomeSqureState extends State<HomeSqure> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -448,7 +462,7 @@ class HomeSqureState extends State<HomeSqure> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),

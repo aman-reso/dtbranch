@@ -1,3 +1,4 @@
+import 'package:dtlive/pages/detailpage.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/myimage.dart';
 import 'package:dtlive/utils/mytext.dart';
@@ -57,15 +58,27 @@ class ChannelsSqureState extends State<ChannelsSqure> {
             controller: pageController,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: white,
-                child: MyImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.fill,
-                    imagePath: pageviewImgList[index]),
+              return InkWell(
+                onTap: (){
+                   Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const DetailPage();
+                      },
+                    ),
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: white,
+                  child: MyImage(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      fit: BoxFit.fill,
+                      imagePath: pageviewImgList[index]),
+                ),
               );
             },
           ),

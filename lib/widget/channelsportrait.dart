@@ -99,7 +99,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                 child: MyImage(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                     imagePath: pageviewImgList[index]),
               );
             },
@@ -197,7 +197,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -276,7 +276,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -355,7 +355,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -434,7 +434,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -513,7 +513,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -592,7 +592,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),
@@ -671,7 +671,7 @@ class ChannelsPortraitState extends State<ChannelsPortrait> {
                       child: MyImage(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           imagePath: specialOrignalMovi[index]),
                     ),
                   ),

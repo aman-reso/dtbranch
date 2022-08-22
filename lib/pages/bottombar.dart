@@ -1,8 +1,8 @@
 import 'package:dtlive/bottombar/channels.dart';
 import 'package:dtlive/bottombar/find.dart';
 import 'package:dtlive/bottombar/home.dart';
+import 'package:dtlive/bottombar/mystuff.dart';
 import 'package:dtlive/bottombar/store.dart';
-import 'package:dtlive/pages/login.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,7 +24,7 @@ class BottombarState extends State<Bottombar> {
     const Find(),
     const Channels(),
     const Store(),
-    const Login(),
+    const MyStuff(),
   ];
 
   void _onItemTapped(int index) {

@@ -179,7 +179,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
             ),
             Expanded(
               flex: 3,
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: TabBarView(

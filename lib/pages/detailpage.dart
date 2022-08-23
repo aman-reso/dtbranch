@@ -24,7 +24,11 @@ class DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     "ic_actionmovi1.png",
     "ic_actionmovi2.png",
     "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
+  ];
+
+  List<String> episodList = <String>[
+    "Episode 1",
+    "Episode 2",
   ];
 
   String maxText =
@@ -137,8 +141,8 @@ class DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               color: white,
               text: "Watch Now",
               textalign: TextAlign.center,
-              fontsize: 16,
-              fontwaight: FontWeight.w600,
+              fontsize: 14,
+              fontwaight: FontWeight.w500,
               maxline: 1,
               overflow: TextOverflow.ellipsis,
               fontstyle: FontStyle.normal),
@@ -429,114 +433,11 @@ class DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   Widget tabView() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: 800,
+      height: 900,
       child: TabBarView(
         controller: tabController,
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 260,
-                  margin: const EdgeInsets.fromLTRB(20, 0, 0, 15),
-                  alignment: Alignment.center,
-                  child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: specialOrignalMovi.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyText(
-                                color: white,
-                                text: "Cast & Crew",
-                                fontsize: 14,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontwaight: FontWeight.w700,
-                                textalign: TextAlign.center,
-                                fontstyle: FontStyle.normal),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            MyText(
-                                color: white,
-                                text: "Details from IMDB",
-                                fontsize: 10,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontwaight: FontWeight.w400,
-                                textalign: TextAlign.center,
-                                fontstyle: FontStyle.normal),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Card(
-                              color: primary,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(7),
-                                    topLeft: Radius.circular(7)),
-                                // side: BorderSide(width: 1, color: Colors.green),
-                              ),
-                              child: Container(
-                                width: 100,
-                                height: 150,
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(7.0),
-                                    topLeft: Radius.circular(7.0),
-                                  ),
-                                  color: white,
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    bottomRight: Radius.circular(7.0),
-                                    topLeft: Radius.circular(7.0),
-                                  ),
-                                  child: MyImage(
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height,
-                                      fit: BoxFit.cover,
-                                      imagePath: specialOrignalMovi[index]),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 1,
-                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  color: loginBtnOne,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 324,
-                  margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                  alignment: Alignment.center,
-                  child: ListView.builder(
-                    itemCount: specialOrignalMovi.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 150,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
+          relatedTabTvShow(),
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -771,6 +672,409 @@ class DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget relatedTabMovi() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 260,
+            margin: const EdgeInsets.fromLTRB(20, 0, 0, 15),
+            alignment: Alignment.center,
+            child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: specialOrignalMovi.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyText(
+                          color: white,
+                          text: "Cast & Crew",
+                          fontsize: 14,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w700,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      MyText(
+                          color: white,
+                          text: "Details from IMDB",
+                          fontsize: 10,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w400,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Card(
+                        color: primary,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(7),
+                              topLeft: Radius.circular(7)),
+                          // side: BorderSide(width: 1, color: Colors.green),
+                        ),
+                        child: Container(
+                          width: 100,
+                          height: 150,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(7.0),
+                              topLeft: Radius.circular(7.0),
+                            ),
+                            color: white,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(7.0),
+                              topLeft: Radius.circular(7.0),
+                            ),
+                            child: MyImage(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                fit: BoxFit.cover,
+                                imagePath: specialOrignalMovi[index]),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 1,
+            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            color: loginBtnOne,
+          ),
+          Expanded(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              margin: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+              alignment: Alignment.center,
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: specialOrignalMovi.length,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 120,
+                        alignment: Alignment.topCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 110,
+                              height: MediaQuery.of(context).size.height,
+                              color: loginBtnOne,
+                              child: MyImage(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  fit: BoxFit.cover,
+                                  imagePath: specialOrignalMovi[index]),
+                            ),
+                            Expanded(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    MyText(
+                                        color: white,
+                                        text: "Directors",
+                                        textalign: TextAlign.left,
+                                        fontsize: 12,
+                                        maxline: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontwaight: FontWeight.w500,
+                                        fontstyle: FontStyle.normal),
+                                    MyText(
+                                        color: white,
+                                        text: maxText,
+                                        textalign: TextAlign.left,
+                                        fontsize: 10,
+                                        maxline: 7,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontwaight: FontWeight.w400,
+                                        fontstyle: FontStyle.normal)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget relatedTabTvShow() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 140,
+            // margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: ListView.builder(
+                itemCount: episodList.length,
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 60,
+                      color: downloadBg,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 25,
+                          ),
+                          MyImage(
+                              width: 25, height: 25, imagePath: "ic_play.png"),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText(
+                                  color: white,
+                                  text: episodList[index],
+                                  fontsize: 12,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontwaight: FontWeight.w600,
+                                  textalign: TextAlign.center,
+                                  fontstyle: FontStyle.normal),
+                              MyText(
+                                  color: white,
+                                  text: episodList[index],
+                                  fontsize: 10,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontwaight: FontWeight.w500,
+                                  textalign: TextAlign.center,
+                                  fontstyle: FontStyle.normal),
+                            ],
+                          ),
+                          const Spacer(),
+                          MyImage(
+                              width: 20,
+                              height: 20,
+                              imagePath: "ic_download.png"),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          MyImage(
+                              width: 20, height: 20, imagePath: "ic_more.png"),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 260,
+            margin: const EdgeInsets.fromLTRB(20, 0, 0, 15),
+            alignment: Alignment.center,
+            child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: specialOrignalMovi.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyText(
+                          color: white,
+                          text: "Cast & Crew",
+                          fontsize: 14,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w700,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      MyText(
+                          color: white,
+                          text: "Details from IMDB",
+                          fontsize: 10,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w400,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Card(
+                        color: primary,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(7),
+                              topLeft: Radius.circular(7)),
+                          // side: BorderSide(width: 1, color: Colors.green),
+                        ),
+                        child: Container(
+                          width: 100,
+                          height: 150,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(7.0),
+                              topLeft: Radius.circular(7.0),
+                            ),
+                            color: white,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(7.0),
+                              topLeft: Radius.circular(7.0),
+                            ),
+                            child: MyImage(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                fit: BoxFit.cover,
+                                imagePath: specialOrignalMovi[index]),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 1,
+            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            color: loginBtnOne,
+          ),
+          Expanded(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              margin: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+              alignment: Alignment.center,
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.builder(
+                  itemCount: specialOrignalMovi.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 120,
+                        alignment: Alignment.topCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 110,
+                              height: MediaQuery.of(context).size.height,
+                              color: loginBtnOne,
+                              child: MyImage(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  fit: BoxFit.cover,
+                                  imagePath: specialOrignalMovi[index]),
+                            ),
+                            Expanded(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    MyText(
+                                        color: white,
+                                        text: "Directors",
+                                        textalign: TextAlign.left,
+                                        fontsize: 12,
+                                        maxline: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontwaight: FontWeight.w500,
+                                        fontstyle: FontStyle.normal),
+                                    MyText(
+                                        color: white,
+                                        text: maxText,
+                                        textalign: TextAlign.left,
+                                        fontsize: 10,
+                                        maxline: 7,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontwaight: FontWeight.w400,
+                                        fontstyle: FontStyle.normal)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         ],

@@ -95,7 +95,7 @@ class IntroState extends State<Intro> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 0, 0, 15),
                         child: MyText(
-                            color: inroGradiantTwo,
+                            color: inrochildText,
                             text: introChildText[position],
                             fontsize: 14,
                             fontwaight: FontWeight.w400,
@@ -188,16 +188,16 @@ class IntroState extends State<Intro> {
                       InkWell(
                         onTap: () {
                           if (position == introimgList.length - 1) {
-                          chack();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Bottombar(),
-                            ),
-                          );
-                        }
+                            chack();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Bottombar(),
+                              ),
+                            );
+                          }
                           pageController.nextPage(
-                              duration:const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 200),
                               curve: Curves.easeIn);
                         },
                         child: Padding(
@@ -207,7 +207,7 @@ class IntroState extends State<Intro> {
                               height: 45,
                               imagePath: "ic_introNext.svg"),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

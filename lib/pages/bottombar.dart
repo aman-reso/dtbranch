@@ -171,7 +171,7 @@ class BottombarState extends State<Bottombar> {
               activeIcon: Padding(
                 padding: const EdgeInsets.all(7),
                 child: Image.asset(
-                  "assets/images/ic_mystuff.png",
+                  "assets/images/ic_stuff.png",
                   width: 22,
                   height: 22,
                   color: bottomnavigationText,
@@ -182,7 +182,7 @@ class BottombarState extends State<Bottombar> {
                 child: Padding(
                   padding: const EdgeInsets.all(7),
                   child: Image.asset(
-                    "assets/images/ic_mystuff.png",
+                    "assets/images/ic_stuff.png",
                     width: 22,
                     height: 22,
                     color: white,

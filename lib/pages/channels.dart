@@ -1,18 +1,21 @@
 import 'package:dtlive/pages/detailpage.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/myimage.dart';
 import 'package:dtlive/utils/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class Channelslandscap extends StatefulWidget {
-  const Channelslandscap({Key? key}) : super(key: key);
+import '../utils/myimage.dart';
+
+class Channels extends StatefulWidget {
+  const Channels({Key? key}) : super(key: key);
 
   @override
-  State<Channelslandscap> createState() => ChannelslandscapState();
+  State<Channels> createState() => ChannelsState();
 }
 
-class ChannelslandscapState extends State<Channelslandscap> {
+class ChannelsState extends State<Channels> {
+  PageController pageController = PageController();
+
   List<String> pageviewImgList = <String>[
     "ic_homebanner.png",
     "ic_homebanner.png",
@@ -27,34 +30,6 @@ class ChannelslandscapState extends State<Channelslandscap> {
     "ic_recentmovi2.png",
   ];
 
-  List<String> actionmoviList = <String>[
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-  ];
-
-  List<String> toprelatedList = <String>[
-    "ic_toprelated1.png",
-    "ic_toprelated2.png",
-    "ic_toprelated1.png",
-    "ic_toprelated2.png",
-  ];
-
-  List<String> orignalspecialList = <String>[
-    "ic_orignalspecial1.png",
-    "ic_orignalspecial2.png",
-    "ic_orignalspecial1.png",
-    "ic_orignalspecial2.png",
-  ];
-
-  List<String> best2022List = <String>[
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-  ];
-
   List<String> specialOrignalMovi = <String>[
     "ic_actionmovi1.png",
     "ic_actionmovi2.png",
@@ -62,22 +37,30 @@ class ChannelslandscapState extends State<Channelslandscap> {
     "ic_actionmovi2.png",
   ];
 
-  PageController pageController = PageController();
+  List<String> actionmoviList = <String>[
+    "ic_actionmovi1.png",
+    "ic_actionmovi2.png",
+    "ic_actionmovi1.png",
+    "ic_actionmovi2.png",
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          homebanner(),
-          sonyTvTopShow(),
-          sonyTvTopSonyLatestMovies(),
-          ddGirnarshow(),
-          topMovies(),
-          movieGenres(),
-          namasteBharat(),
-          tvGeners(),
-        ],
+    return Scaffold(
+      backgroundColor: primary,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            homebanner(),
+            sonyTvTopShow(),
+            sonyTvTopSonyLatestMovies(),
+            ddGirnarshow(),
+            topMovies(),
+            movieGenres(),
+            namasteBharat(),
+            tvGeners(),
+          ],
+        ),
       ),
     );
   }
@@ -188,44 +171,7 @@ class ChannelslandscapState extends State<Channelslandscap> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DetailPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
-                          imagePath: recentmoviList[index]),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          landscap(),
         ],
       ),
     );
@@ -275,44 +221,7 @@ class ChannelslandscapState extends State<Channelslandscap> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DetailPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
-                          imagePath: recentmoviList[index]),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          portrait(),
         ],
       ),
     );
@@ -362,44 +271,7 @@ class ChannelslandscapState extends State<Channelslandscap> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DetailPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
-                          imagePath: recentmoviList[index]),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          squre(),
         ],
       ),
     );
@@ -449,44 +321,7 @@ class ChannelslandscapState extends State<Channelslandscap> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DetailPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
-                          imagePath: recentmoviList[index]),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          landscap(),
         ],
       ),
     );
@@ -536,44 +371,7 @@ class ChannelslandscapState extends State<Channelslandscap> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DetailPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
-                          imagePath: recentmoviList[index]),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          portrait(),
         ],
       ),
     );
@@ -623,44 +421,7 @@ class ChannelslandscapState extends State<Channelslandscap> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DetailPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
-                          imagePath: recentmoviList[index]),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          landscap(),
         ],
       ),
     );
@@ -710,45 +471,97 @@ class ChannelslandscapState extends State<Channelslandscap> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DetailPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 130,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.fill,
-                          imagePath: recentmoviList[index]),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          squre(),
         ],
+      ),
+    );
+  }
+
+  Widget landscap() {
+    return Expanded(
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemCount: recentmoviList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            width: 170,
+            height: 100,
+            padding: const EdgeInsets.fromLTRB(10, 7, 0, 7),
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: MyImage(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  fit: BoxFit.cover,
+                  imagePath: recentmoviList[index]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget portrait() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: specialOrignalMovi.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+            child: Container(
+              width: 100,
+              height: 180,
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: MyImage(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    fit: BoxFit.cover,
+                    imagePath: specialOrignalMovi[index]),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget squre() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: actionmoviList.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: MyImage(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    fit: BoxFit.cover,
+                    imagePath: actionmoviList[index]),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

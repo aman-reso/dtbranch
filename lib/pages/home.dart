@@ -75,113 +75,72 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
       ),
       body: Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 50,
-            alignment: Alignment.center,
-            child: TabBar(
-              indicatorColor: white,
-              isScrollable: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              unselectedLabelColor: white,
-              labelStyle: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FontStyle.normal),
-              labelColor: white,
-              controller: tabController,
-              tabs: List<Widget>.generate(tabname.length, (int index) {
-                return Tab(
-                  child: MyText(
-                      color: white,
-                      text: tabname[index],
-                      fontsize: 12,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w600,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                );
-              }),
-            ),
-          ),
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: TabBarView(
-                controller: tabController,
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        homebanner(),
-                        recentlyAdded(),
-                        actionMovies(),
-                        topRatedIMDBMovies(),
-                        originalSpecialSeries(),
-                        best2022(),
-                        orignalSpecialMovi(),
-                      ],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        homebanner(),
-                        recentlyAdded(),
-                        actionMovies(),
-                        topRatedIMDBMovies(),
-                        originalSpecialSeries(),
-                        best2022(),
-                        orignalSpecialMovi(),
-                      ],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        homebanner(),
-                        recentlyAdded(),
-                        actionMovies(),
-                        topRatedIMDBMovies(),
-                        originalSpecialSeries(),
-                        best2022(),
-                        orignalSpecialMovi(),
-                      ],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        homebanner(),
-                        recentlyAdded(),
-                        actionMovies(),
-                        topRatedIMDBMovies(),
-                        originalSpecialSeries(),
-                        best2022(),
-                        orignalSpecialMovi(),
-                      ],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        homebanner(),
-                        recentlyAdded(),
-                        actionMovies(),
-                        topRatedIMDBMovies(),
-                        originalSpecialSeries(),
-                        best2022(),
-                        orignalSpecialMovi(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
+          tabTitle(),
+          tabItem(),
         ],
+      ),
+    );
+  }
+
+  Widget tabTitle() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 50,
+      alignment: Alignment.center,
+      child: TabBar(
+        indicatorColor: white,
+        isScrollable: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        unselectedLabelColor: white,
+        labelStyle: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.normal),
+        labelColor: white,
+        controller: tabController,
+        tabs: List<Widget>.generate(tabname.length, (int index) {
+          return Tab(
+            child: MyText(
+                color: white,
+                text: tabname[index],
+                fontsize: 12,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                fontwaight: FontWeight.w600,
+                textalign: TextAlign.center,
+                fontstyle: FontStyle.normal),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget tabItem() {
+    return Expanded(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: TabBarView(
+          controller: tabController,
+          children: List<Widget>.generate(
+            tabname.length,
+            (int index) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    homebanner(),
+                    landscap("Recently Addes Movies"),
+                    portrait("Action Movies"),
+                    square("Top Rated IMDB Movies"),
+                    landscap("Original Special Series"),
+                    portrait("Best of 2022"),
+                    square("Top Rated IMDB Movies"),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -236,24 +195,21 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Widget recentlyAdded() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+  Widget landscap(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 60,
+            height: 55,
             margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 7),
               child: MyText(
                   color: white,
-                  text: "Recently Addes Movies",
+                  text: title,
                   textalign: TextAlign.center,
                   fontsize: 16,
                   maxline: 1,
@@ -262,22 +218,47 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                   fontstyle: FontStyle.normal),
             ),
           ),
-          landscap(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: recentmoviList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  width: 175,
+                  height: 100,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: MyImage(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        fit: BoxFit.cover,
+                        imagePath: recentmoviList[index]),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget actionMovies() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 190,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+  Widget portrait(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
       child: Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 60,
+            height: 55,
             margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
@@ -293,29 +274,55 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                   fontstyle: FontStyle.normal),
             ),
           ),
-          portrait(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 140,
+            child: ListView.builder(
+              itemCount: specialOrignalMovi.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Container(
+                    width: 100,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: MyImage(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          fit: BoxFit.cover,
+                          imagePath: specialOrignalMovi[index]),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget topRatedIMDBMovies() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+  Widget square(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
       child: Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 60,
+            height: 55,
             margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 7),
               child: MyText(
                   color: white,
-                  text: "Top Rated IMDB Movies",
+                  text: title,
                   textalign: TextAlign.center,
                   fontsize: 16,
                   maxline: 1,
@@ -324,190 +331,36 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
                   fontstyle: FontStyle.normal),
             ),
           ),
-          squre(),
-        ],
-      ),
-    );
-  }
-
-  Widget originalSpecialSeries() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 60,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Original Special Series",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+            height: 120,
+            child: ListView.builder(
+              itemCount: actionmoviList.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: MyImage(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          fit: BoxFit.cover,
+                          imagePath: actionmoviList[index]),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-          landscap(),
         ],
-      ),
-    );
-  }
-
-  Widget best2022() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 190,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Besi of 2022",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          portrait(),
-        ],
-      ),
-    );
-  }
-
-  Widget orignalSpecialMovi() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
-                  color: white,
-                  text: "Original Special Movies",
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          squre(),
-        ],
-      ),
-    );
-  }
-
-  Widget landscap() {
-    return Expanded(
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemCount: recentmoviList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            width: 170,
-            height: 100,
-            padding: const EdgeInsets.fromLTRB(10, 7, 0, 7),
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: MyImage(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  fit: BoxFit.cover,
-                  imagePath: recentmoviList[index]),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget portrait() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: specialOrignalMovi.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: Container(
-              width: 100,
-              height: 180,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: MyImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.cover,
-                    imagePath: specialOrignalMovi[index]),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget squre() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: actionmoviList.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: MyImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.cover,
-                    imagePath: actionmoviList[index]),
-              ),
-            ),
-          );
-        },
       ),
     );
   }

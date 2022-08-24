@@ -52,13 +52,12 @@ class ChannelsState extends State<Channels> {
         child: Column(
           children: [
             homebanner(),
-            sonyTvTopShow(),
-            sonyTvTopSonyLatestMovies(),
-            ddGirnarshow(),
-            topMovies(),
-            movieGenres(),
-            namasteBharat(),
-            tvGeners(),
+            landscap("Sony SAB", "Sony Tv Top Show"),
+            portrait("India TV", "Sony Tv Top Sony Latest Movies"),
+            square("ABP News", "DD Girnar show"),
+            landscap("Times Now India", "Top Movies"),
+            portrait("Animal Planets", "Movie Genres"),
+            square("India TV", "Namaste Bharat"),
           ],
         ),
       ),
@@ -127,13 +126,10 @@ class ChannelsState extends State<Channels> {
     );
   }
 
-  Widget sonyTvTopShow() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+  Widget landscap(String channal, String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
@@ -148,7 +144,7 @@ class ChannelsState extends State<Channels> {
                 children: [
                   MyText(
                       color: white,
-                      text: "Sony SAB",
+                      text: channal,
                       textalign: TextAlign.center,
                       fontsize: 10,
                       maxline: 1,
@@ -160,7 +156,7 @@ class ChannelsState extends State<Channels> {
                   ),
                   MyText(
                       color: white,
-                      text: "Sony Tv Top Show",
+                      text: title,
                       textalign: TextAlign.center,
                       fontsize: 16,
                       maxline: 1,
@@ -171,397 +167,185 @@ class ChannelsState extends State<Channels> {
               ),
             ),
           ),
-          landscap(),
-        ],
-      ),
-    );
-  }
-
-  Widget sonyTvTopSonyLatestMovies() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "India TV",
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "Sony Tv Top Sony Latest Movies",
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          portrait(),
-        ],
-      ),
-    );
-  }
-
-  Widget ddGirnarshow() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "ABP News",
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "DD Girnar show",
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          squre(),
-        ],
-      ),
-    );
-  }
-
-  Widget topMovies() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "Times Now India",
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "Top Movies",
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          landscap(),
-        ],
-      ),
-    );
-  }
-
-  Widget movieGenres() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "Animal Planets",
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "Movie Genres",
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          portrait(),
-        ],
-      ),
-    );
-  }
-
-  Widget namasteBharat() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "India TV",
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "Namaste Bharat",
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          landscap(),
-        ],
-      ),
-    );
-  }
-
-  Widget tvGeners() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 180,
-      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "Disney Cartton",
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "TV Geners",
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          squre(),
-        ],
-      ),
-    );
-  }
-
-  Widget landscap() {
-    return Expanded(
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemCount: recentmoviList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            width: 170,
             height: 100,
-            padding: const EdgeInsets.fromLTRB(10, 7, 0, 7),
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: recentmoviList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  width: 175,
+                  height: 100,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: MyImage(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        fit: BoxFit.cover,
+                        imagePath: recentmoviList[index]),
+                  ),
+                );
+              },
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: MyImage(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  fit: BoxFit.cover,
-                  imagePath: recentmoviList[index]),
-            ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
 
-  Widget portrait() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: specialOrignalMovi.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: Container(
-              width: 100,
-              height: 180,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: MyImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.cover,
-                    imagePath: specialOrignalMovi[index]),
+  Widget portrait(String channal, String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 65,
+            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 7),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: channal,
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: title,
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
               ),
             ),
-          );
-        },
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 140,
+            child: ListView.builder(
+              itemCount: specialOrignalMovi.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Container(
+                    width: 100,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: MyImage(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          fit: BoxFit.cover,
+                          imagePath: specialOrignalMovi[index]),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget squre() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: actionmoviList.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: MyImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.cover,
-                    imagePath: actionmoviList[index]),
+  Widget square(String channal, String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 65,
+            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 7),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyText(
+                      color: white,
+                      text: channal,
+                      textalign: TextAlign.center,
+                      fontsize: 10,
+                      maxline: 1,
+                      fontwaight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  MyText(
+                      color: white,
+                      text: title,
+                      textalign: TextAlign.center,
+                      fontsize: 16,
+                      maxline: 1,
+                      fontwaight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal),
+                ],
               ),
             ),
-          );
-        },
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 120,
+            child: ListView.builder(
+              itemCount: actionmoviList.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: MyImage(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          fit: BoxFit.cover,
+                          imagePath: actionmoviList[index]),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

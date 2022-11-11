@@ -1,7 +1,7 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/myimage.dart';
-import 'package:dtlive/utils/mytext.dart';
+import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -36,7 +36,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primary,
+      backgroundColor: appBgColor,
       body: Column(
         children: [
           Container(
@@ -56,15 +56,15 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                 controller: tabController,
                 radius: 50,
                 contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                backgroundColor: bottomnavigationText,
+                backgroundColor: primaryColor,
                 unselectedBackgroundColor: white,
                 unselectedLabelStyle: GoogleFonts.inter(
-                    color: primary,
+                    color: black,
                     fontSize: 12,
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w700),
                 labelStyle: GoogleFonts.inter(
-                    color: primary,
+                    color: black,
                     fontSize: 12,
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w700),
@@ -102,7 +102,6 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      color: primary,
       alignment: Alignment.topCenter,
       child: GridView.count(
         crossAxisCount: 2,
@@ -141,10 +140,11 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                       height: 30,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                          color: bottomnavigationText,
-                          borderRadius: BorderRadius.circular(7)),
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(7),
+                      ),
                       child: MyText(
-                          color: primary,
+                          color: primaryColor,
                           text: "\$9.0",
                           fontsize: 12,
                           fontwaight: FontWeight.w400,
@@ -168,7 +168,6 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      color: primary,
       alignment: Alignment.topCenter,
       child: GridView.count(
         crossAxisCount: 3,
@@ -207,10 +206,11 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                       height: 30,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                          color: bottomnavigationText,
-                          borderRadius: BorderRadius.circular(7)),
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(7),
+                      ),
                       child: MyText(
-                          color: primary,
+                          color: primaryColor,
                           text: "\$9.0",
                           fontsize: 12,
                           fontwaight: FontWeight.w400,

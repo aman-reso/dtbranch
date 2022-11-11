@@ -41,10 +41,11 @@ class MyEdittext extends StatelessWidget {
         filled: true,
         // fillColor: white,
         hintStyle: TextStyle(
-            color: color,
-            fontSize: size,
-            overflow: TextOverflow.ellipsis,
-            fontWeight: FontWeight.w400),
+          color: color,
+          fontSize: size,
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.w400,
+        ),
         hintText: hinttext,
       ),
     );

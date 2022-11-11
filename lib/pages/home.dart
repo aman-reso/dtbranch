@@ -1,8 +1,26 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:dtlive/model/sectionlistmodel.dart';
+import 'package:dtlive/model/sectiontypemodel.dart' as type;
+import 'package:dtlive/model/sectionlistmodel.dart' as list;
+import 'package:dtlive/model/sectionbannermodel.dart' as banner;
+import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/provider/homeprovider.dart';
+import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/myimage.dart';
-import 'package:dtlive/utils/mytext.dart';
+import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/widget/mytext.dart';
+import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/utils/utils.dart';
+import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatefulWidget {
@@ -12,77 +30,88 @@ class Home extends StatefulWidget {
   State<Home> createState() => HomeState();
 }
 
-class HomeState extends State<Home> with TickerProviderStateMixin {
-  late TabController tabController =
-      TabController(length: tabname.length, vsync: this);
-
+class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
+  TabController? tabController;
   PageController pageController = PageController();
+  Timer? _timer;
 
-  List<String> tabname = <String>[
-    "Movies",
-    "News",
-    "Sport",
-    "TV Show",
-    "Kids",
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
 
-  List<String> pageviewImgList = <String>[
-    "ic_homebanner.png",
-    "ic_homebanner.png",
-    "ic_homebanner.png",
-    "ic_homebanner.png",
-  ];
+  void _getData() async {
+    Utils.getCurrencySymbol();
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.getSectionType();
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
 
-  List<String> recentmoviList = <String>[
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-  ];
-
-  List<String> actionmoviList = <String>[
-    "ic_actionmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_actionmovi1.png",
-    "ic_homebanner.png",
-  ];
-
-  List<String> specialOrignalMovi = <String>[
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-  ];
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
+    tabController?.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    if (!homeProvider.loading) {
+      if (homeProvider.sectionTypeModel.status == 200 &&
+          homeProvider.sectionTypeModel.result != null) {
+        if ((homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
+          tabController = TabController(
+            vsync: this,
+            length: (homeProvider.sectionTypeModel.result?.length ?? 0) + 1,
+          );
+          log("tabController index ==> ${(tabController?.index ?? 0)}");
+          if ((tabController?.index ?? 0) == 0) {
+            getTabData(0, homeProvider.sectionTypeModel.result);
+          }
+          tabController?.addListener(() {
+            log("tabController Size ==> ${(tabController?.length ?? 0)}");
+            getTabData(tabController?.index ?? 0,
+                homeProvider.sectionTypeModel.result);
+          });
+        }
+      }
+    }
     return Scaffold(
-      backgroundColor: primary,
+      backgroundColor: appBgColor,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(55.0),
+        preferredSize: const Size.fromHeight(55),
         child: AppBar(
           centerTitle: true,
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: primary,
+          backgroundColor: appBgColor,
           title: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
-            child: MyImage(width: 80, height: 80, imagePath: "ic_appicon.png"),
+            child: MyImage(width: 80, height: 80, imagePath: "appicon.png"),
           ),
         ),
       ),
-      body: Column(
-        children: [
-          tabTitle(),
-          tabItem(),
-        ],
-      ),
+      body: homeProvider.loading
+          ? Utils.pageLoader()
+          : (homeProvider.sectionTypeModel.status == 200 &&
+                  homeProvider.sectionTypeModel.result != null)
+              ? (homeProvider.sectionTypeModel.result?.length ?? 0) > 0
+                  ? Column(
+                      children: [
+                        tabTitle(homeProvider.sectionTypeModel.result),
+                        tabItem(homeProvider.sectionTypeModel.result),
+                      ],
+                    )
+                  : const NoData()
+              : const NoData(),
     );
   }
 
-  Widget tabTitle() {
+  Widget tabTitle(List<type.Result>? sectionTypeList) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 50,
@@ -98,45 +127,94 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
             fontStyle: FontStyle.normal),
         labelColor: white,
         controller: tabController,
-        tabs: List<Widget>.generate(tabname.length, (int index) {
-          return Tab(
-            child: MyText(
+        tabs: List<Widget>.generate(
+          (sectionTypeList?.length ?? 0) + 1,
+          (int index) {
+            return Tab(
+              child: MyText(
                 color: white,
-                text: tabname[index],
+                text: index == 0
+                    ? "All"
+                    : (sectionTypeList?.elementAt(index - 1).name.toString() ??
+                        ""),
                 fontsize: 12,
                 maxline: 1,
                 overflow: TextOverflow.ellipsis,
                 fontwaight: FontWeight.w600,
                 textalign: TextAlign.center,
-                fontstyle: FontStyle.normal),
-          );
-        }),
+                fontstyle: FontStyle.normal,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget tabItem() {
+  Widget tabItem(List<type.Result>? sectionTypeList) {
     return Expanded(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: TabBarView(
           controller: tabController,
+          physics: const AlwaysScrollableScrollPhysics(),
           children: List<Widget>.generate(
-            tabname.length,
+            (sectionTypeList?.length ?? 0) + 1,
             (int index) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    homebanner(),
-                    landscap("Recently Addes Movies"),
-                    portrait("Action Movies"),
-                    square("Top Rated IMDB Movies"),
-                    landscap("Original Special Series"),
-                    portrait("Best of 2022"),
-                    square("Top Rated IMDB Movies"),
-                  ],
-                ),
+              return Consumer<SectionDataProvider>(
+                builder: (context, sectionDataProvider, child) {
+                  log("sectionDataProvider status :=======> ${sectionDataProvider.sectionBannerModel.status}");
+                  if (sectionDataProvider.loading) {
+                    return Utils.pageLoader();
+                  } else {
+                    if ((sectionDataProvider.sectionBannerModel.status == 200 &&
+                            sectionDataProvider.sectionBannerModel.result !=
+                                null) ||
+                        (sectionDataProvider.sectionListModel.status == 200 &&
+                            sectionDataProvider.sectionListModel.result !=
+                                null)) {
+                      return SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          children: [
+                            /* Banner */
+                            (sectionDataProvider.sectionBannerModel.status ==
+                                        200 &&
+                                    sectionDataProvider
+                                            .sectionBannerModel.result !=
+                                        null)
+                                ? homebanner(sectionDataProvider
+                                    .sectionBannerModel.result)
+                                : const SizedBox.shrink(),
+                            // /* Continue Watching */
+                            // (sectionDataProvider.sectionListModel.status == 200 &&
+                            //         sectionDataProvider
+                            //                 .sectionListModel.continueWatching !=
+                            //             null)
+                            //     ? continueWatchingLayout(sectionDataProvider
+                            //         .sectionListModel.continueWatching)
+                            //     : const SizedBox.shrink(),
+                            /* Remaining Data */
+                            (sectionDataProvider.sectionListModel.status ==
+                                        200 &&
+                                    sectionDataProvider
+                                            .sectionListModel.result !=
+                                        null)
+                                ? setSectionByType(
+                                    sectionDataProvider.sectionListModel.result)
+                                : const SizedBox.shrink(),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const NoData();
+                    }
+                  }
+                },
               );
             },
           ),
@@ -145,222 +223,710 @@ class HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  Widget homebanner() {
-    return Stack(
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 200,
-          child: PageView.builder(
-            itemCount: pageviewImgList.length,
-            controller: pageController,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: white,
-                child: MyImage(
+  Future<void> getTabData(
+      int position, List<type.Result>? sectionTypeList) async {
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
+    await sectionDataProvider.getSectionBanner(
+        position == 0 ? "0" : (sectionTypeList?.elementAt(position - 1).id),
+        position == 0 ? "1" : "2");
+    await sectionDataProvider.getSectionList(
+        position == 0 ? "0" : (sectionTypeList?.elementAt(position - 1).id),
+        position == 0 ? "1" : "2");
+  }
+
+  Widget homebanner(List<banner.Result>? sectionBannerList) {
+    if ((sectionBannerList?.length ?? 0) > 0) {
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   _timer = Timer.periodic(const Duration(seconds: 8), (Timer timer) {
+      //     log("timer isActive ====> ${timer.isActive}");
+      //     if (_currentPage < (sectionBannerList?.length ?? 0)) {
+      //       _currentPage++;
+      //     } else {
+      //       _currentPage = 0;
+      //     }
+      //     if (pageController.hasClients) {
+      //       pageController.animateToPage(
+      //         _currentPage,
+      //         duration: const Duration(milliseconds: 500),
+      //         curve: Curves.easeIn,
+      //       );
+      //     }
+      //   });
+      // });
+      return Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: Constant.homeBanner,
+            child: PageView.builder(
+              itemCount: (sectionBannerList?.length ?? 0),
+              controller: pageController,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    log("Clicked on index ==> $index");
+                    if ((sectionBannerList?.elementAt(index).videoType ?? 0) ==
+                        1) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return MovieDetails(
+                              sectionBannerList?.elementAt(index).id ?? 0,
+                              sectionBannerList?.elementAt(index).videoType ??
+                                  0,
+                              1,
+                            );
+                          },
+                        ),
+                      );
+                    } else if ((sectionBannerList?.elementAt(index).videoType ??
+                            0) ==
+                        2) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return TvShowDetails(
+                              sectionBannerList?.elementAt(index).id ?? 0,
+                              sectionBannerList?.elementAt(index).videoType ??
+                                  0,
+                              4,
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                  child: SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    fit: BoxFit.fill,
-                    imagePath: pageviewImgList[index]),
-              );
-            },
+                    height: Constant.homeBanner,
+                    child: MyNetworkImage(
+                      imageUrl:
+                          sectionBannerList?.elementAt(index).landscape ?? "",
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 200,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: SmoothPageIndicator(
-                controller: pageController,
-                count: pageviewImgList.length,
-                axisDirection: Axis.horizontal,
-                effect: const ExpandingDotsEffect(
-                    spacing: 5.0,
-                    radius: 5.0,
-                    dotWidth: 5.0,
-                    dotHeight: 5.0,
-                    dotColor: Colors.grey,
-                    activeDotColor: bottomnavigationText),
+          Positioned(
+            bottom: 10,
+            child: SmoothPageIndicator(
+              controller: pageController,
+              count: (sectionBannerList?.length ?? 0),
+              axisDirection: Axis.horizontal,
+              effect: const ExpandingDotsEffect(
+                spacing: 4,
+                radius: 4,
+                dotWidth: 8,
+                dotHeight: 8,
+                dotColor: gray,
+                activeDotColor: lightBlack,
               ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
-  Widget landscap(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
-      child: Column(
+  Widget continueWatchingLayout(List<ContinueWatching>? continueWatchingList) {
+    if ((continueWatchingList?.length ?? 0) > 0) {
+      return Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
             height: 55,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
             alignment: Alignment.bottomLeft,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: MyText(
-                  color: white,
-                  text: title,
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
+                color: white,
+                text: continueWatching,
+                textalign: TextAlign.center,
+                fontsize: 16,
+                maxline: 1,
+                fontwaight: FontWeight.w600,
+                overflow: TextOverflow.ellipsis,
+                fontstyle: FontStyle.normal,
+              ),
             ),
+          ),
+          const SizedBox(
+            height: 12,
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
+            height: 104,
+            child: ListView.separated(
+              itemCount: (continueWatchingList?.length ?? 0),
               shrinkWrap: true,
-              itemCount: recentmoviList.length,
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(
+                width: 5,
+              ),
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  width: 175,
-                  height: 100,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: MyImage(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.cover,
-                        imagePath: recentmoviList[index]),
-                  ),
+                return Stack(
+                  alignment: AlignmentDirectional.bottomStart,
+                  children: [
+                    Container(
+                      width: 172,
+                      height: 104,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: MyNetworkImage(
+                          imageUrl: continueWatchingList
+                                  ?.elementAt(index)
+                                  .landscape ??
+                              "",
+                          fit: BoxFit.cover,
+                          imgHeight: MediaQuery.of(context).size.height,
+                          imgWidth: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10, bottom: 8),
+                          child: MyImage(
+                            width: 30,
+                            height: 30,
+                            imagePath: "play.png",
+                          ),
+                        ),
+                        Container(
+                          height: 4,
+                          width: 166,
+                          margin: const EdgeInsets.all(3),
+                          child: LinearPercentIndicator(
+                            padding: const EdgeInsets.all(0),
+                            width: 166,
+                            barRadius: const Radius.circular(2),
+                            lineHeight: 4,
+                            percent: 0.2,
+                            backgroundColor: secProgressColor,
+                            progressColor: primaryColor,
+                          ),
+                        ),
+                        Visibility(
+                          visible: (continueWatchingList!
+                                          .elementAt(index)
+                                          .releaseTag !=
+                                      null &&
+                                  continueWatchingList
+                                      .elementAt(index)
+                                      .releaseTag!
+                                      .isEmpty)
+                              ? false
+                              : true,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: black,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(4),
+                                bottomRight: Radius.circular(4),
+                              ),
+                              shape: BoxShape.rectangle,
+                            ),
+                            width: 172,
+                            height: 12,
+                            child: MyText(
+                              color: white,
+                              text: continueWatchingList
+                                      .elementAt(index)
+                                      .releaseTag ??
+                                  "",
+                              textalign: TextAlign.center,
+                              fontsize: 6,
+                              maxline: 1,
+                              fontwaight: FontWeight.normal,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 );
               },
             ),
           ),
         ],
-      ),
-    );
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
-  Widget portrait(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 55,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: MyText(
+  Widget setSectionByType(List<list.Result>? sectionList) {
+    return ListView.builder(
+      itemCount: sectionList?.length ?? 0,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        if (sectionList?.elementAt(index).data != null &&
+            (sectionList?.elementAt(index).data?.length ?? 0) > 0) {
+          return Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 55,
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                alignment: Alignment.bottomLeft,
+                child: MyText(
                   color: white,
-                  text: "Action Movies",
+                  text: sectionList?.elementAt(index).title.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 16,
                   maxline: 1,
                   fontwaight: FontWeight.w600,
                   overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 140,
-            child: ListView.builder(
-              itemCount: specialOrignalMovi.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  child: Container(
-                    width: 100,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.cover,
-                          imagePath: specialOrignalMovi[index]),
-                    ),
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: getRemainingDataHeight(
+                  sectionList?.elementAt(index).videoType ?? "",
+                  sectionList?.elementAt(index).screenLayout ?? "",
+                ),
+                child: ListView.separated(
+                  itemCount: (sectionList?.elementAt(index).data?.length ?? 0),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) => const SizedBox(
+                    width: 5,
+                  ),
+                  itemBuilder: (BuildContext context, int postion) {
+                    /* video_type =>  1-video,  2-show,  3-language,  4-category */
+                    /* screen_layout =>  landscape, potrait, square */
+                    if ((sectionList?.elementAt(index).videoType ?? "") ==
+                        "1") {
+                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                          "landscape") {
+                        return landscape(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "potrait") {
+                        return portrait(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "square") {
+                        return square(sectionList?.elementAt(index).data);
+                      } else {
+                        return landscape(sectionList?.elementAt(index).data);
+                      }
+                    } else if ((sectionList?.elementAt(index).videoType ??
+                            "") ==
+                        "2") {
+                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                          "landscape") {
+                        return landscape(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "potrait") {
+                        return portrait(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "square") {
+                        return square(sectionList?.elementAt(index).data);
+                      } else {
+                        return landscape(sectionList?.elementAt(index).data);
+                      }
+                    } else if ((sectionList?.elementAt(index).videoType ??
+                            "") ==
+                        "3") {
+                      return languageLayout(sectionList?.elementAt(index).data);
+                    } else if ((sectionList?.elementAt(index).videoType ??
+                            "") ==
+                        "4") {
+                      return genresLayout(sectionList?.elementAt(index).data);
+                    } else {
+                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                          "landscape") {
+                        return landscape(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "potrait") {
+                        return portrait(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "square") {
+                        return square(sectionList?.elementAt(index).data);
+                      } else {
+                        return landscape(sectionList?.elementAt(index).data);
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  double getRemainingDataHeight(String? videoType, String? layoutType) {
+    if (videoType == "1" || videoType == "2") {
+      if (layoutType == "landscape") {
+        return Constant.heightLand;
+      } else if (layoutType == "potrait") {
+        return Constant.heightPort;
+      } else if (layoutType == "square") {
+        return Constant.heightSquare;
+      } else {
+        return Constant.heightLand;
+      }
+    } else if (videoType == "3" || videoType == "4") {
+      return Constant.heightLangGen;
+    } else {
+      if (layoutType == "landscape") {
+        return Constant.heightLand;
+      } else if (layoutType == "potrait") {
+        return Constant.heightPort;
+      } else if (layoutType == "square") {
+        return Constant.heightSquare;
+      } else {
+        return Constant.heightLand;
+      }
+    }
+  }
+
+  Widget landscape(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightLand,
+      child: ListView.separated(
+        itemCount: sectionDataList?.length ?? 0,
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {
+              log("Clicked on index ==> $index");
+              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MovieDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        1,
+                      );
+                    },
                   ),
                 );
-              },
+              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
+                  2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TvShowDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        4,
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+            child: Container(
+              width: Constant.widthLand,
+              height: Constant.heightLand,
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: MyNetworkImage(
+                  imageUrl:
+                      sectionDataList?.elementAt(index).landscape.toString() ??
+                          "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget square(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 55,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: MyText(
-                  color: white,
-                  text: title,
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  maxline: 1,
-                  fontwaight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 120,
-            child: ListView.builder(
-              itemCount: actionmoviList.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.cover,
-                          imagePath: actionmoviList[index]),
-                    ),
+  Widget portrait(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightPort,
+      child: ListView.separated(
+        itemCount: sectionDataList?.length ?? 0,
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {
+              log("Clicked on index ==> $index");
+              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MovieDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        1,
+                      );
+                    },
                   ),
                 );
-              },
+              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
+                  2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TvShowDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        4,
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+            child: Container(
+              width: Constant.widthPort,
+              height: Constant.heightPort,
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: MyNetworkImage(
+                  imageUrl:
+                      sectionDataList?.elementAt(index).thumbnail.toString() ??
+                          "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
+              ),
             ),
-          ),
-        ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget square(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightSquare,
+      child: ListView.separated(
+        itemCount: sectionDataList?.length ?? 0,
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {
+              log("Clicked on index ==> $index");
+              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MovieDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        1,
+                      );
+                    },
+                  ),
+                );
+              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
+                  2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TvShowDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        4,
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+            child: Container(
+              width: Constant.widthSquare,
+              height: Constant.heightSquare,
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: MyNetworkImage(
+                  imageUrl:
+                      sectionDataList?.elementAt(index).thumbnail.toString() ??
+                          "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget languageLayout(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightLangGen,
+      child: ListView.separated(
+        itemCount: sectionDataList!.length,
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return Stack(
+            alignment: AlignmentDirectional.bottomStart,
+            children: [
+              Container(
+                width: Constant.widthLangGen,
+                height: Constant.heightLangGen,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: MyNetworkImage(
+                    imageUrl: sectionDataList.elementAt(index).image.toString(),
+                    fit: BoxFit.cover,
+                    imgHeight: MediaQuery.of(context).size.height,
+                    imgWidth: MediaQuery.of(context).size.width,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(3),
+                child: MyText(
+                  color: white,
+                  text: sectionDataList.elementAt(index).name.toString(),
+                  textalign: TextAlign.center,
+                  fontsize: 14,
+                  maxline: 1,
+                  fontwaight: FontWeight.normal,
+                  overflow: TextOverflow.ellipsis,
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget genresLayout(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightLangGen,
+      child: ListView.separated(
+        itemCount: sectionDataList!.length,
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return Stack(
+            alignment: AlignmentDirectional.bottomStart,
+            children: [
+              Container(
+                width: Constant.widthLangGen,
+                height: Constant.heightLangGen,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: MyNetworkImage(
+                    imageUrl: sectionDataList.elementAt(index).image.toString(),
+                    fit: BoxFit.cover,
+                    imgHeight: MediaQuery.of(context).size.height,
+                    imgWidth: MediaQuery.of(context).size.width,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(3),
+                child: MyText(
+                  color: white,
+                  text: sectionDataList.elementAt(index).name.toString(),
+                  textalign: TextAlign.center,
+                  fontsize: 14,
+                  maxline: 1,
+                  fontwaight: FontWeight.normal,
+                  overflow: TextOverflow.ellipsis,
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:dtlive/pages/bottombar.dart';
 import 'package:dtlive/pages/intro.dart';
+import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/myimage.dart';
+import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/utils/sharedpre.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -13,36 +19,57 @@ class Splash extends StatefulWidget {
 }
 
 class SplashState extends State<Splash> {
- 
+  String? seen, userID;
+  SharedPre sharedPre = SharedPre();
+
+  @override
+  void initState() {
+    final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
+    generalsetting.getGeneralsetting(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-     checkappFirsttime();
+    isFirstCheck();
+
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         alignment: Alignment.center,
-        color: primary,
+        color: appBgColor,
         child: MyImage(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            imagePath: "ic_appicon.png"),
+          imagePath: "splash.png",
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
 
-  Future checkappFirsttime() async {
-    int splashtime = 3;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> isFirstCheck() async {
+    final generalsettingData = Provider.of<GeneralProvider>(context);
 
-    bool seen = (prefs.getBool('seen') ?? false);
-    debugPrint("boolian Main statement is : $seen");
+    log('Is generalsettingData loading...? ==> ${generalsettingData.loading}');
+    if (!generalsettingData.loading) {
+      log('generalSettingData status ==> ${generalsettingData.generalSettingModel.status}');
+      for (var i = 0;
+          i < generalsettingData.generalSettingModel.result!.length;
+          i++) {
+        await sharedPre.save(
+          generalsettingData.generalSettingModel.result![i].key.toString(),
+          generalsettingData.generalSettingModel.result![i].value.toString(),
+        );
+        log('${generalsettingData.generalSettingModel.result![i].key.toString()} ==> ${generalsettingData.generalSettingModel.result![i].value.toString()}');
+      }
 
-    if (seen) {
-      debugPrint("Boolian statement if Condition : $seen");
-      Future.delayed(
-        Duration(seconds: splashtime),
-        () async {
+      seen = await sharedPre.read('seen') ?? "0";
+      Constant.userID = await sharedPre.read('userid') ?? "0";
+      log('seen ==> $seen');
+      log('Constant userID ==> ${Constant.userID}');
+      if (!mounted) return;
+      if (seen == "1") {
+        if (Constant.userID != "0") {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -51,23 +78,26 @@ class SplashState extends State<Splash> {
               },
             ),
           );
-        },
-      );
-    } else {
-      debugPrint("Boolian statement Else Condition : $seen");
-      Future.delayed(
-        Duration(seconds: splashtime),
-        () async {
+        } else {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) {
-                return const Intro();
+                return const LoginSocial();
               },
             ),
           );
-        },
-      );
+        }
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const Intro();
+            },
+          ),
+        );
+      }
     }
   }
 }

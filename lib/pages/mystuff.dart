@@ -1,7 +1,7 @@
 import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/myimage.dart';
-import 'package:dtlive/utils/mytext.dart';
+import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -70,11 +70,10 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primary,
-      body: Container(
+      backgroundColor: appBgColor,
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        color: primary,
         child: Column(
           children: [
             Expanded(
@@ -122,7 +121,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.pushReplacement(
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) {
@@ -266,8 +265,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                         fontstyle:
                                                             FontStyle.normal),
                                                     MyText(
-                                                        color:
-                                                            bottomnavigationText,
+                                                        color: primaryColor,
                                                         text: "DT prime",
                                                         textalign:
                                                             TextAlign.center,

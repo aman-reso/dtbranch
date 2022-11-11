@@ -1,4 +1,4 @@
-package com.example.dtlive
+package com.divinetechs.primevideoapp
 
 import io.flutter.embedding.android.FlutterActivity
 

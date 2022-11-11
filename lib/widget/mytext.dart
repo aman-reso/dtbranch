@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class MyText extends StatelessWidget {
   String text;
   double? fontsize;
-  var maxline,fontstyle, fontwaight,textalign;
+  var maxline, fontstyle, fontwaight, textalign;
   Color color;
   var overflow;
 
@@ -31,11 +31,11 @@ class MyText extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
       maxLines: maxline,
       style: GoogleFonts.inter(
-          fontSize: fontsize,
-          fontStyle: fontstyle,
-          color: color,
-          fontWeight: fontwaight),
+        fontSize: fontsize,
+        fontStyle: fontstyle,
+        color: color,
+        fontWeight: fontwaight,
+      ),
     );
   }
 }
-

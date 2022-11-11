@@ -1,9 +1,9 @@
 import 'package:dtlive/pages/channels.dart';
-import 'package:dtlive/pages/find.dart';
 import 'package:dtlive/pages/home.dart';
-import 'package:dtlive/pages/mystuff.dart';
-import 'package:dtlive/pages/store.dart';
+import 'package:dtlive/pages/search.dart';
+import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,14 +17,12 @@ class Bottombar extends StatefulWidget {
 class BottombarState extends State<Bottombar> {
   int selectedIndex = 0;
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> widgetOptions = <Widget>[
     const Home(),
-    const Find(),
+    const Search(),
     const Channels(),
-    const Store(),
-    const MyStuff(),
+    // const Store(),
+    const Setting(),
   ];
 
   void _onItemTapped(int index) {
@@ -42,39 +40,39 @@ class BottombarState extends State<Bottombar> {
       bottomNavigationBar: Container(
         height: 70,
         alignment: Alignment.center,
-        color: primary,
+        color: black,
         child: BottomNavigationBar(
-          backgroundColor: primary,
+          backgroundColor: black,
           selectedLabelStyle: GoogleFonts.inter(
             fontSize: 10,
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w500,
-            color: bottomnavigationText,
+            color: primaryColor,
           ),
           unselectedLabelStyle: GoogleFonts.inter(
             fontSize: 10,
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w500,
-            color: primary,
+            color: primaryColor,
           ),
           selectedFontSize: 12,
           unselectedFontSize: 12,
           elevation: 5,
           currentIndex: selectedIndex,
-          unselectedItemColor: white,
-          selectedItemColor: bottomnavigationText,
+          unselectedItemColor: gray,
+          selectedItemColor: primaryColor,
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
-              backgroundColor: primary,
-              label: "Home",
+              backgroundColor: black,
+              label: bottomView1,
               activeIcon: Padding(
                 padding: const EdgeInsets.all(7),
                 child: Image.asset(
                   "assets/images/ic_home.png",
                   width: 22,
                   height: 22,
-                  color: bottomnavigationText,
+                  color: primaryColor,
                 ),
               ),
               icon: Align(
@@ -85,21 +83,21 @@ class BottombarState extends State<Bottombar> {
                     "assets/images/ic_home.png",
                     width: 22,
                     height: 22,
-                    color: white,
+                    color: gray,
                   ),
                 ),
               ),
             ),
             BottomNavigationBarItem(
-              backgroundColor: primary,
-              label: "Find",
+              backgroundColor: black,
+              label: bottomView2,
               activeIcon: Padding(
                 padding: const EdgeInsets.all(7),
                 child: Image.asset(
                   "assets/images/ic_find.png",
                   width: 22,
                   height: 22,
-                  color: bottomnavigationText,
+                  color: primaryColor,
                 ),
               ),
               icon: Align(
@@ -110,21 +108,21 @@ class BottombarState extends State<Bottombar> {
                     "assets/images/ic_find.png",
                     width: 22,
                     height: 22,
-                    color: white,
+                    color: gray,
                   ),
                 ),
               ),
             ),
             BottomNavigationBarItem(
-              backgroundColor: primary,
-              label: "Channels",
+              backgroundColor: black,
+              label: bottomView3,
               activeIcon: Padding(
                 padding: const EdgeInsets.all(7),
                 child: Image.asset(
                   "assets/images/ic_channels.png",
                   width: 22,
                   height: 22,
-                  color: bottomnavigationText,
+                  color: primaryColor,
                 ),
               ),
               icon: Align(
@@ -135,21 +133,46 @@ class BottombarState extends State<Bottombar> {
                     "assets/images/ic_channels.png",
                     width: 22,
                     height: 22,
-                    color: white,
+                    color: gray,
                   ),
                 ),
               ),
             ),
+            // BottomNavigationBarItem(
+            //   backgroundColor: black,
+            //   label: bottomView4,
+            //   activeIcon: Padding(
+            //     padding: const EdgeInsets.all(7),
+            //     child: Image.asset(
+            //       "assets/images/ic_store.png",
+            //       width: 22,
+            //       height: 22,
+            //       color: primaryColor,
+            //     ),
+            //   ),
+            //   icon: Align(
+            //     alignment: Alignment.center,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(7),
+            //       child: Image.asset(
+            //         "assets/images/ic_store.png",
+            //         width: 22,
+            //         height: 22,
+            //         color: gray,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             BottomNavigationBarItem(
-              backgroundColor: primary,
-              label: "Store",
+              backgroundColor: black,
+              label: bottomView5,
               activeIcon: Padding(
                 padding: const EdgeInsets.all(7),
                 child: Image.asset(
-                  "assets/images/ic_store.png",
+                  "assets/images/ic_setting.png",
                   width: 22,
                   height: 22,
-                  color: bottomnavigationText,
+                  color: primaryColor,
                 ),
               ),
               icon: Align(
@@ -157,35 +180,10 @@ class BottombarState extends State<Bottombar> {
                 child: Padding(
                   padding: const EdgeInsets.all(7),
                   child: Image.asset(
-                    "assets/images/ic_store.png",
+                    "assets/images/ic_setting.png",
                     width: 22,
                     height: 22,
-                    color: white,
-                  ),
-                ),
-              ),
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: primary,
-              label: "My Stuff",
-              activeIcon: Padding(
-                padding: const EdgeInsets.all(7),
-                child: Image.asset(
-                  "assets/images/ic_stuff.png",
-                  width: 22,
-                  height: 22,
-                  color: bottomnavigationText,
-                ),
-              ),
-              icon: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Image.asset(
-                    "assets/images/ic_stuff.png",
-                    width: 22,
-                    height: 22,
-                    color: white,
+                    color: gray,
                   ),
                 ),
               ),

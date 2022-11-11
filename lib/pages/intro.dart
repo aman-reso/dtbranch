@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:dtlive/pages/bottombar.dart';
+import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/mytext.dart';
-import 'package:dtlive/widget/mysvg.dart';
+import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/widget/mytext.dart';
+import 'package:dtlive/utils/sharedpre.dart';
+import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Intro extends StatefulWidget {
@@ -15,206 +21,256 @@ class Intro extends StatefulWidget {
 
 class IntroState extends State<Intro> {
   PageController pageController = PageController();
-
-  List<String> introimgList = [
-    "ic_vacter2.svg",
-    "ic_vacter1.svg",
-  ];
-
-  List<String> introMainText = [
-    "Watch movies, Tv shows, etc.",
-    "Download and watch free videos!!!",
-  ];
-
-  List<String> introChildText = [
-    "Lörem ipsum skynka klimatmat befagt. Hemiskade uviliga hubot atar. Monor miteheten. Agödat sasamma bepp. Fapp tösade intralogi. Vesm ilåbel milingar det mörka nätet. .",
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
-  ];
-
+  final currentPageNotifier = ValueNotifier<int>(0);
   int position = 0;
+  SharedPre sharedPre = SharedPre();
 
-  Future chack() async {
-    SharedPreferences homeprefs = await SharedPreferences.getInstance();
-    homeprefs.setBool('seen', true);
-  }
+  List<String> introBigtext = <String>[
+    intro1Title,
+    intro2Title,
+    intro3Title,
+    intro4Title,
+  ];
+
+  List<String> introSmalltext = <String>[
+    intro1Desc,
+    intro2Desc,
+    intro3Desc,
+    intro4Desc,
+  ];
+
+  List<String> introPager = <String>[
+    "intro1.png",
+    "intro2.png",
+    "intro3.png",
+    "intro4.png",
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [inroGradiantOne, inroGradiantTwo])),
-        child: Stack(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: PageView.builder(
-                itemCount: introimgList.length,
-                controller: pageController,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
+      body: Stack(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: black,
+            alignment: Alignment.center,
+            child: SafeArea(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Expanded(
+                      flex: 6,
+                      child: Padding(
+                        padding: EdgeInsets.all(18),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.5,
+                          ),
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 0),
+                              child: SmoothPageIndicator(
+                                controller: pageController,
+                                count: introPager.length,
+                                axisDirection: Axis.horizontal,
+                                effect: const ExpandingDotsEffect(
+                                  spacing: 6,
+                                  radius: 5,
+                                  dotWidth: 10,
+                                  expansionFactor: 4,
+                                  dotHeight: 10,
+                                  dotColor: lightBlack,
+                                  activeDotColor: primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          PageView.builder(
+            itemCount: introPager.length,
+            controller: pageController,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int index) {
+              return SafeArea(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: 300,
-                        height: 270,
-                        child: MySvg(
-                          imagePath: introimgList[index],
-                          width: 250,
-                          height: 250,
+                      Expanded(
+                        flex: 6,
+                        child: Padding(
+                          padding: const EdgeInsets.all(30),
+                          child: MyImage(
+                            imagePath: introPager[index],
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 50,
-                        alignment: Alignment.center,
-                        child: MyText(
-                            color: white,
-                            text: introMainText[position],
-                            fontsize: 16,
-                            fontwaight: FontWeight.w500,
-                            maxline: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textalign: TextAlign.center,
-                            fontstyle: FontStyle.normal),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 0, 15),
-                        child: MyText(
-                            color: inrochildText,
-                            text: introChildText[position],
-                            fontsize: 14,
-                            fontwaight: FontWeight.w400,
-                            maxline: 4,
-                            overflow: TextOverflow.ellipsis,
-                            textalign: TextAlign.center,
-                            fontstyle: FontStyle.normal),
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              const SizedBox(
+                                height: 60,
+                              ),
+                              MyText(
+                                color: white,
+                                maxline: 4,
+                                overflow: TextOverflow.ellipsis,
+                                text: introBigtext[index],
+                                textalign: TextAlign.center,
+                                fontsize: 25,
+                                fontwaight: FontWeight.w600,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
+                  ),
+                ),
+              );
+            },
+            onPageChanged: (index) {
+              position = index;
+              currentPageNotifier.value = index;
+              debugPrint("position :==> $position");
+              setState(() {});
+            },
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 80),
+              child: InkWell(
+                onTap: () {
+                  log("nextPage pos :==> $position");
+                  if (position == introPager.length - 1) {
+                    Utils.setFirstTime("1");
+                    if (Constant.userID != "0") {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const Bottombar();
+                          },
+                        ),
+                      );
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const LoginSocial();
+                          },
+                        ),
+                      );
+                    }
+                  }
+                  pageController.nextPage(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeIn,
                   );
                 },
-                onPageChanged: (index) {
-                  setState(() {
-                    position = index;
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: MySvg(
-                    width: 150, height: 150, imagePath: "ic_introcorner.svg"),
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 90),
-                  child: SmoothPageIndicator(
-                    controller: pageController,
-                    count: introimgList.length,
-                    effect: const WormEffect(
-                      dotWidth: 20,
-                      dotColor: inroGradiantTwo,
-                      dotHeight: 7,
-                      activeDotColor: white,
-                      radius: 100,
-                      strokeWidth: 1,
-                      spacing: 10,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Align(
-                alignment: Alignment.bottomCenter,
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 100,
-                  margin: const EdgeInsets.fromLTRB(30, 0, 20, 0),
+                  constraints: const BoxConstraints(
+                    minHeight: 0,
+                    maxHeight: 45,
+                    minWidth: 0,
+                    maxWidth: 170,
+                  ),
+                  padding: const EdgeInsets.all(12),
                   alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const Bottombar();
-                              },
-                            ),
-                          );
-                        },
-                        child: Container(
-                          width: 100,
-                          height: 50,
-                          alignment: Alignment.center,
-                          child: MyText(
-                              color: white,
-                              text: "Skip",
-                              textalign: TextAlign.center,
-                              fontsize: 16,
-                              fontwaight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (position == introimgList.length - 1) {
-                            chack();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Bottombar(),
-                              ),
-                            );
-                          }
-                          pageController.nextPage(
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeIn);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: MySvg(
-                              width: 45,
-                              height: 45,
-                              imagePath: "ic_introNext.svg"),
-                        ),
-                      ),
-                    ],
+                  decoration: BoxDecoration(
+                    color: primaryDark,
+                    borderRadius: BorderRadius.circular(5),
+                    shape: BoxShape.rectangle,
+                  ),
+                  child: MyText(
+                    color: white,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    text: (position == introPager.length - 1) ? finish : next,
+                    textalign: TextAlign.center,
+                    fontsize: 18,
+                    fontwaight: FontWeight.w600,
+                    fontstyle: FontStyle.normal,
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: InkWell(
+              onTap: () {
+                debugPrint("pos :==> $position");
+                Utils.setFirstTime("1");
+                if (Constant.userID != "0") {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const Bottombar();
+                      },
+                    ),
+                  );
+                } else {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginSocial();
+                      },
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 20, 20),
+                padding: const EdgeInsets.all(15),
+                child: MyText(
+                  color: white,
+                  maxline: 1,
+                  overflow: TextOverflow.ellipsis,
+                  text: skip,
+                  textalign: TextAlign.center,
+                  fontsize: 16,
+                  fontwaight: FontWeight.w500,
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

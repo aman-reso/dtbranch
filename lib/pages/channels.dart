@@ -1,10 +1,22 @@
-import 'package:dtlive/pages/detailpage.dart';
-import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/mytext.dart';
-import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'dart:async';
+import 'dart:developer';
 
-import '../utils/myimage.dart';
+import 'package:dtlive/model/channelsectionmodel.dart';
+import 'package:dtlive/model/channelsectionmodel.dart' as list;
+import 'package:dtlive/model/channelsectionmodel.dart' as banner;
+import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/pages/player.dart';
+import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/provider/channelsectionprovider.dart';
+import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/widget/mytext.dart';
+import 'package:dtlive/utils/utils.dart';
+import 'package:dtlive/widget/mynetworkimg.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Channels extends StatefulWidget {
   const Channels({Key? key}) : super(key: key);
@@ -14,338 +26,521 @@ class Channels extends StatefulWidget {
 }
 
 class ChannelsState extends State<Channels> {
+  Timer? _timer;
   PageController pageController = PageController();
 
-  List<String> pageviewImgList = <String>[
-    "ic_homebanner.png",
-    "ic_homebanner.png",
-    "ic_homebanner.png",
-    "ic_homebanner.png",
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
 
-  List<String> recentmoviList = <String>[
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-  ];
+  void _getData() async {
+    Utils.getCurrencySymbol();
+    final channelSectionProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
+    await channelSectionProvider.getChannelSection();
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
 
-  List<String> specialOrignalMovi = <String>[
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-  ];
-
-  List<String> actionmoviList = <String>[
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-  ];
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final channelSectionProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
     return Scaffold(
-      backgroundColor: primary,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            homebanner(),
-            landscap("Sony SAB", "Sony Tv Top Show"),
-            portrait("India TV", "Sony Tv Top Sony Latest Movies"),
-            square("ABP News", "DD Girnar show"),
-            landscap("Times Now India", "Top Movies"),
-            portrait("Animal Planets", "Movie Genres"),
-            square("India TV", "Namaste Bharat"),
-          ],
-        ),
-      ),
+      backgroundColor: appBgColor,
+      body: channelSectionProvider.loading
+          ? Utils.pageLoader()
+          : (channelSectionProvider.channelSectionModel.status == 200 &&
+                  (channelSectionProvider.channelSectionModel.result != null ||
+                      channelSectionProvider.channelSectionModel.liveUrl !=
+                          null))
+              ? SafeArea(
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        /* Banner */
+                        (channelSectionProvider.channelSectionModel.liveUrl !=
+                                null)
+                            ? channelbanner(channelSectionProvider
+                                .channelSectionModel.liveUrl)
+                            : const SizedBox.shrink(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        /* Remaining Data */
+                        (channelSectionProvider.channelSectionModel.result !=
+                                null)
+                            ? setSectionByType(channelSectionProvider
+                                .channelSectionModel.result)
+                            : const SizedBox.shrink(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : const NoData(),
     );
   }
 
-  Widget homebanner() {
-    return Stack(
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 200,
-          child: PageView.builder(
-            itemCount: pageviewImgList.length,
-            controller: pageController,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const DetailPage();
-                      },
-                    ),
-                  );
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: white,
-                  child: MyImage(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
+  Widget channelbanner(List<banner.LiveUrl>? sectionBannerList) {
+    if ((sectionBannerList?.length ?? 0) > 0) {
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   _timer = Timer.periodic(const Duration(seconds: 8), (Timer timer) {
+      //     log("timer isActive ====> ${timer.isActive}");
+      //     if (_currentPage < (sectionBannerList?.length ?? 0)) {
+      //       _currentPage++;
+      //     } else {
+      //       _currentPage = 0;
+      //     }
+      //
+      //     if (pageController.hasClients) {
+      //       pageController.animateToPage(
+      //         _currentPage,
+      //         duration: const Duration(milliseconds: 500),
+      //         curve: Curves.easeIn,
+      //       );
+      //     }
+      //   });
+      // });
+      return Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: Constant.channelBanner,
+            child: PageView.builder(
+              itemCount: (sectionBannerList?.length ?? 0),
+              controller: pageController,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    log("Clicked on index ==> $index");
+                    if ((sectionBannerList?.elementAt(index).link ?? "")
+                        .isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return PlayerPage(
+                              MediaQuery.of(context).size.height,
+                              0,
+                              0,
+                              0,
+                              sectionBannerList?.elementAt(index).link ?? "",
+                              sectionBannerList?.elementAt(index).name ?? "0",
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: Constant.homeBanner,
+                    child: MyNetworkImage(
+                      imageUrl: sectionBannerList?.elementAt(index).image ?? "",
                       fit: BoxFit.fill,
-                      imagePath: pageviewImgList[index]),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            child: SmoothPageIndicator(
+              controller: pageController,
+              count: (sectionBannerList?.length ?? 0),
+              axisDirection: Axis.horizontal,
+              effect: const ExpandingDotsEffect(
+                spacing: 4,
+                radius: 4,
+                dotWidth: 8,
+                dotHeight: 8,
+                dotColor: gray,
+                activeDotColor: lightBlack,
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget setSectionByType(List<list.Result>? sectionList) {
+    return ListView.separated(
+      itemCount: sectionList?.length ?? 0,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      separatorBuilder: (context, index) => const SizedBox(
+        height: 20,
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        if (sectionList?.elementAt(index).data != null &&
+            (sectionList?.elementAt(index).data?.length ?? 0) > 0) {
+          return Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                constraints: const BoxConstraints(minHeight: 10),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                alignment: Alignment.centerLeft,
+                child: MyText(
+                  color: otherColor,
+                  text: sectionList?.elementAt(index).channelName.toString() ??
+                      "",
+                  textalign: TextAlign.center,
+                  fontsize: 10,
+                  maxline: 1,
+                  fontwaight: FontWeight.w700,
+                  overflow: TextOverflow.ellipsis,
+                  fontstyle: FontStyle.normal,
                 ),
-              );
+              ),
+              const SizedBox(
+                height: 2,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                constraints: const BoxConstraints(minHeight: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                alignment: Alignment.centerLeft,
+                child: MyText(
+                  color: white,
+                  text: sectionList?.elementAt(index).title.toString() ?? "",
+                  textalign: TextAlign.center,
+                  fontsize: 16,
+                  maxline: 1,
+                  fontwaight: FontWeight.bold,
+                  overflow: TextOverflow.ellipsis,
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: getRemainingDataHeight(
+                  sectionList?.elementAt(index).videoType ?? "",
+                  sectionList?.elementAt(index).screenLayout ?? "",
+                ),
+                child: ListView.separated(
+                  itemCount: (sectionList?.elementAt(index).data?.length ?? 0),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) => const SizedBox(
+                    width: 5,
+                  ),
+                  itemBuilder: (BuildContext context, int postion) {
+                    /* video_type =>  1-video,  2-show */
+                    /* screen_layout =>  landscape, potrait, square */
+                    if ((sectionList?.elementAt(index).videoType ?? "") ==
+                        "1") {
+                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                          "landscape") {
+                        return landscape(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "potrait") {
+                        return portrait(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "square") {
+                        return square(sectionList?.elementAt(index).data);
+                      } else {
+                        return landscape(sectionList?.elementAt(index).data);
+                      }
+                    } else if ((sectionList?.elementAt(index).videoType ??
+                            "") ==
+                        "2") {
+                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                          "landscape") {
+                        return landscape(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "potrait") {
+                        return portrait(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "square") {
+                        return square(sectionList?.elementAt(index).data);
+                      } else {
+                        return landscape(sectionList?.elementAt(index).data);
+                      }
+                    } else {
+                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                          "landscape") {
+                        return landscape(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "potrait") {
+                        return portrait(sectionList?.elementAt(index).data);
+                      } else if ((sectionList?.elementAt(index).screenLayout ??
+                              "") ==
+                          "square") {
+                        return square(sectionList?.elementAt(index).data);
+                      } else {
+                        return landscape(sectionList?.elementAt(index).data);
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  double getRemainingDataHeight(String? videoType, String? layoutType) {
+    if (videoType == "1" || videoType == "2") {
+      if (layoutType == "landscape") {
+        return Constant.heightLand;
+      } else if (layoutType == "potrait") {
+        return Constant.heightPort;
+      } else if (layoutType == "square") {
+        return Constant.heightSquare;
+      } else {
+        return Constant.heightLand;
+      }
+    } else if (videoType == "3" || videoType == "4") {
+      return Constant.heightLangGen;
+    } else {
+      if (layoutType == "landscape") {
+        return Constant.heightLand;
+      } else if (layoutType == "potrait") {
+        return Constant.heightPort;
+      } else if (layoutType == "square") {
+        return Constant.heightSquare;
+      } else {
+        return Constant.heightLand;
+      }
+    }
+  }
+
+  Widget landscape(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightLand,
+      child: ListView.separated(
+        itemCount: sectionDataList?.length ?? 0,
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {
+              log("Clicked on index ==> $index");
+              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MovieDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        1,
+                      );
+                    },
+                  ),
+                );
+              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
+                  2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TvShowDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        4,
+                      );
+                    },
+                  ),
+                );
+              }
             },
-          ),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 200,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: SmoothPageIndicator(
-                controller: pageController,
-                count: pageviewImgList.length,
-                axisDirection: Axis.horizontal,
-                effect: const ExpandingDotsEffect(
-                    spacing: 5.0,
-                    radius: 5.0,
-                    dotWidth: 5.0,
-                    dotHeight: 5.0,
-                    dotColor: Colors.grey,
-                    activeDotColor: bottomnavigationText),
+            child: Container(
+              width: Constant.widthLand,
+              height: Constant.heightLand,
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: MyNetworkImage(
+                  imageUrl:
+                      sectionDataList?.elementAt(index).landscape.toString() ??
+                          "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
               ),
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget landscap(String channal, String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: channal,
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: title,
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: recentmoviList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  width: 175,
-                  height: 100,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: MyImage(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.cover,
-                        imagePath: recentmoviList[index]),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget portrait(String channal, String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: channal,
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: title,
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 140,
-            child: ListView.builder(
-              itemCount: specialOrignalMovi.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  child: Container(
-                    width: 100,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.cover,
-                          imagePath: specialOrignalMovi[index]),
-                    ),
+  Widget portrait(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightPort,
+      child: ListView.separated(
+        itemCount: sectionDataList?.length ?? 0,
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {
+              log("Clicked on index ==> $index");
+              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MovieDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        1,
+                      );
+                    },
                   ),
                 );
-              },
+              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
+                  2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TvShowDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        4,
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+            child: Container(
+              width: Constant.widthPort,
+              height: Constant.heightPort,
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: MyNetworkImage(
+                  imageUrl:
+                      sectionDataList?.elementAt(index).thumbnail.toString() ??
+                          "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget square(String channal, String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 0, 10),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 65,
-            margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: channal,
-                      textalign: TextAlign.center,
-                      fontsize: 10,
-                      maxline: 1,
-                      fontwaight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  MyText(
-                      color: white,
-                      text: title,
-                      textalign: TextAlign.center,
-                      fontsize: 16,
-                      maxline: 1,
-                      fontwaight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 120,
-            child: ListView.builder(
-              itemCount: actionmoviList.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 7),
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MyImage(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          fit: BoxFit.cover,
-                          imagePath: actionmoviList[index]),
-                    ),
+  Widget square(List<Datum>? sectionDataList) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Constant.heightSquare,
+      child: ListView.separated(
+        itemCount: sectionDataList?.length ?? 0,
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 5,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {
+              log("Clicked on index ==> $index");
+              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MovieDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        1,
+                      );
+                    },
                   ),
                 );
-              },
+              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
+                  2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return TvShowDetails(
+                        sectionDataList?.elementAt(index).id ?? 0,
+                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        4,
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+            child: Container(
+              width: Constant.widthSquare,
+              height: Constant.heightSquare,
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: MyNetworkImage(
+                  imageUrl:
+                      sectionDataList?.elementAt(index).thumbnail.toString() ??
+                          "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

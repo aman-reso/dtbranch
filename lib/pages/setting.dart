@@ -1,8 +1,18 @@
+import 'dart:developer';
+
+import 'package:dtlive/pages/aboutprivacyterms.dart';
+import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/pages/profileedit.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/myimage.dart';
-import 'package:dtlive/utils/mytext.dart';
+import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/sharedpre.dart';
+import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
+import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/widget/mytext.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -12,785 +22,765 @@ class Setting extends StatefulWidget {
 }
 
 class SettingState extends State<Setting> {
-  bool isSwitched = false;
-  var textValue = 'Switch is OFF';
+  bool? isSwitched;
+  String? userId,
+      userName,
+      userType,
+      userMobileNo,
+      aboutUsUrl,
+      privacyUrl,
+      termsConditionUrl;
+  SharedPre sharedPref = SharedPre();
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
-  void toggleSwitch(bool value) {
+  @override
+  void initState() {
+    getUserData();
+    super.initState();
+  }
+
+  void toggleSwitch(bool value) async {
     if (isSwitched == false) {
       setState(() {
         isSwitched = true;
-        Utils().showToast("Notification On");
       });
     } else {
       setState(() {
         isSwitched = false;
-        Utils().showToast("Notification Off");
       });
     }
+    log('toggleSwitch isSwitched ==> $isSwitched');
+    // Flutter SDK 3.x.x use
+    await OneSignal.shared.disablePush(isSwitched ?? true);
+    await sharedPref.saveBool("PUSH", isSwitched);
+  }
+
+  void getUserData() async {
+    userId = await sharedPref.read("userid");
+    userName = await sharedPref.read("username");
+    userType = await sharedPref.read("usertype");
+    userMobileNo = await sharedPref.read("mobile");
+    log('getUserData userId ==> $userId');
+    log('getUserData userName ==> $userName');
+    log('getUserData userType ==> $userType');
+    log('getUserData userMobileNo ==> $userMobileNo');
+
+    aboutUsUrl = await sharedPref.read("about-us") ?? "";
+    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
+    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
+
+    isSwitched = await sharedPref.readBool("PUSH");
+    log('getUserData isSwitched ==> $isSwitched');
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primary,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        backgroundColor: primary,
-        centerTitle: true,
-        title: MyText(
-            color: white,
-            text: "Settings",
-            fontsize: 16,
-            maxline: 1,
-            overflow: TextOverflow.ellipsis,
-            fontwaight: FontWeight.w600,
-            textalign: TextAlign.center,
-            fontstyle: FontStyle.normal),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-          color: primary,
-          child: Column(
-            children: [
-              accountDetail(),
-              subscription(),
-              changePasssword(),
-              language(),
-              notification(),
-              clearCache(),
-              clearVideo(),
-              signin(),
-              rateUs(),
-              shareApp(),
-              about(),
-              privacyPolicy(),
-              termsCondition(),
-            ],
+      backgroundColor: appBgColor,
+      appBar: Utils.myAppBar(context, settings),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.all(22),
+            child: Column(
+              children: [
+                /* Account Details */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    log("Tapped on : $accountDetails");
+                    if (Constant.userID != "0") {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileEdit(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: accountDetails,
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: manageYourProfile,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+                /* Subscription */
+                // InkWell(
+                //   borderRadius: BorderRadius.circular(2),
+                //   onTap: () {},
+                //   child: Container(
+                //     width: MediaQuery.of(context).size.width,
+                //     constraints: BoxConstraints(
+                //       minHeight: Constant.minHeightSettings,
+                //     ),
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       children: [
+                //         MyText(
+                //           color: white,
+                //           text: subscription,
+                //           fontsize: 15,
+                //           maxline: 1,
+                //           overflow: TextOverflow.ellipsis,
+                //           fontwaight: FontWeight.w500,
+                //           textalign: TextAlign.center,
+                //           fontstyle: FontStyle.normal,
+                //         ),
+                //         const SizedBox(
+                //           height: 5,
+                //         ),
+                //         MyText(
+                //           color: otherColor,
+                //           text: subscriptionNote,
+                //           fontsize: 13,
+                //           maxline: 1,
+                //           overflow: TextOverflow.ellipsis,
+                //           fontwaight: FontWeight.normal,
+                //           textalign: TextAlign.center,
+                //           fontstyle: FontStyle.normal,
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // Container(
+                //   width: MediaQuery.of(context).size.width,
+                //   height: 0.5,
+                //   margin: const EdgeInsets.only(top: 16, bottom: 16),
+                //   color: white,
+                // ),
+                /* Language */
+                // InkWell(
+                //   borderRadius: BorderRadius.circular(2),
+                //   onTap: () {},
+                //   child: Container(
+                //     width: MediaQuery.of(context).size.width,
+                //     constraints: BoxConstraints(
+                //       minHeight: Constant.minHeightSettings,
+                //     ),
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       children: [
+                //         MyText(
+                //           color: white,
+                //           text: language,
+                //           fontsize: 15,
+                //           maxline: 1,
+                //           overflow: TextOverflow.ellipsis,
+                //           fontwaight: FontWeight.w500,
+                //           textalign: TextAlign.center,
+                //           fontstyle: FontStyle.normal,
+                //         ),
+                //         const SizedBox(
+                //           height: 5,
+                //         ),
+                //         MyText(
+                //           color: otherColor,
+                //           text: "English",
+                //           fontsize: 13,
+                //           maxline: 1,
+                //           overflow: TextOverflow.ellipsis,
+                //           fontwaight: FontWeight.normal,
+                //           textalign: TextAlign.center,
+                //           fontstyle: FontStyle.normal,
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // Container(
+                //   width: MediaQuery.of(context).size.width,
+                //   height: 0.5,
+                //   margin: const EdgeInsets.only(top: 16, bottom: 16),
+                //   color: white,
+                // ),
+                /* Push Notification enable/disable */
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  constraints: BoxConstraints(
+                    minHeight: Constant.minHeightSettings,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText(
+                            color: white,
+                            text: notifications,
+                            fontsize: 15,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontwaight: FontWeight.w500,
+                            textalign: TextAlign.center,
+                            fontstyle: FontStyle.normal,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          MyText(
+                            color: otherColor,
+                            text: receivePushNotification,
+                            fontsize: 13,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontwaight: FontWeight.normal,
+                            textalign: TextAlign.center,
+                            fontstyle: FontStyle.normal,
+                          ),
+                        ],
+                      ),
+                      Switch(
+                        activeColor: primaryColor,
+                        activeTrackColor: accentColor,
+                        inactiveTrackColor: white,
+                        value: isSwitched ?? true,
+                        onChanged: toggleSwitch,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+                /* Clear Cache */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {},
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MyText(
+                              color: white,
+                              text: clearCache,
+                              fontsize: 15,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontwaight: FontWeight.w500,
+                              textalign: TextAlign.center,
+                              fontstyle: FontStyle.normal,
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            MyText(
+                              color: otherColor,
+                              text: clearLocallyCachedData,
+                              fontsize: 13,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontwaight: FontWeight.normal,
+                              textalign: TextAlign.center,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ],
+                        ),
+                        MyImage(
+                          width: 28,
+                          height: 28,
+                          imagePath: "ic_clear.png",
+                          color: primaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+                /* SignIn / SignOut */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    log("Tapped on : $signIn");
+                    if (Constant.userID != "0") {
+                      logoutConfirmDialog();
+                    } else {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: (userId ?? "0") == "0"
+                              ? youAreNotSignIn
+                              : userType == "3"
+                                  ? ("$signedInAs ${userMobileNo ?? ""}")
+                                  : ("$signedInAs ${userName ?? ""}"),
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: (userId ?? "") == "" ? signIn : signOut,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+                /* Rate App */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {},
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: rateUs,
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: rateOurApp,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+                /* Share App */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {},
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: shareApp,
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: shareWithFriends,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+                /* About Us */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AboutPrivacyTerms(
+                          appBarTitle: aboutUs,
+                          loadURL: aboutUsUrl ?? "",
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: aboutUs,
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: version,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.only(top: 16, bottom: 8),
+                  height: 0.5,
+                  color: white,
+                ),
+                /* Privacy Policy */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AboutPrivacyTerms(
+                          appBarTitle: privacyPolicy,
+                          loadURL: privacyUrl ?? "",
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: MyText(
+                      color: white,
+                      text: privacyPolicy,
+                      fontsize: 15,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontwaight: FontWeight.w500,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 8, bottom: 8),
+                  color: white,
+                ),
+                /* Terms & Conditions */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AboutPrivacyTerms(
+                          appBarTitle: termsAndConditions,
+                          loadURL: termsConditionUrl ?? "",
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: MyText(
+                      color: white,
+                      text: termsAndConditions,
+                      fontsize: 15,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontwaight: FontWeight.w500,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 8, bottom: 8),
+                  color: white,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget accountDetail() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+  void logoutConfirmDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              color: lightBlack,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MyText(
-                      color: white,
-                      text: "Account details",
-                      fontsize: 14,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "Manage your profile",
-                      fontsize: 10,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w400,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget subscription() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "Subscription",
-                      fontsize: 14,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "Upgrade to get more out of your Subscription",
-                      fontsize: 10,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w400,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget changePasssword() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyText(
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
                           color: white,
-                          text: "Change password",
-                          fontsize: 14,
+                          text: confirmSignOut,
+                          textalign: TextAlign.center,
+                          fontsize: 16,
+                          fontwaight: FontWeight.bold,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      MyText(
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        MyText(
                           color: white,
-                          text: "Update your password",
-                          fontsize: 10,
+                          text: areYouSureWantToSignOut,
+                          textalign: TextAlign.center,
+                          fontsize: 13,
+                          fontwaight: FontWeight.normal,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.w400,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
-                    ],
-                  ),
-                  MyImage(width: 15, height: 15, imagePath: "ic_down.png")
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget language() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "Language",
-                      fontsize: 14,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "English",
-                      fontsize: 10,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w400,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget notification() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyText(
-                          color: white,
-                          text: "Notification",
-                          fontsize: 14,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      MyText(
-                          color: white,
-                          text: "Recieve notification",
-                          fontsize: 10,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.w400,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
-                    ],
-                  ),
-                  Switch(
-                    activeColor: bottomnavigationText,
-                    activeTrackColor: bottomnavigationText,
-                    inactiveTrackColor: white,
-                    value: isSwitched,
-                    onChanged: toggleSwitch,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget clearCache() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyText(
-                          color: white,
-                          text: "Clear cache",
-                          fontsize: 14,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      MyText(
-                          color: white,
-                          text: "clear locally cached data",
-                          fontsize: 10,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.w400,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
-                    ],
-                  ),
-                  MyImage(width: 25, height: 25, imagePath: "ic_clear.png")
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget clearVideo() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      color: white,
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: primary,
-              alignment: Alignment.centerLeft,
-              child: MyText(
-                  color: white,
-                  text: "Clear video search history",
-                  textalign: TextAlign.center,
-                  fontsize: 12,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontwaight: FontWeight.w400,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget signin() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 160,
-                      color: downloadBg,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                              alignment: Alignment.centerLeft,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  MyText(
-                                      color: white,
-                                      text: "Confirm sign out",
-                                      textalign: TextAlign.center,
-                                      fontsize: 14,
-                                      fontwaight: FontWeight.w500,
-                                      maxline: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      fontstyle: FontStyle.normal),
-                                  const SizedBox(
-                                    height: 7,
-                                  ),
-                                  MyText(
-                                      color: white,
-                                      text: "Are you sure want to sign out?",
-                                      textalign: TextAlign.center,
-                                      fontsize: 10,
-                                      fontwaight: FontWeight.w500,
-                                      maxline: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      fontstyle: FontStyle.normal)
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              alignment: Alignment.centerRight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      width: 80,
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: white,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: MyText(
-                                          color: white,
-                                          text: "Cancel",
-                                          textalign: TextAlign.center,
-                                          fontsize: 14,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontwaight: FontWeight.w400,
-                                          fontstyle: FontStyle.normal),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: Container(
-                                      width: 80,
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          color: bottomnavigationText,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: MyText(
-                                          color: primary,
-                                          text: "Sign out",
-                                          textalign: TextAlign.center,
-                                          fontsize: 14,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontwaight: FontWeight.w400,
-                                          fontstyle: FontStyle.normal),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText(
-                        color: white,
-                        text: "Signed in as IMS-128-VRAJRAVAL",
-                        fontsize: 14,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontwaight: FontWeight.w500,
-                        textalign: TextAlign.center,
-                        fontstyle: FontStyle.normal),
-                    const SizedBox(
-                      height: 10,
+                          fontstyle: FontStyle.normal,
+                        )
+                      ],
                     ),
-                    MyText(
-                        color: white,
-                        text: "Sign out",
-                        fontsize: 10,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontwaight: FontWeight.w400,
-                        textalign: TextAlign.center,
-                        fontstyle: FontStyle.normal),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget rateUs() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "Rate us",
-                      fontsize: 14,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 10,
                   ),
-                  MyText(
-                      color: white,
-                      text: "Rate our app on appstore",
-                      fontsize: 10,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w400,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: otherColor,
+                                width: .5,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: MyText(
+                              color: white,
+                              text: cancel,
+                              textalign: TextAlign.center,
+                              fontsize: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontwaight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            // Firebase Signout
+                            await auth.signOut();
+
+                            await Utils.setUserId("0");
+                            // ignore: use_build_context_synchronously
+                            Navigator.of(context).pop();
+                            // ignore: use_build_context_synchronously
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => const LoginSocial(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: primaryLight,
+                              borderRadius: BorderRadius.circular(5),
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: MyText(
+                              color: black,
+                              text: signOut,
+                              textalign: TextAlign.center,
+                              fontsize: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontwaight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget shareApp() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(
-                      color: white,
-                      text: "Share app",
-                      fontsize: 14,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  MyText(
-                      color: white,
-                      text: "Share app with your friends",
-                      fontsize: 10,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w400,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget about() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      color: white,
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: primary,
-              alignment: Alignment.centerLeft,
-              child: MyText(
-                  color: white,
-                  text: "About & Legal",
-                  textalign: TextAlign.center,
-                  fontsize: 12,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontwaight: FontWeight.w400,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget privacyPolicy() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      color: white,
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: primary,
-              alignment: Alignment.centerLeft,
-              child: MyText(
-                  color: white,
-                  text: "Privacy policy",
-                  textalign: TextAlign.center,
-                  fontsize: 12,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontwaight: FontWeight.w400,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget termsCondition() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      color: white,
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: primary,
-              alignment: Alignment.centerLeft,
-              child: MyText(
-                  color: white,
-                  text: "Terms & Conditions",
-                  textalign: TextAlign.center,
-                  fontsize: 12,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontwaight: FontWeight.w400,
-                  fontstyle: FontStyle.normal),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: white,
-          )
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }

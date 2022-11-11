@@ -3,6 +3,11 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  battery_plus_windows
+  connectivity_plus_windows
+  screen_brightness_windows
+  smart_auth
+  url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

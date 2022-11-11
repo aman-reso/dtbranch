@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "346606981660",
+    "project_id": "primevideoapp-43bf6",
+    "storage_bucket": "primevideoapp-43bf6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346606981660:android:697f4fe7257fa2bb2fc5d9",
+        "android_client_info": {
+          "package_name": "com.divinetechs.primevideoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346606981660-150eiiccap50sdco81aaj0av5lgn59us.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.divinetechs.primevideoapp",
+            "certificate_hash": "e3177be3b55f216db07964989cde2b06a18afe59"
+          }
+        },
+        {
+          "client_id": "346606981660-mf0htn3fvk1pnt9ueu1ubu9n65bt5325.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt2kWDmwynM9rdN6tuvGaEJyvgERjm5bQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346606981660-juds0qd8k9p651md7gv38bd1bn9jq66v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "346606981660-vfm6lnj9j3fvjftl6nuh1hv94bia07pg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.dtlive"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

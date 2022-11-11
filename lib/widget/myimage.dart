@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class MyImage extends StatelessWidget {
-  double height;
-  double width;
-  String imagePath;
+  double? height;
+  double? width;
+  String? imagePath;
   Color? color;
-  // ignore: prefer_typing_uninitialized_variables
-  var fit;
-  // var alignment;
+  dynamic fit;
 
   MyImage(
       {Key? key,
-      required this.width,
-      required this.height,
+      this.width,
+      this.height,
       required this.imagePath,
       this.color,
       this.fit})
@@ -27,7 +25,6 @@ class MyImage extends StatelessWidget {
       color: color,
       width: width,
       fit: fit,
-      // alignment: alignment,
     );
   }
 }

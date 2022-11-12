@@ -1,9 +1,18 @@
-import 'package:buttons_tabbar/buttons_tabbar.dart';
+import 'dart:developer';
+
+import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/utils/utils.dart';
+import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:provider/provider.dart';
 
 class Store extends StatefulWidget {
   const Store({Key? key}) : super(key: key);
@@ -13,219 +22,599 @@ class Store extends StatefulWidget {
 }
 
 class StoreState extends State<Store> with TickerProviderStateMixin {
-  late TabController tabController = TabController(length: 2, vsync: this);
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
 
-  List<String> moviGridList = <String>[
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_recentmovi1.png",
-    "ic_recentmovi2.png",
-    "ic_orignalspecial1.png",
-    "ic_orignalspecial2.png",
-    "ic_orignalspecial1.png",
-    "ic_orignalspecial2.png",
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-    "ic_actionmovi1.png",
-    "ic_actionmovi2.png",
-    "ic_toprelated1.png",
-    "ic_toprelated2.png",
-    "ic_toprelated1.png",
-    "ic_toprelated2.png",
-  ];
+  void _getData() async {
+    final rentStoreProvider =
+        Provider.of<RentStoreProvider>(context, listen: false);
+    await rentStoreProvider.getRentVideoList();
+    Future.delayed(Duration.zero).then((value) => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final rentStoreProvider =
+        Provider.of<RentStoreProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      body: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 100,
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: 200,
-              height: 50,
-              margin: const EdgeInsets.only(bottom: 10),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: ButtonsTabBar(
-                controller: tabController,
-                radius: 50,
-                contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                backgroundColor: primaryColor,
-                unselectedBackgroundColor: white,
-                unselectedLabelStyle: GoogleFonts.inter(
-                    color: black,
-                    fontSize: 12,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w700),
-                labelStyle: GoogleFonts.inter(
-                    color: black,
-                    fontSize: 12,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w700),
-                tabs: const [
-                  Tab(
-                    text: "Movies",
-                  ),
-                  Tab(
-                    text: "TV shows",
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: TabBarView(
-                controller: tabController,
-                children: [
-                  moviTab(),
-                  tvShowTab(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget moviTab() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      alignment: Alignment.topCenter,
-      child: GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 7,
-        mainAxisSpacing: 7,
-        childAspectRatio: 7 / 4,
-        shrinkWrap: true,
-        children: List.generate(
-          moviGridList.length,
-          (index) {
-            return Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  decoration: BoxDecoration(
-                    color: white,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: MyImage(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.cover,
-                        imagePath: moviGridList[index]),
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      width: 50,
-                      height: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      child: MyText(
-                          color: primaryColor,
-                          text: "\$9.0",
-                          fontsize: 12,
-                          fontwaight: FontWeight.w400,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
+      appBar: Utils.myAppBar(context, store),
+      body: rentStoreProvider.loading
+          ? Utils.pageLoader()
+          : (rentStoreProvider.rentModel.status == 200)
+              ? SafeArea(
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        (rentStoreProvider.rentModel.video != null)
+                            ? Column(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 30,
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 20),
+                                    alignment: Alignment.centerLeft,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 20,
+                                          height: 20,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: complimentryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: MyText(
+                                            color: white,
+                                            text: Constant.currencySymbol,
+                                            textalign: TextAlign.center,
+                                            fontsize: 11,
+                                            maxline: 1,
+                                            fontwaight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        MyText(
+                                          color: white,
+                                          text: rentVideos,
+                                          textalign: TextAlign.center,
+                                          fontsize: 18,
+                                          maxline: 1,
+                                          fontwaight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        MyText(
+                                          color: otherColor,
+                                          text:
+                                              "(${(rentStoreProvider.rentModel.video?.length ?? 0)} $videosSmall)",
+                                          textalign: TextAlign.center,
+                                          fontsize: 11,
+                                          maxline: 1,
+                                          fontwaight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: (rentStoreProvider
+                                                    .rentModel.video?.length ??
+                                                0) ==
+                                            1
+                                        ? Constant.heightLand
+                                        : ((rentStoreProvider.rentModel.video
+                                                            ?.length ??
+                                                        0) >
+                                                    1 &&
+                                                (rentStoreProvider.rentModel
+                                                            .video?.length ??
+                                                        0) <
+                                                    7)
+                                            ? (Constant.heightLand * 2)
+                                            : (rentStoreProvider.rentModel.video
+                                                            ?.length ??
+                                                        0) >
+                                                    6
+                                                ? (Constant.heightLand * 3)
+                                                : (Constant.heightLand * 2),
+                                    child: AlignedGridView.count(
+                                      shrinkWrap: true,
+                                      crossAxisCount: (rentStoreProvider
+                                                      .rentModel
+                                                      .video
+                                                      ?.length ??
+                                                  0) ==
+                                              1
+                                          ? 1
+                                          : ((rentStoreProvider.rentModel.video
+                                                              ?.length ??
+                                                          0) >
+                                                      1 &&
+                                                  (rentStoreProvider.rentModel
+                                                              .video?.length ??
+                                                          0) <
+                                                      7)
+                                              ? 2
+                                              : (rentStoreProvider.rentModel
+                                                              .video?.length ??
+                                                          0) >
+                                                      6
+                                                  ? 3
+                                                  : 2,
+                                      crossAxisSpacing: 8,
+                                      mainAxisSpacing: 8,
+                                      itemCount: (rentStoreProvider
+                                              .rentModel.video?.length ??
+                                          0),
+                                      padding: const EdgeInsets.only(
+                                          left: 20, right: 20),
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder:
+                                          (BuildContext context, int position) {
+                                        return InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          onTap: () {
+                                            log("Clicked on position ==> $position");
+                                            if ((rentStoreProvider
+                                                        .rentModel.video
+                                                        ?.elementAt(position)
+                                                        .videoType ??
+                                                    0) ==
+                                                1) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return MovieDetails(
+                                                      rentStoreProvider
+                                                              .rentModel.video
+                                                              ?.elementAt(
+                                                                  position)
+                                                              .id ??
+                                                          0,
+                                                      rentStoreProvider
+                                                              .rentModel.video
+                                                              ?.elementAt(
+                                                                  position)
+                                                              .videoType ??
+                                                          0,
+                                                      rentStoreProvider
+                                                              .rentModel.video
+                                                              ?.elementAt(
+                                                                  position)
+                                                              .typeId ??
+                                                          0,
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            } else if ((rentStoreProvider
+                                                        .rentModel.video
+                                                        ?.elementAt(position)
+                                                        .videoType ??
+                                                    0) ==
+                                                2) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return TvShowDetails(
+                                                      rentStoreProvider
+                                                              .rentModel.video
+                                                              ?.elementAt(
+                                                                  position)
+                                                              .id ??
+                                                          0,
+                                                      rentStoreProvider
+                                                              .rentModel.video
+                                                              ?.elementAt(
+                                                                  position)
+                                                              .videoType ??
+                                                          0,
+                                                      rentStoreProvider
+                                                              .rentModel.video
+                                                              ?.elementAt(
+                                                                  position)
+                                                              .typeId ??
+                                                          0,
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: Stack(
+                                            alignment: Alignment.topRight,
+                                            children: [
+                                              Container(
+                                                width: Constant.widthLand,
+                                                height: Constant.heightLand,
+                                                alignment: Alignment.center,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  child: MyNetworkImage(
+                                                    imageUrl: rentStoreProvider
+                                                            .rentModel.video
+                                                            ?.elementAt(
+                                                                position)
+                                                            .landscape
+                                                            .toString() ??
+                                                        "",
+                                                    fit: BoxFit.cover,
+                                                    imgHeight:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .height,
+                                                    imgWidth:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                  minHeight: 15,
+                                                  minWidth: 30,
+                                                ),
+                                                height: 22,
+                                                alignment: Alignment.center,
+                                                padding:
+                                                    const EdgeInsets.all(5),
+                                                decoration: const BoxDecoration(
+                                                  color: primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft: Radius
+                                                              .circular(3),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  4),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  8),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  3)),
+                                                ),
+                                                child: MyText(
+                                                  color: black,
+                                                  text:
+                                                      "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?.elementAt(position).rentPrice.toString() ?? "0"}",
+                                                  textalign: TextAlign.center,
+                                                  fontsize: 12,
+                                                  fontwaight: FontWeight.w800,
+                                                  maxline: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontstyle: FontStyle.normal,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const NoData(),
+                        const SizedBox(
+                          height: 22,
+                        ),
+                        (rentStoreProvider.rentModel.tvshow != null)
+                            ? Column(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 30,
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 20),
+                                    alignment: Alignment.centerLeft,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 20,
+                                          height: 20,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: complimentryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: MyText(
+                                            color: white,
+                                            text: Constant.currencySymbol,
+                                            textalign: TextAlign.center,
+                                            fontsize: 11,
+                                            maxline: 1,
+                                            fontwaight: FontWeight.bold,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        MyText(
+                                          color: white,
+                                          text: rentShows,
+                                          textalign: TextAlign.center,
+                                          fontsize: 18,
+                                          maxline: 1,
+                                          fontwaight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        MyText(
+                                          color: otherColor,
+                                          text:
+                                              "(${(rentStoreProvider.rentModel.tvshow?.length ?? 0)} $videosSmall)",
+                                          textalign: TextAlign.center,
+                                          fontsize: 11,
+                                          maxline: 1,
+                                          fontwaight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: (rentStoreProvider
+                                                    .rentModel.tvshow?.length ??
+                                                0) ==
+                                            1
+                                        ? Constant.heightLand
+                                        : ((rentStoreProvider.rentModel.tvshow
+                                                            ?.length ??
+                                                        0) >
+                                                    1 &&
+                                                (rentStoreProvider.rentModel
+                                                            .tvshow?.length ??
+                                                        0) <
+                                                    7)
+                                            ? (Constant.heightLand * 2)
+                                            : (rentStoreProvider.rentModel
+                                                            .tvshow?.length ??
+                                                        0) >
+                                                    6
+                                                ? (Constant.heightLand * 3)
+                                                : (Constant.heightLand * 2),
+                                    child: AlignedGridView.count(
+                                      shrinkWrap: true,
+                                      crossAxisCount: (rentStoreProvider
+                                                      .rentModel
+                                                      .tvshow
+                                                      ?.length ??
+                                                  0) ==
+                                              1
+                                          ? 1
+                                          : ((rentStoreProvider.rentModel.tvshow
+                                                              ?.length ??
+                                                          0) >
+                                                      1 &&
+                                                  (rentStoreProvider.rentModel
+                                                              .tvshow?.length ??
+                                                          0) <
+                                                      7)
+                                              ? 2
+                                              : (rentStoreProvider.rentModel
+                                                              .tvshow?.length ??
+                                                          0) >
+                                                      6
+                                                  ? 3
+                                                  : 2,
+                                      crossAxisSpacing: 8,
+                                      mainAxisSpacing: 8,
+                                      itemCount: (rentStoreProvider
+                                              .rentModel.tvshow?.length ??
+                                          0),
+                                      padding: const EdgeInsets.only(
+                                          left: 20, right: 20),
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder:
+                                          (BuildContext context, int position) {
+                                        return Stack(
+                                          alignment: Alignment.topRight,
+                                          children: [
+                                            InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              onTap: () {
+                                                log("Clicked on position ==> $position");
+                                                if ((rentStoreProvider
+                                                            .rentModel.tvshow
+                                                            ?.elementAt(
+                                                                position)
+                                                            .videoType ??
+                                                        0) ==
+                                                    1) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return MovieDetails(
+                                                          rentStoreProvider
+                                                                  .rentModel
+                                                                  .tvshow
+                                                                  ?.elementAt(
+                                                                      position)
+                                                                  .id ??
+                                                              0,
+                                                          rentStoreProvider
+                                                                  .rentModel
+                                                                  .tvshow
+                                                                  ?.elementAt(
+                                                                      position)
+                                                                  .videoType ??
+                                                              0,
+                                                          rentStoreProvider
+                                                                  .rentModel
+                                                                  .tvshow
+                                                                  ?.elementAt(
+                                                                      position)
+                                                                  .typeId ??
+                                                              0,
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                } else if ((rentStoreProvider
+                                                            .rentModel.tvshow
+                                                            ?.elementAt(
+                                                                position)
+                                                            .videoType ??
+                                                        0) ==
+                                                    2) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return TvShowDetails(
+                                                          rentStoreProvider
+                                                                  .rentModel
+                                                                  .tvshow
+                                                                  ?.elementAt(
+                                                                      position)
+                                                                  .id ??
+                                                              0,
+                                                          rentStoreProvider
+                                                                  .rentModel
+                                                                  .tvshow
+                                                                  ?.elementAt(
+                                                                      position)
+                                                                  .videoType ??
+                                                              0,
+                                                          rentStoreProvider
+                                                                  .rentModel
+                                                                  .tvshow
+                                                                  ?.elementAt(
+                                                                      position)
+                                                                  .typeId ??
+                                                              0,
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              child: Container(
+                                                width: Constant.widthLand,
+                                                height: Constant.heightLand,
+                                                alignment: Alignment.center,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  child: MyNetworkImage(
+                                                    imageUrl: rentStoreProvider
+                                                            .rentModel.tvshow
+                                                            ?.elementAt(
+                                                                position)
+                                                            .landscape
+                                                            .toString() ??
+                                                        "",
+                                                    fit: BoxFit.cover,
+                                                    imgHeight:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .height,
+                                                    imgWidth:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              constraints: const BoxConstraints(
+                                                minHeight: 15,
+                                                minWidth: 30,
+                                              ),
+                                              height: 22,
+                                              alignment: Alignment.center,
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: const BoxDecoration(
+                                                color: primaryColor,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(3),
+                                                    topRight:
+                                                        Radius.circular(4),
+                                                    bottomLeft:
+                                                        Radius.circular(8),
+                                                    bottomRight:
+                                                        Radius.circular(3)),
+                                              ),
+                                              child: MyText(
+                                                color: black,
+                                                text:
+                                                    "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?.elementAt(position).rentPrice.toString() ?? "0"}",
+                                                textalign: TextAlign.center,
+                                                fontsize: 12,
+                                                fontwaight: FontWeight.w800,
+                                                maxline: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontstyle: FontStyle.normal,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const NoData(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget tvShowTab() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      alignment: Alignment.topCenter,
-      child: GridView.count(
-        crossAxisCount: 3,
-        crossAxisSpacing: 7,
-        mainAxisSpacing: 7,
-        childAspectRatio: 5 / 7,
-        shrinkWrap: true,
-        children: List.generate(
-          moviGridList.length,
-          (index) {
-            return Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  decoration: BoxDecoration(
-                    color: white,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: MyImage(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        fit: BoxFit.cover,
-                        imagePath: moviGridList[index]),
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      width: 50,
-                      height: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      child: MyText(
-                          color: primaryColor,
-                          text: "\$9.0",
-                          fontsize: 12,
-                          fontwaight: FontWeight.w400,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+                )
+              : const NoData(),
     );
   }
 }

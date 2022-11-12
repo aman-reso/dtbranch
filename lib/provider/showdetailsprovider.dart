@@ -75,7 +75,7 @@ class ShowDetailsProvider extends ChangeNotifier {
     seasonPos = position;
   }
 
-  clearSectionProvider() {
+  clearProvider() {
     log("<================ clearSectionProvider ================>");
     sectionDetailModel = SectionDetailModel();
     episodeBySeasonModel = EpisodeBySeasonModel();

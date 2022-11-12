@@ -21,7 +21,7 @@ const bottomView1 = "Home";
 const bottomView2 = "Find";
 const bottomView3 = "Channels";
 const bottomView4 = "Store";
-const bottomView5 = "Settings";
+const bottomView5 = "My Stuff";
 //BottomNavigation END
 
 //Login, Registration Strings START
@@ -78,6 +78,8 @@ const addPhoto = "Add photo!";
 
 // Home Strings START
 const continueWatching = "Continue Watching";
+const videoByLanguage = "Videos By Language";
+const videoByCategory = "Videos By Category";
 // Home Strings END
 
 // Details Page START
@@ -117,7 +119,7 @@ const languageChangeNote =
 // Details Page END
 
 // Find Page START
-const searchHint = "Search by actor, title...";
+const searchHint = "Search video or tvshow by title...";
 const browseBy = "Browse by";
 const genres = "Genres";
 const movies = "Movies";
@@ -128,6 +130,14 @@ const seeLess = "See less";
 const videos = "Videos";
 const shows = "Shows";
 // Find Page END
+
+// Store Page START
+const store = "Store";
+const rentVideos = "Rent Video";
+const rentShows = "Rent Shows";
+const videosSmall = "videos";
+const showsSmall = "shows";
+// Store Page END
 
 // Settings Page START
 const settings = "Settings";
@@ -153,4 +163,10 @@ const version = "version";
 const aboutUs = "About us";
 const privacyPolicy = "Privacy Policy";
 const termsAndConditions = "Terms & Conditions";
+const cacheClearMsg = "Cache data has been cleared.";
 // Settings Page END
+
+// Subscription Page START
+const subscriptionDesc = "UPGRADE TO GET MORE OUT OF YOUR SUBSCRIPTION";
+const choosePlan = "Choose Plan";
+// Subscription Page END

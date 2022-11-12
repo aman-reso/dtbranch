@@ -24,6 +24,7 @@ class ProfileEdit extends StatefulWidget {
 
 class ProfileEditState extends State<ProfileEdit> {
   late ProgressDialog prDialog;
+  SharedPre sharePref = SharedPre();
   final ImagePicker imagePicker = ImagePicker();
   File? pickedImageFile;
   bool? isSwitched;
@@ -168,13 +169,15 @@ class ProfileEditState extends State<ProfileEdit> {
                     onTap: () async {
                       log("nameController Name ==> ${nameController.text.toString()}");
                       log("pickedImageFile ==> ${pickedImageFile?.path ?? "not picked"}");
-                      if (nameController.text.toString() == "") {
+                      if (nameController.text.toString().isEmpty) {
                         return Utils.showSnackbar(
                             context, "TextField", enterName);
                       }
                       final profileProvider =
                           Provider.of<ProfileProvider>(context, listen: false);
                       Utils.showProgress(context, prDialog);
+                      await sharePref.save(
+                          "username", nameController.text.toString());
                       if (pickedImageFile != null) {
                         await profileProvider.getImageUpload(pickedImageFile);
                       }

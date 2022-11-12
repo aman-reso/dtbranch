@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:dtlive/pages/sectionbytype.dart';
+import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/strings.dart';
@@ -112,15 +114,22 @@ class FindState extends State<Find> {
                                     borderRadius: BorderRadius.circular(4),
                                     onTap: () {
                                       log("Item Clicked! => $position");
-                                      // Navigator.of(context).push(
-                                      //   MaterialPageRoute(
-                                      //     builder: (context) => DoctorDetails(homeProvider
-                                      //             .doctorModel.result
-                                      //             ?.elementAt(position)
-                                      //             .id ??
-                                      //         ""),
-                                      //   ),
-                                      // );
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => SectionByType(
+                                              findProvider
+                                                      .sectionTypeModel.result
+                                                      ?.elementAt(position)
+                                                      .id ??
+                                                  0,
+                                              findProvider
+                                                      .sectionTypeModel.result
+                                                      ?.elementAt(position)
+                                                      .name ??
+                                                  "",
+                                              "2"),
+                                        ),
+                                      );
                                     },
                                     child: Container(
                                       height: 65,
@@ -226,6 +235,26 @@ class FindState extends State<Find> {
                                         borderRadius: BorderRadius.circular(4),
                                         onTap: () {
                                           log("Item Clicked! => $position");
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return VideosByID(
+                                                  findProvider
+                                                          .genresModel.result
+                                                          ?.elementAt(position)
+                                                          .id ??
+                                                      0,
+                                                  findProvider
+                                                          .genresModel.result
+                                                          ?.elementAt(position)
+                                                          .name ??
+                                                      "",
+                                                  "ByCategory",
+                                                );
+                                              },
+                                            ),
+                                          );
                                         },
                                         child: SizedBox(
                                           height: 47,
@@ -371,6 +400,26 @@ class FindState extends State<Find> {
                                         borderRadius: BorderRadius.circular(4),
                                         onTap: () {
                                           log("Item Clicked! => $position");
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return VideosByID(
+                                                  findProvider
+                                                          .langaugeModel.result
+                                                          ?.elementAt(position)
+                                                          .id ??
+                                                      0,
+                                                  findProvider
+                                                          .langaugeModel.result
+                                                          ?.elementAt(position)
+                                                          .name ??
+                                                      "",
+                                                  "ByLanguage",
+                                                );
+                                              },
+                                            ),
+                                          );
                                         },
                                         child: SizedBox(
                                           height: 47,

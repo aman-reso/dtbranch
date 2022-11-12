@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
@@ -10,6 +11,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 // ignore: depend_on_referenced_packages
 import 'package:html/parser.dart' show parse;
+// ignore: depend_on_referenced_packages
+import 'package:path_provider/path_provider.dart' as syspaths;
 
 class Utils {
   showToast(String msg) {
@@ -48,6 +51,14 @@ class Utils {
     await sharedPref.save("seen", value);
     String seenValue = await sharedPref.read("seen");
     log('setFirstTime seen ==> $seenValue');
+  }
+
+  static Future<void> deleteCacheDir() async {
+    var tempDir = await syspaths.getTemporaryDirectory();
+
+    if (tempDir.existsSync()) {
+      tempDir.deleteSync(recursive: true);
+    }
   }
 
   static BoxDecoration textFieldBGWithBorder() {
@@ -113,14 +124,42 @@ class Utils {
       backgroundColor: appBgColor,
       centerTitle: true,
       title: MyText(
-        color: white,
+        color: primaryColor,
         text: appBarTitle,
-        fontsize: 16,
+        fontsize: 17,
         maxline: 1,
         overflow: TextOverflow.ellipsis,
-        fontwaight: FontWeight.w600,
+        fontwaight: FontWeight.bold,
         textalign: TextAlign.center,
         fontstyle: FontStyle.normal,
+      ),
+    );
+  }
+
+  static AppBar myAppBarWithBack(BuildContext context, String appBarTitle) {
+    return AppBar(
+      elevation: 5,
+      backgroundColor: appBgColor,
+      centerTitle: true,
+      leading: IconButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        icon: MyImage(
+          imagePath: "back.png",
+          fit: BoxFit.contain,
+          height: 17,
+          width: 17,
+          color: white,
+        ),
+      ),
+      title: MyText(
+        text: appBarTitle,
+        fontsize: 20,
+        fontstyle: FontStyle.normal,
+        fontwaight: FontWeight.w500,
+        textalign: TextAlign.center,
+        color: primaryColor,
       ),
     );
   }
@@ -145,11 +184,13 @@ class Utils {
             ? successBG
             : showFor == "WatchlistRemove"
                 ? successBG
-                : showFor == "loginFail"
+                : showFor == "fail"
                     ? failureBG
                     : showFor == "TextField"
                         ? infoBG
-                        : infoBG,
+                        : showFor == "success"
+                            ? successBG
+                            : infoBG,
         content: MyText(
           text: message,
           fontsize: 14,

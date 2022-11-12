@@ -60,6 +60,11 @@
 		<string>Post videos to profile</string>
 		<key>io.flutter.embedded_views_preview</key>
 		<string>YES</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>itms-beta</string>
+			<string>itms</string>
+		</array>
 		<!-- Google Sign-in Section -->
 		<key>CFBundleURLTypes</key>
 		<array>

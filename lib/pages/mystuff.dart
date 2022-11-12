@@ -71,113 +71,113 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+      body: SafeArea(
         child: Column(
           children: [
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
-                        alignment: Alignment.bottomCenter,
+            Column(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 100,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             MyImage(
-                                width: 50,
-                                height: 50,
-                                imagePath: "ic_user.png"),
+                              width: 50,
+                              height: 50,
+                              imagePath: "ic_stuff.png",
+                              color: primaryColor,
+                            ),
                             const SizedBox(
                               width: 15,
                             ),
                             MyText(
-                                color: white,
-                                text: "IMS-128-VRAJRAVAL",
-                                fontsize: 16,
-                                fontwaight: FontWeight.w600,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textalign: TextAlign.center,
-                                fontstyle: FontStyle.normal),
+                              color: white,
+                              text: "IMS-128-VRAJRAVAL",
+                              fontsize: 16,
+                              fontwaight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.center,
+                              fontstyle: FontStyle.normal,
+                            ),
                             const SizedBox(
                               width: 15,
                             ),
                             MyImage(
-                                width: 15,
-                                height: 15,
-                                imagePath: "ic_down.png"),
-                            const SizedBox(
                               width: 15,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return const Setting();
-                                    },
-                                  ),
-                                );
-                              },
-                              child: MyImage(
-                                  width: 20,
-                                  height: 20,
-                                  imagePath: "ic_setting.png"),
+                              height: 15,
+                              imagePath: "ic_down.png",
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: TabBar(
-                        indicatorColor: white,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        isScrollable: true,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        unselectedLabelColor: white,
-                        labelStyle: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FontStyle.normal),
-                        labelColor: white,
-                        labelPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        controller: tabController,
-                        tabs:
-                            List<Widget>.generate(tabname.length, (int index) {
-                          return Tab(
-                            child: MyText(
-                                color: white,
-                                text: tabname[index],
-                                fontsize: 14,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontwaight: FontWeight.w600,
-                                textalign: TextAlign.center,
-                                fontstyle: FontStyle.normal),
-                          );
-                        }),
+                      const SizedBox(
+                        width: 15,
                       ),
-                    ),
-                  ],
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const Setting();
+                              },
+                            ),
+                          );
+                        },
+                        child: MyImage(
+                          width: 20,
+                          height: 20,
+                          imagePath: "ic_setting.png",
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
+                  alignment: Alignment.center,
+                  child: TabBar(
+                    indicatorColor: white,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    isScrollable: false,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    unselectedLabelColor: white,
+                    labelStyle: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                    ),
+                    labelColor: white,
+                    labelPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    controller: tabController,
+                    tabs: List<Widget>.generate(tabname.length, (int index) {
+                      return Tab(
+                        child: MyText(
+                          color: white,
+                          text: tabname[index],
+                          fontsize: 14,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w600,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
             ),
             Expanded(
-              flex: 3,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,

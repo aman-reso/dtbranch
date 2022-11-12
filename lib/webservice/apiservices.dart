@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dtlive/model/subscriptionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart';
 import 'package:dtlive/model/generalsettingmodel.dart';
@@ -9,12 +10,14 @@ import 'package:dtlive/model/genresmodel.dart';
 import 'package:dtlive/model/langaugemodel.dart';
 import 'package:dtlive/model/loginregistermodel.dart';
 import 'package:dtlive/model/profilemodel.dart';
+import 'package:dtlive/model/rentmodel.dart';
 import 'package:dtlive/model/searchmodel.dart';
 import 'package:dtlive/model/sectionbannermodel.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart';
 import 'package:dtlive/model/successmodel.dart';
+import 'package:dtlive/model/videobyidmodel.dart';
 import 'package:dtlive/utils/constant.dart';
 
 class ApiService {
@@ -363,5 +366,78 @@ class ApiService {
     log('channel_section_list statusCode ==>>> ${response.statusCode}');
     channelSectionModel = ChannelSectionModel.fromJson(response.data);
     return channelSectionModel;
+  }
+
+  // rent_video_list API
+  Future<RentModel> rentVideoList() async {
+    RentModel rentModel;
+    String sectionList = "rent_video_list";
+    Response response = await dio.post(
+      '$baseUrl$sectionList',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+      },
+    );
+    // log('rent_video_list response ==>>> ${response.data}');
+    log('rent_video_list statusCode ==>>> ${response.statusCode}');
+    rentModel = RentModel.fromJson(response.data);
+    return rentModel;
+  }
+
+  // video_by_category API
+  Future<VideoByIdModel> videoByCategory(categoryID) async {
+    log('videoByCategory categoryID ==>>> $categoryID');
+    VideoByIdModel videoByIdModel;
+    String byCategory = "video_by_category";
+    Response response = await dio.post(
+      '$baseUrl$byCategory',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'category_id': categoryID,
+      },
+    );
+    log('video_by_category response ==>>> ${response.data}');
+    log('video_by_category statusCode ==>>> ${response.statusCode}');
+    videoByIdModel = VideoByIdModel.fromJson(response.data);
+    return videoByIdModel;
+  }
+
+  // video_by_language API
+  Future<VideoByIdModel> videoByLanguage(languageID) async {
+    log('videoByLanguage languageID ==>>> $languageID');
+    VideoByIdModel videoByIdModel;
+    String byLanguage = "video_by_language";
+    Response response = await dio.post(
+      '$baseUrl$byLanguage',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'language_id': languageID,
+      },
+    );
+    log('video_by_language response ==>>> ${response.data}');
+    log('video_by_language statusCode ==>>> ${response.statusCode}');
+    videoByIdModel = VideoByIdModel.fromJson(response.data);
+    return videoByIdModel;
+  }
+
+  // get_package API
+  Future<SubscriptionModel> subscriptionPackage() async {
+    log('subscriptionPackage userID ==>>> ${Constant.userID}');
+    SubscriptionModel subscriptionModel;
+    String getPackage = "get_package";
+    Response response = await dio.post(
+      '$baseUrl$getPackage',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+      },
+    );
+    log('get_package response ==>>> ${response.data}');
+    log('get_package statusCode ==>>> ${response.statusCode}');
+    subscriptionModel = SubscriptionModel.fromJson(response.data);
+    return subscriptionModel;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dtlive/firebase_options.dart';
 import 'package:dtlive/pages/splash.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
@@ -5,9 +7,13 @@ import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/profileprovider.dart';
+import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/provider/searchprovider.dart';
+import 'package:dtlive/provider/sectionbytypeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
+import 'package:dtlive/provider/subscriptionprovider.dart';
+import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -26,7 +32,13 @@ Future<void> main() async {
   // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt.
   // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
   OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-    debugPrint("Accepted permission: $accepted");
+    log("Accepted permission: ===> $accepted");
+  });
+  OneSignal.shared.setNotificationWillShowInForegroundHandler(
+      (OSNotificationReceivedEvent event) {
+    // Will be called whenever a notification is received in foreground
+    // Display Notification, pass null param for not displaying the notification
+    event.complete(event.notification);
   });
 
   runApp(
@@ -41,6 +53,10 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => ChannelSectionProvider()),
+        ChangeNotifierProvider(create: (_) => RentStoreProvider()),
+        ChangeNotifierProvider(create: (_) => VideoByIDProvider()),
+        ChangeNotifierProvider(create: (_) => SectionByTypeProvider()),
+        ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
       ],
       child: const MyApp(),
     ),

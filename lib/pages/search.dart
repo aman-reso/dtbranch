@@ -189,6 +189,8 @@ class SearchState extends State<Search> {
                                       itemBuilder:
                                           (BuildContext context, int position) {
                                         return InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
                                           onTap: () {
                                             log("Clicked on position ==> $position");
                                             if ((searchProvider
@@ -254,11 +256,7 @@ class SearchState extends State<Search> {
                                                 .size
                                                 .width,
                                             height: Constant.heightLand,
-                                            alignment: Alignment.centerLeft,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                            ),
+                                            alignment: Alignment.center,
                                             child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(4),
@@ -268,7 +266,7 @@ class SearchState extends State<Search> {
                                                         ?.elementAt(position)
                                                         .landscape
                                                         .toString() ??
-                                                    "",
+                                                    Constant.placeHolderLand,
                                                 fit: BoxFit.cover,
                                                 imgHeight:
                                                     MediaQuery.of(context)

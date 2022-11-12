@@ -2,9 +2,10 @@ class Constant {
   static const String baseurl = 'http://173.249.44.9:8000/api/v1/';
 
   static String appName = "DTLive";
+  static String appPackageName = "com.divinetechs.primevideoapp";
 
   /* OneSignal App ID */
-  static String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
+  static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
 
   // Dimentions START
   static double appBarHeight = 60;

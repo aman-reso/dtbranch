@@ -9,11 +9,10 @@ class NoData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(30, 15, 30, 15),
-      margin: const EdgeInsets.only(left: 20, right: 20),
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: lightBlack,
+        color: appBgColor,
         borderRadius: BorderRadius.circular(12),
         shape: BoxShape.rectangle,
       ),

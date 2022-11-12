@@ -31,10 +31,10 @@ class MovieDetailsState extends State<MovieDetails> {
 
   @override
   void initState() {
+    super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");
     log("initState typeId ==> ${widget.typeId}");
-    super.initState();
     _getData();
   }
 
@@ -42,70 +42,66 @@ class MovieDetailsState extends State<MovieDetails> {
     Utils.getCurrencySymbol();
     videoDetailsProvider =
         Provider.of<VideoDetailsProvider>(context, listen: false);
-    videoDetailsProvider.getSectionDetails(
+    await videoDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) => setState(() {}));
   }
 
   @override
   void dispose() {
     super.dispose();
-    videoDetailsProvider.clearSectionProvider();
+    videoDetailsProvider.clearProvider();
   }
 
   @override
   Widget build(BuildContext context) {
-    final sectionDetailsProvider =
+    final videoDetailsProvider =
         Provider.of<VideoDetailsProvider>(context, listen: false);
-    if (sectionDetailsProvider.loading) {
+    if (videoDetailsProvider.loading) {
       return Utils.pageLoader();
     } else {
-      if (sectionDetailsProvider.sectionDetailModel.status == 200) {
-        if (sectionDetailsProvider.sectionDetailModel.result != null) {
-          if (sectionDetailsProvider.sectionDetailModel.cast != null &&
-              (sectionDetailsProvider.sectionDetailModel.cast?.length ?? 0) >
-                  0) {
+      if (videoDetailsProvider.sectionDetailModel.status == 200) {
+        if (videoDetailsProvider.sectionDetailModel.result != null) {
+          if (videoDetailsProvider.sectionDetailModel.cast != null &&
+              (videoDetailsProvider.sectionDetailModel.cast?.length ?? 0) > 0) {
             directorList = <Cast>[];
             for (int i = 0;
-                i <
-                    (sectionDetailsProvider.sectionDetailModel.cast?.length ??
-                        0);
+                i < (videoDetailsProvider.sectionDetailModel.cast?.length ?? 0);
                 i++) {
-              if (sectionDetailsProvider.sectionDetailModel.cast
+              if (videoDetailsProvider.sectionDetailModel.cast
                       ?.elementAt(i)
                       .type ==
                   "Director") {
                 Cast cast = Cast();
-                cast.id = sectionDetailsProvider.sectionDetailModel.cast
+                cast.id = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .id ??
                     0;
-                cast.name = sectionDetailsProvider.sectionDetailModel.cast
+                cast.name = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .name ??
                     "";
-                cast.image = sectionDetailsProvider.sectionDetailModel.cast
+                cast.image = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .image ??
                     "";
-                cast.type = sectionDetailsProvider.sectionDetailModel.cast
+                cast.type = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .type ??
                     "";
-                cast.personalInfo = sectionDetailsProvider
-                        .sectionDetailModel.cast
+                cast.personalInfo = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .personalInfo ??
                     "";
-                cast.status = sectionDetailsProvider.sectionDetailModel.cast
+                cast.status = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .status ??
                     "";
-                cast.createdAt = sectionDetailsProvider.sectionDetailModel.cast
+                cast.createdAt = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .createdAt ??
                     "";
-                cast.updatedAt = sectionDetailsProvider.sectionDetailModel.cast
+                cast.updatedAt = videoDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .updatedAt ??
                     "";
@@ -115,6 +111,7 @@ class MovieDetailsState extends State<MovieDetails> {
             }
           }
           return Scaffold(
+            key: widget.key,
             backgroundColor: appBgColor,
             body: SafeArea(
               child: SingleChildScrollView(
@@ -132,13 +129,13 @@ class MovieDetailsState extends State<MovieDetails> {
                           color: white,
                           child: MyNetworkImage(
                             fit: BoxFit.fill,
-                            imageUrl: sectionDetailsProvider
+                            imageUrl: videoDetailsProvider
                                         .sectionDetailModel.result?.landscape !=
                                     ""
-                                ? (sectionDetailsProvider
+                                ? (videoDetailsProvider
                                         .sectionDetailModel.result?.landscape ??
                                     Constant.placeHolderLand)
-                                : (sectionDetailsProvider
+                                : (videoDetailsProvider
                                         .sectionDetailModel.result?.thumbnail ??
                                     Constant.placeHolderLand),
                           ),
@@ -164,17 +161,17 @@ class MovieDetailsState extends State<MovieDetails> {
                           onTap: () {
                             openPlayer(
                               "Video",
-                              (sectionDetailsProvider
+                              (videoDetailsProvider
                                       .sectionDetailModel.result?.id ??
                                   0),
-                              (sectionDetailsProvider
+                              (videoDetailsProvider
                                       .sectionDetailModel.result?.videoType ??
                                   0),
                               widget.typeId,
-                              (sectionDetailsProvider
+                              (videoDetailsProvider
                                       .sectionDetailModel.result?.video ??
                                   ""),
-                              (sectionDetailsProvider
+                              (videoDetailsProvider
                                       .sectionDetailModel.result?.name ??
                                   ""),
                             );
@@ -217,12 +214,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                       fit: BoxFit.cover,
                                       imgHeight: 85,
                                       imgWidth: 65,
-                                      imageUrl: sectionDetailsProvider
+                                      imageUrl: videoDetailsProvider
                                                   .sectionDetailModel
                                                   .result
                                                   ?.thumbnail !=
                                               ""
-                                          ? (sectionDetailsProvider
+                                          ? (videoDetailsProvider
                                                   .sectionDetailModel
                                                   .result
                                                   ?.thumbnail ??
@@ -242,7 +239,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     children: [
                                       MyText(
                                         color: white,
-                                        text: sectionDetailsProvider
+                                        text: videoDetailsProvider
                                                 .sectionDetailModel
                                                 .result
                                                 ?.name ??
@@ -261,12 +258,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           /* Release Year */
-                                          (sectionDetailsProvider
+                                          (videoDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.releaseYear !=
                                                       null &&
-                                                  sectionDetailsProvider
+                                                  videoDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.releaseYear !=
@@ -276,7 +273,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       right: 10),
                                                   child: MyText(
                                                     color: whiteLight,
-                                                    text: sectionDetailsProvider
+                                                    text: videoDetailsProvider
                                                             .sectionDetailModel
                                                             .result
                                                             ?.releaseYear ??
@@ -293,7 +290,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 )
                                               : const SizedBox.shrink(),
                                           /* Duration */
-                                          (sectionDetailsProvider
+                                          (videoDetailsProvider
                                                       .sectionDetailModel
                                                       .result
                                                       ?.videoDuration !=
@@ -303,14 +300,14 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       right: 10),
                                                   child: MyText(
                                                     color: otherColor,
-                                                    text: ((sectionDetailsProvider
+                                                    text: ((videoDetailsProvider
                                                                     .sectionDetailModel
                                                                     .result
                                                                     ?.videoDuration ??
                                                                 0) >
                                                             0)
                                                         ? Utils.convertTimeToText(
-                                                            sectionDetailsProvider
+                                                            videoDetailsProvider
                                                                     .sectionDetailModel
                                                                     .result
                                                                     ?.videoDuration ??
@@ -328,12 +325,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 )
                                               : const SizedBox.shrink(),
                                           /* Age Limit */
-                                          (sectionDetailsProvider
+                                          (videoDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.ageRestriction !=
                                                       null &&
-                                                  sectionDetailsProvider
+                                                  videoDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.ageRestriction !=
@@ -356,7 +353,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                   ),
                                                   child: MyText(
                                                     color: otherColor,
-                                                    text: sectionDetailsProvider
+                                                    text: videoDetailsProvider
                                                             .sectionDetailModel
                                                             .result
                                                             ?.ageRestriction ??
@@ -373,12 +370,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 )
                                               : const SizedBox.shrink(),
                                           /* MaxQuality */
-                                          (sectionDetailsProvider
+                                          (videoDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.maxVideoQuality !=
                                                       null &&
-                                                  sectionDetailsProvider
+                                                  videoDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.maxVideoQuality !=
@@ -401,7 +398,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                   ),
                                                   child: MyText(
                                                     color: otherColor,
-                                                    text: sectionDetailsProvider
+                                                    text: videoDetailsProvider
                                                             .sectionDetailModel
                                                             .result
                                                             ?.maxVideoQuality ??
@@ -426,7 +423,7 @@ class MovieDetailsState extends State<MovieDetails> {
                             ),
                           ),
                           /* Prime TAG  & Rent TAG */
-                          (sectionDetailsProvider.sectionDetailModel.result
+                          (videoDetailsProvider.sectionDetailModel.result
                                           ?.isPremium ??
                                       0) ==
                                   1
@@ -472,7 +469,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                       ),
                                     ),
                                     /* Rent TAG */
-                                    (sectionDetailsProvider.sectionDetailModel
+                                    (videoDetailsProvider.sectionDetailModel
                                                     .result?.isRent ??
                                                 0) ==
                                             1
@@ -535,11 +532,11 @@ class MovieDetailsState extends State<MovieDetails> {
                                 )
                               : const SizedBox.shrink(),
                           /* Play Video button */
-                          /* ((sectionDetailsProvider.sectionDetailModel.result
+                          /* ((videoDetailsProvider.sectionDetailModel.result
                                                       ?.isPremium ??
                                                   0) ==
                                               0 &&
-                                          (sectionDetailsProvider.sectionDetailModel
+                                          (videoDetailsProvider.sectionDetailModel
                                                       .result?.stopTime ??
                                                   0) ==
                                               0)
@@ -550,17 +547,17 @@ class MovieDetailsState extends State<MovieDetails> {
                               onTap: () {
                                 openPlayer(
                                   "Video",
-                                  (sectionDetailsProvider
+                                  (videoDetailsProvider
                                           .sectionDetailModel.result?.id ??
                                       0),
-                                  (sectionDetailsProvider.sectionDetailModel
+                                  (videoDetailsProvider.sectionDetailModel
                                           .result?.videoType ??
                                       0),
                                   widget.typeId,
-                                  (sectionDetailsProvider
+                                  (videoDetailsProvider
                                           .sectionDetailModel.result?.video ??
                                       ""),
-                                  (sectionDetailsProvider
+                                  (videoDetailsProvider
                                           .sectionDetailModel.result?.name ??
                                       ""),
                                 );
@@ -599,11 +596,11 @@ class MovieDetailsState extends State<MovieDetails> {
                             ),
                           ) /* : const SizedBox.shrink() */,
                           /* Continue Watching Button */
-                          // ((sectionDetailsProvider.sectionDetailModel.result
+                          // ((videoDetailsProvider.sectionDetailModel.result
                           //                     ?.stopTime ??
                           //                 0) >
                           //             0 &&
-                          //         sectionDetailsProvider.sectionDetailModel
+                          //         videoDetailsProvider.sectionDetailModel
                           //                 .result?.videoDuration !=
                           //             null)
                           //     ? Container(
@@ -657,7 +654,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           //                       MyText(
                           //                         color: white,
                           //                         text:
-                          //                             "${Utils.remainTimeInMin(((sectionDetailsProvider.sectionDetailModel.result?.videoDuration ?? 0) - (sectionDetailsProvider.sectionDetailModel.result?.stopTime ?? 0)).abs())} $left",
+                          //                             "${Utils.remainTimeInMin(((videoDetailsProvider.sectionDetailModel.result?.videoDuration ?? 0) - (videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0)).abs())} $left",
                           //                         textalign:
                           //                             TextAlign.start,
                           //                         fontsize: 12,
@@ -688,12 +685,12 @@ class MovieDetailsState extends State<MovieDetails> {
                           //                     const Radius.circular(2),
                           //                 lineHeight: 4,
                           //                 percent: Utils.getPercentage(
-                          //                     sectionDetailsProvider
+                          //                     videoDetailsProvider
                           //                             .sectionDetailModel
                           //                             .result
                           //                             ?.videoDuration ??
                           //                         0,
-                          //                     sectionDetailsProvider
+                          //                     videoDetailsProvider
                           //                             .sectionDetailModel
                           //                             .result
                           //                             ?.stopTime ??
@@ -707,17 +704,17 @@ class MovieDetailsState extends State<MovieDetails> {
                           //       )
                           //     : const SizedBox.shrink(),
                           /* Subscription Button */
-                          // ((sectionDetailsProvider.sectionDetailModel.result
+                          // ((videoDetailsProvider.sectionDetailModel.result
                           //                     ?.isPremium ??
                           //                 0) ==
                           //             1 &&
-                          //         ((sectionDetailsProvider
+                          //         ((videoDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.isBuy ??
                           //                     0) ==
                           //                 0 ||
-                          //             (sectionDetailsProvider
+                          //             (videoDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.rentBuy ??
@@ -748,17 +745,17 @@ class MovieDetailsState extends State<MovieDetails> {
                           //       )
                           //     : const SizedBox.shrink(),
                           /* Rent Button */
-                          // ((sectionDetailsProvider.sectionDetailModel.result
+                          // ((videoDetailsProvider.sectionDetailModel.result
                           //                     ?.isPremium ??
                           //                 0) ==
                           //             1 &&
-                          //         ((sectionDetailsProvider
+                          //         ((videoDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.isRent ??
                           //                     0) ==
                           //                 1 &&
-                          //             (sectionDetailsProvider
+                          //             (videoDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.rentBuy ??
@@ -779,7 +776,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           //         child: MyText(
                           //           color: black,
                           //           text:
-                          //               "$rentMovieAtJust ${Constant.currencySymbol}${sectionDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                          //               "$rentMovieAtJust ${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
                           //           textalign: TextAlign.center,
                           //           fontsize: 15,
                           //           fontwaight: FontWeight.w600,
@@ -800,11 +797,11 @@ class MovieDetailsState extends State<MovieDetails> {
                           //     crossAxisAlignment: CrossAxisAlignment.center,
                           //     children: [
                           //       /* Start Over */
-                          //       ((sectionDetailsProvider.sectionDetailModel
+                          //       ((videoDetailsProvider.sectionDetailModel
                           //                           .result?.stopTime ??
                           //                       0) >
                           //                   0 &&
-                          //               sectionDetailsProvider
+                          //               videoDetailsProvider
                           //                       .sectionDetailModel
                           //                       .result
                           //                       ?.videoDuration !=
@@ -929,8 +926,8 @@ class MovieDetailsState extends State<MovieDetails> {
                           //         children: [
                           //           InkWell(
                           //             onTap: () {
-                          //               log("isBookmark ====> ${sectionDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                          //               sectionDetailsProvider.setBookMark(
+                          //               log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                          //               videoDetailsProvider.setBookMark(
                           //                 context,
                           //                 widget.typeId,
                           //                 widget.videoType,
@@ -953,12 +950,12 @@ class MovieDetailsState extends State<MovieDetails> {
                           //               child: Consumer<
                           //                   SectionVideoDetailsProvider>(
                           //                 builder: (context,
-                          //                     sectionDetailsProvider, child) {
+                          //                     videoDetailsProvider, child) {
                           //                   return MyImage(
                           //                     width: Constant.featureIconSize,
                           //                     height: Constant.featureIconSize,
                           //                     color: lightGray,
-                          //                     imagePath: (sectionDetailsProvider
+                          //                     imagePath: (videoDetailsProvider
                           //                                     .sectionDetailModel
                           //                                     .result
                           //                                     ?.isBookmark ??
@@ -1040,7 +1037,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                       const BoxConstraints(minHeight: 0),
                                   alignment: Alignment.centerLeft,
                                   child: ExpandableText(
-                                    sectionDetailsProvider.sectionDetailModel
+                                    videoDetailsProvider.sectionDetailModel
                                             .result?.description ??
                                         "",
                                     expandText: more,
@@ -1071,7 +1068,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     MyText(
                                       color: otherColor,
                                       text:
-                                          "${sectionDetailsProvider.sectionDetailModel.result?.imdbRating ?? 0}",
+                                          "${videoDetailsProvider.sectionDetailModel.result?.imdbRating ?? 0}",
                                       textalign: TextAlign.start,
                                       fontwaight: FontWeight.w600,
                                       fontsize: 14,
@@ -1088,7 +1085,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   borderRadius: BorderRadius.circular(4),
                                   onTap: () {
                                     log("Tapped on : $languages_");
-                                    log("language Length ====> ${sectionDetailsProvider.sectionDetailModel.language?.length ?? 0}");
+                                    log("language Length ====> ${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}");
                                     showModalBottomSheet(
                                       context: context,
                                       backgroundColor: lightBlack,
@@ -1103,7 +1100,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                         return Wrap(
                                           children: <Widget>[
                                             buildLangSubtitleDialog(
-                                                sectionDetailsProvider
+                                                videoDetailsProvider
                                                     .sectionDetailModel
                                                     .language),
                                           ],
@@ -1132,7 +1129,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                         MyText(
                                           color: white,
                                           text:
-                                              "$audio (${sectionDetailsProvider.sectionDetailModel.language?.length ?? 0}), $subtitle (0)",
+                                              "$audio (${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}), $subtitle (0)",
                                           textalign: TextAlign.center,
                                           fontwaight: FontWeight.normal,
                                           fontsize: 13,
@@ -1157,10 +1154,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             ),
                           ),
                           /* Customers also watched */
-                          (sectionDetailsProvider
+                          (videoDetailsProvider
                                           .sectionDetailModel.getRelatedVideo !=
                                       null &&
-                                  (sectionDetailsProvider.sectionDetailModel
+                                  (videoDetailsProvider.sectionDetailModel
                                               .getRelatedVideo?.length ??
                                           0) >
                                       0)
@@ -1189,7 +1186,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width,
                                       height: getDynamicHeight(
-                                        "${sectionDetailsProvider.sectionDetailModel.result?.videoType ?? ""}",
+                                        "${videoDetailsProvider.sectionDetailModel.result?.videoType ?? ""}",
                                         "landscape",
                                       ),
                                       child: ListView.separated(
@@ -1204,10 +1201,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                             int postion) {
                                           /* video_type =>  1-video,  2-show,  3-language,  4-category */
                                           /* screen_layout =>  landscape, potrait, square */
-                                          return landscape(
-                                              sectionDetailsProvider
-                                                  .sectionDetailModel
-                                                  .getRelatedVideo);
+                                          return landscape(videoDetailsProvider
+                                              .sectionDetailModel
+                                              .getRelatedVideo);
                                         },
                                       ),
                                     ),
@@ -1215,10 +1211,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                 )
                               : const SizedBox.shrink(),
                           /* Cast & Crew */
-                          (sectionDetailsProvider.sectionDetailModel.cast !=
+                          (videoDetailsProvider.sectionDetailModel.cast !=
                                       null &&
-                                  (sectionDetailsProvider.sectionDetailModel
-                                              .cast?.length ??
+                                  (videoDetailsProvider.sectionDetailModel.cast
+                                              ?.length ??
                                           0) >
                                       0)
                               ? Column(
@@ -1301,7 +1297,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                       mainAxisSpacing: 8,
                                       padding: const EdgeInsets.only(
                                           left: 20, right: 20, bottom: 15),
-                                      itemCount: sectionDetailsProvider
+                                      itemCount: videoDetailsProvider
                                               .sectionDetailModel
                                               .cast
                                               ?.length ??
@@ -1339,7 +1335,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       BorderRadius.circular(
                                                           Constant.cardRadius),
                                                   child: MyNetworkImage(
-                                                    imageUrl: sectionDetailsProvider
+                                                    imageUrl: videoDetailsProvider
                                                             .sectionDetailModel
                                                             .cast
                                                             ?.elementAt(
@@ -1374,7 +1370,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 padding:
                                                     const EdgeInsets.all(5),
                                                 child: MyText(
-                                                  text: sectionDetailsProvider
+                                                  text: videoDetailsProvider
                                                           .sectionDetailModel
                                                           .cast
                                                           ?.elementAt(position)
@@ -1677,16 +1673,17 @@ class MovieDetailsState extends State<MovieDetails> {
         ),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
+            borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return MovieDetails(
                       relatedDataList?.elementAt(index).id ?? 0,
                       relatedDataList?.elementAt(index).videoType ?? 0,
-                      1,
+                      relatedDataList?.elementAt(index).typeId ?? 0,
                     );
                   },
                 ),
@@ -1695,10 +1692,7 @@ class MovieDetailsState extends State<MovieDetails> {
             child: Container(
               width: Constant.widthLand,
               height: Constant.heightLand,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-              ),
+              alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: MyNetworkImage(
@@ -1731,16 +1725,17 @@ class MovieDetailsState extends State<MovieDetails> {
         ),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
+            borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return MovieDetails(
                       relatedDataList?.elementAt(index).id ?? 0,
                       relatedDataList?.elementAt(index).videoType ?? 0,
-                      1,
+                      relatedDataList?.elementAt(index).typeId ?? 0,
                     );
                   },
                 ),
@@ -1749,10 +1744,7 @@ class MovieDetailsState extends State<MovieDetails> {
             child: Container(
               width: Constant.widthPort,
               height: Constant.heightPort,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(4),
-              ),
+              alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: MyNetworkImage(
@@ -1785,16 +1777,17 @@ class MovieDetailsState extends State<MovieDetails> {
         ),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
+            borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return MovieDetails(
                       relatedDataList?.elementAt(index).id ?? 0,
                       relatedDataList?.elementAt(index).videoType ?? 0,
-                      1,
+                      relatedDataList?.elementAt(index).typeId ?? 0,
                     );
                   },
                 ),
@@ -1803,10 +1796,7 @@ class MovieDetailsState extends State<MovieDetails> {
             child: Container(
               width: Constant.widthSquare,
               height: Constant.heightSquare,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(4),
-              ),
+              alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: MyNetworkImage(

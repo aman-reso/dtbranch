@@ -33,10 +33,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
   @override
   void initState() {
+    super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");
     log("initState typeId ==> ${widget.typeId}");
-    super.initState();
     _getData();
   }
 
@@ -44,70 +44,66 @@ class TvShowDetailsState extends State<TvShowDetails> {
     Utils.getCurrencySymbol();
     showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
-    showDetailsProvider.getSectionDetails(
+    await showDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) => setState(() {}));
   }
 
   @override
   void dispose() {
-    showDetailsProvider.clearSectionProvider();
     super.dispose();
+    showDetailsProvider.clearProvider();
   }
 
   @override
   Widget build(BuildContext context) {
-    final sectionDetailsProvider =
+    final showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
-    if (sectionDetailsProvider.loading) {
+    if (showDetailsProvider.loading) {
       return Utils.pageLoader();
     } else {
-      if (sectionDetailsProvider.sectionDetailModel.status == 200) {
-        if (sectionDetailsProvider.sectionDetailModel.result != null) {
-          if (sectionDetailsProvider.sectionDetailModel.cast != null &&
-              (sectionDetailsProvider.sectionDetailModel.cast?.length ?? 0) >
-                  0) {
+      if (showDetailsProvider.sectionDetailModel.status == 200) {
+        if (showDetailsProvider.sectionDetailModel.result != null) {
+          if (showDetailsProvider.sectionDetailModel.cast != null &&
+              (showDetailsProvider.sectionDetailModel.cast?.length ?? 0) > 0) {
             directorList = <Cast>[];
             for (int i = 0;
-                i <
-                    (sectionDetailsProvider.sectionDetailModel.cast?.length ??
-                        0);
+                i < (showDetailsProvider.sectionDetailModel.cast?.length ?? 0);
                 i++) {
-              if (sectionDetailsProvider.sectionDetailModel.cast
+              if (showDetailsProvider.sectionDetailModel.cast
                       ?.elementAt(i)
                       .type ==
                   "Director") {
                 Cast cast = Cast();
-                cast.id = sectionDetailsProvider.sectionDetailModel.cast
+                cast.id = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .id ??
                     0;
-                cast.name = sectionDetailsProvider.sectionDetailModel.cast
+                cast.name = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .name ??
                     "";
-                cast.image = sectionDetailsProvider.sectionDetailModel.cast
+                cast.image = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .image ??
                     "";
-                cast.type = sectionDetailsProvider.sectionDetailModel.cast
+                cast.type = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .type ??
                     "";
-                cast.personalInfo = sectionDetailsProvider
-                        .sectionDetailModel.cast
+                cast.personalInfo = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .personalInfo ??
                     "";
-                cast.status = sectionDetailsProvider.sectionDetailModel.cast
+                cast.status = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .status ??
                     "";
-                cast.createdAt = sectionDetailsProvider.sectionDetailModel.cast
+                cast.createdAt = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .createdAt ??
                     "";
-                cast.updatedAt = sectionDetailsProvider.sectionDetailModel.cast
+                cast.updatedAt = showDetailsProvider.sectionDetailModel.cast
                         ?.elementAt(i)
                         .updatedAt ??
                     "";
@@ -116,16 +112,16 @@ class TvShowDetailsState extends State<TvShowDetails> {
               }
             }
           }
-          if (sectionDetailsProvider.sectionDetailModel.session != null ||
-              sectionDetailsProvider.sectionDetailModel.session != []) {
-            if ((sectionDetailsProvider.sectionDetailModel.session?.length ??
-                    0) >
+          if (showDetailsProvider.sectionDetailModel.session != null ||
+              showDetailsProvider.sectionDetailModel.session != []) {
+            if ((showDetailsProvider.sectionDetailModel.session?.length ?? 0) >
                 0) {
-              getAllEpisode(sectionDetailsProvider.seasonPos,
-                  sectionDetailsProvider.sectionDetailModel.session);
+              getAllEpisode(showDetailsProvider.seasonPos,
+                  showDetailsProvider.sectionDetailModel.session);
             }
           }
           return Scaffold(
+            key: widget.key,
             backgroundColor: appBgColor,
             body: SafeArea(
               child: SingleChildScrollView(
@@ -137,25 +133,25 @@ class TvShowDetailsState extends State<TvShowDetails> {
                       alignment: Alignment.center,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(0),
                           width: MediaQuery.of(context).size.width,
                           height: Constant.detailPoster,
                           color: white,
                           child: MyNetworkImage(
                             fit: BoxFit.fill,
-                            imageUrl: sectionDetailsProvider
-                                        .sectionDetailModel.result?.landscape !=
-                                    ""
-                                ? (sectionDetailsProvider
+                            imageUrl: (showDetailsProvider.sectionDetailModel
+                                            .result?.landscape
+                                            .toString() ??
+                                        "")
+                                    .isNotEmpty
+                                ? (showDetailsProvider
                                         .sectionDetailModel.result?.landscape ??
                                     Constant.placeHolderLand)
-                                : (sectionDetailsProvider
+                                : (showDetailsProvider
                                         .sectionDetailModel.result?.thumbnail ??
                                     Constant.placeHolderLand),
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.all(0),
                           width: MediaQuery.of(context).size.width,
                           height: Constant.detailPoster,
                           decoration: const BoxDecoration(
@@ -175,17 +171,16 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           onTap: () {
                             openPlayer(
                               "Show",
-                              (sectionDetailsProvider
+                              (showDetailsProvider
                                       .sectionDetailModel.result?.id ??
                                   0),
-                              (sectionDetailsProvider
+                              (showDetailsProvider
                                       .sectionDetailModel.result?.videoType ??
                                   0),
                               widget.typeId,
                               0,
-                              sectionDetailsProvider
-                                  .episodeBySeasonModel.result,
-                              (sectionDetailsProvider
+                              showDetailsProvider.episodeBySeasonModel.result,
+                              (showDetailsProvider
                                       .sectionDetailModel.result?.name ??
                                   ""),
                             );
@@ -228,12 +223,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       fit: BoxFit.cover,
                                       imgHeight: 85,
                                       imgWidth: 65,
-                                      imageUrl: sectionDetailsProvider
+                                      imageUrl: showDetailsProvider
                                                   .sectionDetailModel
                                                   .result
                                                   ?.thumbnail !=
                                               ""
-                                          ? (sectionDetailsProvider
+                                          ? (showDetailsProvider
                                                   .sectionDetailModel
                                                   .result
                                                   ?.thumbnail ??
@@ -253,7 +248,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     children: [
                                       MyText(
                                         color: white,
-                                        text: sectionDetailsProvider
+                                        text: showDetailsProvider
                                                 .sectionDetailModel
                                                 .result
                                                 ?.name ??
@@ -272,12 +267,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           /* Release Year */
-                                          (sectionDetailsProvider
+                                          (showDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.releaseYear !=
                                                       null &&
-                                                  sectionDetailsProvider
+                                                  showDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.releaseYear !=
@@ -287,7 +282,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                       right: 10),
                                                   child: MyText(
                                                     color: whiteLight,
-                                                    text: sectionDetailsProvider
+                                                    text: showDetailsProvider
                                                             .sectionDetailModel
                                                             .result
                                                             ?.releaseYear ??
@@ -304,7 +299,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 )
                                               : const SizedBox.shrink(),
                                           /* Duration */
-                                          (sectionDetailsProvider
+                                          (showDetailsProvider
                                                       .sectionDetailModel
                                                       .result
                                                       ?.videoDuration !=
@@ -314,14 +309,14 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                       right: 10),
                                                   child: MyText(
                                                     color: otherColor,
-                                                    text: ((sectionDetailsProvider
+                                                    text: ((showDetailsProvider
                                                                     .sectionDetailModel
                                                                     .result
                                                                     ?.videoDuration ??
                                                                 0) >
                                                             0)
                                                         ? Utils.convertTimeToText(
-                                                            sectionDetailsProvider
+                                                            showDetailsProvider
                                                                     .sectionDetailModel
                                                                     .result
                                                                     ?.videoDuration ??
@@ -339,12 +334,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 )
                                               : const SizedBox.shrink(),
                                           /* Age Limit */
-                                          (sectionDetailsProvider
+                                          (showDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.ageRestriction !=
                                                       null &&
-                                                  sectionDetailsProvider
+                                                  showDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.ageRestriction !=
@@ -367,7 +362,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                   ),
                                                   child: MyText(
                                                     color: otherColor,
-                                                    text: sectionDetailsProvider
+                                                    text: showDetailsProvider
                                                             .sectionDetailModel
                                                             .result
                                                             ?.ageRestriction ??
@@ -384,12 +379,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 )
                                               : const SizedBox.shrink(),
                                           /* MaxQuality */
-                                          (sectionDetailsProvider
+                                          (showDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.maxVideoQuality !=
                                                       null &&
-                                                  sectionDetailsProvider
+                                                  showDetailsProvider
                                                           .sectionDetailModel
                                                           .result
                                                           ?.maxVideoQuality !=
@@ -412,7 +407,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                   ),
                                                   child: MyText(
                                                     color: otherColor,
-                                                    text: sectionDetailsProvider
+                                                    text: showDetailsProvider
                                                             .sectionDetailModel
                                                             .result
                                                             ?.maxVideoQuality ??
@@ -437,88 +432,90 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             ),
                           ),
                           const SizedBox(
-                            height: 5,
+                            height: 15,
                           ),
                           /* Season Title */
                           Consumer<ShowDetailsProvider>(
-                            builder: (context, sectionDetailsProvider, child) {
-                              log("session length ==> ${(sectionDetailsProvider.sectionDetailModel.session?.length ?? 0)}");
-                              if (sectionDetailsProvider
+                            builder: (context, showDetailsProvider, child) {
+                              log("session length ==> ${(showDetailsProvider.sectionDetailModel.session?.length ?? 0)}");
+                              if (showDetailsProvider
                                           .sectionDetailModel.session !=
                                       null &&
-                                  (sectionDetailsProvider.sectionDetailModel
+                                  (showDetailsProvider.sectionDetailModel
                                               .session?.length ??
                                           0) >
                                       0) {
-                                return InkWell(
-                                  borderRadius: BorderRadius.circular(4),
-                                  onTap: () {
-                                    log("Tapped on : $season");
-                                    log("session Length ====> ${sectionDetailsProvider.sectionDetailModel.session?.length ?? 0}");
-                                    showModalBottomSheet(
-                                      context: context,
-                                      backgroundColor: lightBlack,
-                                      isScrollControlled: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(0),
-                                        ),
-                                      ),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      builder: (BuildContext context) {
-                                        return Wrap(
-                                          children: <Widget>[
-                                            buildSeasonDialog(
-                                                sectionDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.name ??
-                                                    "",
-                                                sectionDetailsProvider
-                                                    .sectionDetailModel
-                                                    .session),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
+                                return Align(
+                                  alignment: Alignment.centerLeft,
                                   child: Container(
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                     padding: const EdgeInsets.only(
                                         left: 20, right: 20),
-                                    constraints: const BoxConstraints(
-                                      minWidth: 80,
-                                      minHeight: 35,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        MyText(
-                                          color: white,
-                                          text: sectionDetailsProvider
-                                                  .sectionDetailModel.session
-                                                  ?.elementAt(
-                                                      sectionDetailsProvider
-                                                          .seasonPos)
-                                                  .name ??
-                                              "",
-                                          textalign: TextAlign.center,
-                                          fontwaight: FontWeight.w600,
-                                          fontsize: 15,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontstyle: FontStyle.normal,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(4),
+                                      onTap: () {
+                                        log("Tapped on : $season");
+                                        log("session Length ====> ${showDetailsProvider.sectionDetailModel.session?.length ?? 0}");
+                                        showModalBottomSheet(
+                                          context: context,
+                                          backgroundColor: lightBlack,
+                                          isScrollControlled: true,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(0),
+                                            ),
+                                          ),
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          builder: (BuildContext context) {
+                                            return Wrap(
+                                              children: <Widget>[
+                                                buildSeasonDialog(
+                                                    showDetailsProvider
+                                                            .sectionDetailModel
+                                                            .result
+                                                            ?.name ??
+                                                        "",
+                                                    showDetailsProvider
+                                                        .sectionDetailModel
+                                                        .session),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: SizedBox(
+                                        height: 30,
+                                        child: Row(
+                                          children: [
+                                            MyText(
+                                              color: white,
+                                              text: showDetailsProvider
+                                                      .sectionDetailModel
+                                                      .session
+                                                      ?.elementAt(
+                                                          showDetailsProvider
+                                                              .seasonPos)
+                                                      .name ??
+                                                  "",
+                                              textalign: TextAlign.center,
+                                              fontwaight: FontWeight.w600,
+                                              fontsize: 15,
+                                              maxline: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              fontstyle: FontStyle.normal,
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            MyImage(
+                                              width: 12,
+                                              height: 12,
+                                              imagePath: "ic_dropdown.png",
+                                              color: lightGray,
+                                            )
+                                          ],
                                         ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        MyImage(
-                                          width: 12,
-                                          height: 12,
-                                          imagePath: "ic_dropdown.png",
-                                          color: lightGray,
-                                        )
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -528,155 +525,155 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             },
                           ),
                           /* Prime TAG  & Rent TAG */
-                          (sectionDetailsProvider.sectionDetailModel.result
-                                          ?.isPremium ??
-                                      0) ==
-                                  1
-                              ? Column(
-                                  children: [
-                                    /* Prime TAG */
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 8),
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 0, 20, 0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          MyText(
-                                            color: primaryColor,
-                                            text: primeTAG,
-                                            textalign: TextAlign.start,
-                                            fontsize: 16,
-                                            fontwaight: FontWeight.w700,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontstyle: FontStyle.normal,
-                                          ),
-                                          const SizedBox(
-                                            height: 2,
-                                          ),
-                                          MyText(
-                                            color: white,
-                                            text: primeTAGDesc,
-                                            textalign: TextAlign.center,
-                                            fontsize: 12,
-                                            fontwaight: FontWeight.normal,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontstyle: FontStyle.normal,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    /* Rent TAG */
-                                    // (sectionDetailsProvider
-                                    //                 .sectionDetailModel
-                                    //                 .result
-                                    //                 ?.isRent ??
-                                    //             0) ==
-                                    //         1
-                                    //     ? Container(
-                                    //         margin: const EdgeInsets.only(
-                                    //             top: 8),
-                                    //         width: MediaQuery.of(context)
-                                    //             .size
-                                    //             .width,
-                                    //         padding:
-                                    //             const EdgeInsets.fromLTRB(
-                                    //                 20, 0, 20, 0),
-                                    //         child: Row(
-                                    //           mainAxisSize:
-                                    //               MainAxisSize.max,
-                                    //           children: [
-                                    //             Container(
-                                    //               width: 20,
-                                    //               height: 20,
-                                    //               decoration: BoxDecoration(
-                                    //                 color:
-                                    //                     complimentryColor,
-                                    //                 borderRadius:
-                                    //                     BorderRadius
-                                    //                         .circular(10),
-                                    //                 shape:
-                                    //                     BoxShape.rectangle,
-                                    //               ),
-                                    //               alignment:
-                                    //                   Alignment.center,
-                                    //               child: MyText(
-                                    //                 color: white,
-                                    //                 text: Constant
-                                    //                     .currencySymbol,
-                                    //                 textalign:
-                                    //                     TextAlign.center,
-                                    //                 fontsize: 11,
-                                    //                 fontwaight:
-                                    //                     FontWeight.w800,
-                                    //                 maxline: 1,
-                                    //                 overflow: TextOverflow
-                                    //                     .ellipsis,
-                                    //                 fontstyle:
-                                    //                     FontStyle.normal,
-                                    //               ),
-                                    //             ),
-                                    //             Container(
-                                    //               margin:
-                                    //                   const EdgeInsets.only(
-                                    //                       left: 5),
-                                    //               child: MyText(
-                                    //                 color: white,
-                                    //                 text: rentTAG,
-                                    //                 textalign:
-                                    //                     TextAlign.center,
-                                    //                 fontsize: 12,
-                                    //                 fontwaight:
-                                    //                     FontWeight.normal,
-                                    //                 maxline: 1,
-                                    //                 overflow: TextOverflow
-                                    //                     .ellipsis,
-                                    //                 fontstyle:
-                                    //                     FontStyle.normal,
-                                    //               ),
-                                    //             ),
-                                    //           ],
-                                    //         ),
-                                    //       )
-                                    //     : const SizedBox.shrink(),
-                                  ],
-                                )
-                              : const SizedBox.shrink(),
+                          // (showDetailsProvider.sectionDetailModel.result
+                          //                 ?.isPremium ??
+                          //             0) ==
+                          //         1
+                          //     ? Column(
+                          //         children: [
+                          //           /* Prime TAG */
+                          //           Container(
+                          //             margin: const EdgeInsets.only(top: 8),
+                          //             width: MediaQuery.of(context).size.width,
+                          //             padding: const EdgeInsets.fromLTRB(
+                          //                 20, 0, 20, 0),
+                          //             child: Column(
+                          //               crossAxisAlignment:
+                          //                   CrossAxisAlignment.start,
+                          //               mainAxisAlignment:
+                          //                   MainAxisAlignment.start,
+                          //               mainAxisSize: MainAxisSize.max,
+                          //               children: [
+                          //                 MyText(
+                          //                   color: primaryColor,
+                          //                   text: primeTAG,
+                          //                   textalign: TextAlign.start,
+                          //                   fontsize: 16,
+                          //                   fontwaight: FontWeight.w700,
+                          //                   maxline: 1,
+                          //                   overflow: TextOverflow.ellipsis,
+                          //                   fontstyle: FontStyle.normal,
+                          //                 ),
+                          //                 const SizedBox(
+                          //                   height: 2,
+                          //                 ),
+                          //                 MyText(
+                          //                   color: white,
+                          //                   text: primeTAGDesc,
+                          //                   textalign: TextAlign.center,
+                          //                   fontsize: 12,
+                          //                   fontwaight: FontWeight.normal,
+                          //                   maxline: 1,
+                          //                   overflow: TextOverflow.ellipsis,
+                          //                   fontstyle: FontStyle.normal,
+                          //                 ),
+                          //               ],
+                          //             ),
+                          //           ),
+                          //           /* Rent TAG */
+                          //           // (showDetailsProvider
+                          //           //                 .sectionDetailModel
+                          //           //                 .result
+                          //           //                 ?.isRent ??
+                          //           //             0) ==
+                          //           //         1
+                          //           //     ? Container(
+                          //           //         margin: const EdgeInsets.only(
+                          //           //             top: 8),
+                          //           //         width: MediaQuery.of(context)
+                          //           //             .size
+                          //           //             .width,
+                          //           //         padding:
+                          //           //             const EdgeInsets.fromLTRB(
+                          //           //                 20, 0, 20, 0),
+                          //           //         child: Row(
+                          //           //           mainAxisSize:
+                          //           //               MainAxisSize.max,
+                          //           //           children: [
+                          //           //             Container(
+                          //           //               width: 20,
+                          //           //               height: 20,
+                          //           //               decoration: BoxDecoration(
+                          //           //                 color:
+                          //           //                     complimentryColor,
+                          //           //                 borderRadius:
+                          //           //                     BorderRadius
+                          //           //                         .circular(10),
+                          //           //                 shape:
+                          //           //                     BoxShape.rectangle,
+                          //           //               ),
+                          //           //               alignment:
+                          //           //                   Alignment.center,
+                          //           //               child: MyText(
+                          //           //                 color: white,
+                          //           //                 text: Constant
+                          //           //                     .currencySymbol,
+                          //           //                 textalign:
+                          //           //                     TextAlign.center,
+                          //           //                 fontsize: 11,
+                          //           //                 fontwaight:
+                          //           //                     FontWeight.w800,
+                          //           //                 maxline: 1,
+                          //           //                 overflow: TextOverflow
+                          //           //                     .ellipsis,
+                          //           //                 fontstyle:
+                          //           //                     FontStyle.normal,
+                          //           //               ),
+                          //           //             ),
+                          //           //             Container(
+                          //           //               margin:
+                          //           //                   const EdgeInsets.only(
+                          //           //                       left: 5),
+                          //           //               child: MyText(
+                          //           //                 color: white,
+                          //           //                 text: rentTAG,
+                          //           //                 textalign:
+                          //           //                     TextAlign.center,
+                          //           //                 fontsize: 12,
+                          //           //                 fontwaight:
+                          //           //                     FontWeight.normal,
+                          //           //                 maxline: 1,
+                          //           //                 overflow: TextOverflow
+                          //           //                     .ellipsis,
+                          //           //                 fontstyle:
+                          //           //                     FontStyle.normal,
+                          //           //               ),
+                          //           //             ),
+                          //           //           ],
+                          //           //         ),
+                          //           //       )
+                          //           //     : const SizedBox.shrink(),
+                          //         ],
+                          //       )
+                          //     : const SizedBox.shrink(),
                           /* Play Video button */
-                          /* ((sectionDetailsProvider.sectionDetailModel.result
+                          /* ((showDetailsProvider.sectionDetailModel.result
                                                       ?.isPremium ??
                                                   0) ==
                                               0 &&
-                                          (sectionDetailsProvider.sectionDetailModel
+                                          (showDetailsProvider.sectionDetailModel
                                                       .result?.stopTime ??
                                                   0) ==
                                               0)
                                       ?  */
                           Container(
-                            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+                            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(5),
                               onTap: () {
                                 openPlayer(
                                   "Show",
-                                  (sectionDetailsProvider
+                                  (showDetailsProvider
                                           .sectionDetailModel.result?.id ??
                                       0),
-                                  (sectionDetailsProvider.sectionDetailModel
-                                          .result?.videoType ??
+                                  (showDetailsProvider.sectionDetailModel.result
+                                          ?.videoType ??
                                       0),
                                   widget.typeId,
                                   0,
-                                  sectionDetailsProvider
+                                  showDetailsProvider
                                       .episodeBySeasonModel.result,
-                                  (sectionDetailsProvider
+                                  (showDetailsProvider
                                           .sectionDetailModel.result?.name ??
                                       ""),
                                 );
@@ -714,11 +711,11 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             ),
                           ) /* : const SizedBox.shrink() */,
                           /* Continue Watching Button */
-                          // ((sectionDetailsProvider.sectionDetailModel.result
+                          // ((showDetailsProvider.sectionDetailModel.result
                           //                     ?.stopTime ??
                           //                 0) >
                           //             0 &&
-                          //         sectionDetailsProvider.sectionDetailModel
+                          //         showDetailsProvider.sectionDetailModel
                           //                 .result?.videoDuration !=
                           //             null)
                           //     ? Container(
@@ -772,7 +769,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           //                       MyText(
                           //                         color: white,
                           //                         text:
-                          //                             "${Utils.remainTimeInMin(((sectionDetailsProvider.sectionDetailModel.result?.videoDuration ?? 0) - (sectionDetailsProvider.sectionDetailModel.result?.stopTime ?? 0)).abs())} $left",
+                          //                             "${Utils.remainTimeInMin(((showDetailsProvider.sectionDetailModel.result?.videoDuration ?? 0) - (showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0)).abs())} $left",
                           //                         textalign:
                           //                             TextAlign.start,
                           //                         fontsize: 12,
@@ -803,12 +800,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           //                     const Radius.circular(2),
                           //                 lineHeight: 4,
                           //                 percent: Utils.getPercentage(
-                          //                     sectionDetailsProvider
+                          //                     showDetailsProvider
                           //                             .sectionDetailModel
                           //                             .result
                           //                             ?.videoDuration ??
                           //                         0,
-                          //                     sectionDetailsProvider
+                          //                     showDetailsProvider
                           //                             .sectionDetailModel
                           //                             .result
                           //                             ?.stopTime ??
@@ -822,17 +819,17 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           //       )
                           //     : const SizedBox.shrink(),
                           /* Subscription Button */
-                          // ((sectionDetailsProvider.sectionDetailModel.result
+                          // ((showDetailsProvider.sectionDetailModel.result
                           //                     ?.isPremium ??
                           //                 0) ==
                           //             1 &&
-                          //         ((sectionDetailsProvider
+                          //         ((showDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.isBuy ??
                           //                     0) ==
                           //                 0 ||
-                          //             (sectionDetailsProvider
+                          //             (showDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.rentBuy ??
@@ -863,17 +860,17 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           //       )
                           //     : const SizedBox.shrink(),
                           /* Rent Button */
-                          // ((sectionDetailsProvider.sectionDetailModel.result
+                          // ((showDetailsProvider.sectionDetailModel.result
                           //                     ?.isPremium ??
                           //                 0) ==
                           //             1 &&
-                          //         ((sectionDetailsProvider
+                          //         ((showDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.isRent ??
                           //                     0) ==
                           //                 1 &&
-                          //             (sectionDetailsProvider
+                          //             (showDetailsProvider
                           //                         .sectionDetailModel
                           //                         .result
                           //                         ?.rentBuy ??
@@ -894,7 +891,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           //         child: MyText(
                           //           color: black,
                           //           text:
-                          //               "$rentMovieAtJust ${Constant.currencySymbol}${sectionDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                          //               "$rentMovieAtJust ${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
                           //           textalign: TextAlign.center,
                           //           fontsize: 15,
                           //           fontwaight: FontWeight.w600,
@@ -957,8 +954,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           //         children: [
                           //           InkWell(
                           //             onTap: () {
-                          //               log("isBookmark ====> ${sectionDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                          //               sectionDetailsProvider.setBookMark(
+                          //               log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                          //               showDetailsProvider.setBookMark(
                           //                 context,
                           //                 widget.typeId,
                           //                 widget.videoType,
@@ -981,12 +978,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           //               child: Consumer<
                           //                   SectionShowDetailsProvider>(
                           //                 builder: (context,
-                          //                     sectionDetailsProvider, child) {
+                          //                     showDetailsProvider, child) {
                           //                   return MyImage(
                           //                     width: Constant.featureIconSize,
                           //                     height: Constant.featureIconSize,
                           //                     color: lightGray,
-                          //                     imagePath: (sectionDetailsProvider
+                          //                     imagePath: (showDetailsProvider
                           //                                     .sectionDetailModel
                           //                                     .result
                           //                                     ?.isBookmark ??
@@ -1068,7 +1065,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       const BoxConstraints(minHeight: 0),
                                   alignment: Alignment.centerLeft,
                                   child: ExpandableText(
-                                    sectionDetailsProvider.sectionDetailModel
+                                    showDetailsProvider.sectionDetailModel
                                             .result?.description ??
                                         "",
                                     expandText: more,
@@ -1099,7 +1096,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     MyText(
                                       color: otherColor,
                                       text:
-                                          "${sectionDetailsProvider.sectionDetailModel.result?.imdbRating ?? 0}",
+                                          "${showDetailsProvider.sectionDetailModel.result?.imdbRating ?? 0}",
                                       textalign: TextAlign.start,
                                       fontwaight: FontWeight.w600,
                                       fontsize: 14,
@@ -1116,7 +1113,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                   borderRadius: BorderRadius.circular(4),
                                   onTap: () {
                                     log("Tapped on : $languages_");
-                                    log("language Length ====> ${sectionDetailsProvider.sectionDetailModel.language?.length ?? 0}");
+                                    log("language Length ====> ${showDetailsProvider.sectionDetailModel.language?.length ?? 0}");
                                     showModalBottomSheet(
                                       context: context,
                                       backgroundColor: lightBlack,
@@ -1131,7 +1128,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         return Wrap(
                                           children: <Widget>[
                                             buildLangSubtitleDialog(
-                                                sectionDetailsProvider
+                                                showDetailsProvider
                                                     .sectionDetailModel
                                                     .language),
                                           ],
@@ -1160,7 +1157,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         MyText(
                                           color: white,
                                           text:
-                                              "$audio (${sectionDetailsProvider.sectionDetailModel.language?.length ?? 0}), $subtitle (0)",
+                                              "$audio (${showDetailsProvider.sectionDetailModel.language?.length ?? 0}), $subtitle (0)",
                                           textalign: TextAlign.center,
                                           fontwaight: FontWeight.normal,
                                           fontsize: 13,
@@ -1186,18 +1183,18 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           ),
                           /* Episodes */
                           Consumer<ShowDetailsProvider>(
-                            builder: (context, sectionDetailsProvider, child) {
-                              if (sectionDetailsProvider
+                            builder: (context, showDetailsProvider, child) {
+                              if (showDetailsProvider
                                           .sectionDetailModel.session !=
                                       null &&
-                                  (sectionDetailsProvider.sectionDetailModel
-                                              .session?.length ??
+                                  (showDetailsProvider.sectionDetailModel.session
+                                              ?.length ??
                                           0) >
                                       0 &&
-                                  sectionDetailsProvider
+                                  showDetailsProvider
                                           .episodeBySeasonModel.result !=
                                       null &&
-                                  (sectionDetailsProvider.episodeBySeasonModel
+                                  (showDetailsProvider.episodeBySeasonModel
                                               .result?.length ??
                                           0) >
                                       0) {
@@ -1229,7 +1226,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       constraints:
                                           const BoxConstraints(minHeight: 50),
                                       child: expandableEpisode(
-                                        sectionDetailsProvider
+                                        showDetailsProvider
                                             .episodeBySeasonModel.result,
                                       ),
                                     ),
@@ -1241,10 +1238,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             },
                           ),
                           /* Customers also watched */
-                          (sectionDetailsProvider
+                          (showDetailsProvider
                                           .sectionDetailModel.getRelatedVideo !=
                                       null &&
-                                  (sectionDetailsProvider.sectionDetailModel
+                                  (showDetailsProvider.sectionDetailModel
                                               .getRelatedVideo?.length ??
                                           0) >
                                       0)
@@ -1273,7 +1270,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width,
                                       height: getDynamicHeight(
-                                        "${sectionDetailsProvider.sectionDetailModel.result?.videoType ?? ""}",
+                                        "${showDetailsProvider.sectionDetailModel.result?.videoType ?? ""}",
                                         "landscape",
                                       ),
                                       child: ListView.separated(
@@ -1288,10 +1285,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                             int postion) {
                                           /* video_type =>  1-video,  2-show,  3-language,  4-category */
                                           /* screen_layout =>  landscape, potrait, square */
-                                          return landscape(
-                                              sectionDetailsProvider
-                                                  .sectionDetailModel
-                                                  .getRelatedVideo);
+                                          return landscape(showDetailsProvider
+                                              .sectionDetailModel
+                                              .getRelatedVideo);
                                         },
                                       ),
                                     ),
@@ -1299,10 +1295,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                 )
                               : const SizedBox.shrink(),
                           /* Cast & Crew */
-                          (sectionDetailsProvider.sectionDetailModel.cast !=
+                          (showDetailsProvider.sectionDetailModel.cast !=
                                       null &&
-                                  (sectionDetailsProvider.sectionDetailModel
-                                              .cast?.length ??
+                                  (showDetailsProvider.sectionDetailModel.cast
+                                              ?.length ??
                                           0) >
                                       0)
                               ? Column(
@@ -1385,7 +1381,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       mainAxisSpacing: 8,
                                       padding: const EdgeInsets.only(
                                           left: 20, right: 20, bottom: 15),
-                                      itemCount: sectionDetailsProvider
+                                      itemCount: showDetailsProvider
                                               .sectionDetailModel
                                               .cast
                                               ?.length ??
@@ -1423,7 +1419,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                       BorderRadius.circular(
                                                           Constant.cardRadius),
                                                   child: MyNetworkImage(
-                                                    imageUrl: sectionDetailsProvider
+                                                    imageUrl: showDetailsProvider
                                                             .sectionDetailModel
                                                             .cast
                                                             ?.elementAt(
@@ -1458,7 +1454,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 padding:
                                                     const EdgeInsets.all(5),
                                                 child: MyText(
-                                                  text: sectionDetailsProvider
+                                                  text: showDetailsProvider
                                                           .sectionDetailModel
                                                           .cast
                                                           ?.elementAt(position)
@@ -2028,16 +2024,17 @@ class TvShowDetailsState extends State<TvShowDetails> {
         ),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
+            borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return TvShowDetails(
                       relatedDataList?.elementAt(index).id ?? 0,
                       relatedDataList?.elementAt(index).videoType ?? 0,
-                      1,
+                      relatedDataList?.elementAt(index).typeId ?? 0,
                     );
                   },
                 ),
@@ -2046,10 +2043,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
             child: Container(
               width: Constant.widthLand,
               height: Constant.heightLand,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-              ),
+              alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: MyNetworkImage(
@@ -2082,16 +2076,17 @@ class TvShowDetailsState extends State<TvShowDetails> {
         ),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
+            borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return TvShowDetails(
                       relatedDataList?.elementAt(index).id ?? 0,
                       relatedDataList?.elementAt(index).videoType ?? 0,
-                      1,
+                      relatedDataList?.elementAt(index).typeId ?? 0,
                     );
                   },
                 ),
@@ -2100,10 +2095,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
             child: Container(
               width: Constant.widthPort,
               height: Constant.heightPort,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(4),
-              ),
+              alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: MyNetworkImage(
@@ -2136,16 +2128,17 @@ class TvShowDetailsState extends State<TvShowDetails> {
         ),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
+            borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return TvShowDetails(
                       relatedDataList?.elementAt(index).id ?? 0,
                       relatedDataList?.elementAt(index).videoType ?? 0,
-                      1,
+                      relatedDataList?.elementAt(index).typeId ?? 0,
                     );
                   },
                 ),
@@ -2154,10 +2147,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
             child: Container(
               width: Constant.widthSquare,
               height: Constant.heightSquare,
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(4),
-              ),
+              alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: MyNetworkImage(

@@ -2,7 +2,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/bottombar.dart';
-import 'package:dtlive/pages/verifyotp.dart';
+import 'package:dtlive/pages/otpverify.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -238,7 +238,7 @@ class LoginSocialState extends State<LoginSocial> {
                     log("mobileNumber ==> $mobileNumber");
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => VerifyOTP(mobileNumber ?? ""),
+                        builder: (context) => OTPVerify(mobileNumber ?? ""),
                       ),
                     );
                   }
@@ -397,7 +397,7 @@ class LoginSocialState extends State<LoginSocial> {
         );
       } else {
         Utils.showSnackbar(
-            context, "loginFail", "${generalProvider.loginGmailModel.message}");
+            context, "fail", "${generalProvider.loginGmailModel.message}");
       }
     }
   }

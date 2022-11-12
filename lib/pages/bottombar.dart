@@ -1,7 +1,9 @@
 import 'package:dtlive/pages/channels.dart';
+import 'package:dtlive/pages/find.dart';
 import 'package:dtlive/pages/home.dart';
-import 'package:dtlive/pages/search.dart';
+import 'package:dtlive/pages/mystuff.dart';
 import 'package:dtlive/pages/setting.dart';
+import 'package:dtlive/pages/store.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +21,10 @@ class BottombarState extends State<Bottombar> {
 
   static List<Widget> widgetOptions = <Widget>[
     const Home(),
-    const Search(),
+    const Find(),
     const Channels(),
-    // const Store(),
-    const Setting(),
+    const Store(),
+    const MyStuff(),
   ];
 
   void _onItemTapped(int index) {
@@ -138,38 +140,13 @@ class BottombarState extends State<Bottombar> {
                 ),
               ),
             ),
-            // BottomNavigationBarItem(
-            //   backgroundColor: black,
-            //   label: bottomView4,
-            //   activeIcon: Padding(
-            //     padding: const EdgeInsets.all(7),
-            //     child: Image.asset(
-            //       "assets/images/ic_store.png",
-            //       width: 22,
-            //       height: 22,
-            //       color: primaryColor,
-            //     ),
-            //   ),
-            //   icon: Align(
-            //     alignment: Alignment.center,
-            //     child: Padding(
-            //       padding: const EdgeInsets.all(7),
-            //       child: Image.asset(
-            //         "assets/images/ic_store.png",
-            //         width: 22,
-            //         height: 22,
-            //         color: gray,
-            //       ),
-            //     ),
-            //   ),
-            // ),
             BottomNavigationBarItem(
               backgroundColor: black,
-              label: bottomView5,
+              label: bottomView4,
               activeIcon: Padding(
                 padding: const EdgeInsets.all(7),
                 child: Image.asset(
-                  "assets/images/ic_setting.png",
+                  "assets/images/ic_store.png",
                   width: 22,
                   height: 22,
                   color: primaryColor,
@@ -180,7 +157,32 @@ class BottombarState extends State<Bottombar> {
                 child: Padding(
                   padding: const EdgeInsets.all(7),
                   child: Image.asset(
-                    "assets/images/ic_setting.png",
+                    "assets/images/ic_store.png",
+                    width: 22,
+                    height: 22,
+                    color: gray,
+                  ),
+                ),
+              ),
+            ),
+            BottomNavigationBarItem(
+              backgroundColor: black,
+              label: bottomView5,
+              activeIcon: Padding(
+                padding: const EdgeInsets.all(7),
+                child: Image.asset(
+                  "assets/images/ic_stuff.png",
+                  width: 22,
+                  height: 22,
+                  color: primaryColor,
+                ),
+              ),
+              icon: Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(7),
+                  child: Image.asset(
+                    "assets/images/ic_stuff.png",
                     width: 22,
                     height: 22,
                     color: gray,

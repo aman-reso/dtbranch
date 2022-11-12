@@ -28,6 +28,5 @@ class ChannelSectionProvider extends ChangeNotifier {
   clearSectionProvider() {
     log("<================ clearChannelSectionProvider ================>");
     channelSectionModel = ChannelSectionModel();
-    notifyListeners();
   }
 }

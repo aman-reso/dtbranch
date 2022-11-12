@@ -54,10 +54,9 @@ class VideoDetailsProvider extends ChangeNotifier {
     debugPrint("add_remove_bookmark message :==> ${successModel.message}");
   }
 
-  clearSectionProvider() {
+  clearProvider() {
     log("<================ clearSectionProvider ================>");
     sectionDetailModel = SectionDetailModel();
     successModel = SuccessModel();
-    notifyListeners();
   }
 }

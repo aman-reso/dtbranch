@@ -2,37 +2,37 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dtlive/model/sectionlistmodel.dart';
-import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
-import 'package:dtlive/provider/homeprovider.dart';
-import 'package:dtlive/provider/sectiondataprovider.dart';
+import 'package:dtlive/provider/sectionbytypeprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class SectionByType extends StatefulWidget {
+  final String appBarTitle, isHomePage;
+  final int typeId;
+  const SectionByType(
+    this.typeId,
+    this.appBarTitle,
+    this.isHomePage, {
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<Home> createState() => HomeState();
+  State<SectionByType> createState() => SectionByTypeState();
 }
 
-class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
-  TabController? tabController;
+class SectionByTypeState extends State<SectionByType> {
   PageController pageController = PageController();
   Timer? _timer;
 
@@ -44,8 +44,12 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
 
   void _getData() async {
     Utils.getCurrencySymbol();
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    await homeProvider.getSectionType();
+    final sectionByTypeProvider =
+        Provider.of<SectionByTypeProvider>(context, listen: false);
+    await sectionByTypeProvider.getSectionBanner(
+        widget.typeId.toString(), widget.isHomePage.toString());
+    await sectionByTypeProvider.getSectionList(
+        widget.typeId.toString(), widget.isHomePage.toString());
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
@@ -53,211 +57,64 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
   void dispose() {
     super.dispose();
     _timer?.cancel();
-    tabController?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    if (!homeProvider.loading) {
-      if (homeProvider.sectionTypeModel.status == 200 &&
-          homeProvider.sectionTypeModel.result != null) {
-        if ((homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
-          tabController = TabController(
-            vsync: this,
-            length: (homeProvider.sectionTypeModel.result?.length ?? 0) + 1,
-          );
-          log("tabController index ==> ${(tabController?.index ?? 0)}");
-          if ((tabController?.index ?? 0) == 0) {
-            getTabData(0, homeProvider.sectionTypeModel.result);
-          }
-          tabController?.addListener(() {
-            log("tabController Size ==> ${(tabController?.length ?? 0)}");
-            getTabData(tabController?.index ?? 0,
-                homeProvider.sectionTypeModel.result);
-          });
-        }
-      }
-    }
+    final sectionByTypeProvider =
+        Provider.of<SectionByTypeProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(55),
-        child: AppBar(
-          centerTitle: true,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: appBgColor,
-          title: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            alignment: Alignment.center,
-            child: MyImage(width: 80, height: 80, imagePath: "appicon.png"),
-          ),
-        ),
-      ),
-      body: homeProvider.loading
+      appBar: Utils.myAppBar(context, widget.appBarTitle),
+      body: sectionByTypeProvider.loading
           ? Utils.pageLoader()
-          : (homeProvider.sectionTypeModel.status == 200 &&
-                  homeProvider.sectionTypeModel.result != null)
-              ? (homeProvider.sectionTypeModel.result?.length ?? 0) > 0
-                  ? Column(
-                      children: [
-                        tabTitle(homeProvider.sectionTypeModel.result),
-                        tabItem(homeProvider.sectionTypeModel.result),
-                      ],
-                    )
-                  : const NoData()
+          : (sectionByTypeProvider.sectionBannerModel.status == 200 ||
+                  sectionByTypeProvider.sectionListModel.status == 200)
+              ? SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      /* Banner */
+                      (sectionByTypeProvider.sectionBannerModel.result != null)
+                          ? homebanner(
+                              sectionByTypeProvider.sectionBannerModel.result)
+                          : const SizedBox.shrink(),
+                      /* Remaining Data */
+                      (sectionByTypeProvider.sectionListModel.status == 200 &&
+                              sectionByTypeProvider.sectionListModel.result !=
+                                  null)
+                          ? setSectionByType(
+                              sectionByTypeProvider.sectionListModel.result)
+                          : const SizedBox.shrink(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                )
               : const NoData(),
     );
   }
 
-  Widget tabTitle(List<type.Result>? sectionTypeList) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      alignment: Alignment.center,
-      child: TabBar(
-        indicatorColor: white,
-        isScrollable: true,
-        physics: const AlwaysScrollableScrollPhysics(),
-        unselectedLabelColor: white,
-        labelStyle: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            fontStyle: FontStyle.normal),
-        labelColor: white,
-        controller: tabController,
-        tabs: List<Widget>.generate(
-          (sectionTypeList?.length ?? 0) + 1,
-          (int index) {
-            return Tab(
-              child: MyText(
-                color: white,
-                text: index == 0
-                    ? "All"
-                    : index > 0
-                        ? (sectionTypeList
-                                ?.elementAt(index - 1)
-                                .name
-                                .toString() ??
-                            "")
-                        : "",
-                fontsize: 12,
-                maxline: 1,
-                overflow: TextOverflow.ellipsis,
-                fontwaight: FontWeight.w600,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget tabItem(List<type.Result>? sectionTypeList) {
-    return Expanded(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: TabBarView(
-          controller: tabController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: List<Widget>.generate(
-            (sectionTypeList?.length ?? 0) + 1,
-            (int index) {
-              return Consumer<SectionDataProvider>(
-                builder: (context, sectionDataProvider, child) {
-                  log("sectionDataProvider status :=======> ${sectionDataProvider.sectionBannerModel.status}");
-                  if (sectionDataProvider.loading) {
-                    return Utils.pageLoader();
-                  } else {
-                    if ((sectionDataProvider.sectionBannerModel.status == 200 &&
-                            sectionDataProvider.sectionBannerModel.result !=
-                                null) ||
-                        (sectionDataProvider.sectionListModel.status == 200 &&
-                            sectionDataProvider.sectionListModel.result !=
-                                null)) {
-                      return SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Column(
-                          children: [
-                            /* Banner */
-                            (sectionDataProvider.sectionBannerModel.status ==
-                                        200 &&
-                                    sectionDataProvider
-                                            .sectionBannerModel.result !=
-                                        null)
-                                ? homebanner(sectionDataProvider
-                                    .sectionBannerModel.result)
-                                : const SizedBox.shrink(),
-                            // /* Continue Watching */
-                            (sectionDataProvider
-                                        .sectionListModel.continueWatching !=
-                                    null)
-                                ? continueWatchingLayout(sectionDataProvider
-                                    .sectionListModel.continueWatching)
-                                : const SizedBox.shrink(),
-                            /* Remaining Data */
-                            (sectionDataProvider.sectionListModel.status ==
-                                        200 &&
-                                    sectionDataProvider
-                                            .sectionListModel.result !=
-                                        null)
-                                ? setSectionByType(
-                                    sectionDataProvider.sectionListModel.result)
-                                : const SizedBox.shrink(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return const NoData();
-                    }
-                  }
-                },
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> getTabData(
-      int position, List<type.Result>? sectionTypeList) async {
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
-    await sectionDataProvider.getSectionBanner(
-        position == 0 ? "0" : (sectionTypeList?.elementAt(position - 1).id),
-        position == 0 ? "1" : "2");
-    await sectionDataProvider.getSectionList(
-        position == 0 ? "0" : (sectionTypeList?.elementAt(position - 1).id),
-        position == 0 ? "1" : "2");
-  }
-
-  void _animateSlider(List<banner.Result>? sectionBannerList) {
-    Future.delayed(const Duration(seconds: 2)).then((_) {
-      int nextPage = pageController.page?.round() ?? 0 + 1;
-
-      if (nextPage == (sectionBannerList?.length ?? 0)) {
-        nextPage = 0;
-      }
-
-      pageController
-          .animateToPage(nextPage,
-              duration: const Duration(seconds: 1), curve: Curves.linear)
-          .then((_) => _animateSlider(sectionBannerList));
-    });
-  }
-
   Widget homebanner(List<banner.Result>? sectionBannerList) {
     if ((sectionBannerList?.length ?? 0) > 0) {
-      //_animateSlider(sectionBannerList);
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   _timer = Timer.periodic(const Duration(seconds: 8), (Timer timer) {
+      //     log("timer isActive ====> ${timer.isActive}");
+      //     if (_currentPage < (sectionBannerList?.length ?? 0)) {
+      //       _currentPage++;
+      //     } else {
+      //       _currentPage = 0;
+      //     }
+      //     if (pageController.hasClients) {
+      //       pageController.animateToPage(
+      //         _currentPage,
+      //         duration: const Duration(milliseconds: 500),
+      //         curve: Curves.easeIn,
+      //       );
+      //     }
+      //   });
+      // });
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
@@ -332,194 +189,6 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 dotColor: gray,
                 activeDotColor: lightBlack,
               ),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
-
-  Widget continueWatchingLayout(List<ContinueWatching>? continueWatchingList) {
-    if ((continueWatchingList?.length ?? 0) > 0) {
-      return Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 55,
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: MyText(
-                color: white,
-                text: continueWatching,
-                textalign: TextAlign.center,
-                fontsize: 16,
-                maxline: 1,
-                fontwaight: FontWeight.w600,
-                overflow: TextOverflow.ellipsis,
-                fontstyle: FontStyle.normal,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: Constant.heightContiLand,
-            child: ListView.separated(
-              itemCount: (continueWatchingList?.length ?? 0),
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              scrollDirection: Axis.horizontal,
-              separatorBuilder: (context, index) => const SizedBox(
-                width: 5,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                return Stack(
-                  alignment: AlignmentDirectional.bottomStart,
-                  children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(4),
-                      onTap: () {
-                        log("Clicked on index ==> $index");
-                        if ((continueWatchingList?.elementAt(index).videoType ??
-                                0) ==
-                            1) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return MovieDetails(
-                                  continueWatchingList?.elementAt(index).id ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .videoType ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .typeId ??
-                                      0,
-                                );
-                              },
-                            ),
-                          );
-                        } else if ((continueWatchingList
-                                    ?.elementAt(index)
-                                    .videoType ??
-                                0) ==
-                            2) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return TvShowDetails(
-                                  continueWatchingList?.elementAt(index).id ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .videoType ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .typeId ??
-                                      0,
-                                );
-                              },
-                            ),
-                          );
-                        }
-                      },
-                      child: Container(
-                        width: Constant.widthContiLand,
-                        height: Constant.heightContiLand,
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: MyNetworkImage(
-                            imageUrl: continueWatchingList
-                                    ?.elementAt(index)
-                                    .landscape ??
-                                Constant.placeHolderLand,
-                            fit: BoxFit.cover,
-                            imgHeight: MediaQuery.of(context).size.height,
-                            imgWidth: MediaQuery.of(context).size.width,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, bottom: 8),
-                          child: MyImage(
-                            width: 30,
-                            height: 30,
-                            imagePath: "play.png",
-                          ),
-                        ),
-                        Container(
-                          height: 4,
-                          width: 166,
-                          margin: const EdgeInsets.all(3),
-                          child: LinearPercentIndicator(
-                            padding: const EdgeInsets.all(0),
-                            width: 166,
-                            barRadius: const Radius.circular(2),
-                            lineHeight: 4,
-                            percent: 0.2,
-                            backgroundColor: secProgressColor,
-                            progressColor: primaryColor,
-                          ),
-                        ),
-                        Visibility(
-                          visible: (continueWatchingList!
-                                          .elementAt(index)
-                                          .releaseTag !=
-                                      null &&
-                                  continueWatchingList
-                                      .elementAt(index)
-                                      .releaseTag!
-                                      .isEmpty)
-                              ? false
-                              : true,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: black,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(4),
-                                bottomRight: Radius.circular(4),
-                              ),
-                              shape: BoxShape.rectangle,
-                            ),
-                            width: 172,
-                            height: 12,
-                            child: MyText(
-                              color: white,
-                              text: continueWatchingList
-                                      .elementAt(index)
-                                      .releaseTag ??
-                                  "",
-                              textalign: TextAlign.center,
-                              fontsize: 6,
-                              maxline: 1,
-                              fontwaight: FontWeight.normal,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              },
             ),
           ),
         ],

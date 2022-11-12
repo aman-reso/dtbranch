@@ -16,15 +16,15 @@ import 'package:pinput/pinput.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:provider/provider.dart';
 
-class VerifyOTP extends StatefulWidget {
+class OTPVerify extends StatefulWidget {
   final String mobileNumber;
-  const VerifyOTP(this.mobileNumber, {Key? key}) : super(key: key);
+  const OTPVerify(this.mobileNumber, {Key? key}) : super(key: key);
 
   @override
-  State<VerifyOTP> createState() => VerifyOTPState();
+  State<OTPVerify> createState() => OTPVerifyState();
 }
 
-class VerifyOTPState extends State<VerifyOTP> {
+class OTPVerifyState extends State<OTPVerify> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late ProgressDialog prDialog;
   SharedPre sharePref = SharedPre();
@@ -239,7 +239,7 @@ class VerifyOTPState extends State<VerifyOTP> {
   _onVerificationFailed(FirebaseAuthException exception) {
     if (exception.code == 'invalid-phone-number') {
       log("The phone number entered is invalid!");
-      Utils.showSnackbar(context, "loginFail", invalidPhoneNumber);
+      Utils.showSnackbar(context, "fail", invalidPhoneNumber);
     }
   }
 
@@ -293,7 +293,7 @@ class VerifyOTPState extends State<VerifyOTP> {
       } else {
         // ignore: use_build_context_synchronously
         Utils.showSnackbar(
-            context, "loginFail", "${generalProvider.loginOTPModel.message}");
+            context, "fail", "${generalProvider.loginOTPModel.message}");
       }
     }
   }

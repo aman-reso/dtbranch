@@ -36,7 +36,6 @@ class ChannelsState extends State<Channels> {
   }
 
   void _getData() async {
-    Utils.getCurrencySymbol();
     final channelSectionProvider =
         Provider.of<ChannelSectionProvider>(context, listen: false);
     await channelSectionProvider.getChannelSection();

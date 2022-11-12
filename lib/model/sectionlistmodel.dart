@@ -15,14 +15,14 @@ class SectionListModel {
     this.status,
     this.message,
     this.result,
-    // this.continueWatching,
+    this.continueWatching,
   });
 
   int? code;
   int? status;
   String? message;
   List<Result>? result;
-  // List<ContinueWatching>? continueWatching;
+  List<ContinueWatching>? continueWatching;
 
   factory SectionListModel.fromJson(Map<String, dynamic> json) =>
       SectionListModel(
@@ -31,8 +31,8 @@ class SectionListModel {
         message: json["message"],
         result:
             List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
-        // continueWatching: List<ContinueWatching>.from(
-        // json["continue_watching"].map((x) => ContinueWatching.fromJson(x))),
+        continueWatching: List<ContinueWatching>.from(
+            json["continue_watching"].map((x) => ContinueWatching.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -40,8 +40,8 @@ class SectionListModel {
         "status": status,
         "message": message,
         "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
-        // "continue_watching":
-        // List<dynamic>.from(continueWatching?.map((x) => x.toJson()) ?? []),
+        "continue_watching":
+            List<dynamic>.from(continueWatching?.map((x) => x.toJson()) ?? []),
       };
 }
 
@@ -117,7 +117,7 @@ class ContinueWatching {
   String? ageRestriction;
   String? maxVideoQuality;
   String? releaseTag;
-  String? typeId;
+  int? typeId;
   int? videoType;
   String? videoUrl;
   String? videoExtension;
@@ -341,7 +341,7 @@ class Datum {
     this.studios,
     this.contentAdvisory,
     this.viewingRights,
-    // this.typeId,
+    this.typeId,
     this.videoType,
     this.name,
     this.description,
@@ -394,7 +394,7 @@ class Datum {
   String? studios;
   String? contentAdvisory;
   String? viewingRights;
-  // int? typeId;
+  int? typeId;
   int? videoType;
   String? name;
   String? description;
@@ -447,7 +447,7 @@ class Datum {
         studios: json["studios"],
         contentAdvisory: json["content_advisory"],
         viewingRights: json["viewing_rights"],
-        // typeId: json["type_id"],
+        typeId: json["type_id"],
         videoType: json["video_type"],
         name: json["name"],
         description: json["description"],
@@ -501,7 +501,7 @@ class Datum {
         "studios": studios,
         "content_advisory": contentAdvisory,
         "viewing_rights": viewingRights,
-        // "type_id": typeId,
+        "type_id": typeId,
         "video_type": videoType,
         "name": name,
         "description": description,

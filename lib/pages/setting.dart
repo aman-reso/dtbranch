@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/pages/aboutprivacyterms.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/profileedit.dart';
+import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
@@ -148,97 +149,112 @@ class SettingState extends State<Setting> {
                   color: white,
                 ),
                 /* Subscription */
-                // InkWell(
-                //   borderRadius: BorderRadius.circular(2),
-                //   onTap: () {},
-                //   child: Container(
-                //     width: MediaQuery.of(context).size.width,
-                //     constraints: BoxConstraints(
-                //       minHeight: Constant.minHeightSettings,
-                //     ),
-                //     child: Column(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         MyText(
-                //           color: white,
-                //           text: subscription,
-                //           fontsize: 15,
-                //           maxline: 1,
-                //           overflow: TextOverflow.ellipsis,
-                //           fontwaight: FontWeight.w500,
-                //           textalign: TextAlign.center,
-                //           fontstyle: FontStyle.normal,
-                //         ),
-                //         const SizedBox(
-                //           height: 5,
-                //         ),
-                //         MyText(
-                //           color: otherColor,
-                //           text: subscriptionNote,
-                //           fontsize: 13,
-                //           maxline: 1,
-                //           overflow: TextOverflow.ellipsis,
-                //           fontwaight: FontWeight.normal,
-                //           textalign: TextAlign.center,
-                //           fontstyle: FontStyle.normal,
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                // Container(
-                //   width: MediaQuery.of(context).size.width,
-                //   height: 0.5,
-                //   margin: const EdgeInsets.only(top: 16, bottom: 16),
-                //   color: white,
-                // ),
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    log("Tapped on : $subscription");
+                    if (Constant.userID != "0") {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const Subscription(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: subscription,
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: subscriptionNote,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
                 /* Language */
-                // InkWell(
-                //   borderRadius: BorderRadius.circular(2),
-                //   onTap: () {},
-                //   child: Container(
-                //     width: MediaQuery.of(context).size.width,
-                //     constraints: BoxConstraints(
-                //       minHeight: Constant.minHeightSettings,
-                //     ),
-                //     child: Column(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         MyText(
-                //           color: white,
-                //           text: language,
-                //           fontsize: 15,
-                //           maxline: 1,
-                //           overflow: TextOverflow.ellipsis,
-                //           fontwaight: FontWeight.w500,
-                //           textalign: TextAlign.center,
-                //           fontstyle: FontStyle.normal,
-                //         ),
-                //         const SizedBox(
-                //           height: 5,
-                //         ),
-                //         MyText(
-                //           color: otherColor,
-                //           text: "English",
-                //           fontsize: 13,
-                //           maxline: 1,
-                //           overflow: TextOverflow.ellipsis,
-                //           fontwaight: FontWeight.normal,
-                //           textalign: TextAlign.center,
-                //           fontstyle: FontStyle.normal,
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                // Container(
-                //   width: MediaQuery.of(context).size.width,
-                //   height: 0.5,
-                //   margin: const EdgeInsets.only(top: 16, bottom: 16),
-                //   color: white,
-                // ),
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {},
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: language,
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: "English",
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
                 /* Push Notification enable/disable */
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -278,9 +294,9 @@ class SettingState extends State<Setting> {
                         ],
                       ),
                       Switch(
-                        activeColor: primaryColor,
-                        activeTrackColor: accentColor,
-                        inactiveTrackColor: white,
+                        activeColor: primaryDark,
+                        activeTrackColor: primaryLight,
+                        inactiveTrackColor: gray,
                         value: isSwitched ?? true,
                         onChanged: toggleSwitch,
                       ),
@@ -296,7 +312,11 @@ class SettingState extends State<Setting> {
                 /* Clear Cache */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
-                  onTap: () {},
+                  onTap: () async {
+                    await Utils.deleteCacheDir();
+                    // ignore: use_build_context_synchronously
+                    Utils.showSnackbar(context, "success", cacheClearMsg);
+                  },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
@@ -378,7 +398,7 @@ class SettingState extends State<Setting> {
                           color: white,
                           text: (userId ?? "0") == "0"
                               ? youAreNotSignIn
-                              : userType == "3"
+                              : (userType == "3" && (userName ?? "").isEmpty)
                                   ? ("$signedInAs ${userMobileNo ?? ""}")
                                   : ("$signedInAs ${userName ?? ""}"),
                           fontsize: 15,

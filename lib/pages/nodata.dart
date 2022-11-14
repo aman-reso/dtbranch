@@ -19,7 +19,7 @@ class NoData extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 0, minWidth: 0),
       child: Center(
         child: MyImage(
-          height: 150,
+          height: 180,
           fit: BoxFit.contain,
           imagePath: "nodata.png",
         ),

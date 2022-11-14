@@ -465,15 +465,22 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                           ),
                         ),
                         Container(
-                          height: 4,
-                          width: 166,
-                          margin: const EdgeInsets.all(3),
+                          width: Constant.widthContiLand,
+                          constraints: const BoxConstraints(minWidth: 0),
+                          padding: const EdgeInsets.all(3),
                           child: LinearPercentIndicator(
                             padding: const EdgeInsets.all(0),
-                            width: 166,
                             barRadius: const Radius.circular(2),
                             lineHeight: 4,
-                            percent: 0.2,
+                            percent: Utils.getPercentage(
+                                continueWatchingList
+                                        ?.elementAt(index)
+                                        .videoDuration ??
+                                    0,
+                                continueWatchingList
+                                        ?.elementAt(index)
+                                        .stopTime ??
+                                    0),
                             backgroundColor: secProgressColor,
                             progressColor: primaryColor,
                           ),

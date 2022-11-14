@@ -361,6 +361,30 @@ class Utils {
     return convTime;
   }
 
+  static String convertInMin(int remainWatch) {
+    String convTime = "";
+
+    try {
+      log("remainWatch ==> ${(remainWatch / 1000)}");
+      if (remainWatch > 0) {
+        int minutes = ((remainWatch / (1000 * 60)) % 60).round();
+        log("minutes ==> $minutes");
+        if (minutes == 0) {
+          convTime = "00 min";
+        } else if (minutes < 10) {
+          convTime = "0$minutes min";
+        } else {
+          convTime = "$minutes min";
+        }
+      } else {
+        convTime = "00 min";
+      }
+    } catch (e) {
+      log("convertInMin Exception ==> $e");
+    }
+    return convTime;
+  }
+
   static double getPercentage(int totalValue, int usedValue) {
     double percentage = 0.0;
     try {

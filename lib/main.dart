@@ -6,6 +6,7 @@ import 'package:dtlive/provider/channelsectionprovider.dart';
 import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
+import 'package:dtlive/provider/mystuffprovider.dart';
 import 'package:dtlive/provider/profileprovider.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/provider/searchprovider.dart';
@@ -57,6 +58,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => VideoByIDProvider()),
         ChangeNotifierProvider(create: (_) => SectionByTypeProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
+        ChangeNotifierProvider(create: (_) => MyStuffProvider()),
       ],
       child: const MyApp(),
     ),

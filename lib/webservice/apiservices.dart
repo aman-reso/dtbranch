@@ -18,6 +18,7 @@ import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart';
 import 'package:dtlive/model/successmodel.dart';
 import 'package:dtlive/model/videobyidmodel.dart';
+import 'package:dtlive/model/watchlistmodel.dart';
 import 'package:dtlive/utils/constant.dart';
 
 class ApiService {
@@ -371,9 +372,9 @@ class ApiService {
   // rent_video_list API
   Future<RentModel> rentVideoList() async {
     RentModel rentModel;
-    String sectionList = "rent_video_list";
+    String rentList = "rent_video_list";
     Response response = await dio.post(
-      '$baseUrl$sectionList',
+      '$baseUrl$rentList',
       options: optHeaders,
       data: {
         'user_id': Constant.userID,
@@ -381,6 +382,23 @@ class ApiService {
     );
     // log('rent_video_list response ==>>> ${response.data}');
     log('rent_video_list statusCode ==>>> ${response.statusCode}');
+    rentModel = RentModel.fromJson(response.data);
+    return rentModel;
+  }
+
+  // user_rent_video_list API
+  Future<RentModel> userRentVideoList() async {
+    RentModel rentModel;
+    String rentList = "user_rent_video_list";
+    Response response = await dio.post(
+      '$baseUrl$rentList',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+      },
+    );
+    // log('user_rent_video_list response ==>>> ${response.data}');
+    log('user_rent_video_list statusCode ==>>> ${response.statusCode}');
     rentModel = RentModel.fromJson(response.data);
     return rentModel;
   }
@@ -439,5 +457,27 @@ class ApiService {
     log('get_package statusCode ==>>> ${response.statusCode}');
     subscriptionModel = SubscriptionModel.fromJson(response.data);
     return subscriptionModel;
+  }
+
+  // get_bookmark_video API
+  Future<WatchlistModel> watchlist() async {
+    log("watchlist userID :==> ${Constant.userID}");
+
+    WatchlistModel watchlistModel;
+    String getBookmarkVideo = "get_bookmark_video";
+    log("getBookmarkVideo API :==> $baseUrl$getBookmarkVideo");
+    Response response = await dio.post(
+      '$baseUrl$getBookmarkVideo',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+      },
+    );
+
+    log("get_bookmark_video statuscode :===> ${response.statusCode}");
+    log("get_bookmark_video Message :===> ${response.statusMessage}");
+    log("get_bookmark_video data :===> ${response.data}");
+    watchlistModel = WatchlistModel.fromJson(response.data);
+    return watchlistModel;
   }
 }

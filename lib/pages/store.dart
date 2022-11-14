@@ -384,7 +384,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                         MyText(
                                           color: otherColor,
                                           text:
-                                              "(${(rentStoreProvider.rentModel.tvshow?.length ?? 0)} $videosSmall)",
+                                              "(${(rentStoreProvider.rentModel.tvshow?.length ?? 0)} $showsSmall)",
                                           textalign: TextAlign.center,
                                           fontsize: 11,
                                           maxline: 1,

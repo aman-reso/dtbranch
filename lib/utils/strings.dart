@@ -63,7 +63,7 @@ const confirm = "Confirm";
 const resend = "Resend";
 //Login, Registration Strings END
 
-// Profile Strings START
+// Profile / Edit Profile Strings START
 const editProfile = "Edit Profile";
 const profile = "Profile";
 const enterName = "Enter name";
@@ -74,7 +74,11 @@ const changeProfileImage = "Change profile image";
 const takePhoto = "Take photo.";
 const chooseFromGallery = "Choose from gallery.";
 const addPhoto = "Add photo!";
-// Profile Strings END
+const downloads = "Downloads";
+const purchases = "Purchases";
+const purchasedVideos = "Purchased Videos";
+const purchasedShows = "Purchased Shows";
+// Profile / Edit Profile Strings END
 
 // Home Strings START
 const continueWatching = "Continue Watching";

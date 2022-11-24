@@ -53,7 +53,7 @@ class Constant {
   static double minHeightSettings = 45;
   // Dimentions END
 
-  static String userID = "0";
+  static String userID = "";
   static String userPlaceholder =
       "https://i.pinimg.com/564x/5d/69/42/5d6942c6dff12bd3f960eb30c5fdd0f9.jpg";
   static String placeHolderLand =

@@ -8,6 +8,8 @@ import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/nodata.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/vimeoplayer.dart';
+import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -131,14 +133,30 @@ class ChannelsState extends State<Channels> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return PlayerPage(
-                              MediaQuery.of(context).size.height,
-                              0,
-                              0,
-                              0,
-                              sectionBannerList?.elementAt(index).link ?? "",
-                              sectionBannerList?.elementAt(index).name ?? "0",
-                            );
+                            if ((sectionBannerList?.elementAt(index).link ?? "")
+                                .contains("youtube")) {
+                              return YoutubeVideo(
+                                videoUrl:
+                                    sectionBannerList?.elementAt(index).link,
+                              );
+                            } else if ((sectionBannerList
+                                        ?.elementAt(index)
+                                        .link ??
+                                    "")
+                                .contains("vimeo")) {
+                              return VimeoPlayerPage(
+                                url: sectionBannerList?.elementAt(index).link,
+                              );
+                            } else {
+                              return PlayerPage(
+                                MediaQuery.of(context).size.height,
+                                0,
+                                0,
+                                0,
+                                sectionBannerList?.elementAt(index).link ?? "",
+                                sectionBannerList?.elementAt(index).name ?? "0",
+                              );
+                            }
                           },
                         ),
                       );

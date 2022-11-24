@@ -4,6 +4,8 @@ import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
 import 'package:dtlive/pages/nodata.dart';
 import 'package:dtlive/pages/player.dart';
+import 'package:dtlive/pages/vimeoplayer.dart';
+import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -171,20 +173,19 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
                             openPlayer(
-                              "Show",
-                              (showDetailsProvider
-                                      .sectionDetailModel.result?.id ??
-                                  0),
-                              (showDetailsProvider
-                                      .sectionDetailModel.result?.videoType ??
-                                  0),
-                              widget.typeId,
-                              0,
-                              showDetailsProvider.episodeBySeasonModel.result,
-                              (showDetailsProvider
-                                      .sectionDetailModel.result?.name ??
-                                  ""),
-                            );
+                                "Show",
+                                (showDetailsProvider
+                                        .sectionDetailModel.result?.id ??
+                                    0),
+                                (showDetailsProvider
+                                        .sectionDetailModel.result?.videoType ??
+                                    0),
+                                widget.typeId,
+                                0,
+                                showDetailsProvider.episodeBySeasonModel.result,
+                                (showDetailsProvider
+                                        .sectionDetailModel.result?.name ??
+                                    ""));
                           },
                           child: MyImage(
                             fit: BoxFit.fill,
@@ -650,21 +651,26 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     borderRadius: BorderRadius.circular(5),
                                     onTap: () {
                                       openPlayer(
-                                        "Show",
-                                        (showDetailsProvider.sectionDetailModel
-                                                .result?.id ??
-                                            0),
-                                        (showDetailsProvider.sectionDetailModel
-                                                .result?.videoType ??
-                                            0),
-                                        widget.typeId,
-                                        0,
-                                        showDetailsProvider
-                                            .episodeBySeasonModel.result,
-                                        (showDetailsProvider.sectionDetailModel
-                                                .result?.name ??
-                                            ""),
-                                      );
+                                          "Show",
+                                          (showDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.id ??
+                                              0),
+                                          (showDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.videoType ??
+                                              0),
+                                          widget.typeId,
+                                          0,
+                                          showDetailsProvider
+                                              .episodeBySeasonModel.result,
+                                          (showDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.name ??
+                                              ""));
                                     },
                                     child: Container(
                                       height: 50,
@@ -1779,9 +1785,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
   }
 
   Future<void> getAllEpisode(int position, List<Session>? seasonList) async {
-    log("getAllEpisode seasonID ===> ${seasonList?.elementAt(position).id ?? 0}");
-    log("getAllEpisode showID ===> ${widget.videoId}");
-    log("getAllEpisode position ===> $position");
     final detailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
     await detailsProvider.getEpisodeBySeason(
@@ -1823,19 +1826,20 @@ class TvShowDetailsState extends State<TvShowDetails> {
                       InkWell(
                         borderRadius: BorderRadius.circular(16),
                         onTap: () {
+                          log("===> index $index");
                           openPlayer(
-                            "Show",
-                            (detailsProvider.sectionDetailModel.result?.id ??
-                                0),
-                            (detailsProvider
-                                    .sectionDetailModel.result?.videoType ??
-                                0),
-                            widget.typeId,
-                            0,
-                            episodeList,
-                            (detailsProvider.sectionDetailModel.result?.name ??
-                                ""),
-                          );
+                              "Show",
+                              (detailsProvider.sectionDetailModel.result?.id ??
+                                  0),
+                              (detailsProvider
+                                      .sectionDetailModel.result?.videoType ??
+                                  0),
+                              widget.typeId,
+                              index,
+                              episodeList,
+                              (detailsProvider
+                                      .sectionDetailModel.result?.name ??
+                                  ""));
                         },
                         child: Container(
                           width: 32,
@@ -2142,15 +2146,40 @@ class TvShowDetailsState extends State<TvShowDetails> {
   void openPlayer(String playType, int vID, int vType, int vTypeID, int epiPos,
       List<episode.Result>? episodeList, String vTitle) {
     if ((episodeList?.length ?? 0) > 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerPage(MediaQuery.of(context).size.height, vID, vType,
-                vTypeID, episodeList?.elementAt(epiPos).video ?? "", vTitle);
-          },
-        ),
-      );
+      log("===vUploadType ${episodeList?.elementAt(epiPos).videoUploadType}");
+      if (episodeList?.elementAt(epiPos).videoUploadType == "youtube") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return YoutubeVideo(
+                videoUrl: episodeList?.elementAt(epiPos).videoUrl,
+              );
+            },
+          ),
+        );
+      } else if (episodeList?.elementAt(epiPos).videoUploadType == "vimeo") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return VimeoPlayerPage(
+                url: episodeList?.elementAt(epiPos).videoUrl,
+              );
+            },
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PlayerPage(MediaQuery.of(context).size.height, vID, vType,
+                  vTypeID, episodeList?.elementAt(epiPos).video ?? "", vTitle);
+            },
+          ),
+        );
+      }
     }
   }
 }

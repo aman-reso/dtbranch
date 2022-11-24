@@ -369,7 +369,7 @@ class LoginSocialState extends State<LoginSocial> {
       // Hide Progress Dialog
       prDialog.hide();
 
-      if (generalProvider.loginOTPModel.status == 200) {
+      if (generalProvider.loginGmailModel.status == 200) {
         log('loginGmailModel ==>> ${generalProvider.loginGmailModel.toString()}');
         log('Login Successfull!');
         sharePref.save("userid",

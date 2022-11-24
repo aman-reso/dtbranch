@@ -63,6 +63,9 @@ dependencies:
   onesignal_flutter: ^3.4.1
   flutter_html: ^3.0.0-alpha.6
   url_launcher: ^6.1.6
+  dio_logger: ^4.0.8+8
+  youtube_player_flutter: ^8.1.0
+  vimeo_video_player: ^0.0.5
 
 
 dev_dependencies:

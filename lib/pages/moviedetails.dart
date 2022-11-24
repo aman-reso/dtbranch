@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/nodata.dart';
 import 'package:dtlive/pages/player.dart';
+import 'package:dtlive/pages/vimeoplayer.dart';
+import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -161,21 +163,26 @@ class MovieDetailsState extends State<MovieDetails> {
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
                             openPlayer(
-                              "Video",
-                              (videoDetailsProvider
-                                      .sectionDetailModel.result?.id ??
-                                  0),
-                              (videoDetailsProvider
-                                      .sectionDetailModel.result?.videoType ??
-                                  0),
-                              widget.typeId,
-                              (videoDetailsProvider
-                                      .sectionDetailModel.result?.video ??
-                                  ""),
-                              (videoDetailsProvider
-                                      .sectionDetailModel.result?.name ??
-                                  ""),
-                            );
+                                "Video",
+                                (videoDetailsProvider
+                                        .sectionDetailModel.result?.id ??
+                                    0),
+                                (videoDetailsProvider
+                                        .sectionDetailModel.result?.videoType ??
+                                    0),
+                                widget.typeId,
+                                (videoDetailsProvider
+                                        .sectionDetailModel.result?.video ??
+                                    ""),
+                                (videoDetailsProvider
+                                        .sectionDetailModel.result?.name ??
+                                    ""),
+                                (videoDetailsProvider.sectionDetailModel.result
+                                        ?.videoUploadType ??
+                                    ""),
+                                (videoDetailsProvider
+                                        .sectionDetailModel.result?.videoUrl ??
+                                    ""));
                           },
                           child: MyImage(
                             fit: BoxFit.fill,
@@ -547,21 +554,35 @@ class MovieDetailsState extends State<MovieDetails> {
                                   child: InkWell(
                                     onTap: () {
                                       openPlayer(
-                                        "Video",
-                                        (videoDetailsProvider.sectionDetailModel
-                                                .result?.id ??
-                                            0),
-                                        (videoDetailsProvider.sectionDetailModel
-                                                .result?.videoType ??
-                                            0),
-                                        widget.typeId,
-                                        (videoDetailsProvider.sectionDetailModel
-                                                .result?.video ??
-                                            ""),
-                                        (videoDetailsProvider.sectionDetailModel
-                                                .result?.name ??
-                                            ""),
-                                      );
+                                          "Video",
+                                          (videoDetailsProvider.sectionDetailModel.result?.id ??
+                                              0),
+                                          (videoDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.videoType ??
+                                              0),
+                                          widget.typeId,
+                                          (videoDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.video ??
+                                              ""),
+                                          (videoDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.name ??
+                                              ""),
+                                          (videoDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.videoUploadType ??
+                                              ""),
+                                          (videoDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.videoUrl ??
+                                              ""));
                                     },
                                     borderRadius: BorderRadius.circular(5),
                                     child: Container(
@@ -1800,15 +1821,40 @@ class MovieDetailsState extends State<MovieDetails> {
   }
 
   void openPlayer(String playType, int vID, int vType, int vTypeID, String vUrl,
-      String vTitle) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return PlayerPage(MediaQuery.of(context).size.height, vID, vType,
-              vTypeID, vUrl, vTitle);
-        },
-      ),
-    );
+      String vTitle, String vUploadType, String vVideoUrl) {
+    log("===>vUploadType $vUploadType");
+    if (vUploadType == "youtube") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return YoutubeVideo(
+              videoUrl: vVideoUrl,
+            );
+          },
+        ),
+      );
+    } else if (vUploadType == "vimeo") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return VimeoPlayerPage(
+              url: vVideoUrl,
+            );
+          },
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerPage(MediaQuery.of(context).size.height, vID, vType,
+                vTypeID, vUrl, vTitle);
+          },
+        ),
+      );
+    }
   }
 }

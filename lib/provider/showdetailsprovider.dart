@@ -20,27 +20,16 @@ class ShowDetailsProvider extends ChangeNotifier {
   SharedPre sharePref = SharedPre();
 
   Future<void> getSectionDetails(typeId, videoType, videoId) async {
-    debugPrint("getSectionDetails typeId :==> $typeId");
-    debugPrint("getSectionDetails videoType :==> $videoType");
-    debugPrint("getSectionDetails videoId :==> $videoId");
     loading = true;
     sectionDetailModel =
         await ApiService().sectionDetails(typeId, videoType, videoId);
-    debugPrint("section_detail status :==> ${sectionDetailModel.status}");
-    debugPrint("section_detail message :==> ${sectionDetailModel.message}");
     loading = false;
     notifyListeners();
   }
 
   Future<void> getEpisodeBySeason(seasonId, showId) async {
-    debugPrint("getEpisodeBySeason seasonId :==> $seasonId");
-    debugPrint("getEpisodeBySeason showId :==> $showId");
     loading = true;
     episodeBySeasonModel = await ApiService().episodeBySeason(seasonId, showId);
-    debugPrint(
-        "get_video_by_session_id status :==> ${episodeBySeasonModel.status}");
-    debugPrint(
-        "get_video_by_session_id message :==> ${episodeBySeasonModel.message}");
     loading = false;
     notifyListeners();
   }

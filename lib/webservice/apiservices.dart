@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio_logger/dio_logger.dart';
 import 'package:dtlive/model/subscriptionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart';
@@ -34,6 +35,7 @@ class ApiService {
 
   ApiService() {
     dio = Dio();
+    dio.interceptors.add(dioLoggerInterceptor);
   }
 
   // general_setting API

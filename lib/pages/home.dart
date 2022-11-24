@@ -134,6 +134,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
             return Tab(
               child: MyText(
                 color: white,
+                multilanguage: false,
                 text: index == 0
                     ? "All"
                     : index > 0

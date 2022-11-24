@@ -1,12 +1,12 @@
 // Common Strings Text throughout the App
 
 //IntroScreen
-const finish = "Finish";
-const skip = "Skip";
-const intro1Title = "Watch Movies, Shows, Kids show &amp; much more.";
-const intro2Title = "Explore Thousands of Videos on DT Live.";
-const intro3Title = "Find World news on DT Live.";
-const intro4Title = "Upgrade to get more out of your subscription.";
+// const finish = "Finish";
+// const skip = "Skip";
+// const intro1Title = "Watch Movies, Shows, Kids show &amp; much more.";
+// const intro2Title = "Explore Thousands of Videos on DT Live.";
+// const intro3Title = "Find World news on DT Live.";
+// const intro4Title = "Upgrade to get more out of your subscription.";
 const intro1Desc =
     "Lörem ipsum jyhänade spesektigt dede livspussel, käligen sobel, än biobesa inte dodade. Decidynar kjolprotest därför att nerväxt rement. Decidynar kjolprotest därför att nerväxt rement.";
 const intro2Desc =
@@ -29,7 +29,7 @@ const pleaseWait = "Please wait...";
 const signIn = "Sign In";
 const signOut = "Sign Out";
 const welcomeBack = "Welcome back!";
-const enterMobileNumberToLogin = "Enter your mobile number to login";
+// const enterMobileNumberToLogin = "Enter your mobile number to login";
 const enterYourMobileNumber = "Enter your mobile number";
 const login = "Login";
 const or = "Or";
@@ -50,7 +50,7 @@ const close = "Close";
 const yes = "Yes";
 const no = "No";
 const okay = "Okay!";
-const next = "Next";
+// const next = "Next";
 const forgotPassNote = "We will send new password to this email address.";
 const acceptPrivacyPolicyMsg = "Please, accept the Privacy Policy of this app.";
 const areYouSureWantToLogout = "Are you sure want to logout?";
@@ -145,15 +145,15 @@ const showsSmall = "shows";
 
 // Settings Page START
 const settings = "Settings";
-const accountDetails = "Account details";
-const manageYourProfile = "Manage your profile";
-const subscription = "Subscription";
-const subscriptionNote = "Upgrade to get more out of your Subscription";
-const language = "Language";
-const notifications = "Notifications";
-const receivePushNotification = "Receive push notifications";
-const clearCache = "Clear cache";
-const clearLocallyCachedData = "Clear locally cached data";
+// const accountDetails = "Account details";
+// const manageYourProfile = "Manage your profile";
+// const subscription = "Subscription";
+// const subscriptionNote = "Upgrade to get more out of your Subscription";
+// const language = "Language";
+// const notifications = "Notifications";
+// const receivePushNotification = "Receive push notifications";
+// const clearCache = "Clear cache";
+// const clearLocallyCachedData = "Clear locally cached data";
 const youAreNotSignIn = "You are not Sign in";
 const signedInAs = "Signed in as";
 const confirmSignOut = "Confirm sign out";
@@ -166,7 +166,7 @@ const shareWithFriends = "Share app with your friends";
 const version = "version";
 const aboutUs = "About us";
 const privacyPolicy = "Privacy Policy";
-const termsAndConditions = "Terms & Conditions";
+// const termsAndConditions = "Terms & Conditions";
 const cacheClearMsg = "Cache data has been cleared.";
 // Settings Page END
 

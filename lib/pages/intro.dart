@@ -26,10 +26,10 @@ class IntroState extends State<Intro> {
   SharedPre sharedPre = SharedPre();
 
   List<String> introBigtext = <String>[
-    intro1Title,
-    intro2Title,
-    intro3Title,
-    intro4Title,
+    "intro1Title",
+    "intro2Title",
+    "intro3Title",
+    "intro4Title",
   ];
 
   List<String> introSmalltext = <String>[
@@ -143,6 +143,7 @@ class IntroState extends State<Intro> {
                               MyText(
                                 color: white,
                                 maxline: 4,
+                                multilanguage: true,
                                 overflow: TextOverflow.ellipsis,
                                 text: introBigtext[index],
                                 textalign: TextAlign.center,
@@ -218,7 +219,9 @@ class IntroState extends State<Intro> {
                     color: white,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
-                    text: (position == introPager.length - 1) ? finish : next,
+                    multilanguage: true,
+                    text:
+                        (position == introPager.length - 1) ? "finish" : "next",
                     textalign: TextAlign.center,
                     fontsize: 18,
                     fontwaight: FontWeight.w600,
@@ -261,7 +264,8 @@ class IntroState extends State<Intro> {
                   color: white,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
-                  text: skip,
+                  text: "skip",
+                  multilanguage: true,
                   textalign: TextAlign.center,
                   fontsize: 16,
                   fontwaight: FontWeight.w500,

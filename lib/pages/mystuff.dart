@@ -138,6 +138,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                     ),
                                     MyText(
                                       color: white,
+                                      multilanguage: false,
                                       text:
                                           myStuffProvider.profileModel.status ==
                                                   200

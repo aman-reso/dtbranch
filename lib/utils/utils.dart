@@ -126,6 +126,7 @@ class Utils {
       title: MyText(
         color: primaryColor,
         text: appBarTitle,
+        multilanguage: true,
         fontsize: 17,
         maxline: 1,
         overflow: TextOverflow.ellipsis,

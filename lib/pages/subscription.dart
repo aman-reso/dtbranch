@@ -48,7 +48,7 @@ class SubscriptionState extends State<Subscription> {
         Provider.of<SubscriptionProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: subscriptionBG,
-      appBar: Utils.myAppBarWithBack(context, subscription),
+      appBar: Utils.myAppBarWithBack(context, "subsciption"),
       body: subscriptionProvider.loading
           ? Utils.pageLoader()
           : (subscriptionProvider.subscriptionModel.status == 200)

@@ -358,7 +358,8 @@ class FindState extends State<Find> {
                                 alignment: Alignment.centerLeft,
                                 child: MyText(
                                   color: white,
-                                  text: language,
+                                  multilanguage: true,
+                                  text: "language_",
                                   textalign: TextAlign.center,
                                   fontsize: 16,
                                   maxline: 1,

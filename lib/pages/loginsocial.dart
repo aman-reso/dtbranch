@@ -161,8 +161,9 @@ class LoginSocialState extends State<LoginSocial> {
               ),
               MyText(
                 color: otherColor,
-                text: enterMobileNumberToLogin,
+                text: "enterMobileNumberToLogin",
                 fontsize: 15,
+                multilanguage: true,
                 fontwaight: FontWeight.normal,
                 maxline: 1,
                 overflow: TextOverflow.ellipsis,

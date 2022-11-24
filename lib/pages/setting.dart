@@ -13,6 +13,7 @@ import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class Setting extends StatefulWidget {
@@ -91,7 +92,6 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    log("Tapped on : $accountDetails");
                     if (Constant.userID != "0") {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -117,7 +117,7 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: accountDetails,
+                          text: "accountdetails",
                           fontsize: 15,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
@@ -130,7 +130,8 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: otherColor,
-                          text: manageYourProfile,
+                          text: "manageprofile",
+                          multilanguage: true,
                           fontsize: 13,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
@@ -152,7 +153,6 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    log("Tapped on : $subscription");
                     if (Constant.userID != "0") {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -178,8 +178,9 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: subscription,
+                          text: "subsciption",
                           fontsize: 15,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
@@ -191,8 +192,9 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: otherColor,
-                          text: subscriptionNote,
+                          text: "subsciptionnotes",
                           fontsize: 13,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.normal,
@@ -224,8 +226,9 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: language,
+                          text: "language_",
                           fontsize: 15,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
@@ -270,9 +273,10 @@ class SettingState extends State<Setting> {
                         children: [
                           MyText(
                             color: white,
-                            text: notifications,
+                            text: "notification",
                             fontsize: 15,
                             maxline: 1,
+                            multilanguage: true,
                             overflow: TextOverflow.ellipsis,
                             fontwaight: FontWeight.w500,
                             textalign: TextAlign.center,
@@ -283,8 +287,9 @@ class SettingState extends State<Setting> {
                           ),
                           MyText(
                             color: otherColor,
-                            text: receivePushNotification,
+                            text: "recivepushnotification",
                             fontsize: 13,
+                            multilanguage: true,
                             maxline: 1,
                             overflow: TextOverflow.ellipsis,
                             fontwaight: FontWeight.normal,
@@ -331,8 +336,9 @@ class SettingState extends State<Setting> {
                           children: [
                             MyText(
                               color: white,
-                              text: clearCache,
+                              text: "clearcatch",
                               fontsize: 15,
+                              multilanguage: true,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontwaight: FontWeight.w500,
@@ -344,9 +350,10 @@ class SettingState extends State<Setting> {
                             ),
                             MyText(
                               color: otherColor,
-                              text: clearLocallyCachedData,
+                              text: "clearlocallycatch",
                               fontsize: 13,
                               maxline: 1,
+                              multilanguage: true,
                               overflow: TextOverflow.ellipsis,
                               fontwaight: FontWeight.normal,
                               textalign: TextAlign.center,
@@ -622,7 +629,7 @@ class SettingState extends State<Setting> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: termsAndConditions,
+                          appBarTitle: "termCondition",
                           loadURL: termsConditionUrl ?? "",
                         ),
                       ),
@@ -636,7 +643,95 @@ class SettingState extends State<Setting> {
                     alignment: Alignment.centerLeft,
                     child: MyText(
                       color: white,
-                      text: termsAndConditions,
+                      text: "termCondition",
+                      fontsize: 15,
+                      multilanguage: false,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontwaight: FontWeight.w500,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 8, bottom: 8),
+                  color: white,
+                ),
+                /* MaltiLanguage */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      backgroundColor: white,
+                      builder: (BuildContext context) {
+                        return BottomSheet(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          onClosing: () {},
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                              builder: (BuildContext context, state) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 200,
+                                  color: white,
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        title: const Text("Englist"),
+                                        onTap: () {
+                                          state(() {});
+                                          LocaleNotifier.of(context)
+                                              ?.change('en');
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ListTile(
+                                        title: const Text("Arebic"),
+                                        onTap: () {
+                                          state(() {});
+                                          LocaleNotifier.of(context)
+                                              ?.change('ar');
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ListTile(
+                                        title: const Text("hindi"),
+                                        onTap: () {
+                                          state(() {});
+                                          LocaleNotifier.of(context)
+                                              ?.change('hi');
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Constant.minHeightSettings,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: MyText(
+                      color: white,
+                      text: "language_",
                       fontsize: 15,
                       maxline: 1,
                       overflow: TextOverflow.ellipsis,

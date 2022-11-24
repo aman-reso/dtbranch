@@ -20,13 +20,14 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  await Locales.init(['en', 'ar', 'hi']);
   //Remove this method to stop OneSignal Debugging
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   OneSignal.shared.setAppId(Constant.oneSignalAppId);
@@ -70,16 +71,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: primaryColor,
-        primaryColorDark: primaryDarkColor,
-        primaryColorLight: primaryLight,
-        scaffoldBackgroundColor: appBgColor,
+    return LocaleBuilder(
+      builder: (locale) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: primaryColor,
+          primaryColorDark: primaryDarkColor,
+          primaryColorLight: primaryLight,
+          scaffoldBackgroundColor: appBgColor,
+        ),
+        title: Constant.appName,
+        localizationsDelegates: Locales.delegates,
+        supportedLocales: Locales.supportedLocales,
+        locale: locale,
+        home: const Splash(),
       ),
-      title: Constant.appName,
-      home: const Splash(),
     );
   }
 }

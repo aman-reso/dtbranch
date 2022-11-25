@@ -30,9 +30,9 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
       TabController(length: tabname.length, vsync: this);
 
   List<String> tabname = <String>[
-    downloads,
-    watchlist,
-    purchases,
+    "downloads",
+    "watchlist",
+    "purchases",
   ];
 
   List<String> downloadList = <String>[
@@ -221,6 +221,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                               text: tabname[index],
                               fontsize: 14,
                               maxline: 1,
+                              multilanguage: false,
                               overflow: TextOverflow.ellipsis,
                               fontwaight: FontWeight.w600,
                               textalign: TextAlign.center,
@@ -313,6 +314,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                         color: white,
                                                         text: downloadTitleList[
                                                             position],
+                                                            multilanguage: false,
                                                         textalign:
                                                             TextAlign.center,
                                                         maxline: 3,
@@ -344,6 +346,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                               child: MyText(
                                                                 color:
                                                                     otherColor,
+                                                                    multilanguage: false,
                                                                 text:
                                                                     "Season 1",
                                                                 maxline: 1,
@@ -371,6 +374,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                             child: MyText(
                                                               color: otherColor,
                                                               text: "140 min",
+                                                              multilanguage: false,
                                                               maxline: 1,
                                                               overflow:
                                                                   TextOverflow
@@ -392,6 +396,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                             text: "140 MB",
                                                             textalign: TextAlign
                                                                 .center,
+                                                                multilanguage: false,
                                                             maxline: 1,
                                                             overflow:
                                                                 TextOverflow
@@ -884,7 +889,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                     color:
                                                                         primaryColor,
                                                                     text:
-                                                                        primeTAG,
+                                                                        "primetag",
+                                                                        multilanguage: true,
                                                                     textalign:
                                                                         TextAlign
                                                                             .start,
@@ -918,7 +924,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                     color:
                                                                         white,
                                                                     text:
-                                                                        rentTAG,
+                                                                        "renttag",
+                                                                        multilanguage: true,
                                                                     textalign:
                                                                         TextAlign
                                                                             .start,
@@ -1026,7 +1033,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                     children: [
                                                       MyText(
                                                         color: white,
-                                                        text: purchasedVideos,
+                                                        text: "purchasvideo",
+                                                        multilanguage: true,
                                                         textalign:
                                                             TextAlign.center,
                                                         fontsize: 16,
@@ -1044,7 +1052,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                       MyText(
                                                         color: otherColor,
                                                         text:
-                                                            "(${(myStuffProvider.rentModel.video?.length ?? 0)} $videosSmall)",
+                                                            "(${(myStuffProvider.rentModel.video?.length ?? 0)} videosmall)",
                                                         textalign:
                                                             TextAlign.center,
                                                         fontsize: 13,
@@ -1294,9 +1302,10 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                     children: [
                                                       MyText(
                                                         color: white,
-                                                        text: purchasedShows,
+                                                        text: "purchaschow",
                                                         textalign:
                                                             TextAlign.center,
+                                                            multilanguage: true,
                                                         fontsize: 16,
                                                         maxline: 1,
                                                         fontwaight:
@@ -1312,7 +1321,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                       MyText(
                                                         color: otherColor,
                                                         text:
-                                                            "(${(myStuffProvider.rentModel.tvshow?.length ?? 0)} $showsSmall)",
+                                                            "(${(myStuffProvider.rentModel.tvshow?.length ?? 0)} showsmall)",
                                                         textalign:
                                                             TextAlign.center,
                                                         fontsize: 13,

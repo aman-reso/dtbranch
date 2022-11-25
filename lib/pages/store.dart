@@ -6,7 +6,6 @@ import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -46,7 +45,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
         Provider.of<RentStoreProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, store),
+      appBar: Utils.myAppBar(context, "stor"),
       body: rentStoreProvider.loading
           ? Utils.pageLoader()
           : (rentStoreProvider.rentModel.status == 200)
@@ -83,6 +82,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                             text: Constant.currencySymbol,
                                             textalign: TextAlign.center,
                                             fontsize: 11,
+                                            multilanguage: false,
                                             maxline: 1,
                                             fontwaight: FontWeight.bold,
                                             overflow: TextOverflow.ellipsis,
@@ -94,7 +94,8 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                         ),
                                         MyText(
                                           color: white,
-                                          text: rentVideos,
+                                          text: "rentvideo",
+                                          multilanguage: true,
                                           textalign: TextAlign.center,
                                           fontsize: 18,
                                           maxline: 1,
@@ -108,7 +109,22 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                         MyText(
                                           color: otherColor,
                                           text:
-                                              "(${(rentStoreProvider.rentModel.video?.length ?? 0)} $videosSmall)",
+                                              "(${(rentStoreProvider.rentModel.video?.length ?? 0)})",
+                                          textalign: TextAlign.center,
+                                          multilanguage: false,
+                                          fontsize: 11,
+                                          maxline: 1,
+                                          fontwaight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        MyText(
+                                          color: otherColor,
+                                          text: "videosmall",
+                                          multilanguage: true,
                                           textalign: TextAlign.center,
                                           fontsize: 11,
                                           maxline: 1,
@@ -317,6 +333,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                                   fontsize: 12,
                                                   fontwaight: FontWeight.w800,
                                                   maxline: 1,
+                                                  multilanguage: false,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   fontstyle: FontStyle.normal,
@@ -358,6 +375,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                             color: white,
                                             text: Constant.currencySymbol,
                                             textalign: TextAlign.center,
+                                            multilanguage: false,
                                             fontsize: 11,
                                             maxline: 1,
                                             fontwaight: FontWeight.bold,
@@ -370,8 +388,9 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                         ),
                                         MyText(
                                           color: white,
-                                          text: rentShows,
+                                          text: "rentshow",
                                           textalign: TextAlign.center,
+                                          multilanguage: true,
                                           fontsize: 18,
                                           maxline: 1,
                                           fontwaight: FontWeight.bold,
@@ -384,8 +403,23 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                         MyText(
                                           color: otherColor,
                                           text:
-                                              "(${(rentStoreProvider.rentModel.tvshow?.length ?? 0)} $showsSmall)",
+                                              "(${(rentStoreProvider.rentModel.tvshow?.length ?? 0)})",
                                           textalign: TextAlign.center,
+                                          fontsize: 11,
+                                          maxline: 1,
+                                          multilanguage: false,
+                                          fontwaight: FontWeight.bold,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        MyText(
+                                          color: otherColor,
+                                          text: "showsmall",
+                                          textalign: TextAlign.center,
+                                          multilanguage: true,
                                           fontsize: 11,
                                           maxline: 1,
                                           fontwaight: FontWeight.bold,
@@ -593,6 +627,7 @@ class StoreState extends State<Store> with TickerProviderStateMixin {
                                                     "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?.elementAt(position).rentPrice.toString() ?? "0"}",
                                                 textalign: TextAlign.center,
                                                 fontsize: 12,
+                                                multilanguage: false,
                                                 fontwaight: FontWeight.w800,
                                                 maxline: 1,
                                                 overflow: TextOverflow.ellipsis,

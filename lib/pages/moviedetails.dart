@@ -256,6 +256,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                         fontsize: 24,
                                         fontwaight: FontWeight.w800,
                                         maxline: 2,
+                                        multilanguage: false,
                                         overflow: TextOverflow.ellipsis,
                                         fontstyle: FontStyle.normal,
                                       ),
@@ -288,6 +289,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         "",
                                                     textalign: TextAlign.center,
                                                     fontsize: 13,
+                                                    multilanguage: false,
                                                     fontwaight:
                                                         FontWeight.normal,
                                                     maxline: 1,
@@ -308,6 +310,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       right: 10),
                                                   child: MyText(
                                                     color: otherColor,
+                                                    multilanguage: false,
                                                     text: ((videoDetailsProvider
                                                                     .sectionDetailModel
                                                                     .result
@@ -368,6 +371,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         "",
                                                     textalign: TextAlign.center,
                                                     fontsize: 10,
+                                                    multilanguage: false,
                                                     fontwaight:
                                                         FontWeight.normal,
                                                     maxline: 1,
@@ -413,6 +417,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         "",
                                                     textalign: TextAlign.center,
                                                     fontsize: 10,
+                                                    multilanguage: false,
                                                     fontwaight:
                                                         FontWeight.normal,
                                                     maxline: 1,
@@ -452,9 +457,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                         children: [
                                           MyText(
                                             color: primaryColor,
-                                            text: primeTAG,
+                                            text: "primetag",
                                             textalign: TextAlign.start,
                                             fontsize: 16,
+                                            multilanguage: true,
                                             fontwaight: FontWeight.w700,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -465,7 +471,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ),
                                           MyText(
                                             color: white,
-                                            text: primeTAGDesc,
+                                            text: "primetagdesc",
+                                            multilanguage: true,
                                             textalign: TextAlign.center,
                                             fontsize: 12,
                                             fontwaight: FontWeight.normal,
@@ -509,6 +516,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         Constant.currencySymbol,
                                                     textalign: TextAlign.center,
                                                     fontsize: 11,
+                                                    multilanguage: false,
                                                     fontwaight: FontWeight.w800,
                                                     maxline: 1,
                                                     overflow:
@@ -521,9 +529,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       left: 5),
                                                   child: MyText(
                                                     color: white,
-                                                    text: rentTAG,
+                                                    text: "renttag",
                                                     textalign: TextAlign.center,
                                                     fontsize: 12,
+                                                    multilanguage: true,
                                                     fontwaight:
                                                         FontWeight.normal,
                                                     maxline: 1,
@@ -604,7 +613,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ),
                                           MyText(
                                             color: white,
-                                            text: watchNow,
+                                            text: "watch_now",
+                                            multilanguage: true,
                                             textalign: TextAlign.center,
                                             fontsize: 15,
                                             fontwaight: FontWeight.w600,
@@ -661,7 +671,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                               children: [
                                                 MyText(
                                                   color: white,
-                                                  text: continueWatching,
+                                                  text: "continuewatching",
+                                                  multilanguage: true,
                                                   textalign: TextAlign.start,
                                                   fontsize: 15,
                                                   fontwaight: FontWeight.w600,
@@ -670,17 +681,50 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       TextOverflow.ellipsis,
                                                   fontstyle: FontStyle.normal,
                                                 ),
-                                                MyText(
-                                                  color: white,
-                                                  text:
-                                                      "${Utils.remainTimeInMin(((videoDetailsProvider.sectionDetailModel.result?.videoDuration ?? 0) - (videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0)).abs())} $left",
-                                                  textalign: TextAlign.start,
-                                                  fontsize: 12,
-                                                  fontwaight: FontWeight.normal,
-                                                  maxline: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontstyle: FontStyle.normal,
+                                                Row(
+                                                  children: [
+                                                    MyText(
+                                                      color: white,
+                                                      text: Utils.remainTimeInMin(((videoDetailsProvider
+                                                                      .sectionDetailModel
+                                                                      .result
+                                                                      ?.videoDuration ??
+                                                                  0) -
+                                                              (videoDetailsProvider
+                                                                      .sectionDetailModel
+                                                                      .result
+                                                                      ?.stopTime ??
+                                                                  0))
+                                                          .abs()),
+                                                      textalign:
+                                                          TextAlign.start,
+                                                      fontsize: 10,
+                                                      multilanguage: false,
+                                                      fontwaight:
+                                                          FontWeight.normal,
+                                                      maxline: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      fontstyle:
+                                                          FontStyle.normal,
+                                                    ),
+                                                    const SizedBox(width: 5),
+                                                    MyText(
+                                                      color: white,
+                                                      text: "left",
+                                                      textalign:
+                                                          TextAlign.start,
+                                                      fontsize: 10,
+                                                      multilanguage: true,
+                                                      fontwaight:
+                                                          FontWeight.normal,
+                                                      maxline: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      fontstyle:
+                                                          FontStyle.normal,
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -743,15 +787,31 @@ class MovieDetailsState extends State<MovieDetails> {
                                         color: white,
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      child: MyText(
-                                        color: black,
-                                        text: "$watchWith ${Constant.appName}",
-                                        textalign: TextAlign.center,
-                                        fontsize: 15,
-                                        fontwaight: FontWeight.w600,
-                                        maxline: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontstyle: FontStyle.normal,
+                                      child: Row(
+                                        children: [
+                                          MyText(
+                                            color: black,
+                                            text: "appname",
+                                            textalign: TextAlign.center,
+                                            fontsize: 15,
+                                            fontwaight: FontWeight.w600,
+                                            multilanguage: true,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                          MyText(
+                                            color: black,
+                                            text: "watch_with",
+                                            textalign: TextAlign.center,
+                                            fontsize: 15,
+                                            multilanguage: true,
+                                            fontwaight: FontWeight.w600,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                        ],
                                       ),
                                     )
                                   : const SizedBox.shrink()
@@ -781,16 +841,34 @@ class MovieDetailsState extends State<MovieDetails> {
                                     color: white,
                                     borderRadius: BorderRadius.circular(5),
                                   ),
-                                  child: MyText(
-                                    color: black,
-                                    text:
-                                        "$rentMovieAtJust ${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                                    textalign: TextAlign.center,
-                                    fontsize: 15,
-                                    fontwaight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
+                                  child: Row(
+                                    children: [
+                                        MyText(
+                                        color: black,
+                                        text:
+                                            "rentmovieatjust",
+                                        textalign: TextAlign.center,
+                                        fontsize: 15,
+                                        multilanguage: true,
+                                        fontwaight: FontWeight.w600,
+                                        maxline: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontstyle: FontStyle.normal,
+                                      ),
+                                      const SizedBox(width: 5),
+                                      MyText(
+                                        color: black,
+                                        text:
+                                            "${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                                        textalign: TextAlign.center,
+                                        fontsize: 15,
+                                        multilanguage: false,
+                                        fontwaight: FontWeight.w600,
+                                        maxline: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontstyle: FontStyle.normal,
+                                      ),
+                                    ],
                                   ),
                                 )
                               : const SizedBox.shrink(),
@@ -840,7 +918,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ),
                                           MyText(
                                             color: white,
-                                            text: startOver,
+                                            text: "startover",
+                                            multilanguage: true,
                                             fontsize: 12,
                                             fontwaight: FontWeight.normal,
                                             maxline: 1,
@@ -879,8 +958,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ),
                                           MyText(
                                             color: white,
-                                            text: trailer,
+                                            text: "trailar",
                                             fontsize: 12,
+                                            multilanguage: true,
                                             fontwaight: FontWeight.normal,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -916,7 +996,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                     ),
                                     MyText(
                                       color: white,
-                                      text: download,
+                                      text: "download",
+                                      multilanguage: true,
                                       fontsize: 12,
                                       fontwaight: FontWeight.normal,
                                       maxline: 1,
@@ -978,8 +1059,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                     ),
                                     MyText(
                                       color: white,
-                                      text: watchlist,
+                                      text: "watchlist",
                                       fontsize: 12,
+                                      multilanguage: true,
                                       fontwaight: FontWeight.normal,
                                       maxline: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -1015,7 +1097,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                     ),
                                     MyText(
                                       color: white,
-                                      text: more,
+                                      multilanguage: true,
+                                      text: "more",
                                       fontsize: 12,
                                       fontwaight: FontWeight.normal,
                                       maxline: 1,
@@ -1077,6 +1160,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                       textalign: TextAlign.start,
                                       fontwaight: FontWeight.w600,
                                       fontsize: 14,
+                                      multilanguage: false,
                                       maxline: 1,
                                       overflow: TextOverflow.ellipsis,
                                       fontstyle: FontStyle.normal,
@@ -1089,7 +1173,6 @@ class MovieDetailsState extends State<MovieDetails> {
                                 InkWell(
                                   borderRadius: BorderRadius.circular(4),
                                   onTap: () {
-                                    log("Tapped on : $languages_");
                                     log("language Length ====> ${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}");
                                     showModalBottomSheet(
                                       context: context,
@@ -1120,11 +1203,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                       children: [
                                         MyText(
                                           color: white,
-                                          text: languages_,
+                                          text: "language_",
                                           textalign: TextAlign.center,
                                           fontwaight: FontWeight.normal,
                                           fontsize: 13,
                                           maxline: 1,
+                                          multilanguage: true,
                                           overflow: TextOverflow.ellipsis,
                                           fontstyle: FontStyle.normal,
                                         ),
@@ -1133,12 +1217,55 @@ class MovieDetailsState extends State<MovieDetails> {
                                         ),
                                         MyText(
                                           color: white,
-                                          text:
-                                              "$audio (${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}), $subtitle (0)",
+                                          text: "audios",
                                           textalign: TextAlign.center,
                                           fontwaight: FontWeight.normal,
                                           fontsize: 13,
                                           maxline: 1,
+                                          multilanguage: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                         const SizedBox(
+                                          width: 5,
+                                        ),
+                                        MyText(
+                                          color: white,
+                                          text:
+                                              "(${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}),",
+                                          textalign: TextAlign.center,
+                                          fontwaight: FontWeight.normal,
+                                          fontsize: 13,
+                                          multilanguage: false,
+                                          maxline: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                         const SizedBox(
+                                          width: 5,
+                                        ),
+                                         MyText(
+                                          color: white,
+                                          text: "subtitle",
+                                          textalign: TextAlign.center,
+                                          fontwaight: FontWeight.normal,
+                                          fontsize: 13,
+                                          maxline: 1,
+                                          multilanguage: true,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                         const SizedBox(
+                                          width: 5,
+                                        ),
+                                        MyText(
+                                          color: white,
+                                          text: "(0)",
+                                          textalign: TextAlign.center,
+                                          fontwaight: FontWeight.normal,
+                                          fontsize: 13,
+                                          maxline: 1,
+                                          multilanguage: false,
                                           overflow: TextOverflow.ellipsis,
                                           fontstyle: FontStyle.normal,
                                         ),
@@ -1167,16 +1294,16 @@ class MovieDetailsState extends State<MovieDetails> {
                                           0) >
                                       0)
                               ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 55,
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      alignment: Alignment.bottomLeft,
+                                    const SizedBox(height: 25),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                       child: MyText(
                                         color: white,
-                                        text: customersAlsoWatched,
+                                        text: "customer_also_watch",
+                                        multilanguage: true,
                                         textalign: TextAlign.center,
                                         fontsize: 16,
                                         maxline: 1,
@@ -1223,16 +1350,16 @@ class MovieDetailsState extends State<MovieDetails> {
                                           0) >
                                       0)
                               ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 55,
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      alignment: Alignment.bottomLeft,
+                                     const SizedBox(height: 25),
+                                    Padding(
+                                       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                       child: MyText(
                                         color: white,
-                                        text: castAndCrew,
+                                        text: "castandcrew",
+                                        multilanguage: true,
                                         textalign: TextAlign.center,
                                         fontsize: 16,
                                         maxline: 1,
@@ -1255,7 +1382,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 right: 10),
                                             child: MyText(
                                               color: otherColor,
-                                              text: detailsFrom,
+                                              text: "detailsfrom",
+                                              multilanguage: true,
                                               textalign: TextAlign.center,
                                               fontsize: 13,
                                               fontwaight: FontWeight.normal,
@@ -1281,6 +1409,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                             child: MyText(
                                               color: otherColor,
                                               text: "IMDb",
+                                              multilanguage: false,
                                               textalign: TextAlign.center,
                                               fontsize: 12,
                                               fontwaight: FontWeight.w500,
@@ -1375,6 +1504,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 padding:
                                                     const EdgeInsets.all(5),
                                                 child: MyText(
+                                                  multilanguage: false,
                                                   text: videoDetailsProvider
                                                           .sectionDetailModel
                                                           .cast
@@ -1462,6 +1592,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           Padding(
                                             padding: const EdgeInsets.all(5),
                                             child: MyText(
+                                              multilanguage: false,
                                               text: directorList
                                                       ?.elementAt(0)
                                                       .name ??
@@ -1488,7 +1619,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                           children: [
                                             MyText(
                                               color: white,
-                                              text: directors,
+                                              text: "directors",
+                                              multilanguage: true,
                                               textalign: TextAlign.start,
                                               fontsize: 14,
                                               fontwaight: FontWeight.w600,
@@ -1506,6 +1638,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       .personalInfo ??
                                                   "",
                                               textalign: TextAlign.start,
+                                              multilanguage: false,
                                               fontsize: 13,
                                               fontwaight: FontWeight.normal,
                                               maxline: 7,
@@ -1582,11 +1715,12 @@ class MovieDetailsState extends State<MovieDetails> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           MyText(
-            text: availableLanguages,
+            text: "avalablelanguage",
             fontsize: 17,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.bold,
             maxline: 1,
+            multilanguage: true,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.start,
             color: white,
@@ -1595,11 +1729,12 @@ class MovieDetailsState extends State<MovieDetails> {
             height: 5,
           ),
           MyText(
-            text: languageChangeNote,
+            text: "languagechangenote",
             fontsize: 13,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.normal,
             maxline: 1,
+            multilanguage: true,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.start,
             color: otherColor,
@@ -1608,11 +1743,12 @@ class MovieDetailsState extends State<MovieDetails> {
             height: 10,
           ),
           MyText(
-            text: audio,
+            text: "audios",
             fontsize: 17,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.bold,
             maxline: 1,
+            multilanguage: true,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.start,
             color: white,
@@ -1637,8 +1773,9 @@ class MovieDetailsState extends State<MovieDetails> {
             color: otherColor,
           ),
           MyText(
-            text: subtitle,
+            text: "subtitle",
             fontsize: 17,
+            multilanguage: true,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.bold,
             maxline: 1,

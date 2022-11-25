@@ -72,7 +72,7 @@ class ProfileEditState extends State<ProfileEdit> {
     }
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, settings),
+      appBar: Utils.myAppBar(context, "setting"),
       body: SafeArea(
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -117,7 +117,6 @@ class ProfileEditState extends State<ProfileEdit> {
               InkWell(
                 borderRadius: BorderRadius.circular(5),
                 onTap: () {
-                  log("Clicked on => $change");
                   pickImageDialog();
                 },
                 child: Container(
@@ -127,8 +126,9 @@ class ProfileEditState extends State<ProfileEdit> {
                   ),
                   alignment: Alignment.center,
                   child: MyText(
-                    text: change,
+                    text: "chnage",
                     fontsize: 16,
+                    multilanguage: true,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     fontwaight: FontWeight.w500,
@@ -197,7 +197,8 @@ class ProfileEditState extends State<ProfileEdit> {
                       alignment: Alignment.center,
                       child: MyText(
                         color: white,
-                        text: save,
+                        text: "save",
+                        multilanguage: true,
                         textalign: TextAlign.center,
                         fontsize: 15,
                         fontwaight: FontWeight.w600,
@@ -243,10 +244,11 @@ class ProfileEditState extends State<ProfileEdit> {
                       children: [
                         MyText(
                           color: white,
-                          text: addPhoto,
+                          text: "addphoto",
                           textalign: TextAlign.center,
                           fontsize: 16,
                           fontwaight: FontWeight.bold,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontstyle: FontStyle.normal,
@@ -256,7 +258,8 @@ class ProfileEditState extends State<ProfileEdit> {
                         ),
                         MyText(
                           color: white,
-                          text: pickImageNote,
+                          multilanguage: true,
+                          text: "pickimagenote",
                           textalign: TextAlign.center,
                           fontsize: 13,
                           fontwaight: FontWeight.normal,
@@ -294,9 +297,10 @@ class ProfileEditState extends State<ProfileEdit> {
                       ),
                       child: MyText(
                         color: white,
-                        text: takePhoto,
+                        text: "takephoto",
                         textalign: TextAlign.center,
                         fontsize: 16,
+                        multilanguage: true,
                         maxline: 1,
                         overflow: TextOverflow.ellipsis,
                         fontwaight: FontWeight.w500,
@@ -331,9 +335,10 @@ class ProfileEditState extends State<ProfileEdit> {
                       ),
                       child: MyText(
                         color: white,
-                        text: chooseFromGallery,
+                        text: "choosegallry",
                         textalign: TextAlign.center,
                         fontsize: 16,
+                        multilanguage: true,
                         maxline: 1,
                         overflow: TextOverflow.ellipsis,
                         fontwaight: FontWeight.w500,

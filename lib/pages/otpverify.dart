@@ -5,7 +5,6 @@ import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -84,8 +83,9 @@ class OTPVerifyState extends State<OTPVerify> {
               ),
               MyText(
                 color: white,
-                text: verifyPhoneNumber,
+                text: "verifyphonenumber",
                 fontsize: 26,
+                multilanguage: true,
                 fontwaight: FontWeight.bold,
                 maxline: 1,
                 overflow: TextOverflow.ellipsis,
@@ -95,15 +95,31 @@ class OTPVerifyState extends State<OTPVerify> {
               const SizedBox(
                 height: 8,
               ),
-              MyText(
-                color: otherColor,
-                text: '$codeSentDesc \n ${widget.mobileNumber}',
-                fontsize: 15,
-                fontwaight: FontWeight.normal,
-                maxline: 3,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
+              Row(
+                children: [
+                  MyText(
+                    color: otherColor,
+                    text: "code_sent_desc",
+                    fontsize: 15,
+                    fontwaight: FontWeight.normal,
+                    maxline: 3,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.center,
+                    multilanguage: true,
+                    fontstyle: FontStyle.normal,
+                  ),
+                  MyText(
+                    color: otherColor,
+                    text: widget.mobileNumber,
+                    fontsize: 15,
+                    fontwaight: FontWeight.normal,
+                    maxline: 3,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.center,
+                    multilanguage: false,
+                    fontstyle: FontStyle.normal,
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 40,
@@ -142,7 +158,8 @@ class OTPVerifyState extends State<OTPVerify> {
                   debugPrint(
                       "Clicked sms Code =====> ${pinPutController.text}");
                   if (pinPutController.text.toString().isEmpty) {
-                    Utils.showSnackbar(context, "TextField", enterReceivedOtp);
+                    Utils.showSnackbar(
+                        context, "TextField", "enterreceivedotp");
                   } else {
                     _login(widget.mobileNumber.toString());
                   }
@@ -166,8 +183,9 @@ class OTPVerifyState extends State<OTPVerify> {
                   alignment: Alignment.center,
                   child: MyText(
                     color: white,
-                    text: confirm,
+                    text: "confirm",
                     fontsize: 17,
+                    multilanguage: true,
                     fontwaight: FontWeight.w700,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
@@ -184,7 +202,8 @@ class OTPVerifyState extends State<OTPVerify> {
                 padding: const EdgeInsets.all(5),
                 child: MyText(
                   color: white,
-                  text: resend,
+                  text: "resend",
+                  multilanguage: true,
                   fontsize: 16,
                   fontwaight: FontWeight.w700,
                   maxline: 1,
@@ -239,7 +258,7 @@ class OTPVerifyState extends State<OTPVerify> {
   _onVerificationFailed(FirebaseAuthException exception) {
     if (exception.code == 'invalid-phone-number') {
       log("The phone number entered is invalid!");
-      Utils.showSnackbar(context, "fail", invalidPhoneNumber);
+      Utils.showSnackbar(context, "fail", "invalidphonenumber");
     }
   }
 

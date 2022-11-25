@@ -148,8 +148,9 @@ class LoginSocialState extends State<LoginSocial> {
               ),
               MyText(
                 color: white,
-                text: welcomeBack,
+                text: "welcomeback",
                 fontsize: 25,
+                multilanguage: true,
                 fontwaight: FontWeight.bold,
                 maxline: 1,
                 overflow: TextOverflow.ellipsis,
@@ -161,7 +162,7 @@ class LoginSocialState extends State<LoginSocial> {
               ),
               MyText(
                 color: otherColor,
-                text: "enterMobileNumberToLogin",
+                text: "enter_mobileNumberytologin",
                 fontsize: 15,
                 multilanguage: true,
                 fontwaight: FontWeight.normal,
@@ -263,7 +264,8 @@ class LoginSocialState extends State<LoginSocial> {
                   alignment: Alignment.center,
                   child: MyText(
                     color: white,
-                    text: login,
+                    text: "login",
+                    multilanguage: true,
                     fontsize: 17,
                     fontwaight: FontWeight.w700,
                     maxline: 1,
@@ -289,7 +291,8 @@ class LoginSocialState extends State<LoginSocial> {
                   ),
                   MyText(
                     color: otherColor,
-                    text: or,
+                    text: "or",
+                    multilanguage: true,
                     fontsize: 14,
                     fontwaight: FontWeight.normal,
                     maxline: 1,
@@ -313,7 +316,6 @@ class LoginSocialState extends State<LoginSocial> {
               /* Google Login Button */
               InkWell(
                 onTap: () {
-                  log("Clicked on : ====> $loginWithGoogle");
                   _handleSignIn();
                 },
                 child: Container(
@@ -339,8 +341,9 @@ class LoginSocialState extends State<LoginSocial> {
                       ),
                       MyText(
                         color: black,
-                        text: loginWithGoogle,
+                        text: "loginwithgoogle",
                         fontsize: 14,
+                        multilanguage: true,
                         fontwaight: FontWeight.w600,
                         maxline: 1,
                         overflow: TextOverflow.ellipsis,

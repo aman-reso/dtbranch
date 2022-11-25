@@ -39,10 +39,10 @@ class ShowDetailsProvider extends ChangeNotifier {
     loading = true;
     if ((sectionDetailModel.result?.isBookmark ?? 0) == 0) {
       sectionDetailModel.result?.isBookmark = 1;
-      Utils.showSnackbar(context, "WatchlistAdd", addWatchlistMsg);
+      Utils.showSnackbar(context, "WatchlistAdd", "addwatchlistmessage");
     } else {
       sectionDetailModel.result?.isBookmark = 0;
-      Utils.showSnackbar(context, "WatchlistRemove", removeWatchlistMsg);
+      Utils.showSnackbar(context, "WatchlistRemove", "removewatchlistmessage");
     }
     loading = false;
     notifyListeners();

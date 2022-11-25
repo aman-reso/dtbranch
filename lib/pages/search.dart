@@ -82,7 +82,6 @@ class SearchState extends State<Search> {
                                     Expanded(
                                       child: InkWell(
                                         onTap: () {
-                                          log("Clicked on $videos");
                                           searchProvider.setDataVisibility(
                                               true, false);
                                         },
@@ -96,7 +95,8 @@ class SearchState extends State<Search> {
                                             Expanded(
                                               child: MyText(
                                                 color: white,
-                                                text: videos,
+                                                text: "videos",
+                                                multilanguage: true,
                                                 textalign: TextAlign.center,
                                                 fontsize: 16,
                                                 fontwaight: FontWeight.w500,
@@ -126,7 +126,6 @@ class SearchState extends State<Search> {
                                     Expanded(
                                       child: InkWell(
                                         onTap: () {
-                                          log("Clicked on $shows");
                                           searchProvider.setDataVisibility(
                                               false, true);
                                         },
@@ -140,9 +139,10 @@ class SearchState extends State<Search> {
                                             Expanded(
                                               child: MyText(
                                                 color: white,
-                                                text: shows,
+                                                text: "shows",
                                                 textalign: TextAlign.center,
                                                 fontsize: 16,
+                                                multilanguage: true,
                                                 fontwaight: FontWeight.w500,
                                                 maxline: 1,
                                                 overflow: TextOverflow.ellipsis,

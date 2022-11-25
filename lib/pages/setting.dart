@@ -80,7 +80,7 @@ class SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, settings),
+      appBar: Utils.myAppBar(context, "setting"),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -184,7 +184,7 @@ class SettingState extends State<Setting> {
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
-                          textalign: TextAlign.center,
+                          textalign: TextAlign.left,
                           fontstyle: FontStyle.normal,
                         ),
                         const SizedBox(
@@ -198,54 +198,7 @@ class SettingState extends State<Setting> {
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.normal,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
-                /* Language */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {},
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "language_",
-                          fontsize: 15,
-                          multilanguage: true,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        MyText(
-                          color: otherColor,
-                          text: "English",
-                          fontsize: 13,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontwaight: FontWeight.normal,
-                          textalign: TextAlign.center,
+                          textalign: TextAlign.left,
                           fontstyle: FontStyle.normal,
                         ),
                       ],
@@ -320,7 +273,7 @@ class SettingState extends State<Setting> {
                   onTap: () async {
                     await Utils.deleteCacheDir();
                     // ignore: use_build_context_synchronously
-                    Utils.showSnackbar(context, "success", cacheClearMsg);
+                    Utils.showSnackbar(context, "success", "cacheclearmsg");
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -381,7 +334,6 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    log("Tapped on : $signIn");
                     if (Constant.userID != "0") {
                       logoutConfirmDialog();
                     } else {
@@ -404,12 +356,13 @@ class SettingState extends State<Setting> {
                         MyText(
                           color: white,
                           text: (userId ?? "0") == "0"
-                              ? youAreNotSignIn
+                              ? "youAreNotSignIn"
                               : (userType == "3" && (userName ?? "").isEmpty)
                                   ? ("$signedInAs ${userMobileNo ?? ""}")
                                   : ("$signedInAs ${userName ?? ""}"),
                           fontsize: 15,
                           maxline: 1,
+                          multilanguage: false,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
                           textalign: TextAlign.center,
@@ -420,8 +373,9 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: otherColor,
-                          text: (userId ?? "") == "" ? signIn : signOut,
+                          text: (userId ?? "") == "" ? "sign_in" : "sign_out",
                           fontsize: 13,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.normal,
@@ -453,8 +407,9 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: rateUs,
+                          text: "rateus",
                           fontsize: 15,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
@@ -466,7 +421,8 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: otherColor,
-                          text: rateOurApp,
+                          text: "rateourapp",
+                          multilanguage: true,
                           fontsize: 13,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
@@ -499,9 +455,10 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: shareApp,
+                          text: "shareapp",
                           fontsize: 15,
                           maxline: 1,
+                          multilanguage: true,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
                           textalign: TextAlign.center,
@@ -512,9 +469,10 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: otherColor,
-                          text: shareWithFriends,
+                          text: "sharewithfriends",
                           fontsize: 13,
                           maxline: 1,
+                          multilanguage: true,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.normal,
                           textalign: TextAlign.center,
@@ -537,7 +495,7 @@ class SettingState extends State<Setting> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: aboutUs,
+                          appBarTitle: "aboutus",
                           loadURL: aboutUsUrl ?? "",
                         ),
                       ),
@@ -554,9 +512,10 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: aboutUs,
+                          text: "aboutus",
                           fontsize: 15,
                           maxline: 1,
+                          multilanguage: true,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
                           textalign: TextAlign.center,
@@ -567,8 +526,9 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: otherColor,
-                          text: version,
+                          text: "version",
                           fontsize: 13,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.normal,
@@ -592,7 +552,7 @@ class SettingState extends State<Setting> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: privacyPolicy,
+                          appBarTitle: "privacypolicy",
                           loadURL: privacyUrl ?? "",
                         ),
                       ),
@@ -603,16 +563,22 @@ class SettingState extends State<Setting> {
                     constraints: BoxConstraints(
                       minHeight: Constant.minHeightSettings,
                     ),
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      color: white,
-                      text: privacyPolicy,
-                      fontsize: 15,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "privacypolicy",
+                          fontsize: 15,
+                          multilanguage: true,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -629,7 +595,7 @@ class SettingState extends State<Setting> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: "termCondition",
+                          appBarTitle: "termcondition",
                           loadURL: termsConditionUrl ?? "",
                         ),
                       ),
@@ -640,17 +606,22 @@ class SettingState extends State<Setting> {
                     constraints: BoxConstraints(
                       minHeight: Constant.minHeightSettings,
                     ),
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      color: white,
-                      text: "termCondition",
-                      fontsize: 15,
-                      multilanguage: false,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "termcondition",
+                          fontsize: 15,
+                          multilanguage: true,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -728,16 +699,21 @@ class SettingState extends State<Setting> {
                     constraints: BoxConstraints(
                       minHeight: Constant.minHeightSettings,
                     ),
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      color: white,
-                      text: "language_",
-                      fontsize: 15,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontwaight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "language_",
+                          fontsize: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -782,7 +758,8 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: confirmSignOut,
+                          text: "confirmsognout",
+                          multilanguage: true,
                           textalign: TextAlign.center,
                           fontsize: 16,
                           fontwaight: FontWeight.bold,
@@ -795,7 +772,8 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: white,
-                          text: areYouSureWantToSignOut,
+                          text: "areyousurewanrtosignout",
+                          multilanguage: true,
                           textalign: TextAlign.center,
                           fontsize: 13,
                           fontwaight: FontWeight.normal,
@@ -835,7 +813,8 @@ class SettingState extends State<Setting> {
                             ),
                             child: MyText(
                               color: white,
-                              text: cancel,
+                              text: "cancle",
+                              multilanguage: true,
                               textalign: TextAlign.center,
                               fontsize: 16,
                               maxline: 1,
@@ -877,9 +856,10 @@ class SettingState extends State<Setting> {
                             ),
                             child: MyText(
                               color: black,
-                              text: signOut,
+                              text: "sign_out",
                               textalign: TextAlign.center,
                               fontsize: 16,
+                              multilanguage: true,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontwaight: FontWeight.w500,

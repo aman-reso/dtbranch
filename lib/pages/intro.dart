@@ -26,10 +26,10 @@ class IntroState extends State<Intro> {
   SharedPre sharedPre = SharedPre();
 
   List<String> introBigtext = <String>[
-    "intro1Title",
-    "intro2Title",
-    "intro3Title",
-    "intro4Title",
+    intro1Title,
+    intro2Title,
+    intro3Title,
+    intro4Title,
   ];
 
   List<String> introSmalltext = <String>[
@@ -143,7 +143,7 @@ class IntroState extends State<Intro> {
                               MyText(
                                 color: white,
                                 maxline: 4,
-                                multilanguage: true,
+                                multilanguage: false,
                                 overflow: TextOverflow.ellipsis,
                                 text: introBigtext[index],
                                 textalign: TextAlign.center,

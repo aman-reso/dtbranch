@@ -4,7 +4,6 @@ import 'package:dtlive/model/subscriptionmodel.dart';
 import 'package:dtlive/pages/nodata.dart';
 import 'package:dtlive/provider/subscriptionprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -63,7 +62,8 @@ class SubscriptionState extends State<Subscription> {
                       alignment: Alignment.center,
                       child: MyText(
                         color: otherColor,
-                        text: subscriptionDesc,
+                        text: "subscriptiondesc",
+                        multilanguage: true,
                         textalign: TextAlign.center,
                         fontsize: 16,
                         maxline: 2,
@@ -126,6 +126,7 @@ class SubscriptionState extends State<Subscription> {
                             textalign: TextAlign.center,
                             fontsize: 22,
                             maxline: 1,
+                            multilanguage: false,
                             overflow: TextOverflow.ellipsis,
                             fontwaight: FontWeight.w700,
                             fontstyle: FontStyle.normal,
@@ -139,6 +140,7 @@ class SubscriptionState extends State<Subscription> {
                             textalign: TextAlign.center,
                             fontsize: 20,
                             maxline: 1,
+                            multilanguage: false,
                             overflow: TextOverflow.ellipsis,
                             fontwaight: FontWeight.bold,
                             fontstyle: FontStyle.normal,
@@ -196,6 +198,7 @@ class SubscriptionState extends State<Subscription> {
                                                   .packageKey ??
                                               "",
                                           textalign: TextAlign.start,
+                                          multilanguage: false,
                                           fontsize: 16,
                                           maxline: 3,
                                           overflow: TextOverflow.ellipsis,
@@ -264,6 +267,7 @@ class SubscriptionState extends State<Subscription> {
                                                   "",
                                               textalign: TextAlign.center,
                                               fontsize: 22,
+                                              multilanguage: false,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
                                               fontwaight: FontWeight.bold,
@@ -297,10 +301,11 @@ class SubscriptionState extends State<Subscription> {
                           alignment: Alignment.center,
                           child: MyText(
                             color: black,
-                            text: choosePlan,
+                            text: "chooseplan",
                             textalign: TextAlign.center,
                             fontsize: 18,
                             fontwaight: FontWeight.w800,
+                            multilanguage: true,
                             maxline: 1,
                             overflow: TextOverflow.ellipsis,
                             fontstyle: FontStyle.normal,

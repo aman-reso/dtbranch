@@ -15,7 +15,6 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:flutter/material.dart';
@@ -345,23 +344,24 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
   Widget continueWatchingLayout(List<ContinueWatching>? continueWatchingList) {
     if ((continueWatchingList?.length ?? 0) > 0) {
       return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 55,
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: MyText(
-                color: white,
-                text: continueWatching,
-                textalign: TextAlign.center,
-                fontsize: 16,
-                maxline: 1,
-                fontwaight: FontWeight.w600,
-                overflow: TextOverflow.ellipsis,
-                fontstyle: FontStyle.normal,
-              ),
+          const SizedBox(
+            height: 25,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: MyText(
+              color: white,
+              text: "continuewatching",
+              multilanguage: true,
+              textalign: TextAlign.center,
+              fontsize: 16,
+              maxline: 1,
+              fontwaight: FontWeight.w600,
+              overflow: TextOverflow.ellipsis,
+              fontstyle: FontStyle.normal,
             ),
           ),
           const SizedBox(
@@ -510,6 +510,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                             height: 12,
                             child: MyText(
                               color: white,
+                              multilanguage: false,
                               text: continueWatchingList
                                       .elementAt(index)
                                       .releaseTag ??
@@ -546,17 +547,20 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
         if (sectionList?.elementAt(index).data != null &&
             (sectionList?.elementAt(index).data?.length ?? 0) > 0) {
           return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 55,
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                alignment: Alignment.bottomLeft,
+              const SizedBox(
+                height: 25,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: MyText(
                   color: white,
                   text: sectionList?.elementAt(index).title.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 16,
+                  multilanguage: false,
                   maxline: 1,
                   fontwaight: FontWeight.w600,
                   overflow: TextOverflow.ellipsis,
@@ -938,6 +942,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                   text: sectionDataList?.elementAt(index).name.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 14,
+                  multilanguage: false,
                   maxline: 1,
                   fontwaight: FontWeight.normal,
                   overflow: TextOverflow.ellipsis,
@@ -1008,6 +1013,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                   text: sectionDataList?.elementAt(index).name.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 14,
+                  multilanguage: false,
                   maxline: 1,
                   fontwaight: FontWeight.normal,
                   overflow: TextOverflow.ellipsis,

@@ -209,18 +209,18 @@ class ChannelsState extends State<Channels> {
         if (sectionList?.elementAt(index).data != null &&
             (sectionList?.elementAt(index).data?.length ?? 0) > 0) {
           return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                constraints: const BoxConstraints(minHeight: 10),
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                alignment: Alignment.centerLeft,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: MyText(
                   color: otherColor,
                   text: sectionList?.elementAt(index).channelName.toString() ??
                       "",
                   textalign: TextAlign.center,
                   fontsize: 10,
+                  multilanguage: false,
                   maxline: 1,
                   fontwaight: FontWeight.w700,
                   overflow: TextOverflow.ellipsis,
@@ -230,16 +230,14 @@ class ChannelsState extends State<Channels> {
               const SizedBox(
                 height: 2,
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                constraints: const BoxConstraints(minHeight: 20),
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                alignment: Alignment.centerLeft,
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: MyText(
                   color: white,
                   text: sectionList?.elementAt(index).title.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 16,
+                  multilanguage: false,
                   maxline: 1,
                   fontwaight: FontWeight.bold,
                   overflow: TextOverflow.ellipsis,

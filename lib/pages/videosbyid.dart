@@ -9,6 +9,7 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
+import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +57,24 @@ class VideosByIDState extends State<VideosByID> {
         Provider.of<VideoByIDProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, widget.appBarTitle),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        backgroundColor: appBgColor,
+        centerTitle: true,
+        title: MyText(
+          color: primaryColor,
+          text: widget.appBarTitle,
+          multilanguage: false,
+          fontsize: 17,
+          maxline: 1,
+          overflow: TextOverflow.ellipsis,
+          fontwaight: FontWeight.bold,
+          textalign: TextAlign.center,
+          fontstyle: FontStyle.normal,
+        ),
+      ),
+      //  Utils.myAppBar(context, widget.appBarTitle),
       body: videoByIDProvider.loading
           ? Utils.pageLoader()
           : (videoByIDProvider.videoByIdModel.status == 200 &&

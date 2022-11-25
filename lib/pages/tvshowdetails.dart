@@ -255,6 +255,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 .result
                                                 ?.name ??
                                             "",
+                                        multilanguage: false,
                                         textalign: TextAlign.start,
                                         fontsize: 24,
                                         fontwaight: FontWeight.w800,
@@ -291,6 +292,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                         "",
                                                     textalign: TextAlign.center,
                                                     fontsize: 13,
+                                                    multilanguage: false,
                                                     fontwaight:
                                                         FontWeight.normal,
                                                     maxline: 1,
@@ -371,6 +373,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                         "",
                                                     textalign: TextAlign.center,
                                                     fontsize: 10,
+                                                    multilanguage: false,
                                                     fontwaight:
                                                         FontWeight.normal,
                                                     maxline: 1,
@@ -416,6 +419,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                         "",
                                                     textalign: TextAlign.center,
                                                     fontsize: 10,
+                                                    multilanguage: false,
                                                     fontwaight:
                                                         FontWeight.normal,
                                                     maxline: 1,
@@ -455,7 +459,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(4),
                                       onTap: () {
-                                        log("Tapped on : $season");
                                         log("session Length ====> ${showDetailsProvider.sectionDetailModel.session?.length ?? 0}");
                                         showModalBottomSheet(
                                           context: context,
@@ -500,6 +503,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                       .name ??
                                                   "",
                                               textalign: TextAlign.center,
+                                              multilanguage: false,
                                               fontwaight: FontWeight.w600,
                                               fontsize: 15,
                                               maxline: 1,
@@ -548,9 +552,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         children: [
                                           MyText(
                                             color: primaryColor,
-                                            text: primeTAG,
+                                            text: "primetag",
                                             textalign: TextAlign.start,
                                             fontsize: 16,
+                                            multilanguage: true,
                                             fontwaight: FontWeight.w700,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -561,9 +566,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                           ),
                                           MyText(
                                             color: white,
-                                            text: primeTAGDesc,
+                                            text: "primetagdesc",
                                             textalign: TextAlign.center,
                                             fontsize: 12,
+                                            multilanguage: true,
                                             fontwaight: FontWeight.normal,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -607,6 +613,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                     fontsize: 11,
                                                     fontwaight: FontWeight.w800,
                                                     maxline: 1,
+                                                    multilanguage: false,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     fontstyle: FontStyle.normal,
@@ -617,7 +624,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                       left: 5),
                                                   child: MyText(
                                                     color: white,
-                                                    text: rentTAG,
+                                                    text: "renttag",
+                                                    multilanguage: true,
                                                     textalign: TextAlign.center,
                                                     fontsize: 12,
                                                     fontwaight:
@@ -691,8 +699,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                           ),
                                           MyText(
                                             color: white,
-                                            text: watchNow,
+                                            text: "watch_now",
                                             textalign: TextAlign.center,
+                                            multilanguage: true,
                                             fontsize: 15,
                                             fontwaight: FontWeight.w600,
                                             maxline: 1,
@@ -748,7 +757,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                               children: [
                                                 MyText(
                                                   color: white,
-                                                  text: continueWatching,
+                                                  text: "continuewatching",
+                                                  multilanguage: true,
                                                   textalign: TextAlign.start,
                                                   fontsize: 15,
                                                   fontwaight: FontWeight.w600,
@@ -759,8 +769,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 ),
                                                 MyText(
                                                   color: white,
+                                                  multilanguage: false,
                                                   text:
-                                                      "${Utils.remainTimeInMin(((showDetailsProvider.sectionDetailModel.result?.videoDuration ?? 0) - (showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0)).abs())} $left",
+                                                      "${Utils.remainTimeInMin(((showDetailsProvider.sectionDetailModel.result?.videoDuration ?? 0) - (showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0)).abs())} left",
                                                   textalign: TextAlign.start,
                                                   fontsize: 12,
                                                   fontwaight: FontWeight.normal,
@@ -830,15 +841,32 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         color: white,
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      child: MyText(
-                                        color: black,
-                                        text: "$watchWith ${Constant.appName}",
-                                        textalign: TextAlign.center,
-                                        fontsize: 15,
-                                        fontwaight: FontWeight.w600,
-                                        maxline: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontstyle: FontStyle.normal,
+                                      child: Row(
+                                        children: [
+                                          MyText(
+                                            color: black,
+                                            text: "watchwith",
+                                            textalign: TextAlign.center,
+                                            fontsize: 15,
+                                            multilanguage: true,
+                                            fontwaight: FontWeight.w600,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                          const SizedBox(height: 5,),
+                                          MyText(
+                                            color: black,
+                                            text: "appname",
+                                            textalign: TextAlign.center,
+                                            fontsize: 15,
+                                            multilanguage: true,
+                                            fontwaight: FontWeight.w600,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                        ],
                                       ),
                                     )
                                   : const SizedBox.shrink()
@@ -868,16 +896,35 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     color: white,
                                     borderRadius: BorderRadius.circular(5),
                                   ),
-                                  child: MyText(
-                                    color: black,
-                                    text:
-                                        "$rentMovieAtJust ${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                                    textalign: TextAlign.center,
-                                    fontsize: 15,
-                                    fontwaight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
+                                  child: Row(
+                                    children: [
+                                      MyText(
+                                        color: black,
+                                        text: "rentmovieatjust",
+                                        textalign: TextAlign.center,
+                                        fontsize: 15,
+                                        fontwaight: FontWeight.w600,
+                                        maxline: 1,
+                                        multilanguage: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontstyle: FontStyle.normal,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      MyText(
+                                        color: black,
+                                        text:
+                                            "${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                                        textalign: TextAlign.center,
+                                        fontsize: 15,
+                                        fontwaight: FontWeight.w600,
+                                        maxline: 1,
+                                        multilanguage: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontstyle: FontStyle.normal,
+                                      ),
+                                    ],
                                   ),
                                 )
                               : const SizedBox.shrink(),
@@ -918,7 +965,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     ),
                                     MyText(
                                       color: white,
-                                      text: download,
+                                      text: "download",
+                                      multilanguage: true,
                                       fontsize: 12,
                                       fontwaight: FontWeight.normal,
                                       maxline: 1,
@@ -980,7 +1028,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     ),
                                     MyText(
                                       color: white,
-                                      text: watchlist,
+                                      text: "watchlist",
+                                      multilanguage: true,
                                       fontsize: 12,
                                       fontwaight: FontWeight.normal,
                                       maxline: 1,
@@ -1017,7 +1066,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     ),
                                     MyText(
                                       color: white,
-                                      text: share,
+                                      text: "share",
+                                      multilanguage: true,
                                       fontsize: 12,
                                       fontwaight: FontWeight.normal,
                                       maxline: 1,
@@ -1079,6 +1129,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       textalign: TextAlign.start,
                                       fontwaight: FontWeight.w600,
                                       fontsize: 14,
+                                      multilanguage: false,
                                       maxline: 1,
                                       overflow: TextOverflow.ellipsis,
                                       fontstyle: FontStyle.normal,
@@ -1091,7 +1142,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                 InkWell(
                                   borderRadius: BorderRadius.circular(4),
                                   onTap: () {
-                                    log("Tapped on : $languages_");
                                     log("language Length ====> ${showDetailsProvider.sectionDetailModel.language?.length ?? 0}");
                                     showModalBottomSheet(
                                       context: context,
@@ -1122,7 +1172,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       children: [
                                         MyText(
                                           color: white,
-                                          text: languages_,
+                                          text: "language_",
+                                          multilanguage: true,
                                           textalign: TextAlign.center,
                                           fontwaight: FontWeight.normal,
                                           fontsize: 13,
@@ -1133,17 +1184,44 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         const SizedBox(
                                           width: 5,
                                         ),
-                                        MyText(
-                                          color: white,
-                                          text:
-                                              "$audio (${showDetailsProvider.sectionDetailModel.language?.length ?? 0}), $subtitle (0)",
-                                          textalign: TextAlign.center,
-                                          fontwaight: FontWeight.normal,
-                                          fontsize: 13,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontstyle: FontStyle.normal,
-                                        ),
+                                        Row(children: [
+                                          MyText(
+                                            color: white,
+                                            text: "audios",
+                                            multilanguage: true,
+                                            textalign: TextAlign.center,
+                                            fontwaight: FontWeight.normal,
+                                            fontsize: 13,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          MyText(
+                                            color: white,
+                                            text:
+                                                "(${showDetailsProvider.sectionDetailModel.language?.length ?? 0})",
+                                            textalign: TextAlign.center,
+                                            fontwaight: FontWeight.normal,
+                                            fontsize: 13,
+                                            multilanguage: false,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          MyText(
+                                            color: white,
+                                            text: "subtitle",
+                                            multilanguage: true,
+                                            textalign: TextAlign.center,
+                                            fontwaight: FontWeight.normal,
+                                            fontsize: 13,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                        ]),
                                         const SizedBox(
                                           width: 5,
                                         ),
@@ -1187,7 +1265,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       alignment: Alignment.bottomLeft,
                                       child: MyText(
                                         color: white,
-                                        text: episodes,
+                                        text: "episodes",
+                                        multilanguage: true,
                                         textalign: TextAlign.center,
                                         fontsize: 16,
                                         maxline: 1,
@@ -1225,16 +1304,19 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                           0) >
                                       0)
                               ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 55,
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      alignment: Alignment.bottomLeft,
+                                    const SizedBox(
+                                      height: 25,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          15, 0, 15, 0),
                                       child: MyText(
                                         color: white,
-                                        text: customersAlsoWatched,
+                                        text: "customer_also_watch",
+                                        multilanguage: true,
                                         textalign: TextAlign.center,
                                         fontsize: 16,
                                         maxline: 1,
@@ -1281,16 +1363,19 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                           0) >
                                       0)
                               ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 55,
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      alignment: Alignment.bottomLeft,
+                                    const SizedBox(
+                                      height: 25,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          15, 0, 15, 0),
                                       child: MyText(
                                         color: white,
-                                        text: castAndCrew,
+                                        text: "castandcrew",
+                                        multilanguage: true,
                                         textalign: TextAlign.center,
                                         fontsize: 16,
                                         maxline: 1,
@@ -1313,7 +1398,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 right: 10),
                                             child: MyText(
                                               color: otherColor,
-                                              text: detailsFrom,
+                                              text: "detailsfrom",
+                                              multilanguage: true,
                                               textalign: TextAlign.center,
                                               fontsize: 13,
                                               fontwaight: FontWeight.normal,
@@ -1341,6 +1427,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                               text: "IMDb",
                                               textalign: TextAlign.center,
                                               fontsize: 12,
+                                              multilanguage: false,
                                               fontwaight: FontWeight.w500,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -1442,6 +1529,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                   fontstyle: FontStyle.normal,
                                                   fontsize: 12,
                                                   maxline: 3,
+                                                  multilanguage: false,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   fontwaight: FontWeight.normal,
@@ -1526,6 +1614,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                   "",
                                               fontstyle: FontStyle.normal,
                                               fontsize: 12,
+                                              multilanguage: false,
                                               maxline: 3,
                                               overflow: TextOverflow.ellipsis,
                                               fontwaight: FontWeight.normal,
@@ -1546,7 +1635,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                           children: [
                                             MyText(
                                               color: white,
-                                              text: directors,
+                                              text: "directors",
+                                              multilanguage: true,
                                               textalign: TextAlign.start,
                                               fontsize: 14,
                                               fontwaight: FontWeight.w600,
@@ -1564,6 +1654,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                       .personalInfo ??
                                                   "",
                                               textalign: TextAlign.start,
+                                              multilanguage: false,
                                               fontsize: 13,
                                               fontwaight: FontWeight.normal,
                                               maxline: 7,
@@ -1640,8 +1731,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           MyText(
-            text: availableLanguages,
+            text: "avalablelanguage",
             fontsize: 17,
+            multilanguage: true,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.bold,
             maxline: 1,
@@ -1653,11 +1745,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
             height: 5,
           ),
           MyText(
-            text: languageChangeNote,
+            text: "languagechangenote",
             fontsize: 13,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.normal,
             maxline: 1,
+            multilanguage: true,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.start,
             color: otherColor,
@@ -1666,10 +1759,11 @@ class TvShowDetailsState extends State<TvShowDetails> {
             height: 10,
           ),
           MyText(
-            text: audio,
+            text: "audios",
             fontsize: 17,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.bold,
+            multilanguage: true,
             maxline: 1,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.start,
@@ -1695,11 +1789,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
             color: otherColor,
           ),
           MyText(
-            text: subtitle,
+            text: "subtitle",
             fontsize: 17,
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.bold,
             maxline: 1,
+            multilanguage: true,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.start,
             color: white,
@@ -1736,6 +1831,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
             fontstyle: FontStyle.normal,
             fontwaight: FontWeight.bold,
             maxline: 1,
+            multilanguage: false,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.start,
             color: white,
@@ -1754,7 +1850,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
                 onTap: () {
-                  log("Clicked on : $season $index");
                   log("SeasonID ====> ${(seasonList?.elementAt(index).id ?? 0)}");
                   final detailsProvider =
                       Provider.of<ShowDetailsProvider>(context, listen: false);
@@ -1770,6 +1865,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                     fontsize: 15,
                     fontstyle: FontStyle.normal,
                     fontwaight: FontWeight.w500,
+                    multilanguage: false,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -1873,6 +1969,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                   "",
                               textalign: TextAlign.start,
                               fontsize: 15,
+                              multilanguage: false,
                               fontwaight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
@@ -1958,9 +2055,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             margin: const EdgeInsets.only(left: 10),
                             child: MyText(
                               color: primaryColor,
-                              text: primeTAG,
+                              text: "primetag",
                               textalign: TextAlign.start,
                               fontsize: 14,
+                              multilanguage: true,
                               fontwaight: FontWeight.w700,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,

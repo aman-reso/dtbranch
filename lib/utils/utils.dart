@@ -195,6 +195,7 @@ class Utils {
         content: MyText(
           text: message,
           fontsize: 14,
+          multilanguage: true,
           fontstyle: FontStyle.normal,
           fontwaight: FontWeight.normal,
           color: white,

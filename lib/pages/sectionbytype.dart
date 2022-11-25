@@ -65,7 +65,24 @@ class SectionByTypeState extends State<SectionByType> {
         Provider.of<SectionByTypeProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, widget.appBarTitle),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        backgroundColor: appBgColor,
+        centerTitle: true,
+        title: MyText(
+          color: primaryColor,
+          text: widget.appBarTitle,
+          multilanguage: false,
+          fontsize: 17,
+          maxline: 1,
+          overflow: TextOverflow.ellipsis,
+          fontwaight: FontWeight.bold,
+          textalign: TextAlign.center,
+          fontstyle: FontStyle.normal,
+        ),
+      ),
+      // Utils.myAppBar(context, widget.appBarTitle),
       body: sectionByTypeProvider.loading
           ? Utils.pageLoader()
           : (sectionByTypeProvider.sectionBannerModel.status == 200 ||
@@ -217,6 +234,7 @@ class SectionByTypeState extends State<SectionByType> {
                   color: white,
                   text: sectionList?.elementAt(index).title.toString() ?? "",
                   textalign: TextAlign.center,
+                  multilanguage: false,
                   fontsize: 16,
                   maxline: 1,
                   fontwaight: FontWeight.w600,
@@ -598,6 +616,7 @@ class SectionByTypeState extends State<SectionByType> {
                   color: white,
                   text: sectionDataList?.elementAt(index).name.toString() ?? "",
                   textalign: TextAlign.center,
+                  multilanguage: false,
                   fontsize: 14,
                   maxline: 1,
                   fontwaight: FontWeight.normal,

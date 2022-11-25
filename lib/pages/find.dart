@@ -85,7 +85,8 @@ class FindState extends State<Find> {
                                 alignment: Alignment.centerLeft,
                                 child: MyText(
                                   color: white,
-                                  text: browseBy,
+                                  text: "browsby",
+                                  multilanguage: true,
                                   textalign: TextAlign.center,
                                   fontsize: 16,
                                   maxline: 1,
@@ -149,6 +150,7 @@ class FindState extends State<Find> {
                                             "",
                                         textalign: TextAlign.center,
                                         fontstyle: FontStyle.normal,
+                                        multilanguage: false,
                                         fontsize: 14,
                                         fontwaight: FontWeight.w800,
                                         maxline: 1,
@@ -193,9 +195,10 @@ class FindState extends State<Find> {
                                 alignment: Alignment.centerLeft,
                                 child: MyText(
                                   color: white,
-                                  text: genres,
+                                  text: "genres",
                                   textalign: TextAlign.center,
                                   fontsize: 16,
+                                  multilanguage: true,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
                                   fontwaight: FontWeight.bold,
@@ -273,6 +276,7 @@ class FindState extends State<Find> {
                                                     "",
                                                 textalign: TextAlign.center,
                                                 fontsize: 14,
+                                                multilanguage: false,
                                                 maxline: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 fontwaight: FontWeight.normal,
@@ -296,7 +300,6 @@ class FindState extends State<Find> {
                                 visible: findProvider.isGenSeeMore,
                                 child: InkWell(
                                   onTap: () {
-                                    log("Clicked on Genres $seeMore");
                                     final findProvider =
                                         Provider.of<FindProvider>(context,
                                             listen: false);
@@ -312,10 +315,11 @@ class FindState extends State<Find> {
                                     alignment: Alignment.centerLeft,
                                     child: MyText(
                                       color: primaryColor,
-                                      text: seeMore,
+                                      text: "seemore",
                                       textalign: TextAlign.center,
                                       fontsize: 14,
                                       maxline: 1,
+                                      multilanguage: true,
                                       overflow: TextOverflow.ellipsis,
                                       fontwaight: FontWeight.normal,
                                       fontstyle: FontStyle.normal,
@@ -439,6 +443,7 @@ class FindState extends State<Find> {
                                                     "",
                                                 textalign: TextAlign.center,
                                                 fontsize: 14,
+                                                multilanguage: false,
                                                 maxline: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 fontwaight: FontWeight.normal,
@@ -462,7 +467,6 @@ class FindState extends State<Find> {
                                 visible: findProvider.isLangSeeMore,
                                 child: InkWell(
                                   onTap: () {
-                                    log("Clicked on Language $seeMore");
                                     final findProvider =
                                         Provider.of<FindProvider>(context,
                                             listen: false);
@@ -479,9 +483,10 @@ class FindState extends State<Find> {
                                     alignment: Alignment.centerLeft,
                                     child: MyText(
                                       color: primaryColor,
-                                      text: seeMore,
+                                      text: "seemore",
                                       textalign: TextAlign.center,
                                       fontsize: 14,
+                                      multilanguage: true,
                                       maxline: 1,
                                       overflow: TextOverflow.ellipsis,
                                       fontwaight: FontWeight.normal,

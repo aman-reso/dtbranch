@@ -2,7 +2,6 @@ import 'package:dtlive/pages/channels.dart';
 import 'package:dtlive/pages/find.dart';
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/mystuff.dart';
-import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/pages/store.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/strings.dart';

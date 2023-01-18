@@ -164,15 +164,14 @@ class MovieDetailsState extends State<MovieDetails> {
                           onTap: () {
                             openPlayer(
                                 "Video",
-                                (videoDetailsProvider
-                                        .sectionDetailModel.result?.id ??
+                                (videoDetailsProvider.sectionDetailModel.result?.id ??
                                     0),
                                 (videoDetailsProvider
                                         .sectionDetailModel.result?.videoType ??
                                     0),
                                 widget.typeId,
-                                (videoDetailsProvider
-                                        .sectionDetailModel.result?.video ??
+                                (videoDetailsProvider.sectionDetailModel.result
+                                        ?.trailerUrl ??
                                     ""),
                                 (videoDetailsProvider
                                         .sectionDetailModel.result?.name ??
@@ -180,8 +179,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                 (videoDetailsProvider.sectionDetailModel.result
                                         ?.videoUploadType ??
                                     ""),
-                                (videoDetailsProvider
-                                        .sectionDetailModel.result?.videoUrl ??
+                                (videoDetailsProvider.sectionDetailModel.result
+                                        ?.trailerUrl ??
                                     ""));
                           },
                           child: MyImage(
@@ -843,10 +842,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                   ),
                                   child: Row(
                                     children: [
-                                        MyText(
+                                      MyText(
                                         color: black,
-                                        text:
-                                            "rentmovieatjust",
+                                        text: "rentmovieatjust",
                                         textalign: TextAlign.center,
                                         fontsize: 15,
                                         multilanguage: true,
@@ -1226,7 +1224,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           overflow: TextOverflow.ellipsis,
                                           fontstyle: FontStyle.normal,
                                         ),
-                                         const SizedBox(
+                                        const SizedBox(
                                           width: 5,
                                         ),
                                         MyText(
@@ -1241,10 +1239,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                           overflow: TextOverflow.ellipsis,
                                           fontstyle: FontStyle.normal,
                                         ),
-                                         const SizedBox(
+                                        const SizedBox(
                                           width: 5,
                                         ),
-                                         MyText(
+                                        MyText(
                                           color: white,
                                           text: "subtitle",
                                           textalign: TextAlign.center,
@@ -1255,7 +1253,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           overflow: TextOverflow.ellipsis,
                                           fontstyle: FontStyle.normal,
                                         ),
-                                         const SizedBox(
+                                        const SizedBox(
                                           width: 5,
                                         ),
                                         MyText(
@@ -1294,12 +1292,13 @@ class MovieDetailsState extends State<MovieDetails> {
                                           0) >
                                       0)
                               ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const SizedBox(height: 25),
                                     Padding(
-                                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          15, 0, 15, 0),
                                       child: MyText(
                                         color: white,
                                         text: "customer_also_watch",
@@ -1351,11 +1350,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                       0)
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                     const SizedBox(height: 25),
+                                    const SizedBox(height: 25),
                                     Padding(
-                                       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          15, 0, 15, 0),
                                       child: MyText(
                                         color: white,
                                         text: "castandcrew",

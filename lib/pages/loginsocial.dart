@@ -391,7 +391,7 @@ class LoginSocialState extends State<LoginSocial> {
 
         // Set UserID for Next
         Constant.userID =
-            generalProvider.loginGmailModel.result?.id.toString() ?? "0";
+            generalProvider.loginGmailModel.result?.id.toString() ?? "";
         log('Constant userID ==>> ${Constant.userID}');
 
         Navigator.of(context).pushReplacement(

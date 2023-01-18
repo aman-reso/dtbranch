@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:dtlive/pages/bottombar.dart';
 import 'package:dtlive/pages/intro.dart';
-import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -64,7 +63,7 @@ class SplashState extends State<Splash> {
       }
 
       seen = await sharedPre.read('seen') ?? "0";
-      Constant.userID = await sharedPre.read('userid') ?? "0";
+      Constant.userID = await sharedPre.read('userid') ?? "";
       log('seen ==> $seen');
       log('Constant userID ==> ${Constant.userID}');
       if (!mounted) return;
@@ -83,7 +82,7 @@ class SplashState extends State<Splash> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return const LoginSocial();
+                return const Bottombar();
               },
             ),
           );

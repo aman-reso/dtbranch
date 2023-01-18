@@ -29,7 +29,7 @@ class Utils {
 
   static void getUserId() async {
     SharedPre sharedPref = SharedPre();
-    Constant.userID = await sharedPref.read("userid") ?? "0";
+    Constant.userID = await sharedPref.read("userid") ?? "";
     log('Constant userID ==> ${Constant.userID}');
   }
 

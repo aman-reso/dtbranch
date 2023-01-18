@@ -251,7 +251,7 @@ class IntroState extends State<Intro> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return const LoginSocial();
+                        return const Bottombar();
                       },
                     ),
                   );

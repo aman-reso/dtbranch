@@ -300,7 +300,7 @@ class OTPVerifyState extends State<OTPVerify> {
 
         // Set UserID for Next
         Constant.userID =
-            generalProvider.loginOTPModel.result?.id.toString() ?? "0";
+            generalProvider.loginOTPModel.result?.id.toString() ?? "";
         log('Constant userID ==>> ${Constant.userID}');
 
         // ignore: use_build_context_synchronously

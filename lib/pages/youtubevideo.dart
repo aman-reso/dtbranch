@@ -47,8 +47,7 @@ class YoutubeVideoState extends State<YoutubeVideo> {
         },
         player: YoutubePlayer(
           controller: controller,
-          aspectRatio: MediaQuery.of(context).size.width /
-              MediaQuery.of(context).size.width,
+          aspectRatio: 16 / 9,
           showVideoProgressIndicator: true,
           width: MediaQuery.of(context).size.width,
           bottomActions: [

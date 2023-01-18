@@ -92,14 +92,14 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    if (Constant.userID != "0") {
+                    if (Constant.userID != "") {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const ProfileEdit(),
                         ),
                       );
                     } else {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const LoginSocial(),
                         ),
@@ -334,7 +334,7 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    if (Constant.userID != "0") {
+                    if (Constant.userID != "") {
                       logoutConfirmDialog();
                     } else {
                       Navigator.of(context).pushReplacement(
@@ -355,14 +355,14 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: (userId ?? "0") == "0"
+                          text: (userId ?? "") == ""
                               ? "youAreNotSignIn"
                               : (userType == "3" && (userName ?? "").isEmpty)
                                   ? ("$signedInAs ${userMobileNo ?? ""}")
                                   : ("$signedInAs ${userName ?? ""}"),
                           fontsize: 15,
                           maxline: 1,
-                          multilanguage: false,
+                          multilanguage: true,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
                           textalign: TextAlign.center,

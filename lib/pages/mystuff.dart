@@ -68,7 +68,9 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _getData();
+    if (Constant.userID != "") {
+      _getData();
+    }
   }
 
   void _getData() async {
@@ -314,7 +316,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                         color: white,
                                                         text: downloadTitleList[
                                                             position],
-                                                            multilanguage: false,
+                                                        multilanguage: false,
                                                         textalign:
                                                             TextAlign.center,
                                                         maxline: 3,
@@ -346,7 +348,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                               child: MyText(
                                                                 color:
                                                                     otherColor,
-                                                                    multilanguage: false,
+                                                                multilanguage:
+                                                                    false,
                                                                 text:
                                                                     "Season 1",
                                                                 maxline: 1,
@@ -374,7 +377,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                             child: MyText(
                                                               color: otherColor,
                                                               text: "140 min",
-                                                              multilanguage: false,
+                                                              multilanguage:
+                                                                  false,
                                                               maxline: 1,
                                                               overflow:
                                                                   TextOverflow
@@ -396,7 +400,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                             text: "140 MB",
                                                             textalign: TextAlign
                                                                 .center,
-                                                                multilanguage: false,
+                                                            multilanguage:
+                                                                false,
                                                             maxline: 1,
                                                             overflow:
                                                                 TextOverflow
@@ -890,7 +895,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                         primaryColor,
                                                                     text:
                                                                         "primetag",
-                                                                        multilanguage: true,
+                                                                    multilanguage:
+                                                                        true,
                                                                     textalign:
                                                                         TextAlign
                                                                             .start,
@@ -925,7 +931,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                         white,
                                                                     text:
                                                                         "renttag",
-                                                                        multilanguage: true,
+                                                                    multilanguage:
+                                                                        true,
                                                                     textalign:
                                                                         TextAlign
                                                                             .start,
@@ -1305,7 +1312,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                         text: "purchaschow",
                                                         textalign:
                                                             TextAlign.center,
-                                                            multilanguage: true,
+                                                        multilanguage: true,
                                                         fontsize: 16,
                                                         maxline: 1,
                                                         fontwaight:

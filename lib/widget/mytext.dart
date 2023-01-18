@@ -20,9 +20,9 @@ class MyText extends StatelessWidget {
       this.maxline,
       this.multilanguage,
       this.overflow,
-      required this.textalign,
+      this.textalign,
       this.fontwaight,
-      required this.fontstyle})
+      this.fontstyle})
       : super(key: key);
 
   @override

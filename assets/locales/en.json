@@ -8,6 +8,13 @@
     "intro3Title" : "Find World news on DT Live.",
     "intro4Title" : "Upgrade to get more out of your subscription.",
     "enter_mobileNumberytologin" : "Enter your mobile number to login",
+
+    "bottomView1" : "Home",
+    "bottomView2" : "Find",
+    "bottomView3" : "Channels",
+    "bottomView4" : "Store",
+    "bottomView5" : "My Stuff",
+
     "language_" : "Language",
     "accountdetails":"Account details",
     "manageprofile":"Manage your profile",

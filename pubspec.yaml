@@ -89,6 +89,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets: 
+    - assets/
     - assets/images/
     - assets/locales/en.json
     - assets/locales/ar.json

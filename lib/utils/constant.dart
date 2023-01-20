@@ -61,4 +61,15 @@ class Constant {
   static String placeHolderPort =
       "https://stream-cinema.online/images/no-image.png";
   static String currencySymbol = "";
+
+  static const Map<String, String> exampleResolutionsUrls = {
+    "LOW":
+        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4",
+    "MEDIUM":
+        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4",
+    "LARGE":
+        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4",
+    "EXTRA_LARGE":
+        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4"
+  };
 }

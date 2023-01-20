@@ -12,7 +12,7 @@ import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 // ignore: depend_on_referenced_packages
 import 'package:html/parser.dart' show parse;
 // ignore: depend_on_referenced_packages
-import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:path_provider/path_provider.dart';
 
 class Utils {
   showToast(String msg) {
@@ -54,7 +54,7 @@ class Utils {
   }
 
   static Future<void> deleteCacheDir() async {
-    var tempDir = await syspaths.getTemporaryDirectory();
+    var tempDir = await getTemporaryDirectory();
 
     if (tempDir.existsSync()) {
       tempDir.deleteSync(recursive: true);
@@ -412,5 +412,10 @@ class Utils {
         parse(document.body!.text).documentElement!.text;
 
     return parsedString;
+  }
+
+  static Future<String> getFileUrl(String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    return "${directory.path}/$fileName";
   }
 }

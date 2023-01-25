@@ -23,12 +23,22 @@ class MyNetworkImage extends StatelessWidget {
       child: Image.network(
         imageUrl,
         fit: fit,
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return MyImage(
+            width: imgWidth,
+            height: imgHeight,
+            imagePath: "no_image_port.png",
+            fit: BoxFit.cover,
+          );
+        },
         errorBuilder:
             (BuildContext context, Object exception, StackTrace? stackTrace) {
           return MyImage(
             width: imgWidth,
             height: imgHeight,
-            imagePath: "no_image.png",
+            imagePath: "no_image_port.png",
             fit: BoxFit.cover,
           );
         },

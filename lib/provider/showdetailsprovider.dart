@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:dtlive/model/episodebyseasonmodel.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/model/successmodel.dart';
-import 'package:dtlive/utils/sharedpre.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +14,6 @@ class ShowDetailsProvider extends ChangeNotifier {
 
   bool loading = false;
   int seasonPos = 0;
-
-  SharedPre sharePref = SharedPre();
 
   Future<void> getSectionDetails(typeId, videoType, videoId) async {
     loading = true;
@@ -62,6 +58,7 @@ class ShowDetailsProvider extends ChangeNotifier {
   setSeasonPosition(int position) {
     log("setSeasonPosition ===> $position");
     seasonPos = position;
+    notifyListeners();
   }
 
   clearProvider() {

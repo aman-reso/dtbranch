@@ -61,6 +61,10 @@
     "languagechangenote" :
         "वीडियो चलने के दौरान भाषा बदली जा सकती है।",
     "welcomeback" : "वापसी पर स्वागत है!",
+    "watchwith":"साथ देखें",
+    "changelanguage":"भाषा बदलें",
+    "selectyourlanguage":"अपनी भाषा का चयन करें।",
+    "speechnotavailable":"भाषण उपलब्ध नहीं है।",
 
     "login" : "लॉग इन करें",
     "or" : "या",

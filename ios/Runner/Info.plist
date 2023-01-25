@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>Dtlive</string>
+		<string>DTLive</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -79,5 +79,20 @@
 			</dict>
 		</array>
 		<!-- End of the Google Sign-in Section -->
+		<key>UISupportsDocumentBrowser</key>
+		<true/>
+		<key>FacebookAppID</key>
+		<string>983695575596881</string>
+		<key>FacebookClientToken</key>
+		<string>21c5df3083d35e6bfa9f0ca31f2b6524</string>
+		<key>FacebookDisplayName</key>
+		<string>DTLive</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>fbapi</string>
+			<string>fb-messenger-share-api</string>
+		</array>
+		<key>UIStatusBarHidden</key>
+		<false/>
 	</dict>
 </plist>

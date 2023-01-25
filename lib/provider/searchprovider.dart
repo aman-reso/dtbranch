@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:dtlive/model/searchmodel.dart';
-import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +8,6 @@ class SearchProvider extends ChangeNotifier {
   SearchModel searchModel = SearchModel();
 
   bool loading = false, isVideoClick = true, isShowClick = false;
-
-  SharedPre sharePref = SharedPre();
 
   Future<void> getSearchVideo(searchText) async {
     debugPrint("getSearchVideos searchText :==> $searchText");
@@ -30,7 +27,11 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearSearchProvider() {
+  notifyProvider() {
+    notifyListeners();
+  }
+
+  clearProvider() {
     log("============ clearSearchProvider ============");
     searchModel = SearchModel();
     isVideoClick = true;

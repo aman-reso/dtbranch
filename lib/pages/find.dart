@@ -1,17 +1,20 @@
 import 'dart:developer';
 
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:dtlive/pages/search.dart';
 import 'package:dtlive/pages/sectionbytype.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
-import 'package:dtlive/widget/myedittext.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class Find extends StatefulWidget {
   const Find({Key? key}) : super(key: key);
@@ -22,12 +25,78 @@ class Find extends StatefulWidget {
 
 class FindState extends State<Find> {
   final searchController = TextEditingController();
-  late FindProvider findProvider;
+  late FindProvider findProvider = FindProvider();
+  final SpeechToText _speechToText = SpeechToText();
+  bool speechEnabled = false, _isListening = false;
+  String _lastWords = '';
 
   @override
   void initState() {
     _getData();
+    findProvider = Provider.of<FindProvider>(context, listen: false);
+    _initSpeech();
     super.initState();
+  }
+
+  /// This has to happen only once per app
+  void _initSpeech() async {
+    speechEnabled = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  /// Each time to start a speech recognition session
+  void _startListening() async {
+    debugPrint("<============== _startListening ==============>");
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {
+      _isListening = true;
+    });
+    Future.delayed(const Duration(seconds: 5), () {
+      if (_isListening && searchController.text.toString().isEmpty) {
+        Utils.showSnackbar(context, "TextField", "speechnotavailable");
+        _stopListening();
+      }
+    });
+  }
+
+  /// Manually stop the active speech recognition session
+  /// Note that there are also timeouts that each platform enforces
+  /// and the SpeechToText plugin supports setting timeouts on the
+  /// listen method.
+  void _stopListening() async {
+    debugPrint("<============== _stopListening ==============>");
+    await _speechToText.stop();
+    setState(() {
+      _lastWords = '';
+      _isListening = false;
+    });
+  }
+
+  /// This is the callback that the SpeechToText plugin calls when
+  /// the platform returns recognized words.
+  void _onSpeechResult(SpeechRecognitionResult result) async {
+    debugPrint("<============== _onSpeechResult ==============>");
+    _lastWords = result.recognizedWords;
+    debugPrint("_lastWords ==============> $_lastWords");
+    if (_lastWords.isNotEmpty) {
+      searchController.text = _lastWords.toString();
+      _isListening = false;
+      if (!mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return Search(
+              searchText: searchController.text.toString(),
+            );
+          },
+        ),
+      );
+      setState(() {
+        _lastWords = '';
+        searchController.clear();
+      });
+    }
   }
 
   void _getData() async {
@@ -40,6 +109,8 @@ class FindState extends State<Find> {
 
   @override
   void dispose() {
+    _stopListening();
+    searchController.dispose();
     findProvider.clearFindProvider();
     super.dispose();
   }
@@ -47,6 +118,7 @@ class FindState extends State<Find> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: appBgColor,
       body: SingleChildScrollView(
         child: Container(
@@ -58,11 +130,13 @@ class FindState extends State<Find> {
                 const SizedBox(
                   height: 25,
                 ),
+
                 /* Search Box */
                 searchBox(),
                 const SizedBox(
                   height: 22,
                 ),
+
                 /* Browse by */
                 Consumer<FindProvider>(
                   builder: (context, findProvider, child) {
@@ -174,6 +248,7 @@ class FindState extends State<Find> {
                 const SizedBox(
                   height: 22,
                 ),
+
                 /* Genres */
                 Consumer<FindProvider>(
                   builder: (context, findProvider, child) {
@@ -341,6 +416,7 @@ class FindState extends State<Find> {
                 const SizedBox(
                   height: 30,
                 ),
+
                 /* Language */
                 Consumer<FindProvider>(
                   builder: (context, findProvider, child) {
@@ -552,27 +628,121 @@ class FindState extends State<Find> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
-              child: MyEdittext(
-                hinttext: searchHint,
-                size: 14,
-                color: white,
-                controller: searchController,
+              child: TextField(
+                onSubmitted: (value) async {
+                  log("value ====> $value");
+                  if (value.isNotEmpty) {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Search(
+                            searchText: value.toString(),
+                          );
+                        },
+                      ),
+                    );
+                    setState(() {
+                      searchController.clear();
+                    });
+                  }
+                },
+                onChanged: (value) async {},
                 textInputAction: TextInputAction.done,
                 obscureText: false,
+                controller: searchController,
                 keyboardType: TextInputType.text,
+                maxLines: 1,
+                style: const TextStyle(
+                  color: white,
+                  fontSize: 15,
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  filled: true,
+                  hintStyle: TextStyle(
+                    color: otherColor,
+                    fontSize: 15,
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  hintText: searchHint,
+                ),
               ),
             ),
           ),
-          Container(
-            width: 50,
-            height: MediaQuery.of(context).size.width,
-            alignment: Alignment.center,
-            child: MyImage(
-              width: 20,
-              height: 20,
-              imagePath: "ic_voice.png",
-              color: white,
-            ),
+          Consumer<FindProvider>(
+            builder: (context, findProvider, child) {
+              if (searchController.text.toString().isNotEmpty) {
+                return InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () async {
+                    debugPrint("Click on Clear!");
+                    searchController.clear();
+                    setState(() {});
+                  },
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    padding: const EdgeInsets.all(15),
+                    alignment: Alignment.center,
+                    child: MyImage(
+                      imagePath: "ic_close.png",
+                      color: white,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                );
+              } else {
+                return InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () async {
+                    debugPrint("Click on Microphone!");
+                    _startListening();
+                  },
+                  child: _isListening
+                      ? AvatarGlow(
+                          glowColor: primaryColor,
+                          endRadius: 25,
+                          duration: const Duration(milliseconds: 2000),
+                          repeat: true,
+                          showTwoGlows: true,
+                          repeatPauseDuration:
+                              const Duration(milliseconds: 100),
+                          child: Material(
+                            elevation: 5,
+                            color: transparentColor,
+                            shape: const CircleBorder(),
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              color: transparentColor,
+                              padding: const EdgeInsets.all(15),
+                              alignment: Alignment.center,
+                              child: MyImage(
+                                imagePath: "ic_voice.png",
+                                color: white,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: 50,
+                          height: 50,
+                          padding: const EdgeInsets.all(15),
+                          alignment: Alignment.center,
+                          child: MyImage(
+                            imagePath: "ic_voice.png",
+                            color: white,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                );
+              }
+            },
           ),
         ],
       ),

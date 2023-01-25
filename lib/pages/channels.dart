@@ -5,7 +5,7 @@ import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/vimeoplayer.dart';
@@ -127,25 +127,20 @@ class ChannelsState extends State<Channels> {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
-                    if ((sectionBannerList?.elementAt(index).link ?? "")
-                        .isNotEmpty) {
+                    if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            if ((sectionBannerList?.elementAt(index).link ?? "")
+                            if ((sectionBannerList?[index].link ?? "")
                                 .contains("youtube")) {
                               return YoutubeVideo(
-                                videoUrl:
-                                    sectionBannerList?.elementAt(index).link,
+                                videoUrl: sectionBannerList?[index].link,
                               );
-                            } else if ((sectionBannerList
-                                        ?.elementAt(index)
-                                        .link ??
-                                    "")
+                            } else if ((sectionBannerList?[index].link ?? "")
                                 .contains("vimeo")) {
                               return VimeoPlayerPage(
-                                url: sectionBannerList?.elementAt(index).link,
+                                url: sectionBannerList?[index].link,
                               );
                             } else {
                               return PlayerPage(
@@ -153,8 +148,8 @@ class ChannelsState extends State<Channels> {
                                 0,
                                 0,
                                 0,
-                                sectionBannerList?.elementAt(index).link ?? "",
-                                sectionBannerList?.elementAt(index).name ?? "0",
+                                sectionBannerList?[index].link ?? "",
+                                sectionBannerList?[index].name ?? "0",
                               );
                             }
                           },
@@ -166,7 +161,7 @@ class ChannelsState extends State<Channels> {
                     width: MediaQuery.of(context).size.width,
                     height: Constant.homeBanner,
                     child: MyNetworkImage(
-                      imageUrl: sectionBannerList?.elementAt(index).image ?? "",
+                      imageUrl: sectionBannerList?[index].image ?? "",
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -206,8 +201,8 @@ class ChannelsState extends State<Channels> {
         height: 20,
       ),
       itemBuilder: (BuildContext context, int index) {
-        if (sectionList?.elementAt(index).data != null &&
-            (sectionList?.elementAt(index).data?.length ?? 0) > 0) {
+        if (sectionList?[index].data != null &&
+            (sectionList?[index].data?.length ?? 0) > 0) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,8 +211,7 @@ class ChannelsState extends State<Channels> {
                 padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: MyText(
                   color: otherColor,
-                  text: sectionList?.elementAt(index).channelName.toString() ??
-                      "",
+                  text: sectionList?[index].channelName.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 10,
                   multilanguage: false,
@@ -231,10 +225,10 @@ class ChannelsState extends State<Channels> {
                 height: 2,
               ),
               Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: MyText(
                   color: white,
-                  text: sectionList?.elementAt(index).title.toString() ?? "",
+                  text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 16,
                   multilanguage: false,
@@ -250,11 +244,11 @@ class ChannelsState extends State<Channels> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(
-                  sectionList?.elementAt(index).videoType ?? "",
-                  sectionList?.elementAt(index).screenLayout ?? "",
+                  sectionList?[index].videoType ?? "",
+                  sectionList?[index].screenLayout ?? "",
                 ),
                 child: ListView.separated(
-                  itemCount: (sectionList?.elementAt(index).data?.length ?? 0),
+                  itemCount: (sectionList?[index].data?.length ?? 0),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   separatorBuilder: (context, index) => const SizedBox(
@@ -263,53 +257,44 @@ class ChannelsState extends State<Channels> {
                   itemBuilder: (BuildContext context, int postion) {
                     /* video_type =>  1-video,  2-show */
                     /* screen_layout =>  landscape, potrait, square */
-                    if ((sectionList?.elementAt(index).videoType ?? "") ==
-                        "1") {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                    if ((sectionList?[index].videoType ?? "") == "1") {
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
-                    } else if ((sectionList?.elementAt(index).videoType ??
-                            "") ==
-                        "2") {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                    } else if ((sectionList?[index].videoType ?? "") == "2") {
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
                     } else {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
                     }
                   },
@@ -366,28 +351,27 @@ class ChannelsState extends State<Channels> {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
                         1,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
                         4,
                       );
                     },
@@ -398,16 +382,15 @@ class ChannelsState extends State<Channels> {
             child: Container(
               width: Constant.widthLand,
               height: Constant.heightLand,
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).landscape.toString() ??
-                          "",
+                  imageUrl: sectionDataList?[index].landscape.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -436,28 +419,27 @@ class ChannelsState extends State<Channels> {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
                         1,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
                         4,
                       );
                     },
@@ -469,15 +451,13 @@ class ChannelsState extends State<Channels> {
               width: Constant.widthPort,
               height: Constant.heightPort,
               decoration: BoxDecoration(
-                color: white,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).thumbnail.toString() ??
-                          "",
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -506,28 +486,27 @@ class ChannelsState extends State<Channels> {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
                         1,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
                         4,
                       );
                     },
@@ -539,15 +518,13 @@ class ChannelsState extends State<Channels> {
               width: Constant.widthSquare,
               height: Constant.heightSquare,
               decoration: BoxDecoration(
-                color: white,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).thumbnail.toString() ??
-                          "",
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,

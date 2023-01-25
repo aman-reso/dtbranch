@@ -1,11 +1,18 @@
 class Constant {
-  static const String baseurl = 'http://173.249.44.9:8000/api/v1/';
+  static const String baseurl =
+      'http://demo.divinetechs.in/apps/dtlive/public/api/';
 
-  static String appName = "DTLive";
-  static String appPackageName = "com.divinetechs.primevideoapp";
+  static String? appName = "DTLive";
+  static String? appPackageName = "com.divinetechs.primevideoapp";
 
   /* OneSignal App ID */
   static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
+
+  /* Google Client ID & Client Secret */
+  static const String googleClientId =
+      "346606981660-juds0qd8k9p651md7gv38bd1bn9jq66v.apps.googleusercontent.com";
+  static const String googleClientSecret =
+      "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";
 
   // Dimentions START
   static double appBarHeight = 60;

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/model/successmodel.dart';
-import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +11,6 @@ class VideoDetailsProvider extends ChangeNotifier {
   SectionDetailModel sectionDetailModel = SectionDetailModel();
 
   bool loading = false;
-
-  SharedPre sharePref = SharedPre();
 
   Future<void> getSectionDetails(typeId, videoType, videoId) async {
     debugPrint("getSectionDetails typeId :==> $typeId");

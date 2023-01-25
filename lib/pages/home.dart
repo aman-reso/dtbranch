@@ -6,7 +6,7 @@ import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/homeprovider.dart';
@@ -240,20 +240,18 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
         position == 0 ? "1" : "2");
   }
 
-  void _animateSlider(List<banner.Result>? sectionBannerList) {
-    Future.delayed(const Duration(seconds: 2)).then((_) {
-      int nextPage = pageController.page?.round() ?? 0 + 1;
-
-      if (nextPage == (sectionBannerList?.length ?? 0)) {
-        nextPage = 0;
-      }
-
-      pageController
-          .animateToPage(nextPage,
-              duration: const Duration(seconds: 1), curve: Curves.linear)
-          .then((_) => _animateSlider(sectionBannerList));
-    });
-  }
+  // void _animateSlider(List<banner.Result>? sectionBannerList) {
+  //   Future.delayed(const Duration(seconds: 2)).then((_) {
+  //     int nextPage = pageController.page?.round() ?? 0 + 1;
+  //     if (nextPage == (sectionBannerList?.length ?? 0)) {
+  //       nextPage = 0;
+  //     }
+  //     pageController
+  //         .animateToPage(nextPage,
+  //             duration: const Duration(seconds: 1), curve: Curves.linear)
+  //         .then((_) => _animateSlider(sectionBannerList));
+  //   });
+  // }
 
   Widget homebanner(List<banner.Result>? sectionBannerList) {
     if ((sectionBannerList?.length ?? 0) > 0) {
@@ -733,6 +731,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       sectionDataList?.elementAt(index).landscape.toString() ??
@@ -801,6 +800,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       sectionDataList?.elementAt(index).thumbnail.toString() ??
@@ -869,6 +869,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       sectionDataList?.elementAt(index).thumbnail.toString() ??
@@ -924,6 +925,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
                       imageUrl:
                           sectionDataList?.elementAt(index).image.toString() ??
@@ -995,6 +997,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
                       imageUrl:
                           sectionDataList?.elementAt(index).image.toString() ??

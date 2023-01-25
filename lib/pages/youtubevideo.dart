@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubeVideo extends StatefulWidget {
-  var videoUrl;
-  YoutubeVideo({Key? key, this.videoUrl}) : super(key: key);
+  final String? videoUrl;
+  const YoutubeVideo({Key? key, this.videoUrl}) : super(key: key);
 
   @override
   State<YoutubeVideo> createState() => YoutubeVideoState();
@@ -17,7 +17,7 @@ class YoutubeVideoState extends State<YoutubeVideo> {
   @override
   void initState() {
     debugPrint("videourlget:===${widget.videoUrl}");
-    var videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
+    var videoId = YoutubePlayer.convertUrlToId(widget.videoUrl ?? "");
     controller = YoutubePlayerController(
       initialVideoId: videoId ?? "",
       flags:

@@ -1,6 +1,5 @@
 // To parse this JSON data, do
-//
-//     final loginRegisterModel = loginRegisterModelFromJson(jsonString);
+// final loginRegisterModel = loginRegisterModelFromJson(jsonString);
 
 import 'dart:convert';
 
@@ -35,7 +34,7 @@ class LoginRegisterModel {
         "code": code,
         "status": status,
         "message": message,
-        "result": result!.toJson(),
+        "result": result?.toJson() ?? {},
       };
 }
 
@@ -71,8 +70,8 @@ class Result {
   String? apiToken;
   String? emailVerifyToken;
   String? isEmailVerify;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String? createdAt;
+  String? updatedAt;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
         id: json["id"],
@@ -88,8 +87,8 @@ class Result {
         apiToken: json["api_token"],
         emailVerifyToken: json["email_verify_token"],
         isEmailVerify: json["is_email_verify"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -106,7 +105,7 @@ class Result {
         "api_token": apiToken,
         "email_verify_token": emailVerifyToken,
         "is_email_verify": isEmailVerify,
-        "created_at": createdAt.toString(),
-        "updated_at": updatedAt.toString(),
+        "created_at": createdAt,
+        "updated_at": updatedAt,
       };
 }

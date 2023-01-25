@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'dart:developer';
 
 import 'package:dtlive/pages/bottombar.dart';
@@ -11,24 +10,14 @@ import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:convert' show json;
-import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:provider/provider.dart';
-
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  // clientId:
-  //     '346606981660-juds0qd8k9p651md7gv38bd1bn9jq66v.apps.googleusercontent.com',
-  serverClientId: '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',
-  scopes: <String>[
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ],
-);
 
 class LoginSocial extends StatefulWidget {
   const LoginSocial({Key? key}) : super(key: key);
@@ -38,86 +27,22 @@ class LoginSocial extends StatefulWidget {
 }
 
 class LoginSocialState extends State<LoginSocial> {
+  FacebookLogin? plugin;
   late ProgressDialog prDialog;
   SharedPre sharePref = SharedPre();
   final numberController = TextEditingController();
-  GoogleSignInAccount? _currentUser;
-  String? mobileNumber, email, userName;
+  String? mobileNumber, email, userName, strType;
 
   @override
   void initState() {
     super.initState();
     prDialog = ProgressDialog(context);
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      setState(() {
-        _currentUser = account;
-      });
-      if (_currentUser != null) {
-        _handleGetContact(_currentUser!);
-      }
-    });
-    _googleSignIn.signInSilently();
   }
 
   @override
   void dispose() {
     numberController.dispose();
     super.dispose();
-  }
-
-  Future<void> _handleGetContact(GoogleSignInAccount user) async {
-    final http.Response response = await http.get(
-      Uri.parse(
-          'https://people.googleapis.com/v1/people/me/connections?requestMask.includeField=person.names'),
-      headers: await user.authHeaders,
-    );
-    if (response.statusCode != 200) {
-      log('People API ${response.statusCode} response: ${response.body}');
-      return;
-    }
-    final Map<String, dynamic> data =
-        json.decode(response.body) as Map<String, dynamic>;
-    final String? namedContact = _pickFirstNamedContact(data);
-    if (namedContact != null) {
-      log('I see you know $namedContact!');
-    } else {
-      log('No contacts to display.');
-    }
-  }
-
-  String? _pickFirstNamedContact(Map<String, dynamic> data) {
-    final List<dynamic>? connections = data['connections'] as List<dynamic>?;
-    final Map<String, dynamic>? contact = connections?.firstWhere(
-      (dynamic contact) => contact['names'] != null,
-      orElse: () => null,
-    ) as Map<String, dynamic>?;
-    if (contact != null) {
-      final Map<String, dynamic>? name = contact['names'].firstWhere(
-        (dynamic name) => name['displayName'] != null,
-        orElse: () => null,
-      ) as Map<String, dynamic>?;
-      if (name != null) {
-        return name['displayName'] as String?;
-      }
-    }
-    return null;
-  }
-
-  Future<void> _handleSignIn() async {
-    final GoogleSignInAccount? user = _currentUser;
-    try {
-      await _googleSignIn.signIn();
-      if (user != null) {
-        log("_handleSignIn displayName ====> ${user.displayName}");
-        log("_handleSignIn email ====> ${user.email}");
-        email = user.email.toString();
-        userName = user.displayName.toString();
-        checkAndNavigate();
-      }
-    } catch (error) {
-      log("_handleSignIn error ====> $error");
-      prDialog.hide();
-    }
   }
 
   @override
@@ -174,6 +99,7 @@ class LoginSocialState extends State<LoginSocial> {
               const SizedBox(
                 height: 40,
               ),
+
               /* Enter Mobile Number */
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -229,6 +155,7 @@ class LoginSocialState extends State<LoginSocial> {
               const SizedBox(
                 height: 30,
               ),
+
               /* Login Button */
               InkWell(
                 onTap: () {
@@ -313,10 +240,12 @@ class LoginSocialState extends State<LoginSocial> {
               const SizedBox(
                 height: 25,
               ),
+
               /* Google Login Button */
               InkWell(
                 onTap: () {
-                  _handleSignIn();
+                  debugPrint("Clicked on : ====> loginWith Google");
+                  _gmailLogin();
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -361,17 +290,114 @@ class LoginSocialState extends State<LoginSocial> {
     );
   }
 
+  /* Facebook Login */
+  Future<void> _facebookLogin() async {
+    await plugin?.logIn(permissions: [
+      FacebookPermission.publicProfile,
+      FacebookPermission.email,
+    ]);
+
+    final token = await plugin?.accessToken;
+    debugPrint("_getFBLoginInfo token ====> $token");
+    FacebookUserProfile? profile;
+    String? imageUrl;
+
+    if (token != null) {
+      profile = await plugin?.getUserProfile();
+      if (token.permissions.contains(FacebookPermission.email.name)) {
+        email = await plugin?.getUserEmail();
+      }
+      imageUrl = await plugin?.getProfileImageUrl(width: 100);
+      debugPrint("_getFBLoginInfo firstname ====> ${profile?.firstName ?? ""}");
+      debugPrint("_getFBLoginInfo lastname ====> ${profile?.lastName ?? ""}");
+      debugPrint("_getFBLoginInfo email ====> $email");
+      debugPrint("_getFBLoginInfo imageUrl ====> $imageUrl");
+      debugPrint("_getFBLoginInfo name ====> ${profile?.name ?? ""}");
+      strType = "1";
+      // Login to Firebase Console
+      googleSignInUser(email ?? "", profile?.name ?? "");
+    }
+  }
+
+  /* Google(Gmail) Login */
+  Future<void> _gmailLogin() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return;
+
+    GoogleSignInAccount user = googleUser;
+
+    debugPrint('GoogleSignIn ===> id : ${user.id}');
+    debugPrint('GoogleSignIn ===> email : ${user.email}');
+    debugPrint('GoogleSignIn ===> displayName : ${user.displayName}');
+    debugPrint('GoogleSignIn ===> photoUrl : ${user.photoUrl}');
+
+    strType = "2";
+    googleSignInUser(user.email, user.displayName ?? "");
+  }
+
+  googleSignInUser(String mail, String displayName) async {
+    debugPrint("Email : $mail and Name : $displayName");
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: mail, password: '123456');
+      debugPrint("uid ===> ${userCredential.user?.uid}");
+      String firebasedid = userCredential.user?.uid ?? "";
+      debugPrint('firebasedid :===> $firebasedid');
+
+      email = mail;
+      userName = displayName;
+
+      checkAndNavigate();
+    } on FirebaseAuthException catch (e) {
+      debugPrint('===>Exp${e.code.toString()}');
+      debugPrint('===>Exp${e.message.toString()}');
+      if (e.code.toString() == "user-not-found") {
+        registerFirebaseUser(mail, displayName);
+      } else if (e.code == 'wrong-password') {
+        debugPrint('Wrong password provided.');
+        Utils().showToast('Wrong password provided.');
+      }
+    }
+  }
+
+  registerFirebaseUser(String mail, String displayName) async {
+    debugPrint("Email : $mail and Name : $displayName");
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: mail, password: '123456')
+          .whenComplete(() {});
+      debugPrint(
+          'RegisterUser mail : ${userCredential.user?.email.toString()}');
+      debugPrint("mail ===> $mail");
+
+      debugPrint("uid ===> ${userCredential.user?.uid}");
+      String firebasedid = userCredential.user?.uid ?? "";
+      debugPrint('firebasedid :===> $firebasedid');
+
+      googleSignInUser(mail, displayName);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        debugPrint('The password provided is too weak.');
+        Utils().showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   void checkAndNavigate() async {
     log('checkAndNavigate email ==>> $email');
     log('checkAndNavigate userName ==>> $userName');
+    log('checkAndNavigate strType ==>> $strType');
     Utils.showProgress(context, prDialog);
     final generalProvider =
         Provider.of<GeneralProvider>(context, listen: false);
-    await generalProvider.loginWithSocial(email, userName, '2');
+    await generalProvider.loginWithSocial(email, userName, strType);
     log('checkAndNavigate loading ==>> ${generalProvider.loading}');
+
     if (!generalProvider.loading) {
       // Hide Progress Dialog
-      prDialog.hide();
+      await prDialog.hide();
 
       if (generalProvider.loginGmailModel.status == 200) {
         log('loginGmailModel ==>> ${generalProvider.loginGmailModel.toString()}');
@@ -382,9 +408,9 @@ class LoginSocialState extends State<LoginSocial> {
             generalProvider.loginGmailModel.result?.name.toString() ?? "");
         sharePref.save("userimage",
             generalProvider.loginGmailModel.result?.image.toString() ?? "");
-        sharePref.save("email",
+        sharePref.save("useremail",
             generalProvider.loginGmailModel.result?.email.toString() ?? "");
-        sharePref.save("mobile",
+        sharePref.save("usermobile",
             generalProvider.loginGmailModel.result?.mobile.toString() ?? "");
         sharePref.save("usertype",
             generalProvider.loginGmailModel.result?.type.toString() ?? "");
@@ -394,12 +420,14 @@ class LoginSocialState extends State<LoginSocial> {
             generalProvider.loginGmailModel.result?.id.toString() ?? "";
         log('Constant userID ==>> ${Constant.userID}');
 
+        if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const Bottombar(),
           ),
         );
       } else {
+        if (!mounted) return;
         Utils.showSnackbar(
             context, "fail", "${generalProvider.loginGmailModel.message}");
       }

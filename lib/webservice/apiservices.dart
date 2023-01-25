@@ -167,8 +167,8 @@ class ApiService {
   }
 
   // image_upload API
-  Future<ProfileModel> imageUpload(File? profileImg) async {
-    ProfileModel uploadImgModel;
+  Future<SuccessModel> imageUpload(File? profileImg) async {
+    SuccessModel uploadImgModel;
     String uploadImage = "image_upload";
     log("imageUpload API :==> $baseUrl$uploadImage");
     log("ProfileImg Filename :==> ${profileImg!.path.split('/').last}");
@@ -190,7 +190,7 @@ class ApiService {
     log("imageUpload statuscode :===> ${response.statusCode}");
     log("imageUpload Message :===> ${response.statusMessage}");
     log("imageUpload data :===> ${response.data}");
-    uploadImgModel = ProfileModel.fromJson(response.data);
+    uploadImgModel = SuccessModel.fromJson(response.data);
     return uploadImgModel;
   }
 

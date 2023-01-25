@@ -21,7 +21,7 @@ class SearchModel {
   int? code;
   int? status;
   String? message;
-  String? result;
+  List<dynamic>? result;
   List<Video>? video;
   List<Tvshow>? tvshow;
 
@@ -277,7 +277,7 @@ class Video {
   String? ageRestriction;
   String? maxVideoQuality;
   String? releaseTag;
-  String? typeId;
+  int? typeId;
   int? videoType;
   String? videoUrl;
   String? videoExtension;

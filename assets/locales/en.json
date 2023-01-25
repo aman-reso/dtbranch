@@ -53,6 +53,7 @@
     "continuewatching" : "Continue Watching",
     "primetag" : "DT prime",
     "primetagdesc" : "included with subscription",
+    "watchwith":"Watch with",
 
     "addwatchlistmessage" : "Successfully added to Watchlist",
     "removewatchlistmessage" : "Successfully removed from Watchlist",
@@ -75,6 +76,9 @@
     "donthaveaccount" : "Don't have an account?",
     "signupnow" : " Sign-Up Now",
     "loginfspace" : " Login",
+    "changelanguage":"Change Language",
+    "selectyourlanguage":"Select your language.",
+    "speechnotavailable":"Speech not available.",
 
     "editprofile" : "Edit Profile",
     "profile" : "Profile",

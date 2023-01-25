@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class ProfileProvider extends ChangeNotifier {
   ProfileModel profileModel = ProfileModel();
   SuccessModel successNameModel = SuccessModel();
-  ProfileModel uploadImgModel = ProfileModel();
+  SuccessModel uploadImgModel = SuccessModel();
 
   bool loading = false;
 

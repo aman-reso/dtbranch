@@ -30,4 +30,5 @@ const more_ = "more";
 const less_ = "...less";
 const searchHint = "Search video or tvshow by title...";
 const signedInAs = "Signed in as";
+const youAreNotSignIn = "You are not Signed in";
 const cancel = "Cancel";

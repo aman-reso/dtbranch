@@ -20,7 +20,7 @@ class RentModel {
   int? code;
   int? status;
   String? message;
-  String? result;
+  List<dynamic>? result;
   List<Video>? video;
   List<Tvshow>? tvshow;
 
@@ -28,7 +28,7 @@ class RentModel {
         code: json["code"],
         status: json["status"],
         message: json["message"],
-        result: json["result"],
+        result: List<dynamic>.from(json["result"].map((x) => x)),
         video: List<Video>.from(json["video"].map((x) => Video.fromJson(x))),
         tvshow:
             List<Tvshow>.from(json["tvshow"].map((x) => Tvshow.fromJson(x))),
@@ -38,7 +38,7 @@ class RentModel {
         "code": code,
         "status": status,
         "message": message,
-        "result": result,
+        "result": List<dynamic>.from(result?.map((x) => x) ?? []),
         "video": List<dynamic>.from(video?.map((x) => x.toJson()) ?? []),
         "tvshow": List<dynamic>.from(tvshow?.map((x) => x.toJson()) ?? []),
       };

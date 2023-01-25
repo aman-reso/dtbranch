@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
-import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/vimeoplayer.dart';
 import 'package:dtlive/pages/youtubevideo.dart';
@@ -192,6 +192,7 @@ class MovieDetailsState extends State<MovieDetails> {
                         ),
                       ],
                     ),
+
                     /* Other Details */
                     Container(
                       transform:
@@ -434,6 +435,7 @@ class MovieDetailsState extends State<MovieDetails> {
                               ],
                             ),
                           ),
+
                           /* Prime TAG  & Rent TAG */
                           (videoDetailsProvider.sectionDetailModel.result
                                           ?.isPremium ??
@@ -547,6 +549,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   ],
                                 )
                               : const SizedBox.shrink(),
+
                           /* Play Video button */
                           ((videoDetailsProvider.sectionDetailModel.result
                                               ?.isPremium ??
@@ -602,11 +605,14 @@ class MovieDetailsState extends State<MovieDetails> {
                                         borderRadius: BorderRadius.circular(5),
                                       ),
                                       child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           MyImage(
-                                              width: 20,
-                                              height: 20,
-                                              imagePath: "ic_play.png"),
+                                            width: 20,
+                                            height: 20,
+                                            imagePath: "ic_play.png",
+                                          ),
                                           const SizedBox(
                                             width: 15,
                                           ),
@@ -627,6 +633,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 )
                               : const SizedBox.shrink(),
+
                           /* Continue Watching Button */
                           ((videoDetailsProvider.sectionDetailModel.result
                                               ?.stopTime ??
@@ -761,6 +768,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 )
                               : const SizedBox.shrink(),
+
                           /* Subscription Button */
                           ((videoDetailsProvider.sectionDetailModel.result
                                               ?.isPremium ??
@@ -787,18 +795,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                         borderRadius: BorderRadius.circular(5),
                                       ),
                                       child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
-                                          MyText(
-                                            color: black,
-                                            text: "appname",
-                                            textalign: TextAlign.center,
-                                            fontsize: 15,
-                                            fontwaight: FontWeight.w600,
-                                            multilanguage: true,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontstyle: FontStyle.normal,
-                                          ),
                                           MyText(
                                             color: black,
                                             text: "watch_with",
@@ -810,11 +809,24 @@ class MovieDetailsState extends State<MovieDetails> {
                                             overflow: TextOverflow.ellipsis,
                                             fontstyle: FontStyle.normal,
                                           ),
+                                          const SizedBox(width: 5),
+                                          MyText(
+                                            color: black,
+                                            text: "appname",
+                                            textalign: TextAlign.center,
+                                            fontsize: 15,
+                                            fontwaight: FontWeight.w600,
+                                            multilanguage: true,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
                                         ],
                                       ),
                                     )
                                   : const SizedBox.shrink()
                               : const SizedBox.shrink(),
+
                           /* Rent Button */
                           ((videoDetailsProvider.sectionDetailModel.result
                                               ?.isPremium ??
@@ -841,6 +853,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     borderRadius: BorderRadius.circular(5),
                                   ),
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       MyText(
                                         color: black,
@@ -870,6 +883,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 )
                               : const SizedBox.shrink(),
+
                           /* Included Features buttons */
                           Container(
                             width: MediaQuery.of(context).size.width,
@@ -967,6 +981,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ),
                                         ],
                                       ),
+
                                 /* Download */
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1005,6 +1020,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     ),
                                   ],
                                 ),
+
                                 /* Watchlist */
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1068,6 +1084,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     ),
                                   ],
                                 ),
+
                                 /* More */
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1109,6 +1126,7 @@ class MovieDetailsState extends State<MovieDetails> {
                               ],
                             ),
                           ),
+
                           /* Description, IMDb, Languages & Subtitles */
                           Container(
                             width: MediaQuery.of(context).size.width,
@@ -1283,6 +1301,7 @@ class MovieDetailsState extends State<MovieDetails> {
                               ],
                             ),
                           ),
+
                           /* Customers also watched */
                           (videoDetailsProvider
                                           .sectionDetailModel.getRelatedVideo !=
@@ -1341,6 +1360,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   ],
                                 )
                               : const SizedBox.shrink(),
+
                           /* Cast & Crew */
                           (videoDetailsProvider.sectionDetailModel.cast !=
                                       null &&
@@ -1538,6 +1558,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           const SizedBox(
                             height: 15,
                           ),
+
                           /* Director */
                           (directorList != null &&
                                   (directorList?.length ?? 0) > 0)
@@ -1837,6 +1858,7 @@ class MovieDetailsState extends State<MovieDetails> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       relatedDataList?.elementAt(index).landscape.toString() ??
@@ -1889,6 +1911,7 @@ class MovieDetailsState extends State<MovieDetails> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       relatedDataList?.elementAt(index).thumbnail.toString() ??
@@ -1941,6 +1964,7 @@ class MovieDetailsState extends State<MovieDetails> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       relatedDataList?.elementAt(index).thumbnail.toString() ??

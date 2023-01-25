@@ -1,13 +1,12 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/mystuffprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -30,9 +29,9 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
       TabController(length: tabname.length, vsync: this);
 
   List<String> tabname = <String>[
-    "downloads",
-    "watchlist",
-    "purchases",
+    "Downloads",
+    "Watchlist",
+    "Purchases",
   ];
 
   List<String> downloadList = <String>[
@@ -79,11 +78,6 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
     await myStuffProvider.getProfile();
     await myStuffProvider.getWatchlist();
     await myStuffProvider.getUserRentVideoList();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override

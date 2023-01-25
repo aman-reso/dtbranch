@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -20,7 +20,7 @@ class Store extends StatefulWidget {
   State<Store> createState() => StoreState();
 }
 
-class StoreState extends State<Store> with TickerProviderStateMixin {
+class StoreState extends State<Store> {
   @override
   void initState() {
     super.initState();

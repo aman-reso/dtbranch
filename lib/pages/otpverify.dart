@@ -9,11 +9,11 @@ import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
 class OTPVerify extends StatefulWidget {
   final String mobileNumber;
@@ -30,18 +30,21 @@ class OTPVerifyState extends State<OTPVerify> {
   final numberController = TextEditingController();
   final pinPutController = TextEditingController();
   ScrollController scollController = ScrollController();
-  String? verificationId;
+  String? verificationId, finalOTP;
+  int? forceResendingToken;
+  bool codeResended = false;
 
   @override
   void initState() {
     super.initState();
     prDialog = ProgressDialog(context);
     Utils.showProgress(context, prDialog);
-    codeSend();
+    codeSend(false);
   }
 
   @override
   void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus();
     numberController.dispose();
     super.dispose();
   }
@@ -95,35 +98,32 @@ class OTPVerifyState extends State<OTPVerify> {
               const SizedBox(
                 height: 8,
               ),
-              Row(
-                children: [
-                  MyText(
-                    color: otherColor,
-                    text: "code_sent_desc",
-                    fontsize: 15,
-                    fontwaight: FontWeight.normal,
-                    maxline: 3,
-                    overflow: TextOverflow.ellipsis,
-                    textalign: TextAlign.center,
-                    multilanguage: true,
-                    fontstyle: FontStyle.normal,
-                  ),
-                  MyText(
-                    color: otherColor,
-                    text: widget.mobileNumber,
-                    fontsize: 15,
-                    fontwaight: FontWeight.normal,
-                    maxline: 3,
-                    overflow: TextOverflow.ellipsis,
-                    textalign: TextAlign.center,
-                    multilanguage: false,
-                    fontstyle: FontStyle.normal,
-                  ),
-                ],
+              MyText(
+                color: otherColor,
+                text: "code_sent_desc",
+                fontsize: 15,
+                fontwaight: FontWeight.normal,
+                maxline: 3,
+                overflow: TextOverflow.ellipsis,
+                textalign: TextAlign.center,
+                multilanguage: true,
+                fontstyle: FontStyle.normal,
+              ),
+              MyText(
+                color: otherColor,
+                text: widget.mobileNumber,
+                fontsize: 15,
+                fontwaight: FontWeight.normal,
+                maxline: 3,
+                overflow: TextOverflow.ellipsis,
+                textalign: TextAlign.center,
+                multilanguage: false,
+                fontstyle: FontStyle.normal,
               ),
               const SizedBox(
                 height: 40,
               ),
+
               /* Enter Received OTP */
               Pinput(
                 length: 6,
@@ -151,6 +151,7 @@ class OTPVerifyState extends State<OTPVerify> {
               const SizedBox(
                 height: 30,
               ),
+
               /* Confirm Button */
               InkWell(
                 borderRadius: BorderRadius.circular(26),
@@ -161,6 +162,7 @@ class OTPVerifyState extends State<OTPVerify> {
                     Utils.showSnackbar(
                         context, "TextField", "enterreceivedotp");
                   } else {
+                    Utils.showProgress(context, prDialog);
                     _login(widget.mobileNumber.toString());
                   }
                 },
@@ -197,19 +199,29 @@ class OTPVerifyState extends State<OTPVerify> {
               const SizedBox(
                 height: 40,
               ),
-              Container(
-                constraints: const BoxConstraints(minWidth: 70),
-                padding: const EdgeInsets.all(5),
-                child: MyText(
-                  color: white,
-                  text: "resend",
-                  multilanguage: true,
-                  fontsize: 16,
-                  fontwaight: FontWeight.w700,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textalign: TextAlign.center,
-                  fontstyle: FontStyle.normal,
+
+              /* Resend */
+              InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: () {
+                  if (!codeResended) {
+                    codeSend(true);
+                  }
+                },
+                child: Container(
+                  constraints: const BoxConstraints(minWidth: 70),
+                  padding: const EdgeInsets.all(5),
+                  child: MyText(
+                    color: white,
+                    text: "resend",
+                    multilanguage: true,
+                    fontsize: 16,
+                    fontwaight: FontWeight.w700,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ],
@@ -219,12 +231,15 @@ class OTPVerifyState extends State<OTPVerify> {
     );
   }
 
-  codeSend() async {
-    await phoneSignIn(phoneNumber: widget.mobileNumber.toString());
+  codeSend(bool isResend) async {
+    codeResended = isResend;
+    await phoneSignIn(
+        phoneNumber: widget.mobileNumber.toString(), isResend: isResend);
     prDialog.hide();
   }
 
-  Future<void> phoneSignIn({required String phoneNumber}) async {
+  Future<void> phoneSignIn(
+      {required String phoneNumber, required bool isResend}) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: _onVerificationCompleted,
@@ -238,8 +253,11 @@ class OTPVerifyState extends State<OTPVerify> {
     log("verification completed ${authCredential.smsCode}");
     User? user = FirebaseAuth.instance.currentUser;
     setState(() {
-      pinPutController.text = authCredential.smsCode!;
+      finalOTP = authCredential.smsCode ?? "";
+      pinPutController.text = authCredential.smsCode ?? "";
+      log("finalOTP =====> $finalOTP");
     });
+
     if (authCredential.smsCode != null) {
       try {
         UserCredential? credential =
@@ -264,12 +282,14 @@ class OTPVerifyState extends State<OTPVerify> {
 
   _onCodeSent(String verificationId, int? forceResendingToken) {
     this.verificationId = verificationId;
-    log(forceResendingToken.toString());
+    this.forceResendingToken = forceResendingToken;
+    log("resendingToken =======> ${forceResendingToken.toString()}");
     log("code sent");
   }
 
   _onCodeTimeout(String timeout) {
     prDialog.hide();
+    codeResended = false;
     return null;
   }
 
@@ -280,7 +300,7 @@ class OTPVerifyState extends State<OTPVerify> {
     await generalProvider.loginWithOTP(mobile);
 
     if (!generalProvider.loading) {
-      prDialog.hide();
+      await prDialog.hide();
 
       if (generalProvider.loginOTPModel.status == 200) {
         log('loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
@@ -291,9 +311,9 @@ class OTPVerifyState extends State<OTPVerify> {
             generalProvider.loginOTPModel.result?.name.toString() ?? "");
         sharePref.save("userimage",
             generalProvider.loginOTPModel.result?.image.toString() ?? "");
-        sharePref.save("email",
+        sharePref.save("useremail",
             generalProvider.loginOTPModel.result?.email.toString() ?? "");
-        sharePref.save("mobile",
+        sharePref.save("usermobile",
             generalProvider.loginOTPModel.result?.mobile.toString() ?? "");
         sharePref.save("usertype",
             generalProvider.loginOTPModel.result?.type.toString() ?? "");
@@ -303,14 +323,14 @@ class OTPVerifyState extends State<OTPVerify> {
             generalProvider.loginOTPModel.result?.id.toString() ?? "";
         log('Constant userID ==>> ${Constant.userID}');
 
-        // ignore: use_build_context_synchronously
+        if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const Bottombar(),
           ),
         );
       } else {
-        // ignore: use_build_context_synchronously
+        if (!mounted) return;
         Utils.showSnackbar(
             context, "fail", "${generalProvider.loginOTPModel.message}");
       }

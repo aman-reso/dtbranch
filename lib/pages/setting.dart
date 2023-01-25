@@ -120,6 +120,7 @@ class SettingState extends State<Setting> {
                           text: "accountdetails",
                           fontsize: 15,
                           maxline: 1,
+                          multilanguage: true,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
                           textalign: TextAlign.center,
@@ -149,6 +150,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
                   color: white,
                 ),
+
                 /* Subscription */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -211,6 +213,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
                   color: white,
                 ),
+
                 /* Push Notification enable/disable */
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -267,6 +270,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
                   color: white,
                 ),
+
                 /* Clear Cache */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -330,6 +334,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
                   color: white,
                 ),
+
                 /* SignIn / SignOut */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -356,13 +361,13 @@ class SettingState extends State<Setting> {
                         MyText(
                           color: white,
                           text: (userId ?? "") == ""
-                              ? "youAreNotSignIn"
+                              ? youAreNotSignIn
                               : (userType == "3" && (userName ?? "").isEmpty)
                                   ? ("$signedInAs ${userMobileNo ?? ""}")
                                   : ("$signedInAs ${userName ?? ""}"),
                           fontsize: 15,
                           maxline: 1,
-                          multilanguage: true,
+                          multilanguage: false,
                           overflow: TextOverflow.ellipsis,
                           fontwaight: FontWeight.w500,
                           textalign: TextAlign.center,
@@ -392,6 +397,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
                   color: white,
                 ),
+
                 /* Rate App */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -440,6 +446,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
                   color: white,
                 ),
+
                 /* Share App */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -488,6 +495,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 16, bottom: 16),
                   color: white,
                 ),
+
                 /* About Us */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -545,6 +553,7 @@ class SettingState extends State<Setting> {
                   height: 0.5,
                   color: white,
                 ),
+
                 /* Privacy Policy */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -588,6 +597,7 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 8, bottom: 8),
                   color: white,
                 ),
+
                 /* Terms & Conditions */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -631,68 +641,12 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 8, bottom: 8),
                   color: white,
                 ),
+
                 /* MaltiLanguage */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      backgroundColor: white,
-                      builder: (BuildContext context) {
-                        return BottomSheet(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          onClosing: () {},
-                          builder: (BuildContext context) {
-                            return StatefulBuilder(
-                              builder: (BuildContext context, state) {
-                                return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 200,
-                                  color: white,
-                                  child: Column(
-                                    children: [
-                                      ListTile(
-                                        title: const Text("Englist"),
-                                        onTap: () {
-                                          state(() {});
-                                          LocaleNotifier.of(context)
-                                              ?.change('en');
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: const Text("Arebic"),
-                                        onTap: () {
-                                          state(() {});
-                                          LocaleNotifier.of(context)
-                                              ?.change('ar');
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: const Text("hindi"),
-                                        onTap: () {
-                                          state(() {});
-                                          LocaleNotifier.of(context)
-                                              ?.change('hi');
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                    );
+                    _languageChangeDialog();
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -706,6 +660,7 @@ class SettingState extends State<Setting> {
                         MyText(
                           color: white,
                           text: "language_",
+                          multilanguage: true,
                           fontsize: 15,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
@@ -874,6 +829,208 @@ class SettingState extends State<Setting> {
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  _languageChangeDialog() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      backgroundColor: lightBlack,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      elevation: 20,
+      builder: (BuildContext context) {
+        return BottomSheet(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(0),
+            ),
+          ),
+          onClosing: () {},
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, state) {
+                return Wrap(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: lightBlack,
+                      padding: const EdgeInsets.all(23),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText(
+                                  color: white,
+                                  text: "changelanguage",
+                                  multilanguage: true,
+                                  textalign: TextAlign.center,
+                                  fontsize: 16,
+                                  fontwaight: FontWeight.bold,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                MyText(
+                                  color: white,
+                                  text: "selectyourlanguage",
+                                  multilanguage: true,
+                                  textalign: TextAlign.center,
+                                  fontsize: 13,
+                                  fontwaight: FontWeight.normal,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          /* English */
+                          InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              state(() {});
+                              LocaleNotifier.of(context)?.change('en');
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              constraints: BoxConstraints(
+                                minWidth: MediaQuery.of(context).size.width,
+                              ),
+                              height: 48,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: primaryLight,
+                                  width: .5,
+                                ),
+                                color: primaryDarkColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: MyText(
+                                color: white,
+                                text: "English",
+                                textalign: TextAlign.center,
+                                fontsize: 16,
+                                multilanguage: false,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontwaight: FontWeight.w500,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          /* Arabic */
+                          InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              state(() {});
+                              LocaleNotifier.of(context)?.change('ar');
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              constraints: BoxConstraints(
+                                minWidth: MediaQuery.of(context).size.width,
+                              ),
+                              height: 48,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: primaryLight,
+                                  width: .5,
+                                ),
+                                color: primaryDarkColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: MyText(
+                                color: white,
+                                text: "Arabic",
+                                textalign: TextAlign.center,
+                                fontsize: 16,
+                                multilanguage: false,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontwaight: FontWeight.w500,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          /* Hindi */
+                          InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              state(() {});
+                              LocaleNotifier.of(context)?.change('hi');
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              constraints: BoxConstraints(
+                                minWidth: MediaQuery.of(context).size.width,
+                              ),
+                              height: 48,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: primaryLight,
+                                  width: .5,
+                                ),
+                                color: primaryDarkColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: MyText(
+                                color: white,
+                                text: "Hindi",
+                                textalign: TextAlign.center,
+                                fontsize: 16,
+                                multilanguage: false,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontwaight: FontWeight.w500,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
         );
       },
     );

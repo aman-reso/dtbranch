@@ -31,8 +31,10 @@ class ChannelSectionModel {
         message: json["message"],
         result:
             List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
-        liveUrl: List<LiveUrl>.from(
-            json["live_url"].map((x) => LiveUrl.fromJson(x))),
+        liveUrl: json["live_url"] != null
+            ? List<LiveUrl>.from(
+                json["live_url"].map((x) => LiveUrl.fromJson(x)))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {
@@ -40,7 +42,9 @@ class ChannelSectionModel {
         "status": status,
         "message": message,
         "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
-        "live_url": List<dynamic>.from(liveUrl?.map((x) => x.toJson()) ?? []),
+        "live_url": liveUrl != null
+            ? List<dynamic>.from(liveUrl?.map((x) => x.toJson()) ?? [])
+            : [],
       };
 }
 
@@ -259,7 +263,7 @@ class Datum {
   String? ageRestriction;
   String? maxVideoQuality;
   String? releaseTag;
-  dynamic typeId;
+  int? typeId;
   int? videoType;
   String? videoUrl;
   String? videoExtension;

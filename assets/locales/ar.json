@@ -61,6 +61,10 @@
     "languagechangenote" :
         "يمكن تغيير اللغة أثناء تشغيل الفيديو.",
     "welcomeback" : "مرحبًا بعودتك!",
+    "watchwith":"مشاهدة مع",
+    "changelanguage":"تغيير اللغة",
+    "selectyourlanguage":"اختر لغتك.",
+    "speechnotavailable":"الكلام غير متوفر.",
 
     "login" : "تسجيل الدخول",
     "or" : "أو",

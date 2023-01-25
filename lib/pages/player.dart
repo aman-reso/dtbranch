@@ -3,10 +3,8 @@ import 'dart:developer';
 import 'package:better_player/better_player.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_video_view/flutter_video_view.dart';
 
 class PlayerPage extends StatefulWidget {
   final double displayHeight;

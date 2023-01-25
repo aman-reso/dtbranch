@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/firebase_options.dart';
 import 'package:dtlive/pages/splash.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
+import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
@@ -51,6 +52,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SectionDataProvider()),
         ChangeNotifierProvider(create: (_) => VideoDetailsProvider()),
         ChangeNotifierProvider(create: (_) => ShowDetailsProvider()),
+        ChangeNotifierProvider(create: (_) => EpisodeProvider()),
         ChangeNotifierProvider(create: (_) => FindProvider()),
         ChangeNotifierProvider(create: (_) => SearchProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
@@ -66,8 +68,42 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
+    super.initState();
+  }
+
+  // What to do when the user opens/taps on a notification
+  void _handleNotificationOpened(OSNotificationOpenedResult result) {
+    log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData?['type']}");
+
+    int? notiType = result.notification.additionalData?['type'] ?? 0;
+    log("notiType =====> $notiType");
+
+    switch (notiType) {
+      case 1:
+        // navigatorKey.currentState?.push(
+        //   MaterialPageRoute(
+        //     builder: (context) => const MyAppointments(
+        //       pageType: 'all',
+        //     ),
+        //   ),
+        // );
+        break;
+      default:
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +116,7 @@ class MyApp extends StatelessWidget {
           primaryColorLight: primaryLight,
           scaffoldBackgroundColor: appBgColor,
         ),
-        title: Constant.appName,
+        title: Constant.appName ?? "DTLive",
         localizationsDelegates: Locales.delegates,
         supportedLocales: Locales.supportedLocales,
         locale: locale,

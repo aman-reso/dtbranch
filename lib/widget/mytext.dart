@@ -27,8 +27,8 @@ class MyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return multilanguage == false
-        ? Text(
+    return multilanguage == true
+        ? LocaleText(
             text,
             textAlign: textalign,
             overflow: TextOverflow.ellipsis,
@@ -40,7 +40,7 @@ class MyText extends StatelessWidget {
               fontWeight: fontwaight,
             ),
           )
-        : LocaleText(
+        : Text(
             text,
             textAlign: textalign,
             overflow: TextOverflow.ellipsis,

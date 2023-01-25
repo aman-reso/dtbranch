@@ -5,7 +5,7 @@ import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/sectionbytypeprovider.dart';
@@ -408,6 +408,7 @@ class SectionByTypeState extends State<SectionByType> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       sectionDataList?.elementAt(index).landscape.toString() ??
@@ -476,6 +477,7 @@ class SectionByTypeState extends State<SectionByType> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       sectionDataList?.elementAt(index).thumbnail.toString() ??
@@ -544,6 +546,7 @@ class SectionByTypeState extends State<SectionByType> {
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
                   imageUrl:
                       sectionDataList?.elementAt(index).thumbnail.toString() ??
@@ -599,6 +602,7 @@ class SectionByTypeState extends State<SectionByType> {
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
                       imageUrl:
                           sectionDataList?.elementAt(index).image.toString() ??
@@ -670,6 +674,7 @@ class SectionByTypeState extends State<SectionByType> {
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
                       imageUrl:
                           sectionDataList?.elementAt(index).image.toString() ??

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dtlive/model/subscriptionmodel.dart';
-import 'package:dtlive/pages/nodata.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/provider/subscriptionprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/myimage.dart';

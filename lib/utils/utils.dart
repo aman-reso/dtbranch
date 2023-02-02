@@ -109,6 +109,27 @@ class Utils {
     );
   }
 
+  static BoxDecoration setBackground(Color color, double radius) {
+    return BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(radius),
+      shape: BoxShape.rectangle,
+    );
+  }
+
+  static BoxDecoration setBGWithBorder(
+      Color color, double radius, double border) {
+    return BoxDecoration(
+      color: color,
+      border: Border.all(
+        color: otherColor,
+        width: border,
+      ),
+      borderRadius: BorderRadius.circular(radius),
+      shape: BoxShape.rectangle,
+    );
+  }
+
   static BoxDecoration primaryDarkButton() {
     return BoxDecoration(
       color: primaryDarkColor,

@@ -44,8 +44,8 @@ class MyStuffProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  clearRentStoreProvider() {
-    log("<================ clearMyStuffProvider ================>");
+  clearProvider() {
+    log("<================ clearProvider ================>");
     profileModel = ProfileModel();
     rentModel = RentModel();
     watchlistModel = WatchlistModel();

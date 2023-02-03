@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -7,12 +8,15 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
-// ignore: depend_on_referenced_packages
 import 'package:html/parser.dart' show parse;
-// ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
   showToast(String msg) {
@@ -29,7 +33,7 @@ class Utils {
 
   static void getUserId() async {
     SharedPre sharedPref = SharedPre();
-    Constant.userID = await sharedPref.read("userid") ?? "";
+    Constant.userID = await sharedPref.read("userid") ?? "0";
     log('Constant userID ==> ${Constant.userID}');
   }
 
@@ -118,11 +122,11 @@ class Utils {
   }
 
   static BoxDecoration setBGWithBorder(
-      Color color, double radius, double border) {
+      Color color, Color borderColor, double radius, double border) {
     return BoxDecoration(
       color: color,
       border: Border.all(
-        color: otherColor,
+        color: borderColor,
         width: border,
       ),
       borderRadius: BorderRadius.circular(radius),
@@ -438,5 +442,99 @@ class Utils {
   static Future<String> getFileUrl(String fileName) async {
     final directory = await getApplicationDocumentsDirectory();
     return "${directory.path}/$fileName";
+  }
+
+  static Future<File?> saveImageInStorage(imgUrl) async {
+    try {
+      var response = await http.get(Uri.parse(imgUrl));
+      Directory? documentDirectory;
+      if (Platform.isAndroid) {
+        documentDirectory = await getExternalStorageDirectory();
+      } else {
+        documentDirectory = await getApplicationDocumentsDirectory();
+      }
+      File file = File(path.join(documentDirectory?.path ?? "",
+          '${DateTime.now().millisecondsSinceEpoch.toString()}.png'));
+      file.writeAsBytesSync(response.bodyBytes);
+      // This is a sync operation on a real
+      // app you'd probably prefer to use writeAsByte and handle its Future
+      return file;
+    } catch (e) {
+      debugPrint("saveImageInStorage Exception ===> $e");
+      return null;
+    }
+  }
+
+  static Html htmlTexts(var strText) {
+    return Html(
+      data: strText,
+      style: {
+        "body": Style(
+          color: otherColor,
+          fontSize: FontSize(15),
+          fontWeight: FontWeight.w500,
+        ),
+        "link": Style(
+          color: primaryDarkColor,
+          fontSize: FontSize(15),
+          fontWeight: FontWeight.w500,
+        ),
+      },
+      onLinkTap: (url, _, __, ___) async {
+        if (await canLaunchUrl(Uri.parse(url!))) {
+          await launchUrl(
+            Uri.parse(url),
+            mode: LaunchMode.platformDefault,
+          );
+        } else {
+          throw 'Could not launch $url';
+        }
+      },
+      shrinkWrap: false,
+    );
+  }
+
+  static Future<void> shareVideo(context, videoTitle) async {
+    try {
+      String? shareMessage, shareDesc;
+      shareDesc =
+          "Hey I'm watching $videoTitle . Check it out now on ${Constant.appName}!\nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} and more.";
+      if (Platform.isAndroid) {
+        shareMessage = "$shareDesc\n${Constant.androidAppUrl}";
+      } else {
+        shareMessage = "$shareDesc\n${Constant.iosAppUrl}";
+      }
+      await FlutterShare.share(
+        title: Constant.appName ?? "DTLive",
+        linkUrl: shareMessage,
+      );
+    } catch (e) {
+      debugPrint("shareFile Exception ===> $e");
+      return;
+    }
+  }
+
+  static Future<void> redirectToUrl(String url) async {
+    debugPrint("_launchUrl url ===> $url");
+    if (await canLaunchUrl(Uri.parse(url.toString()))) {
+      await launchUrl(
+        Uri.parse(url.toString()),
+        mode: LaunchMode.platformDefault,
+      );
+    } else {
+      throw "Could not launch $url";
+    }
+  }
+
+  static Future<void> shareApp(shareMessage) async {
+    try {
+      await FlutterShare.share(
+        title: Constant.appName ?? "",
+        linkUrl: shareMessage,
+      );
+    } catch (e) {
+      debugPrint("shareFile Exception ===> $e");
+      return;
+    }
   }
 }

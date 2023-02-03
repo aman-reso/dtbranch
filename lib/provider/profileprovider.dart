@@ -1,7 +1,6 @@
 import 'package:dtlive/model/profilemodel.dart';
 import 'package:dtlive/model/successmodel.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
 
@@ -11,8 +10,6 @@ class ProfileProvider extends ChangeNotifier {
   SuccessModel uploadImgModel = SuccessModel();
 
   bool loading = false;
-
-  SharedPre sharePref = SharedPre();
 
   Future<void> getProfile() async {
     debugPrint("getProfile userID :==> ${Constant.userID}");

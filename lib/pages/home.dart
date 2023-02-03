@@ -106,8 +106,14 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                         tabItem(homeProvider.sectionTypeModel.result),
                       ],
                     )
-                  : const NoData()
-              : const NoData(),
+                  : const NoData(
+                      title: '',
+                      subTitle: '',
+                    )
+              : const NoData(
+                  title: '',
+                  subTitle: '',
+                ),
     );
   }
 
@@ -216,7 +222,10 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                         ),
                       );
                     } else {
-                      return const NoData();
+                      return const NoData(
+                        title: '',
+                        subTitle: '',
+                      );
                     }
                   }
                 },
@@ -233,10 +242,10 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     await sectionDataProvider.getSectionBanner(
-        position == 0 ? "0" : (sectionTypeList?.elementAt(position - 1).id),
+        position == 0 ? "0" : (sectionTypeList?[position - 1].id),
         position == 0 ? "1" : "2");
     await sectionDataProvider.getSectionList(
-        position == 0 ? "0" : (sectionTypeList?.elementAt(position - 1).id),
+        position == 0 ? "0" : (sectionTypeList?[position - 1].id),
         position == 0 ? "1" : "2");
   }
 
@@ -270,33 +279,29 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
-                    if ((sectionBannerList?.elementAt(index).videoType ?? 0) ==
-                        1) {
+                    if ((sectionBannerList?[index].videoType ?? 0) == 1) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
                             return MovieDetails(
-                              sectionBannerList?.elementAt(index).id ?? 0,
-                              sectionBannerList?.elementAt(index).videoType ??
-                                  0,
-                              sectionBannerList?.elementAt(index).typeId ?? 0,
+                              sectionBannerList?[index].id ?? 0,
+                              sectionBannerList?[index].videoType ?? 0,
+                              sectionBannerList?[index].typeId ?? 0,
                             );
                           },
                         ),
                       );
-                    } else if ((sectionBannerList?.elementAt(index).videoType ??
-                            0) ==
+                    } else if ((sectionBannerList?[index].videoType ?? 0) ==
                         2) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
                             return TvShowDetails(
-                              sectionBannerList?.elementAt(index).id ?? 0,
-                              sectionBannerList?.elementAt(index).videoType ??
-                                  0,
-                              sectionBannerList?.elementAt(index).typeId ?? 0,
+                              sectionBannerList?[index].id ?? 0,
+                              sectionBannerList?[index].videoType ?? 0,
+                              sectionBannerList?[index].typeId ?? 0,
                             );
                           },
                         ),
@@ -307,7 +312,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                     width: MediaQuery.of(context).size.width,
                     height: Constant.homeBanner,
                     child: MyNetworkImage(
-                      imageUrl: sectionBannerList?.elementAt(index).landscape ??
+                      imageUrl: sectionBannerList?[index].landscape ??
                           Constant.placeHolderLand,
                       fit: BoxFit.fill,
                     ),
@@ -384,31 +389,21 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on index ==> $index");
-                        if ((continueWatchingList?.elementAt(index).videoType ??
-                                0) ==
+                        if ((continueWatchingList?[index].videoType ?? 0) ==
                             1) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) {
                                 return MovieDetails(
-                                  continueWatchingList?.elementAt(index).id ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .videoType ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .typeId ??
-                                      0,
+                                  continueWatchingList?[index].id ?? 0,
+                                  continueWatchingList?[index].videoType ?? 0,
+                                  continueWatchingList?[index].typeId ?? 0,
                                 );
                               },
                             ),
                           );
-                        } else if ((continueWatchingList
-                                    ?.elementAt(index)
-                                    .videoType ??
+                        } else if ((continueWatchingList?[index].videoType ??
                                 0) ==
                             2) {
                           Navigator.push(
@@ -416,16 +411,9 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return TvShowDetails(
-                                  continueWatchingList?.elementAt(index).id ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .videoType ??
-                                      0,
-                                  continueWatchingList
-                                          ?.elementAt(index)
-                                          .typeId ??
-                                      0,
+                                  continueWatchingList?[index].id ?? 0,
+                                  continueWatchingList?[index].videoType ?? 0,
+                                  continueWatchingList?[index].typeId ?? 0,
                                 );
                               },
                             ),
@@ -439,9 +427,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4),
                           child: MyNetworkImage(
-                            imageUrl: continueWatchingList
-                                    ?.elementAt(index)
-                                    .landscape ??
+                            imageUrl: continueWatchingList?[index].landscape ??
                                 Constant.placeHolderLand,
                             fit: BoxFit.cover,
                             imgHeight: MediaQuery.of(context).size.height,
@@ -472,25 +458,16 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                             barRadius: const Radius.circular(2),
                             lineHeight: 4,
                             percent: Utils.getPercentage(
-                                continueWatchingList
-                                        ?.elementAt(index)
-                                        .videoDuration ??
-                                    0,
-                                continueWatchingList
-                                        ?.elementAt(index)
-                                        .stopTime ??
-                                    0),
+                                continueWatchingList?[index].videoDuration ?? 0,
+                                continueWatchingList?[index].stopTime ?? 0),
                             backgroundColor: secProgressColor,
                             progressColor: primaryColor,
                           ),
                         ),
                         Visibility(
-                          visible: (continueWatchingList!
-                                          .elementAt(index)
-                                          .releaseTag !=
+                          visible: (continueWatchingList![index].releaseTag !=
                                       null &&
-                                  continueWatchingList
-                                      .elementAt(index)
+                                  continueWatchingList[index]
                                       .releaseTag!
                                       .isEmpty)
                               ? false
@@ -509,10 +486,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                             child: MyText(
                               color: white,
                               multilanguage: false,
-                              text: continueWatchingList
-                                      .elementAt(index)
-                                      .releaseTag ??
-                                  "",
+                              text:
+                                  continueWatchingList[index].releaseTag ?? "",
                               textalign: TextAlign.center,
                               fontsize: 6,
                               maxline: 1,
@@ -542,8 +517,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
-        if (sectionList?.elementAt(index).data != null &&
-            (sectionList?.elementAt(index).data?.length ?? 0) > 0) {
+        if (sectionList?[index].data != null &&
+            (sectionList?[index].data?.length ?? 0) > 0) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,7 +530,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: MyText(
                   color: white,
-                  text: sectionList?.elementAt(index).title.toString() ?? "",
+                  text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 16,
                   multilanguage: false,
@@ -571,11 +546,11 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(
-                  sectionList?.elementAt(index).videoType ?? "",
-                  sectionList?.elementAt(index).screenLayout ?? "",
+                  sectionList?[index].videoType ?? "",
+                  sectionList?[index].screenLayout ?? "",
                 ),
                 child: ListView.separated(
-                  itemCount: (sectionList?.elementAt(index).data?.length ?? 0),
+                  itemCount: (sectionList?[index].data?.length ?? 0),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   separatorBuilder: (context, index) => const SizedBox(
@@ -584,61 +559,48 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                   itemBuilder: (BuildContext context, int postion) {
                     /* video_type =>  1-video,  2-show,  3-language,  4-category */
                     /* screen_layout =>  landscape, potrait, square */
-                    if ((sectionList?.elementAt(index).videoType ?? "") ==
-                        "1") {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                    if ((sectionList?[index].videoType ?? "") == "1") {
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
-                    } else if ((sectionList?.elementAt(index).videoType ??
-                            "") ==
-                        "2") {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                    } else if ((sectionList?[index].videoType ?? "") == "2") {
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
-                    } else if ((sectionList?.elementAt(index).videoType ??
-                            "") ==
-                        "3") {
-                      return languageLayout(sectionList?.elementAt(index).data);
-                    } else if ((sectionList?.elementAt(index).videoType ??
-                            "") ==
-                        "4") {
-                      return genresLayout(sectionList?.elementAt(index).data);
+                    } else if ((sectionList?[index].videoType ?? "") == "3") {
+                      return languageLayout(sectionList?[index].data);
+                    } else if ((sectionList?[index].videoType ?? "") == "4") {
+                      return genresLayout(sectionList?[index].data);
                     } else {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
                     }
                   },
@@ -686,6 +648,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -696,29 +659,28 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
@@ -733,9 +695,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).landscape.toString() ??
-                          Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].landscape.toString() ??
+                      Constant.placeHolderLand,
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -757,6 +718,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -765,29 +727,28 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
@@ -802,9 +763,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).thumbnail.toString() ??
-                          Constant.placeHolderPort,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
+                      Constant.placeHolderPort,
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -825,6 +785,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
@@ -834,29 +795,28 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
@@ -871,9 +831,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).thumbnail.toString() ??
-                          Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
+                      Constant.placeHolderLand,
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -893,6 +852,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -911,8 +871,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                     MaterialPageRoute(
                       builder: (context) {
                         return VideosByID(
-                          sectionDataList?.elementAt(index).id ?? 0,
-                          sectionDataList?.elementAt(index).name ?? "",
+                          sectionDataList?[index].id ?? 0,
+                          sectionDataList?[index].name ?? "",
                           "ByLanguage",
                         );
                       },
@@ -927,9 +887,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl:
-                          sectionDataList?.elementAt(index).image.toString() ??
-                              Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ??
+                          Constant.placeHolderLand,
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,
@@ -941,7 +900,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 padding: const EdgeInsets.all(3),
                 child: MyText(
                   color: white,
-                  text: sectionDataList?.elementAt(index).name.toString() ?? "",
+                  text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 14,
                   multilanguage: false,
@@ -965,6 +924,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -983,8 +943,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                     MaterialPageRoute(
                       builder: (context) {
                         return VideosByID(
-                          sectionDataList?.elementAt(index).id ?? 0,
-                          sectionDataList?.elementAt(index).name ?? "",
+                          sectionDataList?[index].id ?? 0,
+                          sectionDataList?[index].name ?? "",
                           "ByCategory",
                         );
                       },
@@ -999,9 +959,8 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl:
-                          sectionDataList?.elementAt(index).image.toString() ??
-                              Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ??
+                          Constant.placeHolderLand,
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,
@@ -1013,7 +972,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                 padding: const EdgeInsets.all(3),
                 child: MyText(
                   color: white,
-                  text: sectionDataList?.elementAt(index).name.toString() ?? "",
+                  text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 14,
                   multilanguage: false,

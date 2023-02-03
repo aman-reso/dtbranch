@@ -320,7 +320,7 @@ class OTPVerifyState extends State<OTPVerify> {
 
         // Set UserID for Next
         Constant.userID =
-            generalProvider.loginOTPModel.result?.id.toString() ?? "";
+            generalProvider.loginOTPModel.result?.id.toString() ?? "0";
         log('Constant userID ==>> ${Constant.userID}');
 
         if (!mounted) return;

@@ -202,8 +202,8 @@ class StoreState extends State<Store> {
                                           onTap: () {
                                             log("Clicked on position ==> $position");
                                             if ((rentStoreProvider
-                                                        .rentModel.video
-                                                        ?.elementAt(position)
+                                                        .rentModel
+                                                        .video?[position]
                                                         .videoType ??
                                                     0) ==
                                                 1) {
@@ -235,8 +235,8 @@ class StoreState extends State<Store> {
                                                 ),
                                               );
                                             } else if ((rentStoreProvider
-                                                        .rentModel.video
-                                                        ?.elementAt(position)
+                                                        .rentModel
+                                                        .video?[position]
                                                         .videoType ??
                                                     0) ==
                                                 2) {
@@ -328,7 +328,7 @@ class StoreState extends State<Store> {
                                                 child: MyText(
                                                   color: black,
                                                   text:
-                                                      "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?.elementAt(position).rentPrice.toString() ?? "0"}",
+                                                      "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?[position].rentPrice.toString() ?? "0"}",
                                                   textalign: TextAlign.center,
                                                   fontsize: 12,
                                                   fontwaight: FontWeight.w800,
@@ -347,7 +347,10 @@ class StoreState extends State<Store> {
                                   ),
                                 ],
                               )
-                            : const NoData(),
+                            : const NoData(
+                                title: '',
+                                subTitle: '',
+                              ),
                         const SizedBox(
                           height: 22,
                         ),
@@ -624,7 +627,7 @@ class StoreState extends State<Store> {
                                               child: MyText(
                                                 color: black,
                                                 text:
-                                                    "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?.elementAt(position).rentPrice.toString() ?? "0"}",
+                                                    "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?[position].rentPrice.toString() ?? "0"}",
                                                 textalign: TextAlign.center,
                                                 fontsize: 12,
                                                 multilanguage: false,
@@ -641,7 +644,10 @@ class StoreState extends State<Store> {
                                   ),
                                 ],
                               )
-                            : const NoData(),
+                            : const NoData(
+                                title: '',
+                                subTitle: '',
+                              ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -649,7 +655,10 @@ class StoreState extends State<Store> {
                     ),
                   ),
                 )
-              : const NoData(),
+              : const NoData(
+                  title: '',
+                  subTitle: '',
+                ),
     );
   }
 }

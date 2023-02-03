@@ -192,15 +192,11 @@ class FindState extends State<Find> {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) => SectionByType(
-                                              findProvider
-                                                      .sectionTypeModel.result
-                                                      ?.elementAt(position)
-                                                      .id ??
+                                              findProvider.sectionTypeModel
+                                                      .result?[position].id ??
                                                   0,
-                                              findProvider
-                                                      .sectionTypeModel.result
-                                                      ?.elementAt(position)
-                                                      .name ??
+                                              findProvider.sectionTypeModel
+                                                      .result?[position].name ??
                                                   "",
                                               "2"),
                                         ),
@@ -217,10 +213,8 @@ class FindState extends State<Find> {
                                       alignment: Alignment.center,
                                       child: MyText(
                                         color: white,
-                                        text: findProvider
-                                                .sectionTypeModel.result
-                                                ?.elementAt(position)
-                                                .name ??
+                                        text: findProvider.sectionTypeModel
+                                                .result?[position].name ??
                                             "",
                                         textalign: TextAlign.center,
                                         fontstyle: FontStyle.normal,
@@ -319,13 +313,13 @@ class FindState extends State<Find> {
                                               builder: (context) {
                                                 return VideosByID(
                                                   findProvider
-                                                          .genresModel.result
-                                                          ?.elementAt(position)
+                                                          .genresModel
+                                                          .result?[position]
                                                           .id ??
                                                       0,
                                                   findProvider
-                                                          .genresModel.result
-                                                          ?.elementAt(position)
+                                                          .genresModel
+                                                          .result?[position]
                                                           .name ??
                                                       "",
                                                   "ByCategory",
@@ -345,8 +339,8 @@ class FindState extends State<Find> {
                                               MyText(
                                                 color: white,
                                                 text: findProvider
-                                                        .genresModel.result
-                                                        ?.elementAt(position)
+                                                        .genresModel
+                                                        .result?[position]
                                                         .name ??
                                                     "",
                                                 textalign: TextAlign.center,
@@ -487,13 +481,13 @@ class FindState extends State<Find> {
                                               builder: (context) {
                                                 return VideosByID(
                                                   findProvider
-                                                          .langaugeModel.result
-                                                          ?.elementAt(position)
+                                                          .langaugeModel
+                                                          .result?[position]
                                                           .id ??
                                                       0,
                                                   findProvider
-                                                          .langaugeModel.result
-                                                          ?.elementAt(position)
+                                                          .langaugeModel
+                                                          .result?[position]
                                                           .name ??
                                                       "",
                                                   "ByLanguage",
@@ -513,8 +507,8 @@ class FindState extends State<Find> {
                                               MyText(
                                                 color: white,
                                                 text: findProvider
-                                                        .langaugeModel.result
-                                                        ?.elementAt(position)
+                                                        .langaugeModel
+                                                        .result?[position]
                                                         .name ??
                                                     "",
                                                 textalign: TextAlign.center,

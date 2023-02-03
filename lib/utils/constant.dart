@@ -60,7 +60,7 @@ class Constant {
   static double minHeightSettings = 45;
   // Dimentions END
 
-  static String userID = "";
+  static String userID = "0";
   static String userPlaceholder =
       "https://i.pinimg.com/564x/5d/69/42/5d6942c6dff12bd3f960eb30c5fdd0f9.jpg";
   static String placeHolderLand =
@@ -68,6 +68,16 @@ class Constant {
   static String placeHolderPort =
       "https://stream-cinema.online/images/no-image.png";
   static String currencySymbol = "";
+
+  static String androidAppShareUrlDesc =
+      "Let me recommend you this application\n\nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName}";
+  static String iosAppShareUrlDesc =
+      "Let me recommend you this application\n\nhttps://apps.apple.com/us/app/${appName?.toLowerCase()}/${Constant.appPackageName}";
+
+  static String androidAppUrl =
+      "https://play.google.com/store/apps/details?id=${Constant.appPackageName}";
+  static String iosAppUrl =
+      "https://apps.apple.com/us/app/${appName?.toLowerCase()}/${Constant.appPackageName}";
 
   static const Map<String, String> exampleResolutionsUrls = {
     "LOW":

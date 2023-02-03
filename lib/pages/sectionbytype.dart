@@ -109,7 +109,10 @@ class SectionByTypeState extends State<SectionByType> {
                     ],
                   ),
                 )
-              : const NoData(),
+              : const NoData(
+                  title: '',
+                  subTitle: '',
+                ),
     );
   }
 
@@ -146,33 +149,29 @@ class SectionByTypeState extends State<SectionByType> {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
-                    if ((sectionBannerList?.elementAt(index).videoType ?? 0) ==
-                        1) {
+                    if ((sectionBannerList?[index].videoType ?? 0) == 1) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
                             return MovieDetails(
-                              sectionBannerList?.elementAt(index).id ?? 0,
-                              sectionBannerList?.elementAt(index).videoType ??
-                                  0,
-                              sectionBannerList?.elementAt(index).typeId ?? 0,
+                              sectionBannerList?[index].id ?? 0,
+                              sectionBannerList?[index].videoType ?? 0,
+                              sectionBannerList?[index].typeId ?? 0,
                             );
                           },
                         ),
                       );
-                    } else if ((sectionBannerList?.elementAt(index).videoType ??
-                            0) ==
+                    } else if ((sectionBannerList?[index].videoType ?? 0) ==
                         2) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
                             return TvShowDetails(
-                              sectionBannerList?.elementAt(index).id ?? 0,
-                              sectionBannerList?.elementAt(index).videoType ??
-                                  0,
-                              sectionBannerList?.elementAt(index).typeId ?? 0,
+                              sectionBannerList?[index].id ?? 0,
+                              sectionBannerList?[index].videoType ?? 0,
+                              sectionBannerList?[index].typeId ?? 0,
                             );
                           },
                         ),
@@ -183,7 +182,7 @@ class SectionByTypeState extends State<SectionByType> {
                     width: MediaQuery.of(context).size.width,
                     height: Constant.homeBanner,
                     child: MyNetworkImage(
-                      imageUrl: sectionBannerList?.elementAt(index).landscape ??
+                      imageUrl: sectionBannerList?[index].landscape ??
                           Constant.placeHolderLand,
                       fit: BoxFit.fill,
                     ),
@@ -221,8 +220,8 @@ class SectionByTypeState extends State<SectionByType> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
-        if (sectionList?.elementAt(index).data != null &&
-            (sectionList?.elementAt(index).data?.length ?? 0) > 0) {
+        if (sectionList?[index].data != null &&
+            (sectionList?[index].data?.length ?? 0) > 0) {
           return Column(
             children: [
               Container(
@@ -232,7 +231,7 @@ class SectionByTypeState extends State<SectionByType> {
                 alignment: Alignment.bottomLeft,
                 child: MyText(
                   color: white,
-                  text: sectionList?.elementAt(index).title.toString() ?? "",
+                  text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
                   multilanguage: false,
                   fontsize: 16,
@@ -248,11 +247,11 @@ class SectionByTypeState extends State<SectionByType> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(
-                  sectionList?.elementAt(index).videoType ?? "",
-                  sectionList?.elementAt(index).screenLayout ?? "",
+                  sectionList?[index].videoType ?? "",
+                  sectionList?[index].screenLayout ?? "",
                 ),
                 child: ListView.separated(
-                  itemCount: (sectionList?.elementAt(index).data?.length ?? 0),
+                  itemCount: (sectionList?[index].data?.length ?? 0),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   separatorBuilder: (context, index) => const SizedBox(
@@ -261,61 +260,48 @@ class SectionByTypeState extends State<SectionByType> {
                   itemBuilder: (BuildContext context, int postion) {
                     /* video_type =>  1-video,  2-show,  3-language,  4-category */
                     /* screen_layout =>  landscape, potrait, square */
-                    if ((sectionList?.elementAt(index).videoType ?? "") ==
-                        "1") {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                    if ((sectionList?[index].videoType ?? "") == "1") {
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
-                    } else if ((sectionList?.elementAt(index).videoType ??
-                            "") ==
-                        "2") {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                    } else if ((sectionList?[index].videoType ?? "") == "2") {
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
-                    } else if ((sectionList?.elementAt(index).videoType ??
-                            "") ==
-                        "3") {
-                      return languageLayout(sectionList?.elementAt(index).data);
-                    } else if ((sectionList?.elementAt(index).videoType ??
-                            "") ==
-                        "4") {
-                      return genresLayout(sectionList?.elementAt(index).data);
+                    } else if ((sectionList?[index].videoType ?? "") == "3") {
+                      return languageLayout(sectionList?[index].data);
+                    } else if ((sectionList?[index].videoType ?? "") == "4") {
+                      return genresLayout(sectionList?[index].data);
                     } else {
-                      if ((sectionList?.elementAt(index).screenLayout ?? "") ==
+                      if ((sectionList?[index].screenLayout ?? "") ==
                           "landscape") {
-                        return landscape(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return landscape(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "potrait") {
-                        return portrait(sectionList?.elementAt(index).data);
-                      } else if ((sectionList?.elementAt(index).screenLayout ??
-                              "") ==
+                        return portrait(sectionList?[index].data);
+                      } else if ((sectionList?[index].screenLayout ?? "") ==
                           "square") {
-                        return square(sectionList?.elementAt(index).data);
+                        return square(sectionList?[index].data);
                       } else {
-                        return landscape(sectionList?.elementAt(index).data);
+                        return landscape(sectionList?[index].data);
                       }
                     }
                   },
@@ -373,29 +359,28 @@ class SectionByTypeState extends State<SectionByType> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
@@ -410,9 +395,8 @@ class SectionByTypeState extends State<SectionByType> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).landscape.toString() ??
-                          Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].landscape.toString() ??
+                      Constant.placeHolderLand,
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -442,29 +426,28 @@ class SectionByTypeState extends State<SectionByType> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
@@ -479,9 +462,8 @@ class SectionByTypeState extends State<SectionByType> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).thumbnail.toString() ??
-                          Constant.placeHolderPort,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
+                      Constant.placeHolderPort,
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -511,29 +493,28 @@ class SectionByTypeState extends State<SectionByType> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?.elementAt(index).videoType ?? 0) == 1) {
+              if ((sectionDataList?[index].videoType ?? 0) == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return MovieDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
                 );
-              } else if ((sectionDataList?.elementAt(index).videoType ?? 0) ==
-                  2) {
+              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {
                       return TvShowDetails(
-                        sectionDataList?.elementAt(index).id ?? 0,
-                        sectionDataList?.elementAt(index).videoType ?? 0,
-                        sectionDataList?.elementAt(index).typeId ?? 0,
+                        sectionDataList?[index].id ?? 0,
+                        sectionDataList?[index].videoType ?? 0,
+                        sectionDataList?[index].typeId ?? 0,
                       );
                     },
                   ),
@@ -548,9 +529,8 @@ class SectionByTypeState extends State<SectionByType> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl:
-                      sectionDataList?.elementAt(index).thumbnail.toString() ??
-                          Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
+                      Constant.placeHolderLand,
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -588,8 +568,8 @@ class SectionByTypeState extends State<SectionByType> {
                     MaterialPageRoute(
                       builder: (context) {
                         return VideosByID(
-                          sectionDataList?.elementAt(index).id ?? 0,
-                          sectionDataList?.elementAt(index).name ?? "",
+                          sectionDataList?[index].id ?? 0,
+                          sectionDataList?[index].name ?? "",
                           "ByLanguage",
                         );
                       },
@@ -604,9 +584,8 @@ class SectionByTypeState extends State<SectionByType> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl:
-                          sectionDataList?.elementAt(index).image.toString() ??
-                              Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ??
+                          Constant.placeHolderLand,
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,
@@ -618,7 +597,7 @@ class SectionByTypeState extends State<SectionByType> {
                 padding: const EdgeInsets.all(3),
                 child: MyText(
                   color: white,
-                  text: sectionDataList?.elementAt(index).name.toString() ?? "",
+                  text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
                   multilanguage: false,
                   fontsize: 14,
@@ -660,8 +639,8 @@ class SectionByTypeState extends State<SectionByType> {
                     MaterialPageRoute(
                       builder: (context) {
                         return VideosByID(
-                          sectionDataList?.elementAt(index).id ?? 0,
-                          sectionDataList?.elementAt(index).name ?? "",
+                          sectionDataList?[index].id ?? 0,
+                          sectionDataList?[index].name ?? "",
                           "ByCategory",
                         );
                       },
@@ -676,9 +655,8 @@ class SectionByTypeState extends State<SectionByType> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl:
-                          sectionDataList?.elementAt(index).image.toString() ??
-                              Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ??
+                          Constant.placeHolderLand,
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,
@@ -690,7 +668,7 @@ class SectionByTypeState extends State<SectionByType> {
                 padding: const EdgeInsets.all(3),
                 child: MyText(
                   color: white,
-                  text: sectionDataList?.elementAt(index).name.toString() ?? "",
+                  text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsize: 14,
                   maxline: 1,

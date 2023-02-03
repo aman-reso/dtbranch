@@ -89,7 +89,10 @@ class ChannelsState extends State<Channels> {
                     ),
                   ),
                 )
-              : const NoData(),
+              : const NoData(
+                  title: '',
+                  subTitle: '',
+                ),
     );
   }
 

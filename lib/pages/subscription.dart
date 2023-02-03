@@ -87,7 +87,10 @@ class SubscriptionState extends State<Subscription> {
                     ),
                   ],
                 )
-              : const NoData(),
+              : const NoData(
+                  title: '',
+                  subTitle: '',
+                ),
     );
   }
 
@@ -103,9 +106,7 @@ class SubscriptionState extends State<Subscription> {
               Card(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 elevation: 5,
-                color: (packageList?.elementAt(index).isBuy == 1
-                    ? primaryColor
-                    : black),
+                color: (packageList?[index].isBuy == 1 ? primaryColor : black),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -119,10 +120,10 @@ class SubscriptionState extends State<Subscription> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           MyText(
-                            color: (packageList?.elementAt(index).isBuy == 1
+                            color: (packageList?[index].isBuy == 1
                                 ? black
                                 : primaryColor),
-                            text: packageList?.elementAt(index).name ?? "",
+                            text: packageList?[index].name ?? "",
                             textalign: TextAlign.center,
                             fontsize: 22,
                             maxline: 1,
@@ -132,11 +133,11 @@ class SubscriptionState extends State<Subscription> {
                             fontstyle: FontStyle.normal,
                           ),
                           MyText(
-                            color: (packageList?.elementAt(index).isBuy == 1
+                            color: (packageList?[index].isBuy == 1
                                 ? black
                                 : primaryColor),
                             text:
-                                "${packageList?.elementAt(index).price.toString() ?? ""} / ${packageList?.elementAt(index).time.toString() ?? ""} ${packageList?.elementAt(index).type.toString() ?? ""}",
+                                "${packageList?[index].price.toString() ?? ""} / ${packageList?[index].time.toString() ?? ""} ${packageList?[index].type.toString() ?? ""}",
                             textalign: TextAlign.center,
                             fontsize: 20,
                             maxline: 1,
@@ -154,9 +155,8 @@ class SubscriptionState extends State<Subscription> {
                       margin: const EdgeInsets.only(bottom: 12),
                       color: otherColor,
                     ),
-                    (packageList?.elementAt(index).data != null &&
-                            (packageList?.elementAt(index).data?.length ?? 0) >
-                                0)
+                    (packageList?[index].data != null &&
+                            (packageList?[index].data?.length ?? 0) > 0)
                         ? Scrollbar(
                             thickness: 3,
                             thumbVisibility: true,
@@ -168,8 +168,7 @@ class SubscriptionState extends State<Subscription> {
                               crossAxisSpacing: 8,
                               mainAxisSpacing: 8,
                               itemCount:
-                                  (packageList?.elementAt(index).data?.length ??
-                                      0),
+                                  (packageList?[index].data?.length ?? 0),
                               padding:
                                   const EdgeInsets.only(left: 20, right: 20),
                               physics: const AlwaysScrollableScrollPhysics(),
@@ -185,16 +184,11 @@ class SubscriptionState extends State<Subscription> {
                                     children: [
                                       Expanded(
                                         child: MyText(
-                                          color: (packageList
-                                                      ?.elementAt(index)
-                                                      .isBuy ==
-                                                  1
+                                          color: (packageList?[index].isBuy == 1
                                               ? black
                                               : otherColor),
-                                          text: packageList
-                                                  ?.elementAt(index)
-                                                  .data
-                                                  ?.elementAt(position)
+                                          text: packageList?[index]
+                                                  .data?[position]
                                                   .packageKey ??
                                               "",
                                           textalign: TextAlign.start,
@@ -209,40 +203,33 @@ class SubscriptionState extends State<Subscription> {
                                       const SizedBox(
                                         width: 20,
                                       ),
-                                      ((packageList
-                                                          ?.elementAt(index)
-                                                          .data
-                                                          ?.elementAt(position)
+                                      ((packageList?[index]
+                                                          .data?[position]
                                                           .packageValue ??
                                                       "") ==
                                                   "1" ||
-                                              (packageList
-                                                          ?.elementAt(index)
-                                                          .data
-                                                          ?.elementAt(position)
+                                              (packageList?[index]
+                                                          .data?[position]
                                                           .packageValue ??
                                                       "") ==
                                                   "0")
                                           ? MyImage(
                                               width: 30,
                                               height: 30,
-                                              color: (packageList
-                                                              ?.elementAt(index)
+                                              color: (packageList?[index]
                                                               .data
                                                               ?.elementAt(
                                                                   position)
                                                               .packageValue ??
                                                           "") ==
                                                       "1"
-                                                  ? (packageList
-                                                              ?.elementAt(index)
+                                                  ? (packageList?[index]
                                                               .isBuy ==
                                                           1
                                                       ? black
                                                       : primaryColor)
                                                   : redColor,
-                                              imagePath: (packageList
-                                                              ?.elementAt(index)
+                                              imagePath: (packageList?[index]
                                                               .data
                                                               ?.elementAt(
                                                                   position)
@@ -253,16 +240,13 @@ class SubscriptionState extends State<Subscription> {
                                                   : "cross_mark.png",
                                             )
                                           : MyText(
-                                              color: (packageList
-                                                          ?.elementAt(index)
-                                                          .isBuy ==
-                                                      1
-                                                  ? black
-                                                  : otherColor),
-                                              text: packageList
-                                                      ?.elementAt(index)
-                                                      .data
-                                                      ?.elementAt(position)
+                                              color:
+                                                  (packageList?[index].isBuy ==
+                                                          1
+                                                      ? black
+                                                      : otherColor),
+                                              text: packageList?[index]
+                                                      .data?[position]
                                                       .packageValue ??
                                                   "",
                                               textalign: TextAlign.center,
@@ -293,7 +277,7 @@ class SubscriptionState extends State<Subscription> {
                           width: MediaQuery.of(context).size.width * 0.5,
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                           decoration: BoxDecoration(
-                            color: (packageList?.elementAt(index).isBuy == 1
+                            color: (packageList?[index].isBuy == 1
                                 ? white
                                 : primaryColor),
                             borderRadius: BorderRadius.circular(5),

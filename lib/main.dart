@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:dtlive/firebase_options.dart';
 import 'package:dtlive/pages/splash.dart';
+import 'package:dtlive/provider/avatarprovider.dart';
+import 'package:dtlive/provider/castdetailsprovider.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
 import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/findprovider.dart';
@@ -62,6 +64,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SectionByTypeProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
         ChangeNotifierProvider(create: (_) => MyStuffProvider()),
+        ChangeNotifierProvider(create: (_) => AvatarProvider()),
+        ChangeNotifierProvider(create: (_) => CastDetailsProvider()),
       ],
       child: const MyApp(),
     ),
@@ -109,6 +113,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return LocaleBuilder(
       builder: (locale) => MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: primaryColor,

@@ -1,9 +1,15 @@
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/myimage.dart';
+import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 
 class NoData extends StatelessWidget {
-  const NoData({Key? key}) : super(key: key);
+  final String? title, subTitle;
+  const NoData({
+    Key? key,
+    required this.title,
+    required this.subTitle,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +24,47 @@ class NoData extends StatelessWidget {
       ),
       constraints: const BoxConstraints(minHeight: 0, minWidth: 0),
       child: Center(
-        child: MyImage(
-          height: 180,
-          fit: BoxFit.contain,
-          imagePath: "nodata.png",
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MyImage(
+              height: 130,
+              fit: BoxFit.contain,
+              imagePath: "nodata.png",
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            (title ?? "") != ""
+                ? MyText(
+                    color: white,
+                    text: title ?? "",
+                    fontsize: 17,
+                    maxline: 2,
+                    multilanguage: true,
+                    overflow: TextOverflow.ellipsis,
+                    fontwaight: FontWeight.w600,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  )
+                : const SizedBox.shrink(),
+            const SizedBox(
+              height: 8,
+            ),
+            (subTitle ?? "") != ""
+                ? MyText(
+                    color: otherColor,
+                    text: subTitle ?? "",
+                    fontsize: 14,
+                    maxline: 5,
+                    multilanguage: true,
+                    overflow: TextOverflow.ellipsis,
+                    fontwaight: FontWeight.normal,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  )
+                : const SizedBox.shrink(),
+          ],
         ),
       ),
     );

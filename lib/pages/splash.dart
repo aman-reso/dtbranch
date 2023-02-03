@@ -63,7 +63,7 @@ class SplashState extends State<Splash> {
       }
 
       seen = await sharedPre.read('seen') ?? "0";
-      Constant.userID = await sharedPre.read('userid') ?? "";
+      Constant.userID = await sharedPre.read('userid') ?? "0";
       log('seen ==> $seen');
       log('Constant userID ==> ${Constant.userID}');
       if (!mounted) return;

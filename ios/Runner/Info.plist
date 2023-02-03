@@ -51,6 +51,10 @@
 		<array>
 			<string>https</string>
 			<string>http</string>
+			<string>instagram-stories</string>
+			<string>instagram</string>
+			<string>whatsapp</string>
+			<string>sms</string>
 		</array>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Upload images for profile</string>

@@ -96,9 +96,8 @@ class VideosByIDState extends State<VideosByID> {
                             borderRadius: BorderRadius.circular(4),
                             onTap: () {
                               log("Clicked on position ==> $position");
-                              if ((videoByIDProvider.videoByIdModel.result
-                                          ?.elementAt(position)
-                                          .videoType ??
+                              if ((videoByIDProvider.videoByIdModel
+                                          .result?[position].videoType ??
                                       0) ==
                                   1) {
                                 Navigator.push(
@@ -106,26 +105,21 @@ class VideosByIDState extends State<VideosByID> {
                                   MaterialPageRoute(
                                     builder: (context) {
                                       return MovieDetails(
-                                        videoByIDProvider.videoByIdModel.result
-                                                ?.elementAt(position)
-                                                .id ??
+                                        videoByIDProvider.videoByIdModel
+                                                .result?[position].id ??
                                             0,
-                                        videoByIDProvider.videoByIdModel.result
-                                                ?.elementAt(position)
-                                                .videoType ??
+                                        videoByIDProvider.videoByIdModel
+                                                .result?[position].videoType ??
                                             0,
-                                        videoByIDProvider.videoByIdModel.result
-                                                ?.elementAt(position)
-                                                .typeId ??
+                                        videoByIDProvider.videoByIdModel
+                                                .result?[position].typeId ??
                                             0,
                                       );
                                     },
                                   ),
                                 );
-                              } else if ((videoByIDProvider
-                                          .videoByIdModel.result
-                                          ?.elementAt(position)
-                                          .videoType ??
+                              } else if ((videoByIDProvider.videoByIdModel
+                                          .result?[position].videoType ??
                                       0) ==
                                   2) {
                                 Navigator.push(
@@ -133,17 +127,14 @@ class VideosByIDState extends State<VideosByID> {
                                   MaterialPageRoute(
                                     builder: (context) {
                                       return TvShowDetails(
-                                        videoByIDProvider.videoByIdModel.result
-                                                ?.elementAt(position)
-                                                .id ??
+                                        videoByIDProvider.videoByIdModel
+                                                .result?[position].id ??
                                             0,
-                                        videoByIDProvider.videoByIdModel.result
-                                                ?.elementAt(position)
-                                                .videoType ??
+                                        videoByIDProvider.videoByIdModel
+                                                .result?[position].videoType ??
                                             0,
-                                        videoByIDProvider.videoByIdModel.result
-                                                ?.elementAt(position)
-                                                .typeId ??
+                                        videoByIDProvider.videoByIdModel
+                                                .result?[position].typeId ??
                                             0,
                                       );
                                     },
@@ -158,10 +149,8 @@ class VideosByIDState extends State<VideosByID> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(4),
                                 child: MyNetworkImage(
-                                  imageUrl: videoByIDProvider
-                                          .videoByIdModel.result
-                                          ?.elementAt(position)
-                                          .landscape
+                                  imageUrl: videoByIDProvider.videoByIdModel
+                                          .result?[position].landscape
                                           .toString() ??
                                       Constant.placeHolderLand,
                                   fit: BoxFit.cover,
@@ -174,8 +163,14 @@ class VideosByIDState extends State<VideosByID> {
                         },
                       ),
                     )
-                  : const NoData()
-              : const NoData(),
+                  : const NoData(
+                      title: '',
+                      subTitle: '',
+                    )
+              : const NoData(
+                  title: '',
+                  subTitle: '',
+                ),
     );
   }
 }

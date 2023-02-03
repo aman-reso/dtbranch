@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
@@ -25,6 +26,7 @@ class MyStuff extends StatefulWidget {
 }
 
 class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
+  late MyStuffProvider myStuffProvider;
   late TabController tabController =
       TabController(length: tabname.length, vsync: this);
 
@@ -67,14 +69,13 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    if (Constant.userID != "") {
+    if (Constant.userID != "0") {
       _getData();
     }
   }
 
   void _getData() async {
-    final myStuffProvider =
-        Provider.of<MyStuffProvider>(context, listen: false);
+    myStuffProvider = Provider.of<MyStuffProvider>(context, listen: false);
     await myStuffProvider.getProfile();
     await myStuffProvider.getWatchlist();
     await myStuffProvider.getUserRentVideoList();
@@ -120,7 +121,8 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                         .profileModel.result !=
                                                     null
                                                 ? (myStuffProvider.profileModel
-                                                        .result?.image ??
+                                                        .result?.image
+                                                        .toString() ??
                                                     Constant.userPlaceholder)
                                                 : Constant.userPlaceholder
                                             : Constant.userPlaceholder,
@@ -145,9 +147,9 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                           .profileModel
                                                           .result
                                                           ?.name ??
-                                                      "")
-                                                  : ""
-                                              : "",
+                                                      guestUser)
+                                                  : guestUser
+                                              : guestUser,
                                       fontsize: 16,
                                       fontwaight: FontWeight.w600,
                                       maxline: 1,
@@ -450,7 +452,10 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                 },
                               );
                             } else {
-                              return const NoData();
+                              return const NoData(
+                                title: 'no_downloads',
+                                subTitle: '',
+                              );
                             }
                           }
                         },
@@ -806,8 +811,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                           otherColor,
                                                                       text: myStuffProvider
                                                                               .watchlistModel
-                                                                              .result
-                                                                              ?.elementAt(position)
+                                                                              .result?[position]
                                                                               .releaseYear ??
                                                                           "",
                                                                       maxline:
@@ -837,16 +841,16 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                             .videoType ??
                                                                         0) !=
                                                                     2
-                                                                ? (myStuffProvider.watchlistModel.result?.elementAt(position).videoDuration !=
+                                                                ? (myStuffProvider.watchlistModel.result?[position].videoDuration !=
                                                                             null &&
-                                                                        (myStuffProvider.watchlistModel.result?.elementAt(position).videoDuration ??
+                                                                        (myStuffProvider.watchlistModel.result?[position].videoDuration ??
                                                                                 0) >
                                                                             0)
                                                                     ? MyText(
                                                                         color:
                                                                             otherColor,
                                                                         text: Utils.convertInMin(
-                                                                            myStuffProvider.watchlistModel.result?.elementAt(position).videoDuration ??
+                                                                            myStuffProvider.watchlistModel.result?[position].videoDuration ??
                                                                                 0),
                                                                         textalign:
                                                                             TextAlign.center,
@@ -983,10 +987,16 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                   },
                                 );
                               } else {
-                                return const NoData();
+                                return const NoData(
+                                  title: 'browse_now_watch_later',
+                                  subTitle: 'watchlist_note',
+                                );
                               }
                             } else {
-                              return const NoData();
+                              return const NoData(
+                                title: 'browse_now_watch_later',
+                                subTitle: 'watchlist_note',
+                              );
                             }
                           }
                         },
@@ -1005,7 +1015,10 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                   (myStuffProvider.rentModel.tvshow?.length ??
                                           0) ==
                                       0) {
-                                return const NoData();
+                                return const NoData(
+                                  title: 'rent_and_buy_your_favorites',
+                                  subTitle: 'no_purchases_note',
+                                );
                               } else {
                                 if (myStuffProvider.rentModel.video != null ||
                                     myStuffProvider.rentModel.tvshow != null) {
@@ -1179,20 +1192,17 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                   return MovieDetails(
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .video
-                                                                            ?.elementAt(position)
+                                                                            .video?[position]
                                                                             .id ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .video
-                                                                            ?.elementAt(position)
+                                                                            .video?[position]
                                                                             .videoType ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .video
-                                                                            ?.elementAt(position)
+                                                                            .video?[position]
                                                                             .typeId ??
                                                                         0,
                                                                   );
@@ -1215,20 +1225,17 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                   return TvShowDetails(
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .video
-                                                                            ?.elementAt(position)
+                                                                            .video?[position]
                                                                             .id ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .video
-                                                                            ?.elementAt(position)
+                                                                            .video?[position]
                                                                             .videoType ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .video
-                                                                            ?.elementAt(position)
+                                                                            .video?[position]
                                                                             .typeId ??
                                                                         0,
                                                                   );
@@ -1448,20 +1455,17 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                   return MovieDetails(
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .tvshow
-                                                                            ?.elementAt(position)
+                                                                            .tvshow?[position]
                                                                             .id ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .tvshow
-                                                                            ?.elementAt(position)
+                                                                            .tvshow?[position]
                                                                             .videoType ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .tvshow
-                                                                            ?.elementAt(position)
+                                                                            .tvshow?[position]
                                                                             .typeId ??
                                                                         0,
                                                                   );
@@ -1484,20 +1488,17 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                                   return TvShowDetails(
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .tvshow
-                                                                            ?.elementAt(position)
+                                                                            .tvshow?[position]
                                                                             .id ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .tvshow
-                                                                            ?.elementAt(position)
+                                                                            .tvshow?[position]
                                                                             .videoType ??
                                                                         0,
                                                                     myStuffProvider
                                                                             .rentModel
-                                                                            .tvshow
-                                                                            ?.elementAt(position)
+                                                                            .tvshow?[position]
                                                                             .typeId ??
                                                                         0,
                                                                   );
@@ -1555,11 +1556,17 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                     ],
                                   );
                                 } else {
-                                  return const NoData();
+                                  return const NoData(
+                                    title: 'rent_and_buy_your_favorites',
+                                    subTitle: 'no_purchases_note',
+                                  );
                                 }
                               }
                             } else {
-                              return const NoData();
+                              return const NoData(
+                                title: 'rent_and_buy_your_favorites',
+                                subTitle: 'no_purchases_note',
+                              );
                             }
                           }
                         },

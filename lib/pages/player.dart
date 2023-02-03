@@ -28,23 +28,24 @@ class _PlayerPageState extends State<PlayerPage> {
   void initState() {
     BetterPlayerConfiguration betterPlayerConfiguration =
         const BetterPlayerConfiguration(
-            aspectRatio: 16 / 9,
-            fit: BoxFit.fill,
-            allowedScreenSleep: false,
-            expandToFill: true,
-            autoPlay: true,
-            autoDetectFullscreenDeviceOrientation: true,
-            subtitlesConfiguration: BetterPlayerSubtitlesConfiguration(
-              backgroundColor: transparentColor,
-              fontColor: Colors.white,
-              outlineColor: Colors.black,
-              fontSize: 12,
-              alignment: Alignment.bottomCenter,
-            ),
-            deviceOrientationsOnFullScreen: [
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight
-        ]);
+      aspectRatio: 16 / 9,
+      fit: BoxFit.fill,
+      allowedScreenSleep: false,
+      expandToFill: true,
+      autoPlay: true,
+      autoDetectFullscreenDeviceOrientation: true,
+      subtitlesConfiguration: BetterPlayerSubtitlesConfiguration(
+        backgroundColor: transparentColor,
+        fontColor: Colors.white,
+        outlineColor: Colors.black,
+        fontSize: 12,
+        alignment: Alignment.bottomCenter,
+      ),
+      deviceOrientationsOnFullScreen: [
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight
+      ],
+    );
 
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController.addEventsListener((event) {
@@ -61,7 +62,7 @@ class _PlayerPageState extends State<PlayerPage> {
   void _setupDataSource() async {
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
-      Constant.exampleResolutionsUrls.values.first,
+      widget.videoUrl,
       resolutions: Constant.exampleResolutionsUrls,
       subtitles: [
         BetterPlayerSubtitlesSource(

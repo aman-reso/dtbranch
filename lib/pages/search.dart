@@ -261,8 +261,8 @@ class SearchState extends State<Search> {
                                           onTap: () {
                                             log("Clicked on position ==> $position");
                                             if ((searchProvider
-                                                        .searchModel.video
-                                                        ?.elementAt(position)
+                                                        .searchModel
+                                                        .video?[position]
                                                         .videoType ??
                                                     0) ==
                                                 1) {
@@ -289,8 +289,8 @@ class SearchState extends State<Search> {
                                                 ),
                                               );
                                             } else if ((searchProvider
-                                                        .searchModel.video
-                                                        ?.elementAt(position)
+                                                        .searchModel
+                                                        .video?[position]
                                                         .videoType ??
                                                     0) ==
                                                 2) {
@@ -329,8 +329,8 @@ class SearchState extends State<Search> {
                                                   BorderRadius.circular(4),
                                               child: MyNetworkImage(
                                                 imageUrl: searchProvider
-                                                        .searchModel.video
-                                                        ?.elementAt(position)
+                                                        .searchModel
+                                                        .video?[position]
                                                         .landscape
                                                         .toString() ??
                                                     Constant.placeHolderLand,

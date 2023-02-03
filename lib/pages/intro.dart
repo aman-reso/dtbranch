@@ -1,13 +1,9 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/bottombar.dart';
-import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
-import 'package:dtlive/utils/sharedpre.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -23,20 +19,12 @@ class IntroState extends State<Intro> {
   PageController pageController = PageController();
   final currentPageNotifier = ValueNotifier<int>(0);
   int position = 0;
-  SharedPre sharedPre = SharedPre();
 
   List<String> introBigtext = <String>[
-    intro1Title,
-    intro2Title,
-    intro3Title,
-    intro4Title,
-  ];
-
-  List<String> introSmalltext = <String>[
-    intro1Desc,
-    intro2Desc,
-    intro3Desc,
-    intro4Desc,
+    "intro1title",
+    "intro2title",
+    "intro3title",
+    "intro4title",
   ];
 
   List<String> introPager = <String>[
@@ -143,7 +131,7 @@ class IntroState extends State<Intro> {
                               MyText(
                                 color: white,
                                 maxline: 4,
-                                multilanguage: false,
+                                multilanguage: true,
                                 overflow: TextOverflow.ellipsis,
                                 text: introBigtext[index],
                                 textalign: TextAlign.center,
@@ -176,25 +164,14 @@ class IntroState extends State<Intro> {
                   log("nextPage pos :==> $position");
                   if (position == introPager.length - 1) {
                     Utils.setFirstTime("1");
-                    if (Constant.userID != "0") {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const Bottombar();
-                          },
-                        ),
-                      );
-                    } else {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const LoginSocial();
-                          },
-                        ),
-                      );
-                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const Bottombar();
+                        },
+                      ),
+                    );
                   }
                   pageController.nextPage(
                     duration: const Duration(milliseconds: 500),
@@ -220,8 +197,9 @@ class IntroState extends State<Intro> {
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     multilanguage: true,
-                    text:
-                        (position == introPager.length - 1) ? "finish" : "next",
+                    text: (position == introPager.length - 1)
+                        ? "getstarted"
+                        : "next",
                     textalign: TextAlign.center,
                     fontsize: 18,
                     fontwaight: FontWeight.w600,
@@ -237,25 +215,14 @@ class IntroState extends State<Intro> {
               onTap: () {
                 debugPrint("pos :==> $position");
                 Utils.setFirstTime("1");
-                if (Constant.userID != "0") {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const Bottombar();
-                      },
-                    ),
-                  );
-                } else {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const Bottombar();
-                      },
-                    ),
-                  );
-                }
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const Bottombar();
+                    },
+                  ),
+                );
               },
               child: Container(
                 margin: const EdgeInsets.fromLTRB(0, 0, 20, 20),

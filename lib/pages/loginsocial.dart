@@ -87,7 +87,7 @@ class LoginSocialState extends State<LoginSocial> {
               ),
               MyText(
                 color: otherColor,
-                text: "enter_mobileNumberytologin",
+                text: "login_with_mobile_note",
                 fontsize: 15,
                 multilanguage: true,
                 fontwaight: FontWeight.normal,
@@ -417,7 +417,7 @@ class LoginSocialState extends State<LoginSocial> {
 
         // Set UserID for Next
         Constant.userID =
-            generalProvider.loginGmailModel.result?.id.toString() ?? "";
+            generalProvider.loginGmailModel.result?.id.toString() ?? "0";
         log('Constant userID ==>> ${Constant.userID}');
 
         if (!mounted) return;

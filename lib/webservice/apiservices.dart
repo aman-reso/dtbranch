@@ -3,6 +3,10 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
+import 'package:dtlive/model/avatarmodel.dart';
+import 'package:dtlive/model/castdetailmodel.dart';
+import 'package:dtlive/model/paymentoptionmodel.dart';
+import 'package:dtlive/model/paytmmodel.dart';
 import 'package:dtlive/model/subscriptionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart';
@@ -46,8 +50,6 @@ class ApiService {
       '$baseUrl$generalsetting',
       options: optHeaders,
     );
-    log('genaralSetting response ==>>> ${response.data}');
-    log('genaralSetting statusCode ==>>> ${response.statusCode}');
     generalSettingModel = GeneralSettingModel.fromJson(response.data);
     return generalSettingModel;
   }
@@ -71,9 +73,6 @@ class ApiService {
       },
     );
 
-    log("login statuscode :===> ${response.statusCode}");
-    log("login Message :===> ${response.statusMessage}");
-    log("login data :===> ${response.data}");
     loginModel = LoginRegisterModel.fromJson(response.data);
     return loginModel;
   }
@@ -94,9 +93,6 @@ class ApiService {
       },
     );
 
-    log("login statuscode :===> ${response.statusCode}");
-    log("login Message :===> ${response.statusMessage}");
-    log("login data :===> ${response.data}");
     loginModel = LoginRegisterModel.fromJson(response.data);
     return loginModel;
   }
@@ -115,9 +111,6 @@ class ApiService {
       },
     );
 
-    log("forgotPassword statuscode :===> ${response.statusCode}");
-    log("forgotPassword Message :===> ${response.statusMessage}");
-    log("forgotPassword data :===> ${response.data}");
     successModel = successModelFromJson(response.data.toString());
     return successModel;
   }
@@ -136,9 +129,6 @@ class ApiService {
       },
     );
 
-    log("get_profile statuscode :===> ${response.statusCode}");
-    log("get_profile Message :===> ${response.statusMessage}");
-    log("get_profile data :===> ${response.data}");
     profileModel = ProfileModel.fromJson(response.data);
     return profileModel;
   }
@@ -159,9 +149,6 @@ class ApiService {
       },
     );
 
-    log("update_profile statuscode :===> ${response.statusCode}");
-    log("update_profile Message :===> ${response.statusMessage}");
-    log("update_profile data :===> ${response.data}");
     successModel = SuccessModel.fromJson(response.data);
     return successModel;
   }
@@ -187,11 +174,21 @@ class ApiService {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
 
-    log("imageUpload statuscode :===> ${response.statusCode}");
-    log("imageUpload Message :===> ${response.statusMessage}");
-    log("imageUpload data :===> ${response.data}");
     uploadImgModel = SuccessModel.fromJson(response.data);
     return uploadImgModel;
+  }
+
+  // get_avatar API
+  Future<AvatarModel> getAvatar() async {
+    AvatarModel avatarModel;
+    String getAvatar = "get_avatar";
+    Response response = await dio.post(
+      '$baseUrl$getAvatar',
+      options: optHeaders,
+      data: {},
+    );
+    avatarModel = AvatarModel.fromJson(response.data);
+    return avatarModel;
   }
 
   /* type => 1-movies, 2-news, 3-sport, 4-tv show */
@@ -203,8 +200,6 @@ class ApiService {
       '$baseUrl$sectionType',
       options: optHeaders,
     );
-    log('type response ==>>> ${response.data.toString()}');
-    log('type statusCode ==>>> ${response.statusCode}');
     sectionTypeModel = SectionTypeModel.fromJson(response.data);
     return sectionTypeModel;
   }
@@ -223,8 +218,6 @@ class ApiService {
         'is_home_page': isHomePage,
       },
     );
-    // log('get_banner response ==>>> ${response.data}');
-    // log('get_banner statusCode ==>>> ${response.statusCode}');
     sectionBannerModel = SectionBannerModel.fromJson(response.data);
     return sectionBannerModel;
   }
@@ -242,8 +235,6 @@ class ApiService {
         'is_home_page': isHomePage,
       },
     );
-    // log('section_list response ==>>> ${response.data}');
-    // log('section_list statusCode ==>>> ${response.statusCode}');
     sectionListModel = SectionListModel.fromJson(response.data);
     return sectionListModel;
   }
@@ -262,8 +253,6 @@ class ApiService {
         'video_id': videoId,
       },
     );
-    // log('section_detail response ==>>> ${response.data}');
-    log('section_detail statusCode ==>>> ${response.statusCode}');
     sectionDetailModel = SectionDetailModel.fromJson(response.data);
     return sectionDetailModel;
   }
@@ -282,8 +271,67 @@ class ApiService {
         'video_id': videoId,
       },
     );
-    log('add_remove_bookmark response ==>>> ${response.data}');
-    log('add_remove_bookmark statusCode ==>>> ${response.statusCode}');
+    successModel = SuccessModel.fromJson(response.data);
+    return successModel;
+  }
+
+  // add_continue_watching API
+  Future<SuccessModel> addContinueWatching(videoId, videoType, stopTime) async {
+    SuccessModel successModel;
+    String continueWatching = "add_continue_watching";
+    Response response = await dio.post(
+      '$baseUrl$continueWatching',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'video_id': videoId,
+        'video_type': videoType,
+        'stop_time': stopTime,
+      },
+    );
+    successModel = SuccessModel.fromJson(response.data);
+    return successModel;
+  }
+
+  // remove_continue_watching API
+  /* user_id, video_id, video_type
+     * Show :=> ("video_id" = Episode's ID)  AND  ("video_type" = "2")
+     * Video :=> ("video_id" = Video's ID) */
+  Future<SuccessModel> removeContinueWatching(videoType, videoId) async {
+    SuccessModel successModel;
+    String removeContinueWatching = "remove_continue_watching";
+    Response response = await dio.post(
+      '$baseUrl$removeContinueWatching',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'video_type': videoType,
+        'video_id': videoId,
+      },
+    );
+    successModel = SuccessModel.fromJson(response.data);
+    return successModel;
+  }
+
+  // add_remove_download API
+  /* user_id, video_id, video_type, type_id, other_id
+     * Show :=> ("video_id" = Session's ID)  AND  ("other_id" = Show's ID)
+     * Video :=> ("other_id" = "0") */
+  Future<SuccessModel> addRemoveDownload(
+      videoId, videoType, typeId, otherId) async {
+    SuccessModel successModel;
+    String addRemoveDownload = "add_remove_download";
+    Response response = await dio.post(
+      '$baseUrl$addRemoveDownload',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'video_id': videoId,
+        'video_type': videoType,
+        'type_id': typeId,
+        'other_id': otherId,
+      },
+    );
     successModel = SuccessModel.fromJson(response.data);
     return successModel;
   }
@@ -301,10 +349,23 @@ class ApiService {
         'show_id': showId,
       },
     );
-    // log('get_video_by_session_id response ==>>> ${response.data}');
-    log('get_video_by_session_id statusCode ==>>> ${response.statusCode}');
     episodeBySeasonModel = EpisodeBySeasonModel.fromJson(response.data);
     return episodeBySeasonModel;
+  }
+
+  // cast_detail API
+  Future<CastDetailModel> getCastDetails(castId) async {
+    CastDetailModel castDetailModel;
+    String castDetails = "cast_detail";
+    Response response = await dio.post(
+      '$baseUrl$castDetails',
+      options: optHeaders,
+      data: {
+        'cast_id': castId,
+      },
+    );
+    castDetailModel = CastDetailModel.fromJson(response.data);
+    return castDetailModel;
   }
 
   // get_category API
@@ -315,8 +376,6 @@ class ApiService {
       '$baseUrl$genres',
       options: optHeaders,
     );
-    log('genres response ==>>> ${response.data.toString()}');
-    log('genres statusCode ==>>> ${response.statusCode}');
     genresModel = GenresModel.fromJson(response.data);
     return genresModel;
   }
@@ -329,8 +388,6 @@ class ApiService {
       '$baseUrl$language',
       options: optHeaders,
     );
-    log('language response ==>>> ${response.data.toString()}');
-    log('language statusCode ==>>> ${response.statusCode}');
     langaugeModel = LangaugeModel.fromJson(response.data);
     return langaugeModel;
   }
@@ -348,8 +405,6 @@ class ApiService {
         'user_id': Constant.userID,
       },
     );
-    // log('search_video response ==>>> ${response.data}');
-    log('search_video statusCode ==>>> ${response.statusCode}');
     searchModel = SearchModel.fromJson(response.data);
     return searchModel;
   }
@@ -365,8 +420,6 @@ class ApiService {
         'user_id': Constant.userID,
       },
     );
-    // log('channel_section_list response ==>>> ${response.data}');
-    log('channel_section_list statusCode ==>>> ${response.statusCode}');
     channelSectionModel = ChannelSectionModel.fromJson(response.data);
     return channelSectionModel;
   }
@@ -382,8 +435,6 @@ class ApiService {
         'user_id': Constant.userID,
       },
     );
-    // log('rent_video_list response ==>>> ${response.data}');
-    log('rent_video_list statusCode ==>>> ${response.statusCode}');
     rentModel = RentModel.fromJson(response.data);
     return rentModel;
   }
@@ -399,8 +450,6 @@ class ApiService {
         'user_id': Constant.userID,
       },
     );
-    // log('user_rent_video_list response ==>>> ${response.data}');
-    log('user_rent_video_list statusCode ==>>> ${response.statusCode}');
     rentModel = RentModel.fromJson(response.data);
     return rentModel;
   }
@@ -418,8 +467,6 @@ class ApiService {
         'category_id': categoryID,
       },
     );
-    log('video_by_category response ==>>> ${response.data}');
-    log('video_by_category statusCode ==>>> ${response.statusCode}');
     videoByIdModel = VideoByIdModel.fromJson(response.data);
     return videoByIdModel;
   }
@@ -437,8 +484,6 @@ class ApiService {
         'language_id': languageID,
       },
     );
-    log('video_by_language response ==>>> ${response.data}');
-    log('video_by_language statusCode ==>>> ${response.statusCode}');
     videoByIdModel = VideoByIdModel.fromJson(response.data);
     return videoByIdModel;
   }
@@ -455,8 +500,6 @@ class ApiService {
         'user_id': Constant.userID,
       },
     );
-    log('get_package response ==>>> ${response.data}');
-    log('get_package statusCode ==>>> ${response.statusCode}');
     subscriptionModel = SubscriptionModel.fromJson(response.data);
     return subscriptionModel;
   }
@@ -476,10 +519,98 @@ class ApiService {
       },
     );
 
-    log("get_bookmark_video statuscode :===> ${response.statusCode}");
-    log("get_bookmark_video Message :===> ${response.statusMessage}");
-    log("get_bookmark_video data :===> ${response.data}");
     watchlistModel = WatchlistModel.fromJson(response.data);
     return watchlistModel;
+  }
+
+  // get_payment_option API
+  Future<PaymentOptionModel> getPaymentOption() async {
+    PaymentOptionModel paymentOptionModel;
+    String paymentOption = "get_payment_option";
+    log("paymentOption API :==> $baseUrl$paymentOption");
+    Response response = await dio.get(
+      '$baseUrl$paymentOption',
+      options: optHeaders,
+    );
+
+    paymentOptionModel = PaymentOptionModel.fromJson(response.data);
+    return paymentOptionModel;
+  }
+
+  // get_payment_token API
+  Future<PayTmModel> getPaytmToken(merchantID, orderId, custmoreID, channelID,
+      txnAmount, website, callbackURL, industryTypeID) async {
+    PayTmModel payTmModel;
+    String paytmToken = "get_payment_token";
+    log("paytmToken API :==> $baseUrl$paytmToken");
+    Response response = await dio.post(
+      '$baseUrl$paytmToken',
+      options: optHeaders,
+      data: {
+        'MID': merchantID,
+        'order_id': orderId,
+        'CUST_ID': custmoreID,
+        'CHANNEL_ID': channelID,
+        'TXN_AMOUNT': txnAmount,
+        'WEBSITE': website,
+        'CALLBACK_URL': callbackURL,
+        'INDUSTRY_TYPE_ID': industryTypeID,
+      },
+    );
+
+    payTmModel = PayTmModel.fromJson(response.data);
+    return payTmModel;
+  }
+
+  // add_transaction API
+  Future<SuccessModel> addTransaction(
+      packageId, description, amount, paymentId, currencyCode) async {
+    log('addTransaction userID ==>>> ${Constant.userID}');
+    log('addTransaction packageId ==>>> $packageId');
+    log('addTransaction description ==>>> $description');
+    log('addTransaction amount ==>>> $amount');
+    log('addTransaction paymentId ==>>> $paymentId');
+    log('addTransaction currencyCode ==>>> $currencyCode');
+    SuccessModel successModel;
+    String transaction = "add_transaction";
+    Response response = await dio.post(
+      '$baseUrl$transaction',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'package_id': packageId,
+        'description': description,
+        'amount': amount,
+        'payment_id': paymentId,
+        'currency_code': currencyCode,
+      },
+    );
+    successModel = SuccessModel.fromJson(response.data);
+    return successModel;
+  }
+
+  // add_rent_transaction API
+  Future<SuccessModel> addRentTransaction(
+      videoId, price, typeId, videoType) async {
+    log('addRentTransaction userID ==>>> ${Constant.userID}');
+    log('addRentTransaction video_id ==>>> $videoId');
+    log('addRentTransaction price ==>>> $price');
+    log('addRentTransaction typeId ==>>> $typeId');
+    log('addRentTransaction videoType ==>>> $videoType');
+    SuccessModel successModel;
+    String rentTransaction = "add_rent_transaction";
+    Response response = await dio.post(
+      '$baseUrl$rentTransaction',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'video_id': videoId,
+        'price': price,
+        'type_id': typeId,
+        'video_type': videoType,
+      },
+    );
+    successModel = SuccessModel.fromJson(response.data);
+    return successModel;
   }
 }

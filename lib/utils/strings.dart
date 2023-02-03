@@ -1,16 +1,3 @@
-const intro1Title = "Watch Movies, Shows, Kids show &amp; much more.";
-const intro2Title = "Explore Thousands of Videos on DT Live.";
-const intro3Title = "Find World news on DT Live.";
-const intro4Title = "Upgrade to get more out of your subscription.";
-const intro1Desc =
-    "Lörem ipsum jyhänade spesektigt dede livspussel, käligen sobel, än biobesa inte dodade. Decidynar kjolprotest därför att nerväxt rement. Decidynar kjolprotest därför att nerväxt rement.";
-const intro2Desc =
-    "Lörem ipsum jyhänade spesektigt dede livspussel, käligen sobel, än biobesa inte dodade. Decidynar kjolprotest därför att nerväxt rement. Decidynar kjolprotest därför att nerväxt rement.";
-const intro3Desc =
-    "Lörem ipsum jyhänade spesektigt dede livspussel, käligen sobel, än biobesa inte dodade. Decidynar kjolprotest därför att nerväxt rement. Decidynar kjolprotest därför att nerväxt rement.";
-const intro4Desc =
-    "Lörem ipsum jyhänade spesektigt dede livspussel, käligen sobel, än biobesa inte dodade. Decidynar kjolprotest därför att nerväxt rement. Decidynar kjolprotest därför att nerväxt rement.";
-
 //BottomNavigation START
 const bottomView1 = "Home";
 const bottomView2 = "Find";
@@ -32,3 +19,4 @@ const searchHint = "Search video or tvshow by title...";
 const signedInAs = "Signed in as";
 const youAreNotSignIn = "You are not Signed in";
 const cancel = "Cancel";
+const guestUser = "Guest User";

@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dtlive/pages/profileavatar.dart';
+import 'package:dtlive/provider/mystuffprovider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dtlive/provider/profileprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -28,8 +30,7 @@ class ProfileEditState extends State<ProfileEdit> {
   final ImagePicker imagePicker = ImagePicker();
   File? pickedImageFile;
   bool? isSwitched;
-  String? userId, userName, aboutUsUrl, privacyUrl, termsConditionUrl;
-  SharedPre sharedPref = SharedPre();
+  String? userId, userName;
   final nameController = TextEditingController();
 
   @override
@@ -173,6 +174,8 @@ class ProfileEditState extends State<ProfileEdit> {
                         return Utils.showSnackbar(
                             context, "TextField", enterName);
                       }
+                      final myStuffProvider =
+                          Provider.of<MyStuffProvider>(context, listen: false);
                       final profileProvider =
                           Provider.of<ProfileProvider>(context, listen: false);
                       Utils.showProgress(context, prDialog);
@@ -184,7 +187,8 @@ class ProfileEditState extends State<ProfileEdit> {
                       await profileProvider
                           .getUpdateProfile(nameController.text.toString());
                       await profileProvider.getProfile();
-                      prDialog.hide();
+                      await myStuffProvider.getProfile();
+                      await prDialog.hide();
                     },
                     child: Container(
                       height: 50,
@@ -273,11 +277,12 @@ class ProfileEditState extends State<ProfileEdit> {
                   const SizedBox(
                     height: 20,
                   ),
+
                   /* Camera Pick */
                   InkWell(
                     borderRadius: BorderRadius.circular(5),
                     onTap: () {
-                      Navigator.of(context).pop();
+                      Navigator.pop(context);
                       getFromCamera();
                     },
                     child: Container(
@@ -311,11 +316,12 @@ class ProfileEditState extends State<ProfileEdit> {
                   const SizedBox(
                     height: 10,
                   ),
+
                   /* Gallery Pick */
                   InkWell(
                     borderRadius: BorderRadius.circular(5),
                     onTap: () {
-                      Navigator.of(context).pop();
+                      Navigator.pop(context);
                       getFromGallery();
                     },
                     child: Container(
@@ -336,6 +342,45 @@ class ProfileEditState extends State<ProfileEdit> {
                       child: MyText(
                         color: white,
                         text: "choosegallry",
+                        textalign: TextAlign.center,
+                        fontsize: 16,
+                        multilanguage: true,
+                        maxline: 1,
+                        overflow: TextOverflow.ellipsis,
+                        fontwaight: FontWeight.w500,
+                        fontstyle: FontStyle.normal,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  /* Avatar Pick */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () {
+                      Navigator.pop(context);
+                      getFromAvatar();
+                    },
+                    child: Container(
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width,
+                      ),
+                      height: 48,
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: primaryLight,
+                          width: .5,
+                        ),
+                        color: primaryDarkColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: MyText(
+                        color: white,
+                        text: "chooseanavatar",
                         textalign: TextAlign.center,
                         fontsize: 16,
                         multilanguage: true,
@@ -404,7 +449,7 @@ class ProfileEditState extends State<ProfileEdit> {
     if (pickedFile != null) {
       setState(() {
         pickedImageFile = File(pickedFile.path);
-        log("Gallery pickedImageFile ==> ${pickedImageFile!.path}");
+        log("Gallery pickedImageFile ==> ${pickedImageFile?.path}");
       });
     }
   }
@@ -420,8 +465,31 @@ class ProfileEditState extends State<ProfileEdit> {
     if (pickedFile != null) {
       setState(() {
         pickedImageFile = File(pickedFile.path);
-        log("Camera pickedImageFile ==> ${pickedImageFile!.path}");
+        log("Camera pickedImageFile ==> ${pickedImageFile?.path}");
       });
+    }
+  }
+
+  /// Get from Avatar
+  void getFromAvatar() async {
+    final String? imageURL = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return const ProfileAvatar();
+        },
+      ),
+    );
+    debugPrint("imageURL =============> $imageURL");
+    if (imageURL.toString() != "") {
+      File? pickedFile = await Utils.saveImageInStorage(imageURL ?? "");
+      debugPrint("pickedFile =============> ${pickedFile?.path}");
+      if (pickedFile != null) {
+        setState(() {
+          pickedImageFile = File(pickedFile.path);
+          log("Avatar pickedImageFile ==> ${pickedImageFile?.path}");
+        });
+      }
     }
   }
 }

@@ -92,7 +92,7 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    if (Constant.userID != "") {
+                    if (Constant.userID != "0") {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const ProfileEdit(),
@@ -339,7 +339,7 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    if (Constant.userID != "") {
+                    if (Constant.userID != "0") {
                       logoutConfirmDialog();
                     } else {
                       Navigator.of(context).pushReplacement(

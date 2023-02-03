@@ -47,7 +47,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         Provider.of<ShowDetailsProvider>(context, listen: false);
     episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     await episodeProvider.getEpisodeBySeason(
-        widget.seasonList?.elementAt(widget.seasonPos).id ?? 0, widget.videoId);
+        widget.seasonList?[widget.seasonPos].id ?? 0, widget.videoId);
     showDetailsProvider.episodeBySeasonModel =
         episodeProvider.episodeBySeasonModel;
     Future.delayed(Duration.zero).then((value) => setState(() {}));

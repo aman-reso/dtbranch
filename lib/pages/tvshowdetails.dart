@@ -2443,25 +2443,25 @@ class TvShowDetailsState extends State<TvShowDetails> {
   void openPlayer(String playType, int vID, int vType, int vTypeID, int epiPos,
       List<episode.Result>? episodeList, String vTitle) {
     if ((episodeList?.length ?? 0) > 0) {
-      log("===vUploadType ${episodeList?.elementAt(epiPos).videoUploadType}");
-      if (episodeList?.elementAt(epiPos).videoUploadType == "youtube") {
+      log("===vUploadType ${episodeList?[epiPos].videoUploadType}");
+      if (episodeList?[epiPos].videoUploadType == "youtube") {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
               return YoutubeVideo(
-                videoUrl: episodeList?.elementAt(epiPos).videoUrl,
+                videoUrl: episodeList?[epiPos].videoUrl,
               );
             },
           ),
         );
-      } else if (episodeList?.elementAt(epiPos).videoUploadType == "vimeo") {
+      } else if (episodeList?[epiPos].videoUploadType == "vimeo") {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
               return VimeoPlayerPage(
-                url: episodeList?.elementAt(epiPos).videoUrl,
+                url: episodeList?[epiPos].videoUrl,
               );
             },
           ),
@@ -2471,8 +2471,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return PlayerPage(MediaQuery.of(context).size.height, vID, vType,
-                  vTypeID, episodeList?.elementAt(epiPos).video ?? "", vTitle);
+              return PlayerPage(
+                  vID,
+                  vType,
+                  vTypeID,
+                  episodeList?[epiPos].video320 ?? "",
+                  episodeList?[epiPos].subtitle ?? "");
             },
           ),
         );

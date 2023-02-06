@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:carousel_indicator/carousel_indicator.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
@@ -18,10 +20,8 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -30,10 +30,8 @@ class Home extends StatefulWidget {
   State<Home> createState() => HomeState();
 }
 
-class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
-  TabController? tabController;
-  PageController pageController = PageController();
-  Timer? _timer;
+class HomeState extends State<Home> {
+  CarouselController pageController = CarouselController();
 
   @override
   void initState() {
@@ -44,40 +42,25 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
   void _getData() async {
     Utils.getCurrencySymbol();
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    await homeProvider.getSectionType();
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    if (!homeProvider.loading) {
+      if (homeProvider.sectionTypeModel.status == 200 &&
+          homeProvider.sectionTypeModel.result != null) {
+        if ((homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
+          getTabData(0, homeProvider.sectionTypeModel.result);
+        }
+      }
+    }
+    Future.delayed(Duration.zero).then((value) => setState(() {}));
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer?.cancel();
-    tabController?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    if (!homeProvider.loading) {
-      if (homeProvider.sectionTypeModel.status == 200 &&
-          homeProvider.sectionTypeModel.result != null) {
-        if ((homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
-          tabController = TabController(
-            vsync: this,
-            length: (homeProvider.sectionTypeModel.result?.length ?? 0) + 1,
-          );
-          log("tabController index ==> ${(tabController?.index ?? 0)}");
-          if ((tabController?.index ?? 0) == 0) {
-            getTabData(0, homeProvider.sectionTypeModel.result);
-          }
-          tabController?.addListener(() {
-            log("tabController Size ==> ${(tabController?.length ?? 0)}");
-            getTabData(tabController?.index ?? 0,
-                homeProvider.sectionTypeModel.result);
-          });
-        }
-      }
-    }
     return Scaffold(
       backgroundColor: appBgColor,
       appBar: PreferredSize(
@@ -120,118 +103,117 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
   Widget tabTitle(List<type.Result>? sectionTypeList) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 50,
+      constraints: const BoxConstraints(maxHeight: 40),
+      margin: const EdgeInsets.only(top: 5, bottom: 10),
       alignment: Alignment.center,
-      child: TabBar(
-        indicatorColor: white,
-        isScrollable: true,
-        physics: const AlwaysScrollableScrollPhysics(),
-        unselectedLabelColor: white,
-        labelStyle: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            fontStyle: FontStyle.normal),
-        labelColor: white,
-        controller: tabController,
-        tabs: List<Widget>.generate(
-          (sectionTypeList?.length ?? 0) + 1,
-          (int index) {
-            return Tab(
-              child: MyText(
-                color: white,
-                multilanguage: false,
-                text: index == 0
-                    ? "All"
-                    : index > 0
-                        ? (sectionTypeList
-                                ?.elementAt(index - 1)
-                                .name
-                                .toString() ??
-                            "")
-                        : "",
-                fontsize: 12,
-                maxline: 1,
-                overflow: TextOverflow.ellipsis,
-                fontwaight: FontWeight.w600,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
+      child: ListView.separated(
+        itemCount: (sectionTypeList?.length ?? 0) + 1,
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        separatorBuilder: (context, index) => const SizedBox(
+          width: 15,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return Consumer<HomeProvider>(
+              builder: (context, homeProvider, child) {
+            return InkWell(
+              borderRadius: BorderRadius.circular(25),
+              onTap: () async {
+                debugPrint("index ===========> $index");
+                final sectionDataProvider =
+                    Provider.of<SectionDataProvider>(context, listen: false);
+                await sectionDataProvider.setLoading(true);
+                await homeProvider.setSelectedTab(index);
+                await getTabData(index, homeProvider.sectionTypeModel.result);
+              },
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: 30),
+                decoration: Utils.setBackground(
+                  homeProvider.selectedIndex == index
+                      ? white
+                      : transparentColor,
+                  20,
+                ),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: MyText(
+                  color: homeProvider.selectedIndex == index ? black : white,
+                  multilanguage: false,
+                  text: index == 0
+                      ? "All"
+                      : index > 0
+                          ? (sectionTypeList?[index - 1].name.toString() ?? "")
+                          : "",
+                  fontsize: 14,
+                  maxline: 1,
+                  overflow: TextOverflow.ellipsis,
+                  fontwaight: FontWeight.w500,
+                  textalign: TextAlign.center,
+                  fontstyle: FontStyle.normal,
+                ),
               ),
             );
-          },
-        ),
+          });
+        },
       ),
     );
   }
 
   Widget tabItem(List<type.Result>? sectionTypeList) {
     return Expanded(
-      child: SizedBox(
+      child: Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: TabBarView(
-          controller: tabController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: List<Widget>.generate(
-            (sectionTypeList?.length ?? 0) + 1,
-            (int index) {
-              return Consumer<SectionDataProvider>(
-                builder: (context, sectionDataProvider, child) {
-                  log("sectionDataProvider status :=======> ${sectionDataProvider.sectionBannerModel.status}");
-                  if (sectionDataProvider.loading) {
-                    return Utils.pageLoader();
-                  } else {
-                    if ((sectionDataProvider.sectionBannerModel.status == 200 &&
-                            sectionDataProvider.sectionBannerModel.result !=
-                                null) ||
-                        (sectionDataProvider.sectionListModel.status == 200 &&
-                            sectionDataProvider.sectionListModel.result !=
-                                null)) {
-                      return SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Column(
-                          children: [
-                            /* Banner */
-                            (sectionDataProvider.sectionBannerModel.status ==
-                                        200 &&
-                                    sectionDataProvider
-                                            .sectionBannerModel.result !=
-                                        null)
-                                ? homebanner(sectionDataProvider
-                                    .sectionBannerModel.result)
-                                : const SizedBox.shrink(),
-                            // /* Continue Watching */
-                            (sectionDataProvider
-                                        .sectionListModel.continueWatching !=
-                                    null)
-                                ? continueWatchingLayout(sectionDataProvider
-                                    .sectionListModel.continueWatching)
-                                : const SizedBox.shrink(),
-                            /* Remaining Data */
-                            (sectionDataProvider.sectionListModel.status ==
-                                        200 &&
-                                    sectionDataProvider
-                                            .sectionListModel.result !=
-                                        null)
-                                ? setSectionByType(
-                                    sectionDataProvider.sectionListModel.result)
-                                : const SizedBox.shrink(),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return const NoData(
-                        title: '',
-                        subTitle: '',
-                      );
-                    }
-                  }
-                },
-              );
-            },
-          ),
+        constraints: const BoxConstraints(minHeight: 0),
+        child: Consumer<SectionDataProvider>(
+          builder: (context, sectionDataProvider, child) {
+            log("sectionDataProvider status :=======> ${sectionDataProvider.sectionBannerModel.status}");
+            if (sectionDataProvider.loading) {
+              return Utils.pageLoader();
+            } else {
+              if ((sectionDataProvider.sectionBannerModel.status == 200 &&
+                      sectionDataProvider.sectionBannerModel.result != null) ||
+                  (sectionDataProvider.sectionListModel.status == 200 &&
+                      sectionDataProvider.sectionListModel.result != null)) {
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      /* Banner */
+                      (sectionDataProvider.sectionBannerModel.status == 200 &&
+                              sectionDataProvider.sectionBannerModel.result !=
+                                  null)
+                          ? homebanner(
+                              sectionDataProvider.sectionBannerModel.result)
+                          : const SizedBox.shrink(),
+                      // /* Continue Watching */
+                      (sectionDataProvider.sectionListModel.continueWatching !=
+                              null)
+                          ? continueWatchingLayout(sectionDataProvider
+                              .sectionListModel.continueWatching)
+                          : const SizedBox.shrink(),
+                      /* Remaining Data */
+                      (sectionDataProvider.sectionListModel.status == 200 &&
+                              sectionDataProvider.sectionListModel.result !=
+                                  null)
+                          ? setSectionByType(
+                              sectionDataProvider.sectionListModel.result)
+                          : const SizedBox.shrink(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return const NoData(
+                  title: '',
+                  subTitle: '',
+                );
+              }
+            }
+          },
         ),
       ),
     );
@@ -239,6 +221,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
 
   Future<void> getTabData(
       int position, List<type.Result>? sectionTypeList) async {
+    debugPrint("getTabData position ====> $position");
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     await sectionDataProvider.getSectionBanner(
@@ -249,33 +232,35 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
         position == 0 ? "1" : "2");
   }
 
-  // void _animateSlider(List<banner.Result>? sectionBannerList) {
-  //   Future.delayed(const Duration(seconds: 2)).then((_) {
-  //     int nextPage = pageController.page?.round() ?? 0 + 1;
-  //     if (nextPage == (sectionBannerList?.length ?? 0)) {
-  //       nextPage = 0;
-  //     }
-  //     pageController
-  //         .animateToPage(nextPage,
-  //             duration: const Duration(seconds: 1), curve: Curves.linear)
-  //         .then((_) => _animateSlider(sectionBannerList));
-  //   });
-  // }
-
   Widget homebanner(List<banner.Result>? sectionBannerList) {
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
-      //_animateSlider(sectionBannerList);
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Constant.homeBanner,
-            child: PageView.builder(
+            child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              controller: pageController,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
+              carouselController: pageController,
+              options: CarouselOptions(
+                initialPage: 0,
+                height: Constant.homeBanner,
+                enlargeCenterPage: false,
+                autoPlay: true,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enableInfiniteScroll: true,
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                viewportFraction: 1.0,
+                onPageChanged: (val, _) async {
+                  debugPrint("val =========> $val");
+                  await sectionDataProvider.setCurrentBanner(val);
+                },
+              ),
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
@@ -308,33 +293,56 @@ class HomeState extends State<Home> with TickerProviderStateMixin<Home> {
                       );
                     }
                   },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: Constant.homeBanner,
-                    child: MyNetworkImage(
-                      imageUrl: sectionBannerList?[index].landscape ??
-                          Constant.placeHolderLand,
-                      fit: BoxFit.fill,
-                    ),
+                  child: Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: Constant.homeBanner,
+                        child: MyNetworkImage(
+                          imageUrl: sectionBannerList?[index].landscape ??
+                              Constant.placeHolderLand,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
+                        height: Constant.homeBanner,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.center,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              transparentColor,
+                              transparentColor,
+                              appBgColor,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
             ),
           ),
           Positioned(
-            bottom: 10,
-            child: SmoothPageIndicator(
-              controller: pageController,
-              count: (sectionBannerList?.length ?? 0),
-              axisDirection: Axis.horizontal,
-              effect: const ExpandingDotsEffect(
-                spacing: 4,
-                radius: 4,
-                dotWidth: 8,
-                dotHeight: 8,
-                dotColor: gray,
-                activeDotColor: lightBlack,
-              ),
+            bottom: 0,
+            child: Consumer<SectionDataProvider>(
+              builder: (context, sectionDataProvider, child) {
+                return CarouselIndicator(
+                  count: (sectionBannerList?.length ?? 0),
+                  index: sectionDataProvider.cBannerIndex,
+                  space: 8,
+                  height: 8,
+                  width: 8,
+                  cornerRadius: 4,
+                  color: lightBlack,
+                  activeColor: white,
+                );
+              },
             ),
           ),
         ],

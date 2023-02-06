@@ -58,6 +58,12 @@ class Result {
     this.download,
     this.status,
     this.isTitle,
+    this.video320,
+    this.video480,
+    this.video720,
+    this.video1080,
+    this.subtitleType,
+    this.subtitle,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -87,6 +93,12 @@ class Result {
   int? download;
   String? status;
   String? isTitle;
+  String? video320;
+  String? video480;
+  String? video720;
+  String? video1080;
+  String? subtitleType;
+  String? subtitle;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -116,6 +128,12 @@ class Result {
         download: json["download"],
         status: json["status"],
         isTitle: json["is_title"],
+        video320: json["video_320"],
+        video480: json["video_480"],
+        video720: json["video_720"],
+        video1080: json["video_1080"],
+        subtitleType: json["subtitle_type"],
+        subtitle: json["subtitle"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -146,6 +164,12 @@ class Result {
         "download": download,
         "status": status,
         "is_title": isTitle,
+        "video_320": video320,
+        "video_480": video480,
+        "video_720": video720,
+        "video_1080": video1080,
+        "subtitle_type": subtitleType,
+        "subtitle": subtitle,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,

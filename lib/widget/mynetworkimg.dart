@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:flutter/material.dart';
 
@@ -20,12 +21,18 @@ class MyNetworkImage extends StatelessWidget {
     return SizedBox(
       height: imgHeight,
       width: imgWidth,
-      child: Image.network(
-        imageUrl,
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
         fit: fit,
-        loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) return child;
+        imageBuilder: (context, imageProvider) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: imageProvider,
+              fit: fit,
+            ),
+          ),
+        ),
+        placeholder: (context, url) {
           return MyImage(
             width: imgWidth,
             height: imgHeight,
@@ -33,8 +40,7 @@ class MyNetworkImage extends StatelessWidget {
             fit: BoxFit.cover,
           );
         },
-        errorBuilder:
-            (BuildContext context, Object exception, StackTrace? stackTrace) {
+        errorWidget: (context, url, error) {
           return MyImage(
             width: imgWidth,
             height: imgHeight,

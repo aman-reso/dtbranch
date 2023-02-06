@@ -86,6 +86,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
     super.initState();
+    _getData();
+  }
+
+  void _getData() async {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.getSectionType();
   }
 
   // What to do when the user opens/taps on a notification

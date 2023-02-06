@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:dtlive/model/sectionbannermodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
-import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
 
@@ -11,8 +10,7 @@ class SectionDataProvider extends ChangeNotifier {
   SectionListModel sectionListModel = SectionListModel();
 
   bool loading = false;
-
-  SharedPre sharePref = SharedPre();
+  int? cBannerIndex = 0;
 
   Future<void> getSectionBanner(typeId, isHomePage) async {
     debugPrint("getSectionBanner typeId :==> $typeId");
@@ -22,6 +20,16 @@ class SectionDataProvider extends ChangeNotifier {
     debugPrint("get_banner status :==> ${sectionBannerModel.status}");
     debugPrint("get_banner message :==> ${sectionBannerModel.message}");
     loading = false;
+    notifyListeners();
+  }
+
+  setLoading(bool flagLoading) {
+    loading = flagLoading;
+    notifyListeners();
+  }
+
+  setCurrentBanner(index) {
+    cBannerIndex = index;
     notifyListeners();
   }
 

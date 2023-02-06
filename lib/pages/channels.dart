@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:carousel_indicator/carousel_indicator.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
@@ -18,7 +20,6 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Channels extends StatefulWidget {
   const Channels({Key? key}) : super(key: key);
@@ -28,8 +29,7 @@ class Channels extends StatefulWidget {
 }
 
 class ChannelsState extends State<Channels> {
-  Timer? _timer;
-  PageController pageController = PageController();
+  CarouselController pageController = CarouselController();
 
   @override
   void initState() {
@@ -47,7 +47,6 @@ class ChannelsState extends State<Channels> {
   @override
   void dispose() {
     super.dispose();
-    _timer?.cancel();
   }
 
   @override
@@ -122,11 +121,21 @@ class ChannelsState extends State<Channels> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Constant.channelBanner,
-            child: PageView.builder(
+            child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              controller: pageController,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
+              carouselController: pageController,
+              options: CarouselOptions(
+                initialPage: 0,
+                height: Constant.homeBanner,
+                enlargeCenterPage: false,
+                autoPlay: true,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enableInfiniteScroll: true,
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                viewportFraction: 1.0,
+              ),
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
@@ -147,12 +156,11 @@ class ChannelsState extends State<Channels> {
                               );
                             } else {
                               return PlayerPage(
-                                MediaQuery.of(context).size.height,
                                 0,
                                 0,
                                 0,
                                 sectionBannerList?[index].link ?? "",
-                                sectionBannerList?[index].name ?? "0",
+                                sectionBannerList?[index].name ?? "",
                               );
                             }
                           },
@@ -174,19 +182,29 @@ class ChannelsState extends State<Channels> {
           ),
           Positioned(
             bottom: 10,
-            child: SmoothPageIndicator(
-              controller: pageController,
+            child: CarouselIndicator(
               count: (sectionBannerList?.length ?? 0),
-              axisDirection: Axis.horizontal,
-              effect: const ExpandingDotsEffect(
-                spacing: 4,
-                radius: 4,
-                dotWidth: 8,
-                dotHeight: 8,
-                dotColor: gray,
-                activeDotColor: lightBlack,
-              ),
+              index: 0,
+              space: 4,
+              height: 8,
+              width: 8,
+              cornerRadius: 4,
+              color: gray,
+              activeColor: lightBlack,
             ),
+            // child: SmoothPageIndicator(
+            //   controller: pageController,
+            //   count: (sectionBannerList?.length ?? 0),
+            //   axisDirection: Axis.horizontal,
+            //   effect: const ExpandingDotsEffect(
+            //     spacing: 4,
+            //     radius: 4,
+            //     dotWidth: 8,
+            //     dotHeight: 8,
+            //     dotColor: gray,
+            //     activeDotColor: lightBlack,
+            //   ),
+            // ),
           ),
         ],
       );
@@ -347,6 +365,7 @@ class ChannelsState extends State<Channels> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -415,6 +434,7 @@ class ChannelsState extends State<Channels> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -481,6 +501,7 @@ class ChannelsState extends State<Channels> {
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,

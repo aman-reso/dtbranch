@@ -53,13 +53,15 @@ class SplashState extends State<Splash> {
     if (!generalsettingData.loading) {
       log('generalSettingData status ==> ${generalsettingData.generalSettingModel.status}');
       for (var i = 0;
-          i < generalsettingData.generalSettingModel.result!.length;
+          i < (generalsettingData.generalSettingModel.result?.length ?? 0);
           i++) {
         await sharedPre.save(
-          generalsettingData.generalSettingModel.result![i].key.toString(),
-          generalsettingData.generalSettingModel.result![i].value.toString(),
+          generalsettingData.generalSettingModel.result?[i].key.toString() ??
+              "",
+          generalsettingData.generalSettingModel.result?[i].value.toString() ??
+              "",
         );
-        log('${generalsettingData.generalSettingModel.result![i].key.toString()} ==> ${generalsettingData.generalSettingModel.result![i].value.toString()}');
+        log('${generalsettingData.generalSettingModel.result?[i].key.toString()} ==> ${generalsettingData.generalSettingModel.result?[i].value.toString()}');
       }
 
       seen = await sharedPre.read('seen') ?? "0";

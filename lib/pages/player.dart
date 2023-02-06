@@ -7,11 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class PlayerPage extends StatefulWidget {
-  final double displayHeight;
   final int videoId, videoType, typeId;
-  final String videoUrl, videoTitle;
-  const PlayerPage(this.displayHeight, this.videoId, this.videoType,
-      this.typeId, this.videoUrl, this.videoTitle,
+  final String videoUrl, vSubTitleUrl;
+  const PlayerPage(this.videoId, this.videoType, this.typeId, this.videoUrl,
+      this.vSubTitleUrl,
       {Key? key})
       : super(key: key);
 
@@ -60,22 +59,17 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   void _setupDataSource() async {
+    debugPrint("vSubTitle URL =======> ${widget.vSubTitleUrl}");
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       widget.videoUrl,
-      resolutions: Constant.exampleResolutionsUrls,
+      resolutions: Constant.resolutionsUrls,
       subtitles: [
         BetterPlayerSubtitlesSource(
-            type: BetterPlayerSubtitlesSourceType.network,
-            name: "EN",
-            urls: [
-              "https://dl.dropboxusercontent.com/s/71nzjo2ux3evxqk/example_subtitles.srt"
-            ],
-            selectedByDefault: true),
-        BetterPlayerSubtitlesSource(
           type: BetterPlayerSubtitlesSourceType.network,
-          name: "DE",
-          urls: ["https://divinetechs.in/example.srt"],
+          name: "En",
+          urls: [widget.vSubTitleUrl],
+          selectedByDefault: true,
         ),
       ],
     );

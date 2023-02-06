@@ -43,7 +43,7 @@ class Constant {
   static double widthLangGen = 172;
   static double heightLangGen = 177;
 
-  static double homeBanner = 190;
+  static double homeBanner = 230;
   static double detailPoster = 255;
   static double detailTabs = 50;
   static double featureSize = 50;
@@ -51,7 +51,7 @@ class Constant {
   static double epiPoster = 240;
   static double castCrewPoster = 525;
   static double channelPoster = 222;
-  static double channelBanner = 180;
+  static double channelBanner = 200;
   static double channelVideoBanner = 195;
   static double rentBanner = 103;
   static double dialogIconSize = 22;
@@ -89,4 +89,5 @@ class Constant {
     "EXTRA_LARGE":
         "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4"
   };
+  static Map<String, String> resolutionsUrls = <String, String>{};
 }

@@ -34,6 +34,7 @@ class MovieDetails extends StatefulWidget {
 class MovieDetailsState extends State<MovieDetails> {
   List<Cast>? directorList;
   VideoDetailsProvider videoDetailsProvider = VideoDetailsProvider();
+  Map<String, String> qualityUrlList = <String, String>{};
 
   @override
   void initState() {
@@ -50,6 +51,26 @@ class MovieDetailsState extends State<MovieDetails> {
         Provider.of<VideoDetailsProvider>(context, listen: false);
     await videoDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
+
+    if (videoDetailsProvider.sectionDetailModel.status == 200) {
+      if (videoDetailsProvider.sectionDetailModel.result != null) {
+        qualityUrlList = <String, String>{
+          '320p':
+              videoDetailsProvider.sectionDetailModel.result?.video320 ?? '',
+          '480p':
+              videoDetailsProvider.sectionDetailModel.result?.video480 ?? '',
+          '720p':
+              videoDetailsProvider.sectionDetailModel.result?.video720 ?? '',
+          '1080p':
+              videoDetailsProvider.sectionDetailModel.result?.video1080 ?? '',
+        };
+        debugPrint("qualityUrlList ==========> ${qualityUrlList.length}");
+        Constant.resolutionsUrls = qualityUrlList;
+        debugPrint(
+            "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+      }
+    }
+
     Future.delayed(Duration.zero).then((value) => setState(() {}));
   }
 
@@ -166,7 +187,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
                             openPlayer(
-                                "Video",
+                                "Trailer",
                                 (videoDetailsProvider.sectionDetailModel.result?.id ??
                                     0),
                                 (videoDetailsProvider
@@ -569,7 +590,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                     onTap: () {
                                       openPlayer(
                                           "Video",
-                                          (videoDetailsProvider.sectionDetailModel.result?.id ??
+                                          (videoDetailsProvider
+                                                  .sectionDetailModel.result?.id ??
                                               0),
                                           (videoDetailsProvider
                                                   .sectionDetailModel
@@ -580,7 +602,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           (videoDetailsProvider
                                                   .sectionDetailModel
                                                   .result
-                                                  ?.video ??
+                                                  ?.video320 ??
                                               ""),
                                           (videoDetailsProvider
                                                   .sectionDetailModel
@@ -595,7 +617,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           (videoDetailsProvider
                                                   .sectionDetailModel
                                                   .result
-                                                  ?.videoUrl ??
+                                                  ?.subtitle ??
                                               ""));
                                     },
                                     borderRadius: BorderRadius.circular(5),
@@ -646,128 +668,142 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ?.videoDuration !=
                                       null)
                               ? Container(
-                                  height: 55,
                                   margin:
                                       const EdgeInsets.fromLTRB(20, 18, 20, 0),
-                                  decoration: BoxDecoration(
-                                    color: primaryDark,
+                                  child: InkWell(
+                                    onTap: () {},
                                     borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const SizedBox(
-                                              width: 20,
-                                            ),
-                                            MyImage(
-                                                width: 20,
-                                                height: 20,
-                                                imagePath: "ic_play.png"),
-                                            const SizedBox(
-                                              width: 15,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                    child: Container(
+                                      height: 55,
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 20, 0),
+                                      decoration: BoxDecoration(
+                                        color: primaryDark,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
                                               children: [
-                                                MyText(
-                                                  color: white,
-                                                  text: "continuewatching",
-                                                  multilanguage: true,
-                                                  textalign: TextAlign.start,
-                                                  fontsize: 15,
-                                                  fontwaight: FontWeight.w600,
-                                                  maxline: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontstyle: FontStyle.normal,
+                                                const SizedBox(
+                                                  width: 20,
                                                 ),
-                                                Row(
+                                                MyImage(
+                                                    width: 20,
+                                                    height: 20,
+                                                    imagePath: "ic_play.png"),
+                                                const SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
                                                   children: [
                                                     MyText(
                                                       color: white,
-                                                      text: Utils.remainTimeInMin(((videoDetailsProvider
-                                                                      .sectionDetailModel
-                                                                      .result
-                                                                      ?.videoDuration ??
-                                                                  0) -
-                                                              (videoDetailsProvider
-                                                                      .sectionDetailModel
-                                                                      .result
-                                                                      ?.stopTime ??
-                                                                  0))
-                                                          .abs()),
+                                                      text: "continuewatching",
+                                                      multilanguage: true,
                                                       textalign:
                                                           TextAlign.start,
-                                                      fontsize: 10,
-                                                      multilanguage: false,
+                                                      fontsize: 15,
                                                       fontwaight:
-                                                          FontWeight.normal,
+                                                          FontWeight.w600,
                                                       maxline: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
-                                                    const SizedBox(width: 5),
-                                                    MyText(
-                                                      color: white,
-                                                      text: "left",
-                                                      textalign:
-                                                          TextAlign.start,
-                                                      fontsize: 10,
-                                                      multilanguage: true,
-                                                      fontwaight:
-                                                          FontWeight.normal,
-                                                      maxline: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontstyle:
-                                                          FontStyle.normal,
+                                                    Row(
+                                                      children: [
+                                                        MyText(
+                                                          color: white,
+                                                          text: Utils.remainTimeInMin(((videoDetailsProvider
+                                                                          .sectionDetailModel
+                                                                          .result
+                                                                          ?.videoDuration ??
+                                                                      0) -
+                                                                  (videoDetailsProvider
+                                                                          .sectionDetailModel
+                                                                          .result
+                                                                          ?.stopTime ??
+                                                                      0))
+                                                              .abs()),
+                                                          textalign:
+                                                              TextAlign.start,
+                                                          fontsize: 10,
+                                                          multilanguage: false,
+                                                          fontwaight:
+                                                              FontWeight.normal,
+                                                          maxline: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          fontstyle:
+                                                              FontStyle.normal,
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 5),
+                                                        MyText(
+                                                          color: white,
+                                                          text: "left",
+                                                          textalign:
+                                                              TextAlign.start,
+                                                          fontsize: 10,
+                                                          multilanguage: true,
+                                                          fontwaight:
+                                                              FontWeight.normal,
+                                                          maxline: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          fontstyle:
+                                                              FontStyle.normal,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
+                                                const SizedBox(
+                                                  width: 20,
+                                                ),
                                               ],
                                             ),
-                                            const SizedBox(
-                                              width: 20,
+                                          ),
+                                          Container(
+                                            height: 4,
+                                            constraints: const BoxConstraints(
+                                                minWidth: 0),
+                                            margin: const EdgeInsets.all(3),
+                                            child: LinearPercentIndicator(
+                                              padding: const EdgeInsets.all(0),
+                                              barRadius:
+                                                  const Radius.circular(2),
+                                              lineHeight: 4,
+                                              percent: Utils.getPercentage(
+                                                  videoDetailsProvider
+                                                          .sectionDetailModel
+                                                          .result
+                                                          ?.videoDuration ??
+                                                      0,
+                                                  videoDetailsProvider
+                                                          .sectionDetailModel
+                                                          .result
+                                                          ?.stopTime ??
+                                                      0),
+                                              backgroundColor: secProgressColor,
+                                              progressColor: primaryColor,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                      Container(
-                                        height: 4,
-                                        constraints:
-                                            const BoxConstraints(minWidth: 0),
-                                        margin: const EdgeInsets.all(3),
-                                        child: LinearPercentIndicator(
-                                          padding: const EdgeInsets.all(0),
-                                          barRadius: const Radius.circular(2),
-                                          lineHeight: 4,
-                                          percent: Utils.getPercentage(
-                                              videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.videoDuration ??
-                                                  0,
-                                              videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.stopTime ??
-                                                  0),
-                                          backgroundColor: secProgressColor,
-                                          progressColor: primaryColor,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 )
                               : const SizedBox.shrink(),
@@ -2455,7 +2491,7 @@ class MovieDetailsState extends State<MovieDetails> {
   }
 
   void openPlayer(String playType, int vID, int vType, int vTypeID, String vUrl,
-      String vTitle, String vUploadType, String vVideoUrl) {
+      String vTitle, String vUploadType, String vSubtitle) {
     log("===>vUploadType $vUploadType");
     if (vUploadType == "youtube") {
       Navigator.push(
@@ -2463,7 +2499,7 @@ class MovieDetailsState extends State<MovieDetails> {
         MaterialPageRoute(
           builder: (context) {
             return YoutubeVideo(
-              videoUrl: vVideoUrl,
+              videoUrl: vUrl,
             );
           },
         ),
@@ -2474,7 +2510,7 @@ class MovieDetailsState extends State<MovieDetails> {
         MaterialPageRoute(
           builder: (context) {
             return VimeoPlayerPage(
-              url: vVideoUrl,
+              url: vUrl,
             );
           },
         ),
@@ -2484,8 +2520,7 @@ class MovieDetailsState extends State<MovieDetails> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return PlayerPage(MediaQuery.of(context).size.height, vID, vType,
-                vTypeID, vUrl, vTitle);
+            return PlayerPage(vID, vType, vTypeID, vUrl, vSubtitle);
           },
         ),
       );

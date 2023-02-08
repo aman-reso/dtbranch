@@ -69,7 +69,7 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    if (Constant.userID != "0") {
+    if (Constant.userID != null) {
       _getData();
     }
   }

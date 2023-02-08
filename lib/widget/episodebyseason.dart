@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:dtlive/model/sectiondetailmodel.dart';
+import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/vimeoplayer.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
@@ -48,15 +51,13 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
     episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     await episodeProvider.getEpisodeBySeason(
         widget.seasonList?[widget.seasonPos].id ?? 0, widget.videoId);
-    showDetailsProvider.episodeBySeasonModel =
-        episodeProvider.episodeBySeasonModel;
+    await showDetailsProvider
+        .setEpisodeBySeason(episodeProvider.episodeBySeasonModel);
     Future.delayed(Duration.zero).then((value) => setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
-    final showDetailsProvider =
-        Provider.of<ShowDetailsProvider>(context, listen: false);
     final episodeProvider =
         Provider.of<EpisodeProvider>(context, listen: false);
     return AlignedGridView.count(
@@ -92,20 +93,19 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                         borderRadius: BorderRadius.circular(16),
                         onTap: () {
                           debugPrint("===> index $index");
-                          openPlayer(
-                              "Show",
-                              (showDetailsProvider
-                                      .sectionDetailModel.result?.id ??
-                                  0),
-                              (showDetailsProvider
-                                      .sectionDetailModel.result?.videoType ??
-                                  0),
-                              widget.typeId,
-                              index,
-                              episodeProvider.episodeBySeasonModel.result,
-                              (showDetailsProvider
-                                      .sectionDetailModel.result?.name ??
-                                  ""));
+                          if (Constant.userID != null) {
+                            openPlayer("Show", index,
+                                episodeProvider.episodeBySeasonModel.result);
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return const LoginSocial();
+                                },
+                              ),
+                            );
+                          }
                         },
                         child: Container(
                           width: 32,
@@ -181,13 +181,9 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                       fit: BoxFit.fill,
                       imgHeight: Constant.epiPoster,
                       imgWidth: MediaQuery.of(context).size.width,
-                      imageUrl: episodeProvider.episodeBySeasonModel
-                                  .result?[index].landscape !=
-                              ""
-                          ? (episodeProvider.episodeBySeasonModel.result?[index]
-                                  .landscape ??
-                              Constant.placeHolderLand)
-                          : Constant.placeHolderLand,
+                      imageUrl: (episodeProvider
+                              .episodeBySeasonModel.result?[index].landscape ??
+                          ""),
                     ),
                     Container(
                       padding: const EdgeInsets.all(15),
@@ -262,10 +258,29 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
     );
   }
 
-  void openPlayer(String playType, int vID, int vType, int vTypeID, int epiPos,
-      List<episode.Result>? episodeList, String vTitle) {
+  void openPlayer(
+      String playType, int epiPos, List<episode.Result>? episodeList) async {
+    final showDetailsProvider =
+        Provider.of<ShowDetailsProvider>(context, listen: false);
     if ((episodeList?.length ?? 0) > 0) {
-      debugPrint("vUploadType ===> ${episodeList?[epiPos].videoUploadType}");
+      int? epiID = (episodeList?[epiPos].id ?? 0);
+      int? vType =
+          (showDetailsProvider.sectionDetailModel.result?.videoType ?? 0);
+      int? vTypeID = widget.typeId;
+      int? stopTime =
+          (showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0);
+      String? vUploadType =
+          (showDetailsProvider.sectionDetailModel.result?.videoUploadType ??
+              "");
+      String? epiUrl = (episodeList?[epiPos].video320 ?? "");
+      String? vSubtitle = (episodeList?[epiPos].subtitle ?? "");
+      log("epiID ========> $epiID");
+      log("vType ========> $vType");
+      log("vTypeID ======> $vTypeID");
+      log("stopTime =====> $stopTime");
+      log("vUploadType ==> $vUploadType");
+      log("epiUrl =======> $epiUrl");
+      log("vSubtitle ====> $vSubtitle");
       if (episodeList?[epiPos].videoUploadType == "youtube") {
         Navigator.push(
           context,
@@ -289,19 +304,19 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
           ),
         );
       } else {
-        Navigator.push(
+        var isContinue = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
               return PlayerPage(
-                  vID,
-                  vType,
-                  vTypeID,
-                  episodeList?[epiPos].video320 ?? "",
-                  episodeList?[epiPos].subtitle ?? "");
+                  epiID, vType, vTypeID, epiUrl, vSubtitle, stopTime);
             },
           ),
         );
+        log("isContinue ===> $isContinue");
+        if (isContinue != null && isContinue == true) {
+          getAllEpisode();
+        }
       }
     }
   }

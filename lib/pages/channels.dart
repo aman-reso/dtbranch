@@ -58,7 +58,7 @@ class ChannelsState extends State<Channels> {
       body: channelSectionProvider.loading
           ? Utils.pageLoader()
           : (channelSectionProvider.channelSectionModel.status == 200 &&
-                  (channelSectionProvider.channelSectionModel.result != null ||
+                  (channelSectionProvider.channelSectionModel.result != null &&
                       channelSectionProvider.channelSectionModel.liveUrl !=
                           null))
               ? SafeArea(
@@ -96,25 +96,9 @@ class ChannelsState extends State<Channels> {
   }
 
   Widget channelbanner(List<banner.LiveUrl>? sectionBannerList) {
+    final channelSectionProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   _timer = Timer.periodic(const Duration(seconds: 8), (Timer timer) {
-      //     log("timer isActive ====> ${timer.isActive}");
-      //     if (_currentPage < (sectionBannerList?.length ?? 0)) {
-      //       _currentPage++;
-      //     } else {
-      //       _currentPage = 0;
-      //     }
-      //
-      //     if (pageController.hasClients) {
-      //       pageController.animateToPage(
-      //         _currentPage,
-      //         duration: const Duration(milliseconds: 500),
-      //         curve: Curves.easeIn,
-      //       );
-      //     }
-      //   });
-      // });
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
@@ -126,13 +110,16 @@ class ChannelsState extends State<Channels> {
               carouselController: pageController,
               options: CarouselOptions(
                 initialPage: 0,
-                height: Constant.homeBanner,
+                height: Constant.channelBanner,
                 enlargeCenterPage: false,
                 autoPlay: true,
                 autoPlayCurve: Curves.fastOutSlowIn,
                 enableInfiniteScroll: true,
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 viewportFraction: 1.0,
+                onPageChanged: (val, _) async {
+                  await channelSectionProvider.setCurrentBanner(val);
+                },
               ),
               itemBuilder:
                   (BuildContext context, int index, int pageViewIndex) {
@@ -161,6 +148,7 @@ class ChannelsState extends State<Channels> {
                                 0,
                                 sectionBannerList?[index].link ?? "",
                                 sectionBannerList?[index].name ?? "",
+                                0,
                               );
                             }
                           },
@@ -168,43 +156,56 @@ class ChannelsState extends State<Channels> {
                       );
                     }
                   },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: Constant.homeBanner,
-                    child: MyNetworkImage(
-                      imageUrl: sectionBannerList?[index].image ?? "",
-                      fit: BoxFit.fill,
-                    ),
+                  child: Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: Constant.channelBanner,
+                        child: MyNetworkImage(
+                          imageUrl: sectionBannerList?[index].image ?? "",
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
+                        height: Constant.channelBanner,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.center,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              transparentColor,
+                              transparentColor,
+                              appBgColor,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
             ),
           ),
           Positioned(
-            bottom: 10,
-            child: CarouselIndicator(
-              count: (sectionBannerList?.length ?? 0),
-              index: 0,
-              space: 4,
-              height: 8,
-              width: 8,
-              cornerRadius: 4,
-              color: gray,
-              activeColor: lightBlack,
+            bottom: 0,
+            child: Consumer<ChannelSectionProvider>(
+              builder: (context, channelSectionProvider, child) {
+                return CarouselIndicator(
+                  count: (sectionBannerList?.length ?? 0),
+                  index: channelSectionProvider.cBannerIndex,
+                  space: 8,
+                  height: 8,
+                  width: 8,
+                  cornerRadius: 4,
+                  color: lightBlack,
+                  activeColor: white,
+                );
+              },
             ),
-            // child: SmoothPageIndicator(
-            //   controller: pageController,
-            //   count: (sectionBannerList?.length ?? 0),
-            //   axisDirection: Axis.horizontal,
-            //   effect: const ExpandingDotsEffect(
-            //     spacing: 4,
-            //     radius: 4,
-            //     dotWidth: 8,
-            //     dotHeight: 8,
-            //     dotColor: gray,
-            //     activeDotColor: lightBlack,
-            //   ),
-            // ),
           ),
         ],
       );
@@ -365,7 +366,8 @@ class ChannelsState extends State<Channels> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -434,7 +436,8 @@ class ChannelsState extends State<Channels> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -501,7 +504,8 @@ class ChannelsState extends State<Channels> {
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,

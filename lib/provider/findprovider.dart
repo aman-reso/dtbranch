@@ -66,8 +66,8 @@ class FindProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  clearFindProvider() {
-    log("============ clearFindProvider ============");
+  clearProvider() {
+    log("============ clearProvider ============");
     successModel = SuccessModel();
     sectionTypeModel = SectionTypeModel();
     langaugeModel = LangaugeModel();

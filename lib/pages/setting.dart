@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dtlive/pages/aboutprivacyterms.dart';
 import 'package:dtlive/pages/loginsocial.dart';
@@ -25,8 +26,7 @@ class Setting extends StatefulWidget {
 
 class SettingState extends State<Setting> {
   bool? isSwitched;
-  String? userId,
-      userName,
+  String? userName,
       userType,
       userMobileNo,
       aboutUsUrl,
@@ -58,11 +58,9 @@ class SettingState extends State<Setting> {
   }
 
   void getUserData() async {
-    userId = await sharedPref.read("userid");
     userName = await sharedPref.read("username");
     userType = await sharedPref.read("usertype");
     userMobileNo = await sharedPref.read("mobile");
-    log('getUserData userId ==> $userId');
     log('getUserData userName ==> $userName');
     log('getUserData userType ==> $userType');
     log('getUserData userMobileNo ==> $userMobileNo');
@@ -92,7 +90,7 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    if (Constant.userID != "0") {
+                    if (Constant.userID != null) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const ProfileEdit(),
@@ -155,14 +153,14 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    if (Constant.userID != "0") {
+                    if (Constant.userID != null) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const Subscription(),
                         ),
                       );
                     } else {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const LoginSocial(),
                         ),
@@ -276,7 +274,7 @@ class SettingState extends State<Setting> {
                   borderRadius: BorderRadius.circular(2),
                   onTap: () async {
                     await Utils.deleteCacheDir();
-                    // ignore: use_build_context_synchronously
+                    if (!mounted) return;
                     Utils.showSnackbar(context, "success", "cacheclearmsg");
                   },
                   child: Container(
@@ -338,15 +336,16 @@ class SettingState extends State<Setting> {
                 /* SignIn / SignOut */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    if (Constant.userID != "0") {
+                  onTap: () async {
+                    if (Constant.userID != null) {
                       logoutConfirmDialog();
                     } else {
-                      Navigator.of(context).pushReplacement(
+                      await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const LoginSocial(),
                         ),
                       );
+                      setState(() {});
                     }
                   },
                   child: Container(
@@ -360,7 +359,7 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: (userId ?? "") == ""
+                          text: Constant.userID == null
                               ? youAreNotSignIn
                               : (userType == "3" && (userName ?? "").isEmpty)
                                   ? ("$signedInAs ${userMobileNo ?? ""}")
@@ -378,7 +377,8 @@ class SettingState extends State<Setting> {
                         ),
                         MyText(
                           color: otherColor,
-                          text: (userId ?? "") == "" ? "sign_in" : "sign_out",
+                          text:
+                              Constant.userID == null ? "sign_in" : "sign_out",
                           fontsize: 13,
                           multilanguage: true,
                           maxline: 1,
@@ -401,7 +401,17 @@ class SettingState extends State<Setting> {
                 /* Rate App */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
-                  onTap: () {},
+                  onTap: () async {
+                    debugPrint("Clicked on rateApp");
+                    try {
+                      await Utils.redirectToUrl(
+                          "market://details?id=${Constant.appPackageName}");
+                    } catch (e) {
+                      debugPrint("rateApp Exception ====> $e");
+                      await Utils.redirectToUrl(
+                          "http://play.google.com/store/apps/details?id=${Constant.appPackageName}");
+                    }
+                  },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
@@ -450,7 +460,11 @@ class SettingState extends State<Setting> {
                 /* Share App */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
-                  onTap: () {},
+                  onTap: () async {
+                    await Utils.shareApp(Platform.isIOS
+                        ? Constant.iosAppShareUrlDesc
+                        : Constant.androidAppShareUrlDesc);
+                  },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
@@ -786,12 +800,12 @@ class SettingState extends State<Setting> {
                           onTap: () async {
                             // Firebase Signout
                             await auth.signOut();
-
-                            await Utils.setUserId("0");
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(context).pop();
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(context).pushReplacement(
+                            await Utils.setUserId(null);
+                            getUserData();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            if (!mounted) return;
+                            await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const LoginSocial(),
                               ),

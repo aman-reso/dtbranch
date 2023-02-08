@@ -305,8 +305,8 @@ class OTPVerifyState extends State<OTPVerify> {
       if (generalProvider.loginOTPModel.status == 200) {
         log('loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
         log('Login Successfull!');
-        sharePref.save("userid",
-            generalProvider.loginOTPModel.result?.id.toString() ?? "0");
+        sharePref.save(
+            "userid", generalProvider.loginOTPModel.result?.id.toString());
         sharePref.save("username",
             generalProvider.loginOTPModel.result?.name.toString() ?? "");
         sharePref.save("userimage",
@@ -319,8 +319,7 @@ class OTPVerifyState extends State<OTPVerify> {
             generalProvider.loginOTPModel.result?.type.toString() ?? "");
 
         // Set UserID for Next
-        Constant.userID =
-            generalProvider.loginOTPModel.result?.id.toString() ?? "0";
+        Constant.userID = generalProvider.loginOTPModel.result?.id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
         if (!mounted) return;

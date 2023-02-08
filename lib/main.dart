@@ -10,6 +10,8 @@ import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/mystuffprovider.dart';
+import 'package:dtlive/provider/paymentprovider.dart';
+import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/provider/profileprovider.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/provider/searchprovider.dart';
@@ -66,6 +68,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => MyStuffProvider()),
         ChangeNotifierProvider(create: (_) => AvatarProvider()),
         ChangeNotifierProvider(create: (_) => CastDetailsProvider()),
+        ChangeNotifierProvider(create: (_) => PaymentProvider()),
+        ChangeNotifierProvider(create: (_) => PlayerProvider()),
       ],
       child: const MyApp(),
     ),

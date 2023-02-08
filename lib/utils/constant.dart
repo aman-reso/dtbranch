@@ -13,6 +13,8 @@ class Constant {
       "346606981660-juds0qd8k9p651md7gv38bd1bn9jq66v.apps.googleusercontent.com";
   static const String googleClientSecret =
       "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";
+  static int fixFourDigit = 1317;
+  static int fixSixDigit = 161613;
 
   // Dimentions START
   static double appBarHeight = 60;
@@ -60,7 +62,7 @@ class Constant {
   static double minHeightSettings = 45;
   // Dimentions END
 
-  static String userID = "0";
+  static String? userID;
   static String userPlaceholder =
       "https://i.pinimg.com/564x/5d/69/42/5d6942c6dff12bd3f960eb30c5fdd0f9.jpg";
   static String placeHolderLand =
@@ -79,15 +81,5 @@ class Constant {
   static String iosAppUrl =
       "https://apps.apple.com/us/app/${appName?.toLowerCase()}/${Constant.appPackageName}";
 
-  static const Map<String, String> exampleResolutionsUrls = {
-    "LOW":
-        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4",
-    "MEDIUM":
-        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4",
-    "LARGE":
-        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4",
-    "EXTRA_LARGE":
-        "http://173.249.44.9/apps/dt_live/public/images/video/o_1ge4hrsmigb21ccd5iu3cs12u7.mp4"
-  };
   static Map<String, String> resolutionsUrls = <String, String>{};
 }

@@ -80,7 +80,7 @@ class SearchState extends State<Search> {
     setState(() async {
       _lastWords = result.recognizedWords;
       debugPrint("_lastWords ==============> $_lastWords");
-      if (_lastWords.isNotEmpty) {
+      if (_lastWords.isNotEmpty && _isListening) {
         searchController.text = _lastWords.toString();
         _isListening = false;
         await searchProvider.getSearchVideo(_lastWords.toString());

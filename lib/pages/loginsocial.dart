@@ -336,6 +336,7 @@ class LoginSocialState extends State<LoginSocial> {
   }
 
   googleSignInUser(String mail, String displayName) async {
+    Utils.showProgress(context, prDialog);
     debugPrint("Email : $mail and Name : $displayName");
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -389,7 +390,9 @@ class LoginSocialState extends State<LoginSocial> {
     log('checkAndNavigate email ==>> $email');
     log('checkAndNavigate userName ==>> $userName');
     log('checkAndNavigate strType ==>> $strType');
-    Utils.showProgress(context, prDialog);
+    if (!prDialog.isShowing()) {
+      Utils.showProgress(context, prDialog);
+    }
     final generalProvider =
         Provider.of<GeneralProvider>(context, listen: false);
     await generalProvider.loginWithSocial(email, userName, strType);
@@ -402,8 +405,8 @@ class LoginSocialState extends State<LoginSocial> {
       if (generalProvider.loginGmailModel.status == 200) {
         log('loginGmailModel ==>> ${generalProvider.loginGmailModel.toString()}');
         log('Login Successfull!');
-        sharePref.save("userid",
-            generalProvider.loginGmailModel.result?.id.toString() ?? "0");
+        sharePref.save(
+            "userid", generalProvider.loginGmailModel.result?.id.toString());
         sharePref.save("username",
             generalProvider.loginGmailModel.result?.name.toString() ?? "");
         sharePref.save("userimage",
@@ -416,8 +419,7 @@ class LoginSocialState extends State<LoginSocial> {
             generalProvider.loginGmailModel.result?.type.toString() ?? "");
 
         // Set UserID for Next
-        Constant.userID =
-            generalProvider.loginGmailModel.result?.id.toString() ?? "0";
+        Constant.userID = generalProvider.loginGmailModel.result?.id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
         if (!mounted) return;

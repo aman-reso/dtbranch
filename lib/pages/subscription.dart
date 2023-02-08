@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:dtlive/model/subscriptionmodel.dart';
+import 'package:dtlive/pages/allpayment.dart';
+import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/provider/subscriptionprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -267,11 +270,62 @@ class SubscriptionState extends State<Subscription> {
                     const SizedBox(
                       height: 20,
                     ),
+
+                    /* Choose Plan */
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(5),
-                        onTap: () {},
+                        onTap: () async {
+                          if (Constant.userID != null) {
+                            for (var i = 0;
+                                i < (packageList?.length ?? 0);
+                                i++) {
+                              if (packageList?[i].isBuy == 1) {
+                                debugPrint(
+                                    "<============= Purchaged =============>");
+                                Utils.showSnackbar(
+                                    context, "", "already_purchased");
+                                return;
+                              }
+                            }
+                            if (packageList?[index].isBuy == 0) {
+                              await Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return AllPayment(
+                                      payType: 'Package',
+                                      itemId:
+                                          packageList?[index].id.toString() ??
+                                              '',
+                                      price: packageList?[index]
+                                              .price
+                                              .toString() ??
+                                          '',
+                                      itemTitle:
+                                          packageList?[index].name.toString() ??
+                                              '',
+                                      typeId: '',
+                                      videoType: '',
+                                      productPackage: '',
+                                      currency: '',
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          } else {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return const LoginSocial();
+                                },
+                              ),
+                            );
+                          }
+                        },
                         child: Container(
                           height: 52,
                           width: MediaQuery.of(context).size.width * 0.5,

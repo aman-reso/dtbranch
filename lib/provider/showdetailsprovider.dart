@@ -23,10 +23,8 @@ class ShowDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getEpisodeBySeason(seasonId, showId) async {
-    loading = true;
-    episodeBySeasonModel = await ApiService().episodeBySeason(seasonId, showId);
-    loading = false;
+  setEpisodeBySeason(episodeModel) async {
+    episodeBySeasonModel = episodeModel;
     notifyListeners();
   }
 
@@ -61,8 +59,20 @@ class ShowDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  updateRentPurchase() {
+    if (sectionDetailModel.result != null) {
+      sectionDetailModel.result?.rentBuy == 1;
+    }
+  }
+
+  updatePrimiumPurchase() {
+    if (sectionDetailModel.result != null) {
+      sectionDetailModel.result?.isBuy == 1;
+    }
+  }
+
   clearProvider() {
-    log("<================ clearSectionProvider ================>");
+    log("<================ clearProvider ================>");
     sectionDetailModel = SectionDetailModel();
     episodeBySeasonModel = EpisodeBySeasonModel();
     successModel = SuccessModel();

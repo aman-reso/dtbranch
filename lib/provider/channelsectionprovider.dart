@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:dtlive/model/channelsectionmodel.dart';
-import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
 
@@ -10,23 +8,24 @@ class ChannelSectionProvider extends ChangeNotifier {
   ChannelSectionModel channelSectionModel = ChannelSectionModel();
 
   bool loading = false;
-
-  SharedPre sharePref = SharedPre();
+  int? cBannerIndex = 0;
 
   Future<void> getChannelSection() async {
-    debugPrint("getChannelSection userID :==> ${Constant.userID}");
     loading = true;
     channelSectionModel = await ApiService().channelSectionList();
-    debugPrint(
-        "channel_section_list status :==> ${channelSectionModel.status}");
-    debugPrint(
-        "channel_section_list message :==> ${channelSectionModel.message}");
+    debugPrint("getChannelSection status :==> ${channelSectionModel.status}");
+    debugPrint("getChannelSection message :==> ${channelSectionModel.message}");
     loading = false;
     notifyListeners();
   }
 
-  clearSectionProvider() {
-    log("<================ clearChannelSectionProvider ================>");
+  setCurrentBanner(index) {
+    cBannerIndex = index;
+    notifyListeners();
+  }
+
+  clearProvider() {
+    log("<================ clearProvider ================>");
     channelSectionModel = ChannelSectionModel();
   }
 }

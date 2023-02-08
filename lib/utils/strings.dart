@@ -20,3 +20,6 @@ const signedInAs = "Signed in as";
 const youAreNotSignIn = "You are not Signed in";
 const cancel = "Cancel";
 const guestUser = "Guest User";
+
+/* Payment Details */
+const payableAmountIs = "Payable amount is : ";

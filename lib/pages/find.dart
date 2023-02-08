@@ -66,6 +66,7 @@ class FindState extends State<Find> {
   void _stopListening() async {
     debugPrint("<============== _stopListening ==============>");
     await _speechToText.stop();
+    if (!mounted) return;
     setState(() {
       _lastWords = '';
       _isListening = false;
@@ -78,7 +79,7 @@ class FindState extends State<Find> {
     debugPrint("<============== _onSpeechResult ==============>");
     _lastWords = result.recognizedWords;
     debugPrint("_lastWords ==============> $_lastWords");
-    if (_lastWords.isNotEmpty) {
+    if (_lastWords.isNotEmpty && _isListening) {
       searchController.text = _lastWords.toString();
       _isListening = false;
       if (!mounted) return;
@@ -104,14 +105,17 @@ class FindState extends State<Find> {
     findProvider.getSectionType();
     findProvider.getGenres();
     findProvider.getLanguage();
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _stopListening();
     searchController.dispose();
-    findProvider.clearFindProvider();
+    findProvider.clearProvider();
     super.dispose();
   }
 

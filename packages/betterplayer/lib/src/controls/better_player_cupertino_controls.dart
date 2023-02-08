@@ -481,6 +481,7 @@ class _BetterPlayerCupertinoControlsState
     }
     final barHeight = topBarHeight * 0.8;
     final iconSize = topBarHeight * 0.4;
+    debugPrint("enablePip ========> ${_controlsConfiguration.enablePip}");
     return Container(
       height: barHeight,
       margin: EdgeInsets.only(

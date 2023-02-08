@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math' as number;
 
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -31,12 +32,6 @@ class Utils {
     );
   }
 
-  static void getUserId() async {
-    SharedPre sharedPref = SharedPre();
-    Constant.userID = await sharedPref.read("userid") ?? "0";
-    log('Constant userID ==> ${Constant.userID}');
-  }
-
   static void getCurrencySymbol() async {
     SharedPre sharedPref = SharedPre();
     Constant.currencySymbol = await sharedPref.read("currency_code") ?? "";
@@ -45,7 +40,16 @@ class Utils {
 
   static setUserId(userID) async {
     SharedPre sharedPref = SharedPre();
-    await sharedPref.save("userid", userID ?? "0");
+    if (userID != null) {
+      await sharedPref.save("userid", userID);
+    } else {
+      await sharedPref.remove("userid");
+      await sharedPref.remove("username");
+      await sharedPref.remove("userimage");
+      await sharedPref.remove("useremail");
+      await sharedPref.remove("usermobile");
+      await sharedPref.remove("usertype");
+    }
     Constant.userID = await sharedPref.read("userid");
     log('setUserId userID ==> ${Constant.userID}');
   }
@@ -169,7 +173,7 @@ class Utils {
       centerTitle: true,
       leading: IconButton(
         onPressed: () {
-          Navigator.of(context).pop();
+          Navigator.pop(context);
         },
         icon: MyImage(
           imagePath: "back.png",
@@ -181,9 +185,10 @@ class Utils {
       ),
       title: MyText(
         text: appBarTitle,
-        fontsize: 20,
+        multilanguage: true,
+        fontsize: 18,
         fontstyle: FontStyle.normal,
-        fontwaight: FontWeight.w500,
+        fontwaight: FontWeight.w600,
         textalign: TextAlign.center,
         color: primaryColor,
       ),
@@ -220,7 +225,7 @@ class Utils {
         content: MyText(
           text: message,
           fontsize: 14,
-          multilanguage: true,
+          multilanguage: showFor != "response" ? true : false,
           fontstyle: FontStyle.normal,
           fontwaight: FontWeight.normal,
           color: white,
@@ -537,4 +542,33 @@ class Utils {
       return;
     }
   }
+
+  /* ***************** generate Unique OrderID START ***************** */
+  static String generateRandomOrderID() {
+    int getRandomNumber;
+    String? finalOID;
+    debugPrint("fixFourDigit =>>> ${Constant.fixFourDigit}");
+    debugPrint("fixSixDigit =>>> ${Constant.fixSixDigit}");
+
+    number.Random r = number.Random();
+    int ran5thDigit = r.nextInt(9);
+    debugPrint("Random ran5thDigit =>>> $ran5thDigit");
+
+    int randomNumber = number.Random().nextInt(9999999);
+    debugPrint("Random randomNumber =>>> $randomNumber");
+    if (randomNumber < 0) {
+      randomNumber = -randomNumber;
+    }
+    getRandomNumber = randomNumber;
+    debugPrint("getRandomNumber =>>> $getRandomNumber");
+
+    finalOID = "${Constant.fixFourDigit.toInt()}"
+        "$ran5thDigit"
+        "${Constant.fixSixDigit.toInt()}"
+        "$getRandomNumber";
+    debugPrint("finalOID =>>> $finalOID");
+
+    return finalOID;
+  }
+  /* ***************** generate Unique OrderID END ***************** */
 }

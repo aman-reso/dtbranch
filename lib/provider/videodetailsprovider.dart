@@ -27,7 +27,6 @@ class VideoDetailsProvider extends ChangeNotifier {
 
   Future<void> setBookMark(
       BuildContext context, typeId, videoType, videoId) async {
-    loading = true;
     if ((sectionDetailModel.result?.isBookmark ?? 0) == 0) {
       sectionDetailModel.result?.isBookmark = 1;
       Utils.showSnackbar(context, "WatchlistAdd", "addwatchlistmessage");
@@ -35,7 +34,6 @@ class VideoDetailsProvider extends ChangeNotifier {
       sectionDetailModel.result?.isBookmark = 0;
       Utils.showSnackbar(context, "WatchlistRemove", "removewatchlistmessage");
     }
-    loading = false;
     notifyListeners();
     getAddBookMark(typeId, videoType, videoId);
   }
@@ -50,8 +48,31 @@ class VideoDetailsProvider extends ChangeNotifier {
     debugPrint("add_remove_bookmark message :==> ${successModel.message}");
   }
 
+  Future<void> removeFromContinue(videoId, videoType) async {
+    sectionDetailModel.result?.stopTime = 0;
+    notifyListeners();
+
+    debugPrint("removeFromContinue videoType :==> $videoType");
+    debugPrint("removeFromContinue videoId :==> $videoId");
+    successModel =
+        await ApiService().removeContinueWatching(videoId, videoType);
+    debugPrint("removeFromContinue message :==> ${successModel.message}");
+  }
+
+  updateRentPurchase() {
+    if (sectionDetailModel.result != null) {
+      sectionDetailModel.result?.rentBuy == 1;
+    }
+  }
+
+  updatePrimiumPurchase() {
+    if (sectionDetailModel.result != null) {
+      sectionDetailModel.result?.isBuy == 1;
+    }
+  }
+
   clearProvider() {
-    log("<================ clearSectionProvider ================>");
+    log("<================ clearProvider ================>");
     sectionDetailModel = SectionDetailModel();
     successModel = SuccessModel();
   }

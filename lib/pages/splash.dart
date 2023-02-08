@@ -65,30 +65,19 @@ class SplashState extends State<Splash> {
       }
 
       seen = await sharedPre.read('seen') ?? "0";
-      Constant.userID = await sharedPre.read('userid') ?? "0";
+      Constant.userID = await sharedPre.read('userid');
       log('seen ==> $seen');
       log('Constant userID ==> ${Constant.userID}');
       if (!mounted) return;
       if (seen == "1") {
-        if (Constant.userID != "0") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return const Bottombar();
-              },
-            ),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return const Bottombar();
-              },
-            ),
-          );
-        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const Bottombar();
+            },
+          ),
+        );
       } else {
         Navigator.pushReplacement(
           context,

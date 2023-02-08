@@ -528,7 +528,7 @@ class ApiService {
     PaymentOptionModel paymentOptionModel;
     String paymentOption = "get_payment_option";
     log("paymentOption API :==> $baseUrl$paymentOption");
-    Response response = await dio.get(
+    Response response = await dio.post(
       '$baseUrl$paymentOption',
       options: optHeaders,
     );

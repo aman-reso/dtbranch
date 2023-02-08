@@ -32,25 +32,32 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   CarouselController pageController = CarouselController();
+  late ScrollController tabScrollController;
 
   @override
   void initState() {
+    tabScrollController = ScrollController();
     super.initState();
     _getData();
   }
 
   void _getData() async {
     Utils.getCurrencySymbol();
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     if (!homeProvider.loading) {
       if (homeProvider.sectionTypeModel.status == 200 &&
           homeProvider.sectionTypeModel.result != null) {
         if ((homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
-          getTabData(0, homeProvider.sectionTypeModel.result);
+          if (sectionDataProvider.sectionBannerModel.result == null ||
+              sectionDataProvider.sectionListModel.result == null) {
+            getTabData(0, homeProvider.sectionTypeModel.result);
+            Future.delayed(Duration.zero).then((value) => setState(() {}));
+          }
         }
       }
     }
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
   }
 
   @override
@@ -74,29 +81,31 @@ class HomeState extends State<Home> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
-            child: MyImage(width: 80, height: 80, imagePath: "appicon.png"),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              splashColor: transparentColor,
+              highlightColor: transparentColor,
+              onTap: () async {
+                await getTabData(0, homeProvider.sectionTypeModel.result);
+              },
+              child: MyImage(width: 70, height: 70, imagePath: "appicon.png"),
+            ),
           ),
         ),
       ),
       body: homeProvider.loading
           ? Utils.pageLoader()
-          : (homeProvider.sectionTypeModel.status == 200 &&
-                  homeProvider.sectionTypeModel.result != null)
-              ? (homeProvider.sectionTypeModel.result?.length ?? 0) > 0
+          : (homeProvider.sectionTypeModel.status == 200)
+              ? (homeProvider.sectionTypeModel.result != null ||
+                      (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
                   ? Column(
                       children: [
                         tabTitle(homeProvider.sectionTypeModel.result),
                         tabItem(homeProvider.sectionTypeModel.result),
                       ],
                     )
-                  : const NoData(
-                      title: '',
-                      subTitle: '',
-                    )
-              : const NoData(
-                  title: '',
-                  subTitle: '',
-                ),
+                  : const NoData(title: '', subTitle: '')
+              : const NoData(title: '', subTitle: ''),
     );
   }
 
@@ -108,54 +117,54 @@ class HomeState extends State<Home> {
       alignment: Alignment.center,
       child: ListView.separated(
         itemCount: (sectionTypeList?.length ?? 0) + 1,
+        controller: tabScrollController,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
         separatorBuilder: (context, index) => const SizedBox(
-          width: 15,
+          width: 12,
         ),
         itemBuilder: (BuildContext context, int index) {
           return Consumer<HomeProvider>(
-              builder: (context, homeProvider, child) {
-            return InkWell(
-              borderRadius: BorderRadius.circular(25),
-              onTap: () async {
-                debugPrint("index ===========> $index");
-                final sectionDataProvider =
-                    Provider.of<SectionDataProvider>(context, listen: false);
-                await sectionDataProvider.setLoading(true);
-                await homeProvider.setSelectedTab(index);
-                await getTabData(index, homeProvider.sectionTypeModel.result);
-              },
-              child: Container(
-                constraints: const BoxConstraints(maxHeight: 30),
-                decoration: Utils.setBackground(
-                  homeProvider.selectedIndex == index
-                      ? white
-                      : transparentColor,
-                  20,
+            builder: (context, homeProvider, child) {
+              return InkWell(
+                borderRadius: BorderRadius.circular(25),
+                onTap: () async {
+                  debugPrint("index ===========> $index");
+                  await getTabData(index, homeProvider.sectionTypeModel.result);
+                },
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 30),
+                  decoration: Utils.setBackground(
+                    homeProvider.selectedIndex == index
+                        ? white
+                        : transparentColor,
+                    20,
+                  ),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: MyText(
+                    color: homeProvider.selectedIndex == index ? black : white,
+                    multilanguage: false,
+                    text: index == 0
+                        ? "All"
+                        : index > 0
+                            ? (sectionTypeList?[index - 1].name.toString() ??
+                                "")
+                            : "",
+                    fontsize: 14,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontwaight: FontWeight.w500,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                child: MyText(
-                  color: homeProvider.selectedIndex == index ? black : white,
-                  multilanguage: false,
-                  text: index == 0
-                      ? "All"
-                      : index > 0
-                          ? (sectionTypeList?[index - 1].name.toString() ?? "")
-                          : "",
-                  fontsize: 14,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontwaight: FontWeight.w500,
-                  textalign: TextAlign.center,
-                  fontstyle: FontStyle.normal,
-                ),
-              ),
-            );
-          });
+              );
+            },
+          );
         },
       ),
     );
@@ -166,54 +175,70 @@ class HomeState extends State<Home> {
       child: Container(
         width: MediaQuery.of(context).size.width,
         constraints: const BoxConstraints(minHeight: 0),
-        child: Consumer<SectionDataProvider>(
-          builder: (context, sectionDataProvider, child) {
-            log("sectionDataProvider status :=======> ${sectionDataProvider.sectionBannerModel.status}");
-            if (sectionDataProvider.loading) {
-              return Utils.pageLoader();
-            } else {
-              if ((sectionDataProvider.sectionBannerModel.status == 200 &&
-                      sectionDataProvider.sectionBannerModel.result != null) ||
-                  (sectionDataProvider.sectionListModel.status == 200 &&
-                      sectionDataProvider.sectionListModel.result != null)) {
-                return SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      /* Banner */
-                      (sectionDataProvider.sectionBannerModel.status == 200 &&
-                              sectionDataProvider.sectionBannerModel.result !=
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              /* Banner */
+              Consumer<SectionDataProvider>(
+                builder: (context, sectionDataProvider, child) {
+                  if (sectionDataProvider.loadingBanner) {
+                    return Container(
+                      height: 230,
+                      padding: const EdgeInsets.all(20),
+                      child: Utils.pageLoader(),
+                    );
+                  } else {
+                    if (sectionDataProvider.sectionBannerModel.status == 200 &&
+                        sectionDataProvider.sectionBannerModel.result != null) {
+                      return homebanner(
+                          sectionDataProvider.sectionBannerModel.result);
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  }
+                },
+              ),
+
+              /* Continue Watching & Remaining Sections */
+              Consumer<SectionDataProvider>(
+                builder: (context, sectionDataProvider, child) {
+                  if (sectionDataProvider.loadingSection) {
+                    return Container(
+                      height: 200,
+                      padding: const EdgeInsets.all(20),
+                      child: Utils.pageLoader(),
+                    );
+                  } else {
+                    if (sectionDataProvider.sectionListModel.status == 200) {
+                      return Column(
+                        children: [
+                          /* Continue Watching */
+                          (sectionDataProvider
+                                      .sectionListModel.continueWatching !=
                                   null)
-                          ? homebanner(
-                              sectionDataProvider.sectionBannerModel.result)
-                          : const SizedBox.shrink(),
-                      // /* Continue Watching */
-                      (sectionDataProvider.sectionListModel.continueWatching !=
-                              null)
-                          ? continueWatchingLayout(sectionDataProvider
-                              .sectionListModel.continueWatching)
-                          : const SizedBox.shrink(),
-                      /* Remaining Data */
-                      (sectionDataProvider.sectionListModel.status == 200 &&
-                              sectionDataProvider.sectionListModel.result !=
-                                  null)
-                          ? setSectionByType(
-                              sectionDataProvider.sectionListModel.result)
-                          : const SizedBox.shrink(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return const NoData(
-                  title: '',
-                  subTitle: '',
-                );
-              }
-            }
-          },
+                              ? continueWatchingLayout(sectionDataProvider
+                                  .sectionListModel.continueWatching)
+                              : const SizedBox.shrink(),
+
+                          /* Remaining Sections */
+                          (sectionDataProvider.sectionListModel.result != null)
+                              ? setSectionByType(
+                                  sectionDataProvider.sectionListModel.result)
+                              : const SizedBox.shrink(),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  }
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -221,9 +246,19 @@ class HomeState extends State<Home> {
 
   Future<void> getTabData(
       int position, List<type.Result>? sectionTypeList) async {
-    debugPrint("getTabData position ====> $position");
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.setSelectedTab(position);
+    debugPrint("getTabData position ====> $position");
+    debugPrint(
+        "getTabData lastTabPosition ====> ${sectionDataProvider.lastTabPosition}");
+    if (sectionDataProvider.lastTabPosition == position) {
+      return;
+    } else {
+      sectionDataProvider.setTabPosition(position);
+    }
+    await sectionDataProvider.setLoading(true);
     await sectionDataProvider.getSectionBanner(
         position == 0 ? "0" : (sectionTypeList?[position - 1].id),
         position == 0 ? "1" : "2");
@@ -255,7 +290,6 @@ class HomeState extends State<Home> {
                 autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 viewportFraction: 1.0,
                 onPageChanged: (val, _) async {
-                  debugPrint("val =========> $val");
                   await sectionDataProvider.setCurrentBanner(val);
                 },
               ),
@@ -300,8 +334,7 @@ class HomeState extends State<Home> {
                         width: MediaQuery.of(context).size.width,
                         height: Constant.homeBanner,
                         child: MyNetworkImage(
-                          imageUrl: sectionBannerList?[index].landscape ??
-                              Constant.placeHolderLand,
+                          imageUrl: sectionBannerList?[index].landscape ?? "",
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -656,7 +689,8 @@ class HomeState extends State<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -726,7 +760,8 @@ class HomeState extends State<Home> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -793,7 +828,8 @@ class HomeState extends State<Home> {
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
@@ -860,7 +896,8 @@ class HomeState extends State<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -932,7 +969,8 @@ class HomeState extends State<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+        physics:
+            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(

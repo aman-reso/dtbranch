@@ -11,6 +11,7 @@ import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/sectionbytypeprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -143,13 +144,13 @@ class SectionByTypeState extends State<SectionByType> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: Constant.homeBanner,
+            height: Dimens.homeBanner,
             child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
               carouselController: pageController,
               options: CarouselOptions(
                 initialPage: 0,
-                height: Constant.homeBanner,
+                height: Dimens.homeBanner,
                 enlargeCenterPage: false,
                 autoPlay: true,
                 autoPlayCurve: Curves.fastOutSlowIn,
@@ -199,7 +200,7 @@ class SectionByTypeState extends State<SectionByType> {
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
-                        height: Constant.homeBanner,
+                        height: Dimens.homeBanner,
                         child: MyNetworkImage(
                           imageUrl: sectionBannerList?[index].landscape ?? "",
                           fit: BoxFit.fill,
@@ -208,7 +209,7 @@ class SectionByTypeState extends State<SectionByType> {
                       Container(
                         padding: const EdgeInsets.all(0),
                         width: MediaQuery.of(context).size.width,
-                        height: Constant.homeBanner,
+                        height: Dimens.homeBanner,
                         alignment: Alignment.center,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
@@ -357,25 +358,25 @@ class SectionByTypeState extends State<SectionByType> {
   double getRemainingDataHeight(String? videoType, String? layoutType) {
     if (videoType == "1" || videoType == "2") {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     } else if (videoType == "3" || videoType == "4") {
-      return Constant.heightLangGen;
+      return Dimens.heightLangGen;
     } else {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     }
   }
@@ -383,7 +384,7 @@ class SectionByTypeState extends State<SectionByType> {
   Widget landscape(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightLand,
+      height: Dimens.heightLand,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -427,8 +428,8 @@ class SectionByTypeState extends State<SectionByType> {
               }
             },
             child: Container(
-              width: Constant.widthLand,
-              height: Constant.heightLand,
+              width: Dimens.widthLand,
+              height: Dimens.heightLand,
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -451,7 +452,7 @@ class SectionByTypeState extends State<SectionByType> {
   Widget portrait(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightPort,
+      height: Dimens.heightPort,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -495,8 +496,8 @@ class SectionByTypeState extends State<SectionByType> {
               }
             },
             child: Container(
-              width: Constant.widthPort,
-              height: Constant.heightPort,
+              width: Dimens.widthPort,
+              height: Dimens.heightPort,
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -519,7 +520,7 @@ class SectionByTypeState extends State<SectionByType> {
   Widget square(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightSquare,
+      height: Dimens.heightSquare,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -563,8 +564,8 @@ class SectionByTypeState extends State<SectionByType> {
               }
             },
             child: Container(
-              width: Constant.widthSquare,
-              height: Constant.heightSquare,
+              width: Dimens.widthSquare,
+              height: Dimens.heightSquare,
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -587,7 +588,7 @@ class SectionByTypeState extends State<SectionByType> {
   Widget languageLayout(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightLangGen,
+      height: Dimens.heightLangGen,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -619,8 +620,8 @@ class SectionByTypeState extends State<SectionByType> {
                   );
                 },
                 child: Container(
-                  width: Constant.widthLangGen,
-                  height: Constant.heightLangGen,
+                  width: Dimens.widthLangGen,
+                  height: Dimens.heightLangGen,
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
@@ -659,7 +660,7 @@ class SectionByTypeState extends State<SectionByType> {
   Widget genresLayout(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightLangGen,
+      height: Dimens.heightLangGen,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -691,8 +692,8 @@ class SectionByTypeState extends State<SectionByType> {
                   );
                 },
                 child: Container(
-                  width: Constant.widthLangGen,
-                  height: Constant.heightLangGen,
+                  width: Dimens.widthLangGen,
+                  height: Dimens.heightLangGen,
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),

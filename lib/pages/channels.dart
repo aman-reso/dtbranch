@@ -7,6 +7,7 @@ import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
@@ -14,7 +15,6 @@ import 'package:dtlive/pages/vimeoplayer.dart';
 import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -104,13 +104,13 @@ class ChannelsState extends State<Channels> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: Constant.channelBanner,
+            height: Dimens.channelBanner,
             child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
               carouselController: pageController,
               options: CarouselOptions(
                 initialPage: 0,
-                height: Constant.channelBanner,
+                height: Dimens.channelBanner,
                 enlargeCenterPage: false,
                 autoPlay: true,
                 autoPlayCurve: Curves.fastOutSlowIn,
@@ -161,7 +161,7 @@ class ChannelsState extends State<Channels> {
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
-                        height: Constant.channelBanner,
+                        height: Dimens.channelBanner,
                         child: MyNetworkImage(
                           imageUrl: sectionBannerList?[index].image ?? "",
                           fit: BoxFit.fill,
@@ -170,7 +170,7 @@ class ChannelsState extends State<Channels> {
                       Container(
                         padding: const EdgeInsets.all(0),
                         width: MediaQuery.of(context).size.width,
-                        height: Constant.channelBanner,
+                        height: Dimens.channelBanner,
                         alignment: Alignment.center,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
@@ -334,25 +334,25 @@ class ChannelsState extends State<Channels> {
   double getRemainingDataHeight(String? videoType, String? layoutType) {
     if (videoType == "1" || videoType == "2") {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     } else if (videoType == "3" || videoType == "4") {
-      return Constant.heightLangGen;
+      return Dimens.heightLangGen;
     } else {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     }
   }
@@ -360,7 +360,7 @@ class ChannelsState extends State<Channels> {
   Widget landscape(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightLand,
+      height: Dimens.heightLand,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -404,8 +404,8 @@ class ChannelsState extends State<Channels> {
               }
             },
             child: Container(
-              width: Constant.widthLand,
-              height: Constant.heightLand,
+              width: Dimens.widthLand,
+              height: Dimens.heightLand,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
@@ -430,7 +430,7 @@ class ChannelsState extends State<Channels> {
   Widget portrait(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightPort,
+      height: Dimens.heightPort,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -474,8 +474,8 @@ class ChannelsState extends State<Channels> {
               }
             },
             child: Container(
-              width: Constant.widthPort,
-              height: Constant.heightPort,
+              width: Dimens.widthPort,
+              height: Dimens.heightPort,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
               ),
@@ -499,7 +499,7 @@ class ChannelsState extends State<Channels> {
   Widget square(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightSquare,
+      height: Dimens.heightSquare,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -543,8 +543,8 @@ class ChannelsState extends State<Channels> {
               }
             },
             child: Container(
-              width: Constant.widthSquare,
-              height: Constant.heightSquare,
+              width: Dimens.widthSquare,
+              height: Dimens.heightSquare,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
               ),

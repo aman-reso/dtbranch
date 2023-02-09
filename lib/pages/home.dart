@@ -8,6 +8,7 @@ import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
@@ -31,6 +32,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  double tabHeight = 60;
   CarouselController pageController = CarouselController();
   late ScrollController tabScrollController;
 
@@ -70,51 +72,65 @@ class HomeState extends State<Home> {
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(55),
-        child: AppBar(
-          centerTitle: true,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: appBgColor,
-          title: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            alignment: Alignment.center,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(8),
-              splashColor: transparentColor,
-              highlightColor: transparentColor,
-              onTap: () async {
-                await getTabData(0, homeProvider.sectionTypeModel.result);
-              },
-              child: MyImage(width: 70, height: 70, imagePath: "appicon.png"),
-            ),
-          ),
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: appBgColor,
+                  toolbarHeight: 65,
+                  title: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      splashColor: transparentColor,
+                      highlightColor: transparentColor,
+                      onTap: () async {
+                        await getTabData(
+                            0, homeProvider.sectionTypeModel.result);
+                      },
+                      child: MyImage(
+                          width: 80, height: 80, imagePath: "appicon.png"),
+                    ),
+                  ), // This is the title in the app bar.
+                  pinned: false,
+                  expandedHeight: 0,
+                  forceElevated: innerBoxIsScrolled,
+                ),
+              ),
+            ];
+          },
+          body: homeProvider.loading
+              ? Utils.pageLoader()
+              : (homeProvider.sectionTypeModel.status == 200)
+                  ? (homeProvider.sectionTypeModel.result != null ||
+                          (homeProvider.sectionTypeModel.result?.length ?? 0) >
+                              0)
+                      ? Stack(
+                          children: [
+                            tabItem(homeProvider.sectionTypeModel.result),
+                            tabTitle(homeProvider.sectionTypeModel.result),
+                          ],
+                        )
+                      : const NoData(title: '', subTitle: '')
+                  : const NoData(title: '', subTitle: ''),
         ),
       ),
-      body: homeProvider.loading
-          ? Utils.pageLoader()
-          : (homeProvider.sectionTypeModel.status == 200)
-              ? (homeProvider.sectionTypeModel.result != null ||
-                      (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
-                  ? Column(
-                      children: [
-                        tabTitle(homeProvider.sectionTypeModel.result),
-                        tabItem(homeProvider.sectionTypeModel.result),
-                      ],
-                    )
-                  : const NoData(title: '', subTitle: '')
-              : const NoData(title: '', subTitle: ''),
     );
   }
 
   Widget tabTitle(List<type.Result>? sectionTypeList) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      constraints: const BoxConstraints(maxHeight: 40),
-      margin: const EdgeInsets.only(top: 5, bottom: 10),
-      alignment: Alignment.center,
+      height: Dimens.homeTabHeight,
+      padding: const EdgeInsets.only(top: 8, bottom: 8),
+      color: black.withOpacity(0.9),
       child: ListView.separated(
         itemCount: (sectionTypeList?.length ?? 0) + 1,
         controller: tabScrollController,
@@ -171,74 +187,75 @@ class HomeState extends State<Home> {
   }
 
   Widget tabItem(List<type.Result>? sectionTypeList) {
-    return Expanded(
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        constraints: const BoxConstraints(minHeight: 0),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              /* Banner */
-              Consumer<SectionDataProvider>(
-                builder: (context, sectionDataProvider, child) {
-                  if (sectionDataProvider.loadingBanner) {
-                    return Container(
-                      height: 230,
-                      padding: const EdgeInsets.all(20),
-                      child: Utils.pageLoader(),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      constraints: const BoxConstraints.expand(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            SizedBox(
+              height: Dimens.homeTabHeight,
+            ),
+            /* Banner */
+            Consumer<SectionDataProvider>(
+              builder: (context, sectionDataProvider, child) {
+                if (sectionDataProvider.loadingBanner) {
+                  return Container(
+                    height: 230,
+                    padding: const EdgeInsets.all(20),
+                    child: Utils.pageLoader(),
+                  );
+                } else {
+                  if (sectionDataProvider.sectionBannerModel.status == 200 &&
+                      sectionDataProvider.sectionBannerModel.result != null) {
+                    return homebanner(
+                        sectionDataProvider.sectionBannerModel.result);
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                }
+              },
+            ),
+
+            /* Continue Watching & Remaining Sections */
+            Consumer<SectionDataProvider>(
+              builder: (context, sectionDataProvider, child) {
+                if (sectionDataProvider.loadingSection) {
+                  return Container(
+                    height: 200,
+                    padding: const EdgeInsets.all(20),
+                    child: Utils.pageLoader(),
+                  );
+                } else {
+                  if (sectionDataProvider.sectionListModel.status == 200) {
+                    return Column(
+                      children: [
+                        /* Continue Watching */
+                        (sectionDataProvider
+                                    .sectionListModel.continueWatching !=
+                                null)
+                            ? continueWatchingLayout(sectionDataProvider
+                                .sectionListModel.continueWatching)
+                            : const SizedBox.shrink(),
+
+                        /* Remaining Sections */
+                        (sectionDataProvider.sectionListModel.result != null)
+                            ? setSectionByType(
+                                sectionDataProvider.sectionListModel.result)
+                            : const SizedBox.shrink(),
+                      ],
                     );
                   } else {
-                    if (sectionDataProvider.sectionBannerModel.status == 200 &&
-                        sectionDataProvider.sectionBannerModel.result != null) {
-                      return homebanner(
-                          sectionDataProvider.sectionBannerModel.result);
-                    } else {
-                      return const SizedBox.shrink();
-                    }
+                    return const SizedBox.shrink();
                   }
-                },
-              ),
-
-              /* Continue Watching & Remaining Sections */
-              Consumer<SectionDataProvider>(
-                builder: (context, sectionDataProvider, child) {
-                  if (sectionDataProvider.loadingSection) {
-                    return Container(
-                      height: 200,
-                      padding: const EdgeInsets.all(20),
-                      child: Utils.pageLoader(),
-                    );
-                  } else {
-                    if (sectionDataProvider.sectionListModel.status == 200) {
-                      return Column(
-                        children: [
-                          /* Continue Watching */
-                          (sectionDataProvider
-                                      .sectionListModel.continueWatching !=
-                                  null)
-                              ? continueWatchingLayout(sectionDataProvider
-                                  .sectionListModel.continueWatching)
-                              : const SizedBox.shrink(),
-
-                          /* Remaining Sections */
-                          (sectionDataProvider.sectionListModel.result != null)
-                              ? setSectionByType(
-                                  sectionDataProvider.sectionListModel.result)
-                              : const SizedBox.shrink(),
-                        ],
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  }
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
+                }
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
         ),
       ),
     );
@@ -248,8 +265,10 @@ class HomeState extends State<Home> {
       int position, List<type.Result>? sectionTypeList) async {
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
+
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     await homeProvider.setSelectedTab(position);
+
     debugPrint("getTabData position ====> $position");
     debugPrint(
         "getTabData lastTabPosition ====> ${sectionDataProvider.lastTabPosition}");
@@ -276,13 +295,13 @@ class HomeState extends State<Home> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: Constant.homeBanner,
+            height: Dimens.homeBanner,
             child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
               carouselController: pageController,
               options: CarouselOptions(
                 initialPage: 0,
-                height: Constant.homeBanner,
+                height: Dimens.homeBanner,
                 enlargeCenterPage: false,
                 autoPlay: true,
                 autoPlayCurve: Curves.fastOutSlowIn,
@@ -332,7 +351,7 @@ class HomeState extends State<Home> {
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
-                        height: Constant.homeBanner,
+                        height: Dimens.homeBanner,
                         child: MyNetworkImage(
                           imageUrl: sectionBannerList?[index].landscape ?? "",
                           fit: BoxFit.fill,
@@ -341,7 +360,7 @@ class HomeState extends State<Home> {
                       Container(
                         padding: const EdgeInsets.all(0),
                         width: MediaQuery.of(context).size.width,
-                        height: Constant.homeBanner,
+                        height: Dimens.homeBanner,
                         alignment: Alignment.center,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
@@ -413,7 +432,7 @@ class HomeState extends State<Home> {
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: Constant.heightContiLand,
+            height: Dimens.heightContiLand,
             child: ListView.separated(
               itemCount: (continueWatchingList?.length ?? 0),
               shrinkWrap: true,
@@ -462,8 +481,8 @@ class HomeState extends State<Home> {
                         }
                       },
                       child: Container(
-                        width: Constant.widthContiLand,
-                        height: Constant.heightContiLand,
+                        width: Dimens.widthContiLand,
+                        height: Dimens.heightContiLand,
                         alignment: Alignment.center,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4),
@@ -491,7 +510,7 @@ class HomeState extends State<Home> {
                           ),
                         ),
                         Container(
-                          width: Constant.widthContiLand,
+                          width: Dimens.widthContiLand,
                           constraints: const BoxConstraints(minWidth: 0),
                           padding: const EdgeInsets.all(3),
                           child: LinearPercentIndicator(
@@ -659,25 +678,25 @@ class HomeState extends State<Home> {
   double getRemainingDataHeight(String? videoType, String? layoutType) {
     if (videoType == "1" || videoType == "2") {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     } else if (videoType == "3" || videoType == "4") {
-      return Constant.heightLangGen;
+      return Dimens.heightLangGen;
     } else {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     }
   }
@@ -685,7 +704,7 @@ class HomeState extends State<Home> {
   Widget landscape(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightLand,
+      height: Dimens.heightLand,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -730,8 +749,8 @@ class HomeState extends State<Home> {
               }
             },
             child: Container(
-              width: Constant.widthLand,
-              height: Constant.heightLand,
+              width: Dimens.widthLand,
+              height: Dimens.heightLand,
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -754,7 +773,7 @@ class HomeState extends State<Home> {
   Widget portrait(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightPort,
+      height: Dimens.heightPort,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -799,8 +818,8 @@ class HomeState extends State<Home> {
               }
             },
             child: Container(
-              width: Constant.widthPort,
-              height: Constant.heightPort,
+              width: Dimens.widthPort,
+              height: Dimens.heightPort,
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -823,7 +842,7 @@ class HomeState extends State<Home> {
   Widget square(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightSquare,
+      height: Dimens.heightSquare,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -868,8 +887,8 @@ class HomeState extends State<Home> {
               }
             },
             child: Container(
-              width: Constant.widthSquare,
-              height: Constant.heightSquare,
+              width: Dimens.widthSquare,
+              height: Dimens.heightSquare,
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -892,7 +911,7 @@ class HomeState extends State<Home> {
   Widget languageLayout(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightLangGen,
+      height: Dimens.heightLangGen,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -925,8 +944,8 @@ class HomeState extends State<Home> {
                   );
                 },
                 child: Container(
-                  width: Constant.widthLangGen,
-                  height: Constant.heightLangGen,
+                  width: Dimens.widthLangGen,
+                  height: Dimens.heightLangGen,
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
@@ -965,7 +984,7 @@ class HomeState extends State<Home> {
   Widget genresLayout(List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: Constant.heightLangGen,
+      height: Dimens.heightLangGen,
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
@@ -998,8 +1017,8 @@ class HomeState extends State<Home> {
                   );
                 },
                 child: Container(
-                  width: Constant.widthLangGen,
-                  height: Constant.heightLangGen,
+                  width: Dimens.widthLangGen,
+                  height: Dimens.heightLangGen,
                   alignment: Alignment.center,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),

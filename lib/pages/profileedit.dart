@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dtlive/pages/profileavatar.dart';
 import 'package:dtlive/provider/mystuffprovider.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dtlive/provider/profileprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -144,7 +145,7 @@ class ProfileEditState extends State<ProfileEdit> {
               ),
               /* Name */
               Container(
-                height: Constant.textFieldHeight,
+                height: Dimens.textFieldHeight,
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 decoration: Utils.textFieldBGWithBorder(),
                 alignment: Alignment.center,

@@ -28,5 +28,6 @@ class HlsTrackMetadataEntry {
   }
 
   @override
+  // ignore: deprecated_member_use
   int get hashCode => hashValues(groupId, name, variantInfos);
 }

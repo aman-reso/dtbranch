@@ -291,7 +291,7 @@ class LoginSocialState extends State<LoginSocial> {
   }
 
   /* Facebook Login */
-  Future<void> _facebookLogin() async {
+  Future<void> facebookLogin() async {
     await plugin?.logIn(permissions: [
       FacebookPermission.publicProfile,
       FacebookPermission.email,
@@ -355,8 +355,13 @@ class LoginSocialState extends State<LoginSocial> {
       if (e.code.toString() == "user-not-found") {
         registerFirebaseUser(mail, displayName);
       } else if (e.code == 'wrong-password') {
+        // Hide Progress Dialog
+        await prDialog.hide();
         debugPrint('Wrong password provided.');
         Utils().showToast('Wrong password provided.');
+      } else {
+        // Hide Progress Dialog
+        await prDialog.hide();
       }
     }
   }
@@ -377,11 +382,15 @@ class LoginSocialState extends State<LoginSocial> {
 
       googleSignInUser(mail, displayName);
     } on FirebaseAuthException catch (e) {
+      // Hide Progress Dialog
+      await prDialog.hide();
       if (e.code == 'weak-password') {
         debugPrint('The password provided is too weak.');
         Utils().showToast('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {}
     } catch (e) {
+      // Hide Progress Dialog
+      await prDialog.hide();
       debugPrint(e.toString());
     }
   }

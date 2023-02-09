@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
@@ -144,7 +145,7 @@ class StoreState extends State<Store> {
                                                     .rentModel.video?.length ??
                                                 0) ==
                                             1
-                                        ? Constant.heightLand
+                                        ? Dimens.heightLand
                                         : ((rentStoreProvider.rentModel.video
                                                             ?.length ??
                                                         0) >
@@ -153,13 +154,13 @@ class StoreState extends State<Store> {
                                                             .video?.length ??
                                                         0) <
                                                     7)
-                                            ? (Constant.heightLand * 2)
+                                            ? (Dimens.heightLand * 2)
                                             : (rentStoreProvider.rentModel.video
                                                             ?.length ??
                                                         0) >
                                                     6
-                                                ? (Constant.heightLand * 3)
-                                                : (Constant.heightLand * 2),
+                                                ? (Dimens.heightLand * 3)
+                                                : (Dimens.heightLand * 2),
                                     child: AlignedGridView.count(
                                       shrinkWrap: true,
                                       crossAxisCount: (rentStoreProvider
@@ -273,8 +274,8 @@ class StoreState extends State<Store> {
                                             alignment: Alignment.topRight,
                                             children: [
                                               Container(
-                                                width: Constant.widthLand,
-                                                height: Constant.heightLand,
+                                                width: Dimens.widthLand,
+                                                height: Dimens.heightLand,
                                                 alignment: Alignment.center,
                                                 child: ClipRRect(
                                                   borderRadius:
@@ -441,7 +442,7 @@ class StoreState extends State<Store> {
                                                     .rentModel.tvshow?.length ??
                                                 0) ==
                                             1
-                                        ? Constant.heightLand
+                                        ? Dimens.heightLand
                                         : ((rentStoreProvider.rentModel.tvshow
                                                             ?.length ??
                                                         0) >
@@ -450,13 +451,13 @@ class StoreState extends State<Store> {
                                                             .tvshow?.length ??
                                                         0) <
                                                     7)
-                                            ? (Constant.heightLand * 2)
+                                            ? (Dimens.heightLand * 2)
                                             : (rentStoreProvider.rentModel
                                                             .tvshow?.length ??
                                                         0) >
                                                     6
-                                                ? (Constant.heightLand * 3)
-                                                : (Constant.heightLand * 2),
+                                                ? (Dimens.heightLand * 3)
+                                                : (Dimens.heightLand * 2),
                                     child: AlignedGridView.count(
                                       shrinkWrap: true,
                                       crossAxisCount: (rentStoreProvider
@@ -578,8 +579,8 @@ class StoreState extends State<Store> {
                                                 }
                                               },
                                               child: Container(
-                                                width: Constant.widthLand,
-                                                height: Constant.heightLand,
+                                                width: Dimens.widthLand,
+                                                height: Dimens.heightLand,
                                                 alignment: Alignment.center,
                                                 child: ClipRRect(
                                                   borderRadius:

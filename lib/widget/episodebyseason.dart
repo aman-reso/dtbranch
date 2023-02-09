@@ -10,6 +10,7 @@ import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -179,7 +180,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                   children: <Widget>[
                     MyNetworkImage(
                       fit: BoxFit.fill,
-                      imgHeight: Constant.epiPoster,
+                      imgHeight: Dimens.epiPoster,
                       imgWidth: MediaQuery.of(context).size.width,
                       imageUrl: (episodeProvider
                               .episodeBySeasonModel.result?[index].landscape ??

@@ -871,8 +871,11 @@ class AllPaymentState extends State<AllPayment> {
       await prDialog.hide();
 
       if (paymentProvider.successModel.status == 200) {
-        await videoDetailsProvider.updateRentPurchase();
-        await showDetailsProvider.updateRentPurchase();
+        if (videoType == "1") {
+          await videoDetailsProvider.updateRentPurchase();
+        } else if (videoType == "2") {
+          await showDetailsProvider.updateRentPurchase();
+        }
 
         if (!mounted) return;
         Navigator.pop(context);

@@ -6,6 +6,7 @@ import 'package:dtlive/pages/allpayment.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/vimeoplayer.dart';
@@ -119,7 +120,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width,
-                              height: Constant.detailPoster,
+                              height: Dimens.detailPoster,
                               color: white,
                               child: MyNetworkImage(
                                 fit: BoxFit.fill,
@@ -140,7 +141,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width,
-                              height: Constant.detailPoster,
+                              height: Dimens.detailPoster,
                               decoration: const BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.center,
@@ -671,7 +672,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 InkWell(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          Constant.featureSize /
+                                                          Dimens.featureSize /
                                                               2),
                                                   onTap: () {
                                                     if (Constant.userID !=
@@ -688,23 +689,22 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                     }
                                                   },
                                                   child: Container(
-                                                    width: Constant.featureSize,
-                                                    height:
-                                                        Constant.featureSize,
+                                                    width: Dimens.featureSize,
+                                                    height: Dimens.featureSize,
                                                     alignment: Alignment.center,
                                                     decoration: BoxDecoration(
                                                       border: Border.all(
                                                         color: primaryLight,
                                                       ),
                                                       borderRadius: BorderRadius
-                                                          .circular(Constant
+                                                          .circular(Dimens
                                                                   .featureSize /
                                                               2),
                                                     ),
                                                     child: MyImage(
-                                                      width: Constant
+                                                      width: Dimens
                                                           .featureIconSize,
-                                                      height: Constant
+                                                      height: Dimens
                                                           .featureIconSize,
                                                       color: lightGray,
                                                       imagePath:
@@ -765,10 +765,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                               }
                                             },
                                             borderRadius: BorderRadius.circular(
-                                                Constant.featureSize / 2),
+                                                Dimens.featureSize / 2),
                                             child: Container(
-                                              width: Constant.featureSize,
-                                              height: Constant.featureSize,
+                                              width: Dimens.featureSize,
+                                              height: Dimens.featureSize,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                 border: Border.all(
@@ -776,8 +776,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 ),
                                                 borderRadius:
                                                     BorderRadius.circular(
-                                                        Constant.featureSize /
-                                                            2),
+                                                        Dimens.featureSize / 2),
                                               ),
                                               child:
                                                   Consumer<ShowDetailsProvider>(
@@ -785,10 +784,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                     showDetailsProvider,
                                                     child) {
                                                   return MyImage(
-                                                    width: Constant
-                                                        .featureIconSize,
-                                                    height: Constant
-                                                        .featureIconSize,
+                                                    width:
+                                                        Dimens.featureIconSize,
+                                                    height:
+                                                        Dimens.featureIconSize,
                                                     color: lightGray,
                                                     imagePath: (showDetailsProvider
                                                                     .sectionDetailModel
@@ -829,7 +828,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         children: [
                                           InkWell(
                                             borderRadius: BorderRadius.circular(
-                                                Constant.featureSize / 2),
+                                                Dimens.featureSize / 2),
                                             onTap: () {
                                               showModalBottomSheet(
                                                 context: context,
@@ -855,8 +854,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                               );
                                             },
                                             child: Container(
-                                              width: Constant.featureSize,
-                                              height: Constant.featureSize,
+                                              width: Dimens.featureSize,
+                                              height: Dimens.featureSize,
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                 border: Border.all(
@@ -864,13 +863,11 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 ),
                                                 borderRadius:
                                                     BorderRadius.circular(
-                                                        Constant.featureSize /
-                                                            2),
+                                                        Dimens.featureSize / 2),
                                               ),
                                               child: MyImage(
-                                                width: Constant.featureIconSize,
-                                                height:
-                                                    Constant.featureIconSize,
+                                                width: Dimens.featureIconSize,
+                                                height: Dimens.featureIconSize,
                                                 color: lightGray,
                                                 imagePath: "ic_share.png",
                                               ),
@@ -1000,50 +997,76 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                               overflow: TextOverflow.ellipsis,
                                               fontstyle: FontStyle.normal,
                                             ),
-                                            const SizedBox(
-                                              width: 5,
+                                            const SizedBox(width: 5),
+                                            Row(
+                                              children: [
+                                                MyText(
+                                                  color: white,
+                                                  text: "audios",
+                                                  multilanguage: true,
+                                                  textalign: TextAlign.center,
+                                                  fontwaight: FontWeight.normal,
+                                                  fontsize: 13,
+                                                  maxline: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontstyle: FontStyle.normal,
+                                                ),
+                                                const SizedBox(width: 5),
+                                                MyText(
+                                                  color: white,
+                                                  text:
+                                                      "(${showDetailsProvider.sectionDetailModel.language?.length ?? 0})",
+                                                  textalign: TextAlign.center,
+                                                  fontwaight: FontWeight.normal,
+                                                  fontsize: 13,
+                                                  multilanguage: false,
+                                                  maxline: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontstyle: FontStyle.normal,
+                                                ),
+                                                const SizedBox(width: 5),
+                                                MyText(
+                                                  color: white,
+                                                  text: "subtitle",
+                                                  multilanguage: true,
+                                                  textalign: TextAlign.center,
+                                                  fontwaight: FontWeight.normal,
+                                                  fontsize: 13,
+                                                  maxline: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontstyle: FontStyle.normal,
+                                                ),
+                                                const SizedBox(width: 5),
+                                                MyText(
+                                                  color: white,
+                                                  text: (showDetailsProvider
+                                                                  .episodeBySeasonModel
+                                                                  .result !=
+                                                              null &&
+                                                          (showDetailsProvider
+                                                                      .episodeBySeasonModel
+                                                                      .result?[
+                                                                          0]
+                                                                      .subtitle ??
+                                                                  "")
+                                                              .isNotEmpty)
+                                                      ? "(1)"
+                                                      : "(0)",
+                                                  textalign: TextAlign.center,
+                                                  fontwaight: FontWeight.normal,
+                                                  fontsize: 13,
+                                                  maxline: 1,
+                                                  multilanguage: false,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontstyle: FontStyle.normal,
+                                                ),
+                                              ],
                                             ),
-                                            Row(children: [
-                                              MyText(
-                                                color: white,
-                                                text: "audios",
-                                                multilanguage: true,
-                                                textalign: TextAlign.center,
-                                                fontwaight: FontWeight.normal,
-                                                fontsize: 13,
-                                                maxline: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontstyle: FontStyle.normal,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              MyText(
-                                                color: white,
-                                                text:
-                                                    "(${showDetailsProvider.sectionDetailModel.language?.length ?? 0})",
-                                                textalign: TextAlign.center,
-                                                fontwaight: FontWeight.normal,
-                                                fontsize: 13,
-                                                multilanguage: false,
-                                                maxline: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontstyle: FontStyle.normal,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              MyText(
-                                                color: white,
-                                                text: "subtitle",
-                                                multilanguage: true,
-                                                textalign: TextAlign.center,
-                                                fontwaight: FontWeight.normal,
-                                                fontsize: 13,
-                                                maxline: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontstyle: FontStyle.normal,
-                                              ),
-                                            ]),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
+                                            const SizedBox(width: 5),
                                             MyImage(
                                               width: 7,
                                               height: 7,
@@ -1295,7 +1318,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 clipBehavior: Clip.antiAlias,
                                                 children: <Widget>[
                                                   SizedBox(
-                                                    height: Constant.heightCast,
+                                                    height: Dimens.heightCast,
                                                     width:
                                                         MediaQuery.of(context)
                                                             .size
@@ -1303,7 +1326,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                     child: ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              Constant
+                                                              Dimens
                                                                   .cardRadius),
                                                       child: MyNetworkImage(
                                                         imageUrl: showDetailsProvider
@@ -1323,7 +1346,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                         MediaQuery.of(context)
                                                             .size
                                                             .width,
-                                                    height: Constant.heightCast,
+                                                    height: Dimens.heightCast,
                                                     decoration:
                                                         const BoxDecoration(
                                                       gradient: LinearGradient(
@@ -1385,7 +1408,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                   ? Container(
                                       width: MediaQuery.of(context).size.width,
                                       constraints: BoxConstraints(
-                                          minHeight: Constant.heightCast),
+                                          minHeight: Dimens.heightCast),
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 0, 20, 0),
                                       child: Row(
@@ -1397,7 +1420,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         children: [
                                           InkWell(
                                             borderRadius: BorderRadius.circular(
-                                                Constant.cardRadius),
+                                                Dimens.cardRadius),
                                             onTap: () {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
@@ -1416,16 +1439,14 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                               clipBehavior: Clip.antiAlias,
                                               children: <Widget>[
                                                 SizedBox(
-                                                  height: Constant.heightCast,
-                                                  width: Constant.widthCast,
+                                                  height: Dimens.heightCast,
+                                                  width: Dimens.widthCast,
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            Constant
-                                                                .cardRadius),
+                                                            Dimens.cardRadius),
                                                     child: MyNetworkImage(
-                                                      imageUrl: directorList
-                                                              ?.elementAt(0)
+                                                      imageUrl: directorList?[0]
                                                               .image ??
                                                           Constant
                                                               .userPlaceholder,
@@ -1436,8 +1457,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 Container(
                                                   padding:
                                                       const EdgeInsets.all(0),
-                                                  width: Constant.widthCast,
-                                                  height: Constant.heightCast,
+                                                  width: Dimens.widthCast,
+                                                  height: Dimens.heightCast,
                                                   decoration:
                                                       const BoxDecoration(
                                                     gradient: LinearGradient(
@@ -1456,10 +1477,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                   padding:
                                                       const EdgeInsets.all(5),
                                                   child: MyText(
-                                                    text: directorList
-                                                            ?.elementAt(0)
-                                                            .name ??
-                                                        "",
+                                                    text:
+                                                        directorList?[0].name ??
+                                                            "",
                                                     fontstyle: FontStyle.normal,
                                                     fontsize: 12,
                                                     multilanguage: false,
@@ -1501,8 +1521,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                 ),
                                                 MyText(
                                                   color: otherColor,
-                                                  text: directorList
-                                                          ?.elementAt(0)
+                                                  text: directorList?[0]
                                                           .personalInfo ??
                                                       "",
                                                   textalign: TextAlign.start,
@@ -1539,9 +1558,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
     if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
       if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        if ((showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) >
+        if ((showDetailsProvider.episodeBySeasonModel.result?[0].stopTime ??
+                    0) >
                 0 &&
-            showDetailsProvider.sectionDetailModel.result?.videoDuration !=
+            showDetailsProvider.episodeBySeasonModel.result?[0].videoDuration !=
                 null) {
           return Container(
             margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
@@ -1789,9 +1809,289 @@ class TvShowDetailsState extends State<TvShowDetails> {
           ),
         );
       }
+    } else if ((showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+        1) {
+      if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+          (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
+        if ((showDetailsProvider.episodeBySeasonModel.result?[0].stopTime ??
+                    0) >
+                0 &&
+            showDetailsProvider.episodeBySeasonModel.result?[0].videoDuration !=
+                null) {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+            child: InkWell(
+              onTap: () {
+                if (Constant.userID != null) {
+                  openPlayer("Show");
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginSocial();
+                      },
+                    ),
+                  );
+                }
+              },
+              borderRadius: BorderRadius.circular(5),
+              child: Container(
+                height: 55,
+                decoration: BoxDecoration(
+                  color: primaryDark,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          MyImage(
+                            width: 20,
+                            height: 20,
+                            imagePath: "ic_play.png",
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              MyText(
+                                color: white,
+                                text: "continuewatching",
+                                multilanguage: true,
+                                textalign: TextAlign.start,
+                                fontsize: 15,
+                                fontwaight: FontWeight.w600,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
+                              Row(
+                                children: [
+                                  MyText(
+                                    color: white,
+                                    text: Utils.remainTimeInMin(
+                                        ((showDetailsProvider
+                                                        .sectionDetailModel
+                                                        .result
+                                                        ?.videoDuration ??
+                                                    0) -
+                                                (showDetailsProvider
+                                                        .sectionDetailModel
+                                                        .result
+                                                        ?.stopTime ??
+                                                    0))
+                                            .abs()),
+                                    textalign: TextAlign.start,
+                                    fontsize: 10,
+                                    multilanguage: false,
+                                    fontwaight: FontWeight.normal,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  MyText(
+                                    color: white,
+                                    text: "left",
+                                    textalign: TextAlign.start,
+                                    fontsize: 10,
+                                    multilanguage: true,
+                                    fontwaight: FontWeight.normal,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 4,
+                      constraints: const BoxConstraints(minWidth: 0),
+                      margin: const EdgeInsets.all(3),
+                      child: LinearPercentIndicator(
+                        padding: const EdgeInsets.all(0),
+                        barRadius: const Radius.circular(2),
+                        lineHeight: 4,
+                        percent: Utils.getPercentage(
+                            showDetailsProvider
+                                    .sectionDetailModel.result?.videoDuration ??
+                                0,
+                            showDetailsProvider
+                                    .sectionDetailModel.result?.stopTime ??
+                                0),
+                        backgroundColor: secProgressColor,
+                        progressColor: primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+            child: InkWell(
+              onTap: () {
+                if (Constant.userID != null) {
+                  openPlayer("Show");
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginSocial();
+                      },
+                    ),
+                  );
+                }
+              },
+              borderRadius: BorderRadius.circular(5),
+              child: Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                decoration: BoxDecoration(
+                  color: primaryDark,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyImage(
+                      width: 20,
+                      height: 20,
+                      imagePath: "ic_play.png",
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    MyText(
+                      color: white,
+                      text: "watch_now",
+                      multilanguage: true,
+                      textalign: TextAlign.start,
+                      fontsize: 15,
+                      fontwaight: FontWeight.w600,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      } else {
+        return InkWell(
+          borderRadius: BorderRadius.circular(5),
+          onTap: () async {
+            if (Constant.userID != null) {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return AllPayment(
+                      payType: 'Rent',
+                      itemId: showDetailsProvider.sectionDetailModel.result?.id
+                              .toString() ??
+                          '',
+                      price: showDetailsProvider
+                              .sectionDetailModel.result?.rentPrice
+                              .toString() ??
+                          '',
+                      itemTitle: showDetailsProvider
+                              .sectionDetailModel.result?.name
+                              .toString() ??
+                          '',
+                      typeId: showDetailsProvider
+                              .sectionDetailModel.result?.typeId
+                              .toString() ??
+                          '',
+                      videoType: showDetailsProvider
+                              .sectionDetailModel.result?.videoType
+                              .toString() ??
+                          '',
+                      productPackage: '',
+                      currency: '',
+                    );
+                  },
+                ),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginSocial();
+                  },
+                ),
+              );
+            }
+          },
+          child: Container(
+            height: 55,
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: white,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyText(
+                  color: black,
+                  text: "rentmovieatjust",
+                  textalign: TextAlign.center,
+                  fontsize: 15,
+                  multilanguage: true,
+                  fontwaight: FontWeight.w600,
+                  maxline: 1,
+                  overflow: TextOverflow.ellipsis,
+                  fontstyle: FontStyle.normal,
+                ),
+                const SizedBox(width: 5),
+                MyText(
+                  color: black,
+                  text:
+                      "${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                  textalign: TextAlign.center,
+                  fontsize: 15,
+                  multilanguage: false,
+                  fontwaight: FontWeight.w600,
+                  maxline: 1,
+                  overflow: TextOverflow.ellipsis,
+                  fontstyle: FontStyle.normal,
+                ),
+              ],
+            ),
+          ),
+        );
+      }
     } else {
-      if ((showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
-          showDetailsProvider.sectionDetailModel.result?.videoDuration !=
+      if ((showDetailsProvider.episodeBySeasonModel.result?[0].stopTime ?? 0) >
+              0 &&
+          showDetailsProvider.episodeBySeasonModel.result?[0].videoDuration !=
               null) {
         return Container(
           margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
@@ -2001,11 +2301,11 @@ class TvShowDetailsState extends State<TvShowDetails> {
                               .toString() ??
                           '',
                       typeId: showDetailsProvider
-                              .sectionDetailModel.result?.name
+                              .sectionDetailModel.result?.typeId
                               .toString() ??
                           '',
                       videoType: showDetailsProvider
-                              .sectionDetailModel.result?.name
+                              .sectionDetailModel.result?.videoType
                               .toString() ??
                           '',
                       productPackage: '',
@@ -2075,25 +2375,25 @@ class TvShowDetailsState extends State<TvShowDetails> {
   double getDynamicHeight(String? videoType, String? layoutType) {
     if (videoType == "1" || videoType == "2") {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     } else if (videoType == "3" || videoType == "4") {
-      return Constant.heightLangGen;
+      return Dimens.heightLangGen;
     } else {
       if (layoutType == "landscape") {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       } else if (layoutType == "potrait") {
-        return Constant.heightPort;
+        return Dimens.heightPort;
       } else if (layoutType == "square") {
-        return Constant.heightSquare;
+        return Dimens.heightSquare;
       } else {
-        return Constant.heightLand;
+        return Dimens.heightLand;
       }
     }
   }
@@ -2559,8 +2859,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
             );
           },
           child: Container(
-            width: Constant.widthLand,
-            height: Constant.heightLand,
+            width: Dimens.widthLand,
+            height: Dimens.heightLand,
             alignment: Alignment.center,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
@@ -2607,8 +2907,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
             );
           },
           child: Container(
-            width: Constant.widthPort,
-            height: Constant.heightPort,
+            width: Dimens.widthPort,
+            height: Dimens.heightPort,
             alignment: Alignment.center,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
@@ -2655,8 +2955,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
             );
           },
           child: Container(
-            width: Constant.widthSquare,
-            height: Constant.heightSquare,
+            width: Dimens.widthSquare,
+            height: Dimens.heightSquare,
             alignment: Alignment.center,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),

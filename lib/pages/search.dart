@@ -6,6 +6,7 @@ import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
@@ -322,7 +323,7 @@ class SearchState extends State<Search> {
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
-                                            height: Constant.heightLand,
+                                            height: Dimens.heightLand,
                                             alignment: Alignment.center,
                                             child: ClipRRect(
                                               borderRadius:
@@ -380,16 +381,14 @@ class SearchState extends State<Search> {
                                                         return MovieDetails(
                                                           searchProvider
                                                                   .searchModel
-                                                                  .tvshow
-                                                                  ?.elementAt(
-                                                                      position)
+                                                                  .tvshow?[
+                                                                      position]
                                                                   .id ??
                                                               0,
                                                           searchProvider
                                                                   .searchModel
-                                                                  .tvshow
-                                                                  ?.elementAt(
-                                                                      position)
+                                                                  .tvshow?[
+                                                                      position]
                                                                   .videoType ??
                                                               0,
                                                           1,
@@ -398,9 +397,8 @@ class SearchState extends State<Search> {
                                                     ),
                                                   );
                                                 } else if ((searchProvider
-                                                            .searchModel.tvshow
-                                                            ?.elementAt(
-                                                                position)
+                                                            .searchModel
+                                                            .tvshow?[position]
                                                             .videoType ??
                                                         0) ==
                                                     2) {
@@ -434,7 +432,7 @@ class SearchState extends State<Search> {
                                                 width: MediaQuery.of(context)
                                                     .size
                                                     .width,
-                                                height: Constant.heightLand,
+                                                height: Dimens.heightLand,
                                                 alignment: Alignment.centerLeft,
                                                 decoration: BoxDecoration(
                                                   borderRadius:

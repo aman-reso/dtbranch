@@ -7,6 +7,7 @@ import 'package:dtlive/pages/profileedit.dart';
 import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -15,6 +16,7 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class Setting extends StatefulWidget {
@@ -107,7 +109,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -170,7 +172,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -216,7 +218,7 @@ class SettingState extends State<Setting> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   constraints: BoxConstraints(
-                    minHeight: Constant.minHeightSettings,
+                    minHeight: Dimens.minHeightSettings,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -280,7 +282,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -351,7 +353,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -415,7 +417,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -468,7 +470,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -526,7 +528,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -584,7 +586,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -628,7 +630,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -665,7 +667,7 @@ class SettingState extends State<Setting> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     constraints: BoxConstraints(
-                      minHeight: Constant.minHeightSettings,
+                      minHeight: Dimens.minHeightSettings,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -800,6 +802,7 @@ class SettingState extends State<Setting> {
                           onTap: () async {
                             // Firebase Signout
                             await auth.signOut();
+                            await GoogleSignIn().signOut();
                             await Utils.setUserId(null);
                             getUserData();
                             if (!mounted) return;

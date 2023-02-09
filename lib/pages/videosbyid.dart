@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
@@ -144,7 +145,7 @@ class VideosByIDState extends State<VideosByID> {
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,
-                              height: Constant.heightLand,
+                              height: Dimens.heightLand,
                               alignment: Alignment.center,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(4),

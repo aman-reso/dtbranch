@@ -28,7 +28,16 @@ const successIcon = Color(0xffa7d5d0);
 const failureBG = Color(0xffde323e);
 
 const black = Color(0xff000000);
+const blackTrans95 = Color(0x95000000);
+const blackTrans90 = Color(0x90000000);
 const blackTransparent = Color(0x80000000);
+const blackTrans70 = Color(0x70000000);
+const blackTrans60 = Color(0x60000000);
+const blackTrans50 = Color(0x50000000);
+const blackTrans40 = Color(0x40000000);
+const blackTrans30 = Color(0x30000000);
+const blackTrans20 = Color(0x20000000);
+const blackTrans10 = Color(0x10000000);
 const lightBlack = Color(0xff2D2D2D);
 const gray = Color(0xffa9aaac);
 const lightGray = Color(0xffc3c3c3);

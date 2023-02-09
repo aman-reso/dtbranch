@@ -259,7 +259,7 @@ class _BetterPlayerMaterialControlsState
     );
   }
 
-  Widget _buildStrach() {
+  Widget buildStrach() {
     return BetterPlayerMaterialClickableWidget(
       onTap: () {},
       child: Padding(

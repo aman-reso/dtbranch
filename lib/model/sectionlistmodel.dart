@@ -30,10 +30,10 @@ class SectionListModel {
         status: json["status"],
         message: json["message"],
         result: List<Result>.from(
-            json["result"].map((x) => Result.fromJson(x)) ?? []),
+            json["result"]?.map((x) => Result.fromJson(x)) ?? []),
         continueWatching: json["continue_watching"] != null
             ? List<ContinueWatching>.from(json["continue_watching"]
-                .map((x) => ContinueWatching.fromJson(x)))
+                ?.map((x) => ContinueWatching.fromJson(x)))
             : [],
       );
 
@@ -51,6 +51,7 @@ class SectionListModel {
 class ContinueWatching {
   ContinueWatching({
     this.id,
+    this.showId,
     this.categoryId,
     this.languageId,
     this.castId,
@@ -86,6 +87,12 @@ class ContinueWatching {
     this.noOfRating,
     this.status,
     this.isTitle,
+    this.video320,
+    this.video480,
+    this.video720,
+    this.video1080,
+    this.subtitleType,
+    this.subtitle,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -100,6 +107,7 @@ class ContinueWatching {
   });
 
   int? id;
+  int? showId;
   String? categoryId;
   String? languageId;
   String? castId;
@@ -135,6 +143,12 @@ class ContinueWatching {
   int? noOfRating;
   String? status;
   String? isTitle;
+  String? video320;
+  String? video480;
+  String? video720;
+  String? video1080;
+  String? subtitleType;
+  String? subtitle;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -145,11 +159,12 @@ class ContinueWatching {
   int? rentPrice;
   int? isBuy;
   String? categoryName;
-  String? sessionId;
+  int? sessionId;
 
   factory ContinueWatching.fromJson(Map<String, dynamic> json) =>
       ContinueWatching(
         id: json["id"],
+        showId: json["show_id"],
         categoryId: json["category_id"],
         languageId: json["language_id"],
         castId: json["cast_id"],
@@ -185,6 +200,12 @@ class ContinueWatching {
         noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
+        video320: json["video_320"],
+        video480: json["video_480"],
+        video720: json["video_720"],
+        video1080: json["video_1080"],
+        subtitleType: json["subtitle_type"],
+        subtitle: json["subtitle"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -200,6 +221,7 @@ class ContinueWatching {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "show_id": showId,
         "category_id": categoryId,
         "language_id": languageId,
         "cast_id": castId,
@@ -235,6 +257,12 @@ class ContinueWatching {
         "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
+        "video_320": video320,
+        "video_480": video480,
+        "video_720": video720,
+        "video_1080": video1080,
+        "subtitle_type": subtitleType,
+        "subtitle": subtitle,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,
@@ -370,6 +398,12 @@ class Datum {
     this.noOfRating,
     this.status,
     this.isTitle,
+    this.video320,
+    this.video480,
+    this.video720,
+    this.video1080,
+    this.subtitleType,
+    this.subtitle,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -423,6 +457,12 @@ class Datum {
   int? noOfRating;
   String? status;
   String? isTitle;
+  String? video320;
+  String? video480;
+  String? video720;
+  String? video1080;
+  String? subtitleType;
+  String? subtitle;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -476,6 +516,12 @@ class Datum {
         noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
+        video320: json["video_320"],
+        video480: json["video_480"],
+        video720: json["video_720"],
+        video1080: json["video_1080"],
+        subtitleType: json["subtitle_type"],
+        subtitle: json["subtitle"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -530,6 +576,12 @@ class Datum {
         "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
+        "video_320": video320,
+        "video_480": video480,
+        "video_720": video720,
+        "video_1080": video1080,
+        "subtitle_type": subtitleType,
+        "subtitle": subtitle,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,

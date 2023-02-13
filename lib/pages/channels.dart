@@ -6,7 +6,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
+import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
@@ -37,7 +40,7 @@ class ChannelsState extends State<Channels> {
     _getData();
   }
 
-  void _getData() async {
+  _getData() async {
     final channelSectionProvider =
         Provider.of<ChannelSectionProvider>(context, listen: false);
     await channelSectionProvider.getChannelSection();
@@ -124,36 +127,61 @@ class ChannelsState extends State<Channels> {
               itemBuilder:
                   (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
-                  onTap: () {
+                  onTap: () async {
                     log("Clicked on index ==> $index");
                     if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            if ((sectionBannerList?[index].link ?? "")
-                                .contains("youtube")) {
-                              return YoutubeVideo(
-                                videoUrl: sectionBannerList?[index].link,
-                              );
-                            } else if ((sectionBannerList?[index].link ?? "")
-                                .contains("vimeo")) {
-                              return VimeoPlayerPage(
-                                url: sectionBannerList?[index].link,
-                              );
-                            } else {
-                              return PlayerPage(
-                                0,
-                                0,
-                                0,
-                                sectionBannerList?[index].link ?? "",
-                                sectionBannerList?[index].name ?? "",
-                                0,
-                              );
-                            }
-                          },
-                        ),
-                      );
+                      if (Constant.userID != null) {
+                        if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                if ((sectionBannerList?[index].link ?? "")
+                                    .contains("youtube")) {
+                                  return YoutubeVideo(
+                                    videoUrl: sectionBannerList?[index].link,
+                                  );
+                                } else if ((sectionBannerList?[index].link ??
+                                        "")
+                                    .contains("vimeo")) {
+                                  return VimeoPlayerPage(
+                                    url: sectionBannerList?[index].link,
+                                  );
+                                } else {
+                                  return PlayerPage(
+                                    "Channel",
+                                    0,
+                                    0,
+                                    0,
+                                    sectionBannerList?[index].link ?? "",
+                                    sectionBannerList?[index].name ?? "",
+                                    0,
+                                  );
+                                }
+                              },
+                            ),
+                          );
+                        } else {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const Subscription();
+                              },
+                            ),
+                          );
+                          _getData();
+                        }
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const LoginSocial();
+                            },
+                          ),
+                        );
+                      }
                     }
                   },
                   child: Stack(
@@ -366,8 +394,7 @@ class ChannelsState extends State<Channels> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -436,8 +463,7 @@ class ChannelsState extends State<Channels> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -504,8 +530,7 @@ class ChannelsState extends State<Channels> {
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,

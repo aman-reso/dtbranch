@@ -37,12 +37,14 @@ class Dimens {
   static double epiPoster = 240;
   static double castCrewPoster = 525;
   static double channelPoster = 222;
-  static double channelBanner = 200;
+  static double channelBanner = 230;
   static double channelVideoBanner = 195;
   static double rentBanner = 103;
-  static double dialogIconSize = 22;
-  static double dialogButtonHeight = 48;
 
   static double minHeightSettings = 45;
+
+  static double minHtDialogContent = 42;
+  static double dialogIconSize = 22;
+  static double dialogButtonHeight = 48;
   // Dimentions END
 }

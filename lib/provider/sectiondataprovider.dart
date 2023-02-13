@@ -56,5 +56,7 @@ class SectionDataProvider extends ChangeNotifier {
     loadingSection = false;
     sectionBannerModel = SectionBannerModel();
     sectionListModel = SectionListModel();
+    cBannerIndex = 0;
+    lastTabPosition = 0;
   }
 }

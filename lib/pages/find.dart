@@ -341,7 +341,7 @@ class FindState extends State<Find> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               MyText(
-                                                color: white,
+                                                color: otherColor,
                                                 text: findProvider
                                                         .genresModel
                                                         .result?[position]
@@ -358,7 +358,7 @@ class FindState extends State<Find> {
                                               MyImage(
                                                 width: 15,
                                                 height: 15,
-                                                color: lightGray,
+                                                color: otherColor,
                                                 imagePath: "ic_right.png",
                                               ),
                                             ],
@@ -509,7 +509,7 @@ class FindState extends State<Find> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               MyText(
-                                                color: white,
+                                                color: otherColor,
                                                 text: findProvider
                                                         .langaugeModel
                                                         .result?[position]
@@ -526,7 +526,7 @@ class FindState extends State<Find> {
                                               MyImage(
                                                 width: 15,
                                                 height: 15,
-                                                color: lightGray,
+                                                color: otherColor,
                                                 imagePath: "ic_right.png",
                                               ),
                                             ],

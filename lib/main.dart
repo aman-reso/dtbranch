@@ -90,12 +90,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
     super.initState();
-    _getData();
-  }
-
-  void _getData() async {
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    await homeProvider.getSectionType();
   }
 
   // What to do when the user opens/taps on a notification
@@ -135,6 +129,10 @@ class _MyAppState extends State<MyApp> {
         localizationsDelegates: Locales.delegates,
         supportedLocales: Locales.supportedLocales,
         locale: locale,
+        localeResolutionCallback:
+            (Locale? locale, Iterable<Locale> supportedLocales) {
+          return locale;
+        },
         home: const Splash(),
       ),
     );

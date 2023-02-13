@@ -5,7 +5,6 @@ import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -328,13 +327,15 @@ class SearchState extends State<Search> {
                                             child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(4),
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
                                               child: MyNetworkImage(
                                                 imageUrl: searchProvider
                                                         .searchModel
                                                         .video?[position]
                                                         .landscape
                                                         .toString() ??
-                                                    Constant.placeHolderLand,
+                                                    "",
                                                 fit: BoxFit.cover,
                                                 imgHeight:
                                                     MediaQuery.of(context)

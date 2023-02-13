@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
-import 'package:dtlive/pages/allpayment.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/subscription.dart';
@@ -75,7 +74,10 @@ class MovieDetailsState extends State<MovieDetails> {
       }
     }
 
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
@@ -155,10 +157,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                         ""
                                     ? (videoDetailsProvider.sectionDetailModel
                                             .result?.landscape ??
-                                        Constant.placeHolderLand)
+                                        "")
                                     : (videoDetailsProvider.sectionDetailModel
                                             .result?.thumbnail ??
-                                        Constant.placeHolderLand),
+                                        ""),
                               ),
                             ),
                             Container(
@@ -232,8 +234,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       .sectionDetailModel
                                                       .result
                                                       ?.thumbnail ??
-                                                  Constant.placeHolderPort)
-                                              : Constant.placeHolderPort,
+                                                  "")
+                                              : "",
                                         ),
                                       ),
                                     ),
@@ -595,11 +597,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                   onTap: () async {
                                                     if (Constant.userID !=
                                                         null) {
-                                                      await videoDetailsProvider
-                                                          .removeFromContinue(
-                                                              widget.videoId,
-                                                              widget.videoType);
-                                                      openPlayer("Video");
+                                                      openPlayer("startOver");
                                                     } else {
                                                       Navigator.push(
                                                         context,
@@ -630,7 +628,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       height: Dimens
                                                           .featureIconSize,
                                                       color: lightGray,
-                                                      imagePath: "restart.png",
+                                                      imagePath:
+                                                          "ic_restart.png",
                                                     ),
                                                   ),
                                                 ),
@@ -877,33 +876,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                             borderRadius: BorderRadius.circular(
                                                 Dimens.featureSize / 2),
                                             onTap: () {
-                                              showModalBottomSheet(
-                                                context: context,
-                                                backgroundColor: lightBlack,
-                                                isScrollControlled: true,
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.vertical(
-                                                    top: Radius.circular(0),
-                                                  ),
-                                                ),
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Wrap(
-                                                    children: <Widget>[
-                                                      buildMoreDialog(
-                                                          videoDetailsProvider
-                                                                  .sectionDetailModel
-                                                                  .result
-                                                                  ?.stopTime ??
-                                                              0),
-                                                    ],
-                                                  );
-                                                },
-                                              );
+                                              buildMoreDialog(
+                                                  videoDetailsProvider
+                                                          .sectionDetailModel
+                                                          .result
+                                                          ?.stopTime ??
+                                                      0);
                                             },
                                             child: Container(
                                               width: Dimens.featureSize,
@@ -921,7 +899,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 width: Dimens.featureIconSize,
                                                 height: Dimens.featureIconSize,
                                                 color: lightGray,
-                                                imagePath: "ic_moreborder.png",
+                                                imagePath: "ic_more.png",
                                               ),
                                             ),
                                           ),
@@ -1010,28 +988,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                       borderRadius: BorderRadius.circular(4),
                                       onTap: () {
                                         log("language Length ====> ${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}");
-                                        showModalBottomSheet(
-                                          context: context,
-                                          backgroundColor: lightBlack,
-                                          isScrollControlled: true,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(0),
-                                            ),
-                                          ),
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          builder: (BuildContext context) {
-                                            return Wrap(
-                                              children: <Widget>[
-                                                buildLangSubtitleDialog(
-                                                    videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .language),
-                                              ],
-                                            );
-                                          },
-                                        );
+                                        buildLangSubtitleDialog(
+                                            videoDetailsProvider
+                                                .sectionDetailModel.language);
                                       },
                                       child: Container(
                                         constraints:
@@ -1147,12 +1106,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                         const SizedBox(height: 25),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
-                                              15, 0, 15, 0),
+                                              20, 0, 20, 0),
                                           child: MyText(
                                             color: white,
                                             text: "customer_also_watch",
                                             multilanguage: true,
-                                            textalign: TextAlign.center,
+                                            textalign: TextAlign.start,
                                             fontsize: 16,
                                             maxline: 1,
                                             fontwaight: FontWeight.w600,
@@ -1196,12 +1155,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                         const SizedBox(height: 25),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
-                                              15, 0, 15, 0),
+                                              20, 0, 20, 0),
                                           child: MyText(
                                             color: white,
                                             text: "castandcrew",
                                             multilanguage: true,
-                                            textalign: TextAlign.center,
+                                            textalign: TextAlign.start,
                                             fontsize: 16,
                                             maxline: 1,
                                             fontwaight: FontWeight.w600,
@@ -1705,7 +1664,8 @@ class MovieDetailsState extends State<MovieDetails> {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     MyImage(
                       width: 20,
@@ -1957,7 +1917,8 @@ class MovieDetailsState extends State<MovieDetails> {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     MyImage(
                       width: 20,
@@ -1988,38 +1949,28 @@ class MovieDetailsState extends State<MovieDetails> {
         return InkWell(
           onTap: () async {
             if (Constant.userID != null) {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return AllPayment(
-                      payType: 'Rent',
-                      itemId: videoDetailsProvider.sectionDetailModel.result?.id
-                              .toString() ??
-                          '',
-                      price: videoDetailsProvider
-                              .sectionDetailModel.result?.rentPrice
-                              .toString() ??
-                          '',
-                      itemTitle: videoDetailsProvider
-                              .sectionDetailModel.result?.name
-                              .toString() ??
-                          '',
-                      typeId: videoDetailsProvider
-                              .sectionDetailModel.result?.typeId
-                              .toString() ??
-                          '',
-                      videoType: videoDetailsProvider
-                              .sectionDetailModel.result?.videoType
-                              .toString() ??
-                          '',
-                      productPackage: '',
-                      currency: '',
-                    );
-                  },
-                ),
+              dynamic isRented = await Utils.paymentForRent(
+                context: context,
+                videoId: videoDetailsProvider.sectionDetailModel.result?.id
+                        .toString() ??
+                    '',
+                rentPrice: videoDetailsProvider
+                        .sectionDetailModel.result?.rentPrice
+                        .toString() ??
+                    '',
+                vTitle: videoDetailsProvider.sectionDetailModel.result?.name
+                        .toString() ??
+                    '',
+                typeId: videoDetailsProvider.sectionDetailModel.result?.typeId
+                        .toString() ??
+                    '',
+                vType: videoDetailsProvider.sectionDetailModel.result?.videoType
+                        .toString() ??
+                    '',
               );
-              _getData();
+              if (isRented != null && isRented == true) {
+                _getData();
+              }
             } else {
               Navigator.push(
                 context,
@@ -2226,7 +2177,8 @@ class MovieDetailsState extends State<MovieDetails> {
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   MyImage(
                     width: 20,
@@ -2266,38 +2218,28 @@ class MovieDetailsState extends State<MovieDetails> {
         return InkWell(
           onTap: () async {
             if (Constant.userID != null) {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return AllPayment(
-                      payType: 'Rent',
-                      itemId: videoDetailsProvider.sectionDetailModel.result?.id
-                              .toString() ??
-                          '',
-                      price: videoDetailsProvider
-                              .sectionDetailModel.result?.rentPrice
-                              .toString() ??
-                          '',
-                      itemTitle: videoDetailsProvider
-                              .sectionDetailModel.result?.name
-                              .toString() ??
-                          '',
-                      typeId: videoDetailsProvider
-                              .sectionDetailModel.result?.typeId
-                              .toString() ??
-                          '',
-                      videoType: videoDetailsProvider
-                              .sectionDetailModel.result?.videoType
-                              .toString() ??
-                          '',
-                      productPackage: '',
-                      currency: '',
-                    );
-                  },
-                ),
+              dynamic isRented = await Utils.paymentForRent(
+                context: context,
+                videoId: videoDetailsProvider.sectionDetailModel.result?.id
+                        .toString() ??
+                    '',
+                rentPrice: videoDetailsProvider
+                        .sectionDetailModel.result?.rentPrice
+                        .toString() ??
+                    '',
+                vTitle: videoDetailsProvider.sectionDetailModel.result?.name
+                        .toString() ??
+                    '',
+                typeId: videoDetailsProvider.sectionDetailModel.result?.typeId
+                        .toString() ??
+                    '',
+                vType: videoDetailsProvider.sectionDetailModel.result?.videoType
+                        .toString() ??
+                    '',
               );
-              _getData();
+              if (isRented != null && isRented == true) {
+                _getData();
+              }
             } else {
               Navigator.push(
                 context,
@@ -2383,7 +2325,7 @@ class MovieDetailsState extends State<MovieDetails> {
   }
 
   /* ========= Dialogs ========= */
-  Widget buildLangSubtitleDialog(List<Language>? languageList) {
+  buildLangSubtitleDialog(List<Language>? languageList) {
     log("languageList Size ===> ${languageList?.length ?? 0}");
     String? audioLanguages;
     if ((languageList?.length ?? 0) > 0) {
@@ -2395,464 +2337,502 @@ class MovieDetailsState extends State<MovieDetails> {
         }
       }
     }
-    return Container(
-      padding: const EdgeInsets.all(22),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          MyText(
-            text: "avalablelanguage",
-            fontsize: 17,
-            fontstyle: FontStyle.normal,
-            fontwaight: FontWeight.bold,
-            maxline: 1,
-            multilanguage: true,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.start,
-            color: white,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          MyText(
-            text: "languagechangenote",
-            fontsize: 13,
-            fontstyle: FontStyle.normal,
-            fontwaight: FontWeight.normal,
-            maxline: 1,
-            multilanguage: true,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.start,
-            color: otherColor,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          MyText(
-            text: "audios",
-            fontsize: 17,
-            fontstyle: FontStyle.normal,
-            fontwaight: FontWeight.bold,
-            maxline: 1,
-            multilanguage: true,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.start,
-            color: white,
-          ),
-          const SizedBox(
-            height: 2,
-          ),
-          MyText(
-            text: audioLanguages ?? "-",
-            fontsize: 13,
-            fontstyle: FontStyle.normal,
-            fontwaight: FontWeight.normal,
-            maxline: 1,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.start,
-            color: otherColor,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 0.7,
-            margin: const EdgeInsets.fromLTRB(0, 12, 0, 12),
-            color: otherColor,
-          ),
-          MyText(
-            text: "subtitle",
-            fontsize: 17,
-            multilanguage: true,
-            fontstyle: FontStyle.normal,
-            fontwaight: FontWeight.bold,
-            maxline: 1,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.start,
-            color: white,
-          ),
-          const SizedBox(
-            height: 2,
-          ),
-          MyText(
-            text:
-                (videoDetailsProvider.sectionDetailModel.result?.subtitle ?? "")
-                        .isNotEmpty
-                    ? "Available"
-                    : "-",
-            fontsize: 13,
-            fontstyle: FontStyle.normal,
-            fontwaight: FontWeight.normal,
-            maxline: 1,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.start,
-            color: otherColor,
-          ),
-        ],
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
       ),
-    );
-  }
-
-  Widget buildMoreDialog(stopTime) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          /* Share */
-          InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () {
-              Navigator.pop(context);
-              showModalBottomSheet(
-                context: context,
-                backgroundColor: lightBlack,
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(0),
-                  ),
-                ),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                builder: (BuildContext context) {
-                  return Wrap(
-                    children: <Widget>[
-                      buildShareWithDialog(),
-                    ],
-                  );
-                },
-              );
-            },
-            child: Container(
-              height: 45,
-              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(22),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  MyImage(
-                    width: 22,
-                    height: 22,
-                    imagePath: "ic_share.png",
-                    fit: BoxFit.fill,
-                    color: lightGray,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MyText(
+                    text: "avalablelanguage",
+                    fontsize: 17,
+                    fontstyle: FontStyle.normal,
+                    fontwaight: FontWeight.bold,
+                    maxline: 1,
+                    multilanguage: true,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                    color: white,
                   ),
                   const SizedBox(
-                    width: 20,
+                    height: 5,
                   ),
-                  Expanded(
-                    child: MyText(
-                      text: "share",
-                      multilanguage: true,
-                      fontsize: 16,
-                      color: white,
-                      fontstyle: FontStyle.normal,
-                      fontwaight: FontWeight.normal,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.start,
-                    ),
+                  MyText(
+                    text: "languagechangenote",
+                    fontsize: 13,
+                    fontstyle: FontStyle.normal,
+                    fontwaight: FontWeight.normal,
+                    maxline: 1,
+                    multilanguage: true,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                    color: otherColor,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  MyText(
+                    text: "audios",
+                    fontsize: 17,
+                    fontstyle: FontStyle.normal,
+                    fontwaight: FontWeight.bold,
+                    maxline: 1,
+                    multilanguage: true,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                    color: white,
+                  ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  MyText(
+                    text: audioLanguages ?? "-",
+                    fontsize: 13,
+                    fontstyle: FontStyle.normal,
+                    fontwaight: FontWeight.normal,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                    color: otherColor,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 0.7,
+                    margin: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+                    color: otherColor,
+                  ),
+                  MyText(
+                    text: "subtitle",
+                    fontsize: 17,
+                    multilanguage: true,
+                    fontstyle: FontStyle.normal,
+                    fontwaight: FontWeight.bold,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                    color: white,
+                  ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  MyText(
+                    text: (videoDetailsProvider
+                                    .sectionDetailModel.result?.subtitle ??
+                                "")
+                            .isNotEmpty
+                        ? "Available"
+                        : "-",
+                    fontsize: 13,
+                    fontstyle: FontStyle.normal,
+                    fontwaight: FontWeight.normal,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                    color: otherColor,
                   ),
                 ],
               ),
             ),
-          ),
-
-          /* Trailer */
-          stopTime > 0
-              ? InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: () {
-                    Navigator.pop(context);
-                    openPlayer("Trailer");
-                  },
-                  child: Container(
-                    height: 45,
-                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        MyImage(
-                          width: 22,
-                          height: 22,
-                          imagePath: "ic_borderplay.png",
-                          fit: BoxFit.fill,
-                          color: lightGray,
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: MyText(
-                            text: "trailer",
-                            multilanguage: true,
-                            fontsize: 16,
-                            color: white,
-                            fontstyle: FontStyle.normal,
-                            fontwaight: FontWeight.normal,
-                            maxline: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textalign: TextAlign.start,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 
-  Widget buildShareWithDialog() {
-    return Container(
-      padding: const EdgeInsets.all(23),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          MyText(
-            text: videoDetailsProvider.sectionDetailModel.result?.name ?? "",
-            multilanguage: false,
-            fontsize: 18,
-            color: white,
-            fontstyle: FontStyle.normal,
-            fontwaight: FontWeight.w700,
-            maxline: 2,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.start,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              (videoDetailsProvider.sectionDetailModel.result?.ageRestriction ??
-                          "")
-                      .isNotEmpty
-                  ? Container(
+  buildMoreDialog(stopTime) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  /* Share */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () {
+                      Navigator.pop(context);
+                      buildShareWithDialog();
+                    },
+                    child: Container(
+                      height: 45,
                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      margin: const EdgeInsets.only(right: 8),
-                      decoration: Utils.setBGWithBorder(
-                          transparentColor, otherColor, 3, 0.7),
-                      child: MyText(
-                        text: videoDetailsProvider
-                                .sectionDetailModel.result?.ageRestriction ??
-                            "",
-                        multilanguage: false,
-                        fontsize: 10,
-                        color: otherColor,
-                        fontstyle: FontStyle.normal,
-                        fontwaight: FontWeight.normal,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textalign: TextAlign.start,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: 22,
+                            height: 22,
+                            imagePath: "ic_share.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: MyText(
+                              text: "share",
+                              multilanguage: true,
+                              fontsize: 16,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontwaight: FontWeight.normal,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
                       ),
-                    )
-                  : const SizedBox.shrink(),
-              MyImage(
-                width: 18,
-                height: 18,
-                imagePath: "ic_comment.png",
-                fit: BoxFit.fill,
-                color: lightGray,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-
-          /* SMS */
-          InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () {
-              Navigator.pop(context);
-              if (Platform.isAndroid) {
-                Utils.redirectToUrl(
-                    'sms:?body=${Uri.encodeComponent("Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n")}');
-              } else if (Platform.isIOS) {
-                Utils.redirectToUrl(
-                    'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
-              }
-            },
-            child: Container(
-              height: 45,
-              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  MyImage(
-                    width: 22,
-                    height: 22,
-                    imagePath: "ic_sms.png",
-                    fit: BoxFit.fill,
-                    color: lightGray,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: MyText(
-                      text: "sms",
-                      multilanguage: true,
-                      fontsize: 16,
-                      color: white,
-                      fontstyle: FontStyle.normal,
-                      fontwaight: FontWeight.normal,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.start,
                     ),
                   ),
+
+                  /* Trailer */
+                  stopTime > 0
+                      ? InkWell(
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () {
+                            Navigator.pop(context);
+                            openPlayer("Trailer");
+                          },
+                          child: Container(
+                            height: 45,
+                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                MyImage(
+                                  width: 22,
+                                  height: 22,
+                                  imagePath: "ic_borderplay.png",
+                                  fit: BoxFit.fill,
+                                  color: lightGray,
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: MyText(
+                                    text: "trailer",
+                                    multilanguage: true,
+                                    fontsize: 16,
+                                    color: white,
+                                    fontstyle: FontStyle.normal,
+                                    fontwaight: FontWeight.normal,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textalign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),
-          ),
+          ],
+        );
+      },
+    );
+  }
 
-          /* Instgram Stories */
-          InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () {
-              Navigator.pop(context);
-              Utils.shareApp(Platform.isIOS
-                  ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
-                  : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
-            },
-            child: Container(
-              height: 45,
-              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  MyImage(
-                    width: 22,
-                    height: 22,
-                    imagePath: "ic_insta.png",
-                    fit: BoxFit.fill,
-                    color: lightGray,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: MyText(
-                      text: "instagram_stories",
-                      multilanguage: true,
-                      fontsize: 16,
-                      color: white,
-                      fontstyle: FontStyle.normal,
-                      fontwaight: FontWeight.normal,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          /* Copy Link */
-          InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () {
-              Navigator.pop(context);
-              SocialShare.copyToClipboard(
-                text: Platform.isIOS
-                    ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
-                    : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n",
-              ).then((data) {
-                debugPrint(data);
-                Utils.showSnackbar(context, "success", "link_copied");
-              });
-            },
-            child: Container(
-              height: 45,
-              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  MyImage(
-                    width: 22,
-                    height: 22,
-                    imagePath: "ic_link.png",
-                    fit: BoxFit.fill,
-                    color: lightGray,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: MyText(
-                      text: "copy_link",
-                      multilanguage: true,
-                      fontsize: 16,
-                      color: white,
-                      fontstyle: FontStyle.normal,
-                      fontwaight: FontWeight.normal,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          /* More */
-          InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () {
-              Navigator.pop(context);
-              Utils.shareApp(Platform.isIOS
-                  ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
-                  : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
-            },
-            child: Container(
-              height: 45,
-              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  MyImage(
-                    width: 22,
-                    height: 22,
-                    imagePath: "ic_dots_h.png",
-                    fit: BoxFit.fill,
-                    color: lightGray,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: MyText(
-                      text: "more",
-                      multilanguage: true,
-                      fontsize: 16,
-                      color: white,
-                      fontstyle: FontStyle.normal,
-                      fontwaight: FontWeight.normal,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+  buildShareWithDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
       ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MyText(
+                    text:
+                        videoDetailsProvider.sectionDetailModel.result?.name ??
+                            "",
+                    multilanguage: false,
+                    fontsize: 18,
+                    color: white,
+                    fontstyle: FontStyle.normal,
+                    fontwaight: FontWeight.w700,
+                    maxline: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      (videoDetailsProvider.sectionDetailModel.result
+                                      ?.ageRestriction ??
+                                  "")
+                              .isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                              margin: const EdgeInsets.only(right: 8),
+                              decoration: Utils.setBGWithBorder(
+                                  transparentColor, otherColor, 3, 0.7),
+                              child: MyText(
+                                text: videoDetailsProvider.sectionDetailModel
+                                        .result?.ageRestriction ??
+                                    "",
+                                multilanguage: false,
+                                fontsize: 10,
+                                color: otherColor,
+                                fontstyle: FontStyle.normal,
+                                fontwaight: FontWeight.normal,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textalign: TextAlign.start,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      MyImage(
+                        width: 18,
+                        height: 18,
+                        imagePath: "ic_comment.png",
+                        fit: BoxFit.fill,
+                        color: lightGray,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+
+                  /* SMS */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (Platform.isAndroid) {
+                        Utils.redirectToUrl(
+                            'sms:?body=${Uri.encodeComponent("Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n")}');
+                      } else if (Platform.isIOS) {
+                        Utils.redirectToUrl(
+                            'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
+                      }
+                    },
+                    child: Container(
+                      height: 45,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: 22,
+                            height: 22,
+                            imagePath: "ic_sms.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: MyText(
+                              text: "sms",
+                              multilanguage: true,
+                              fontsize: 16,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontwaight: FontWeight.normal,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /* Instgram Stories */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Utils.shareApp(Platform.isIOS
+                          ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
+                          : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
+                    },
+                    child: Container(
+                      height: 45,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: 22,
+                            height: 22,
+                            imagePath: "ic_insta.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: MyText(
+                              text: "instagram_stories",
+                              multilanguage: true,
+                              fontsize: 16,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontwaight: FontWeight.normal,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /* Copy Link */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () {
+                      Navigator.pop(context);
+                      SocialShare.copyToClipboard(
+                        text: Platform.isIOS
+                            ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
+                            : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n",
+                      ).then((data) {
+                        debugPrint(data);
+                        Utils.showSnackbar(context, "success", "link_copied");
+                      });
+                    },
+                    child: Container(
+                      height: 45,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: 22,
+                            height: 22,
+                            imagePath: "ic_link.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: MyText(
+                              text: "copy_link",
+                              multilanguage: true,
+                              fontsize: 16,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontwaight: FontWeight.normal,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /* More */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Utils.shareApp(Platform.isIOS
+                          ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
+                          : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
+                    },
+                    child: Container(
+                      height: 45,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: 22,
+                            height: 22,
+                            imagePath: "ic_dots_h.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: MyText(
+                              text: "more",
+                              multilanguage: true,
+                              fontsize: 16,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontwaight: FontWeight.normal,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
   /* ========= Dialogs ========= */
@@ -2958,7 +2938,7 @@ class MovieDetailsState extends State<MovieDetails> {
       itemCount: relatedDataList?.length ?? 0,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
-      physics: const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
       padding: const EdgeInsets.only(left: 20, right: 20),
       separatorBuilder: (context, index) => const SizedBox(
         width: 5,
@@ -3003,14 +2983,21 @@ class MovieDetailsState extends State<MovieDetails> {
 
   /* ========= Open Player ========= */
   void openPlayer(String playType) async {
+    Utils.deleteCacheDir();
     int? vID = (videoDetailsProvider.sectionDetailModel.result?.id ?? 0);
     int? vType =
         (videoDetailsProvider.sectionDetailModel.result?.videoType ?? 0);
     int? vTypeID = widget.typeId;
-    int? stopTime =
-        (videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0);
-    String? vUrl, vSubtitle, vUploadType;
 
+    int? stopTime;
+    if (playType == "startOver") {
+      stopTime = 0;
+    } else {
+      stopTime =
+          (videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0);
+    }
+
+    String? vUrl, vSubtitle, vUploadType;
     if (playType == "Trailer") {
       vUploadType = "Trailer";
       vUrl = (videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "");
@@ -3052,8 +3039,8 @@ class MovieDetailsState extends State<MovieDetails> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return PlayerPage(
-                vID, vType, vTypeID, vUrl ?? "", vSubtitle ?? "", stopTime);
+            return PlayerPage("Video", vID, vType, vTypeID, vUrl ?? "",
+                vSubtitle ?? "", stopTime);
           },
         ),
       );

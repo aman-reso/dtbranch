@@ -209,38 +209,40 @@ class IntroState extends State<Intro> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: InkWell(
-              onTap: () {
-                debugPrint("pos :==> $position");
-                Utils.setFirstTime("1");
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const Bottombar();
+          (position != introPager.length - 1)
+              ? Align(
+                  alignment: Alignment.bottomRight,
+                  child: InkWell(
+                    onTap: () {
+                      debugPrint("pos :==> $position");
+                      Utils.setFirstTime("1");
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const Bottombar();
+                          },
+                        ),
+                      );
                     },
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 20, 20),
+                      padding: const EdgeInsets.all(15),
+                      child: MyText(
+                        color: white,
+                        maxline: 1,
+                        overflow: TextOverflow.ellipsis,
+                        text: "skip",
+                        multilanguage: true,
+                        textalign: TextAlign.center,
+                        fontsize: 16,
+                        fontwaight: FontWeight.w500,
+                        fontstyle: FontStyle.normal,
+                      ),
+                    ),
                   ),
-                );
-              },
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 20, 20),
-                padding: const EdgeInsets.all(15),
-                child: MyText(
-                  color: white,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  text: "skip",
-                  multilanguage: true,
-                  textalign: TextAlign.center,
-                  fontsize: 16,
-                  fontwaight: FontWeight.w500,
-                  fontstyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );

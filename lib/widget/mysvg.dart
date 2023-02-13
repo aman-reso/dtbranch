@@ -7,7 +7,11 @@ class MySvg extends StatelessWidget {
   double height;
   String imagePath;
 
-  MySvg({Key? key, required this.width, required this.height,required this.imagePath})
+  MySvg(
+      {Key? key,
+      required this.width,
+      required this.height,
+      required this.imagePath})
       : super(key: key);
 
   @override

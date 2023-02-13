@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/pages/bottombar.dart';
 import 'package:dtlive/pages/intro.dart';
 import 'package:dtlive/provider/generalprovider.dart';
+import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
@@ -23,9 +24,15 @@ class SplashState extends State<Splash> {
 
   @override
   void initState() {
+    _getData();
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
     generalsetting.getGeneralsetting(context);
     super.initState();
+  }
+
+  void _getData() async {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.getSectionType();
   }
 
   @override

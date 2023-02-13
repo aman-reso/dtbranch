@@ -32,7 +32,10 @@ class StoreState extends State<Store> {
     final rentStoreProvider =
         Provider.of<RentStoreProvider>(context, listen: false);
     await rentStoreProvider.getRentVideoList();
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

@@ -7,7 +7,6 @@ import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -149,11 +148,12 @@ class VideosByIDState extends State<VideosByID> {
                               alignment: Alignment.center,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(4),
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
                                 child: MyNetworkImage(
                                   imageUrl: videoByIDProvider.videoByIdModel
                                           .result?[position].landscape
                                           .toString() ??
-                                      Constant.placeHolderLand,
+                                      "",
                                   fit: BoxFit.cover,
                                   imgHeight: MediaQuery.of(context).size.height,
                                   imgWidth: MediaQuery.of(context).size.width,

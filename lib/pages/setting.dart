@@ -5,6 +5,7 @@ import 'package:dtlive/pages/aboutprivacyterms.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/profileedit.dart';
 import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -800,10 +802,16 @@ class SettingState extends State<Setting> {
                         ),
                         InkWell(
                           onTap: () async {
+                            final sectionDataProvider =
+                                Provider.of<SectionDataProvider>(context,
+                                    listen: false);
+                            await sectionDataProvider.clearProvider();
                             // Firebase Signout
                             await auth.signOut();
                             await GoogleSignIn().signOut();
                             await Utils.setUserId(null);
+                            sectionDataProvider.getSectionBanner("0", "1");
+                            sectionDataProvider.getSectionList("0", "1");
                             getUserData();
                             if (!mounted) return;
                             Navigator.pop(context);

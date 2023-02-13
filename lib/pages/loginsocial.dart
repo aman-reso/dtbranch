@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/pages/bottombar.dart';
 import 'package:dtlive/pages/otpverify.dart';
 import 'package:dtlive/provider/generalprovider.dart';
+import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
@@ -402,35 +403,39 @@ class LoginSocialState extends State<LoginSocial> {
     if (!prDialog.isShowing()) {
       Utils.showProgress(context, prDialog);
     }
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
     final generalProvider =
         Provider.of<GeneralProvider>(context, listen: false);
     await generalProvider.loginWithSocial(email, userName, strType);
     log('checkAndNavigate loading ==>> ${generalProvider.loading}');
 
     if (!generalProvider.loading) {
-      // Hide Progress Dialog
-      await prDialog.hide();
-
       if (generalProvider.loginGmailModel.status == 200) {
         log('loginGmailModel ==>> ${generalProvider.loginGmailModel.toString()}');
         log('Login Successfull!');
-        sharePref.save(
+        await sharePref.save(
             "userid", generalProvider.loginGmailModel.result?.id.toString());
-        sharePref.save("username",
+        await sharePref.save("username",
             generalProvider.loginGmailModel.result?.name.toString() ?? "");
-        sharePref.save("userimage",
+        await sharePref.save("userimage",
             generalProvider.loginGmailModel.result?.image.toString() ?? "");
-        sharePref.save("useremail",
+        await sharePref.save("useremail",
             generalProvider.loginGmailModel.result?.email.toString() ?? "");
-        sharePref.save("usermobile",
+        await sharePref.save("usermobile",
             generalProvider.loginGmailModel.result?.mobile.toString() ?? "");
-        sharePref.save("usertype",
+        await sharePref.save("usertype",
             generalProvider.loginGmailModel.result?.type.toString() ?? "");
 
         // Set UserID for Next
         Constant.userID = generalProvider.loginGmailModel.result?.id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
+        await sectionDataProvider.getSectionBanner("0", "1");
+        await sectionDataProvider.getSectionList("0", "1");
+
+        // Hide Progress Dialog
+        await prDialog.hide();
         if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -438,6 +443,8 @@ class LoginSocialState extends State<LoginSocial> {
           ),
         );
       } else {
+        // Hide Progress Dialog
+        await prDialog.hide();
         if (!mounted) return;
         Utils.showSnackbar(
             context, "fail", "${generalProvider.loginGmailModel.message}");

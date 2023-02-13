@@ -297,7 +297,7 @@ class ApiService {
   /* user_id, video_id, video_type
      * Show :=> ("video_id" = Episode's ID)  AND  ("video_type" = "2")
      * Video :=> ("video_id" = Video's ID) */
-  Future<SuccessModel> removeContinueWatching(videoType, videoId) async {
+  Future<SuccessModel> removeContinueWatching(videoId, videoType) async {
     SuccessModel successModel;
     String removeContinueWatching = "remove_continue_watching";
     Response response = await dio.post(

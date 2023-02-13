@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 
 class PlayerPage extends StatefulWidget {
   final int? videoId, videoType, typeId, stopTime;
-  final String? videoUrl, vSubTitleUrl;
-  const PlayerPage(this.videoId, this.videoType, this.typeId, this.videoUrl,
-      this.vSubTitleUrl, this.stopTime,
+  final String? playType, videoUrl, vSubTitleUrl;
+  const PlayerPage(this.playType, this.videoId, this.videoType, this.typeId,
+      this.videoUrl, this.vSubTitleUrl, this.stopTime,
       {Key? key})
       : super(key: key);
 
@@ -128,21 +128,30 @@ class _PlayerPageState extends State<PlayerPage> {
   Future<bool> onBackPressed() async {
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
+    log("onBackPressed playType :===> ${widget.playType}");
 
-    if ((playerCPosition ?? 0) > 0 && (playerCPosition == videoDuration)) {
-      /* Remove From Continue */
-      await playerProvider.removeFromContinue(
-          "${widget.videoId}", "${widget.videoType}");
-      if (!mounted) return Future.value(false);
-      Navigator.pop(context, true);
-      return Future.value(true);
-    } else if ((playerCPosition ?? 0) > 0) {
-      /* Add to Continue */
-      await playerProvider.addToContinue(
-          "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
-      if (!mounted) return Future.value(false);
-      Navigator.pop(context, true);
-      return Future.value(true);
+    if (widget.playType == "Video" || widget.playType == "Show") {
+      if ((playerCPosition ?? 0) > 0 &&
+          (playerCPosition == videoDuration ||
+              (playerCPosition ?? 0) > (videoDuration ?? 0))) {
+        /* Remove From Continue */
+        await playerProvider.removeFromContinue(
+            "${widget.videoId}", "${widget.videoType}");
+        if (!mounted) return Future.value(false);
+        Navigator.pop(context, true);
+        return Future.value(true);
+      } else if ((playerCPosition ?? 0) > 0) {
+        /* Add to Continue */
+        await playerProvider.addToContinue(
+            "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
+        if (!mounted) return Future.value(false);
+        Navigator.pop(context, true);
+        return Future.value(true);
+      } else {
+        if (!mounted) return Future.value(false);
+        Navigator.pop(context, false);
+        return Future.value(true);
+      }
     } else {
       if (!mounted) return Future.value(false);
       Navigator.pop(context, false);

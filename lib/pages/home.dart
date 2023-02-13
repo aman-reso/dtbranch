@@ -8,6 +8,7 @@ import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
@@ -15,7 +16,6 @@ import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -43,7 +43,7 @@ class HomeState extends State<Home> {
     _getData();
   }
 
-  void _getData() async {
+  _getData() async {
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
@@ -52,8 +52,9 @@ class HomeState extends State<Home> {
       if (homeProvider.sectionTypeModel.status == 200 &&
           homeProvider.sectionTypeModel.result != null) {
         if ((homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
-          if (sectionDataProvider.sectionBannerModel.result == null ||
-              sectionDataProvider.sectionListModel.result == null) {
+          if ((sectionDataProvider.sectionBannerModel.result?.length ?? 0) ==
+                  0 ||
+              (sectionDataProvider.sectionListModel.result?.length ?? 0) == 0) {
             getTabData(0, homeProvider.sectionTypeModel.result);
             Future.delayed(Duration.zero).then((value) => setState(() {}));
           }
@@ -136,8 +137,7 @@ class HomeState extends State<Home> {
         controller: tabScrollController,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
         separatorBuilder: (context, index) => const SizedBox(
           width: 12,
@@ -191,7 +191,7 @@ class HomeState extends State<Home> {
       width: MediaQuery.of(context).size.width,
       constraints: const BoxConstraints.expand(),
       child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             SizedBox(
@@ -267,6 +267,7 @@ class HomeState extends State<Home> {
         Provider.of<SectionDataProvider>(context, listen: false);
 
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    if (!mounted) return;
     await homeProvider.setSelectedTab(position);
 
     debugPrint("getTabData position ====> $position");
@@ -406,6 +407,8 @@ class HomeState extends State<Home> {
 
   Widget continueWatchingLayout(List<ContinueWatching>? continueWatchingList) {
     if ((continueWatchingList?.length ?? 0) > 0) {
+      final sectionDataProvider =
+          Provider.of<SectionDataProvider>(context, listen: false);
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -438,6 +441,7 @@ class HomeState extends State<Home> {
               shrinkWrap: true,
               padding: const EdgeInsets.only(left: 20, right: 20),
               scrollDirection: Axis.horizontal,
+              physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
               separatorBuilder: (context, index) => const SizedBox(
                 width: 5,
               ),
@@ -471,7 +475,7 @@ class HomeState extends State<Home> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return TvShowDetails(
-                                  continueWatchingList?[index].id ?? 0,
+                                  continueWatchingList?[index].showId ?? 0,
                                   continueWatchingList?[index].videoType ?? 0,
                                   continueWatchingList?[index].typeId ?? 0,
                                 );
@@ -486,9 +490,10 @@ class HomeState extends State<Home> {
                         alignment: Alignment.center,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(4),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
                           child: MyNetworkImage(
-                            imageUrl: continueWatchingList?[index].landscape ??
-                                Constant.placeHolderLand,
+                            imageUrl:
+                                continueWatchingList?[index].landscape ?? "",
                             fit: BoxFit.cover,
                             imgHeight: MediaQuery.of(context).size.height,
                             imgWidth: MediaQuery.of(context).size.width,
@@ -503,10 +508,66 @@ class HomeState extends State<Home> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(left: 10, bottom: 8),
-                          child: MyImage(
-                            width: 30,
-                            height: 30,
-                            imagePath: "play.png",
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: () async {
+                              Map<String, String> qualityUrlList =
+                                  <String, String>{
+                                '320p':
+                                    continueWatchingList?[index].video320 ?? '',
+                                '480p':
+                                    continueWatchingList?[index].video480 ?? '',
+                                '720p':
+                                    continueWatchingList?[index].video720 ?? '',
+                                '1080p':
+                                    continueWatchingList?[index].video1080 ??
+                                        '',
+                              };
+                              debugPrint(
+                                  "qualityUrlList ==========> ${qualityUrlList.length}");
+                              Constant.resolutionsUrls = qualityUrlList;
+                              debugPrint(
+                                  "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+                              var isContinues = await Utils.openPlayer(
+                                  context: context,
+                                  playType: "Video",
+                                  videoId: continueWatchingList?[index].id ?? 0,
+                                  videoType:
+                                      continueWatchingList?[index].videoType ??
+                                          0,
+                                  typeId:
+                                      continueWatchingList?[index].typeId ?? 0,
+                                  videoUrl:
+                                      continueWatchingList?[index].video320 ??
+                                          "",
+                                  trailerUrl:
+                                      continueWatchingList?[index].trailerUrl ??
+                                          "",
+                                  uploadType: continueWatchingList?[index]
+                                          .videoUploadType ??
+                                      "",
+                                  vSubtitle:
+                                      continueWatchingList?[index].subtitle ??
+                                          "",
+                                  vStopTime:
+                                      continueWatchingList?[index].stopTime ??
+                                          0);
+                              if (isContinues != null && isContinues == true) {
+                                await sectionDataProvider.getSectionBanner(
+                                    "0", "1");
+                                await sectionDataProvider.getSectionList(
+                                    "0", "1");
+                                Future.delayed(Duration.zero).then((value) {
+                                  if (!mounted) return;
+                                  setState(() {});
+                                });
+                              }
+                            },
+                            child: MyImage(
+                              width: 30,
+                              height: 30,
+                              imagePath: "play.png",
+                            ),
                           ),
                         ),
                         Container(
@@ -524,39 +585,36 @@ class HomeState extends State<Home> {
                             progressColor: primaryColor,
                           ),
                         ),
-                        Visibility(
-                          visible: (continueWatchingList![index].releaseTag !=
-                                      null &&
-                                  continueWatchingList[index]
-                                      .releaseTag!
-                                      .isEmpty)
-                              ? false
-                              : true,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: black,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(4),
-                                bottomRight: Radius.circular(4),
-                              ),
-                              shape: BoxShape.rectangle,
-                            ),
-                            width: 172,
-                            height: 12,
-                            child: MyText(
-                              color: white,
-                              multilanguage: false,
-                              text:
-                                  continueWatchingList[index].releaseTag ?? "",
-                              textalign: TextAlign.center,
-                              fontsize: 6,
-                              maxline: 1,
-                              fontwaight: FontWeight.normal,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                          ),
-                        ),
+                        (continueWatchingList?[index].releaseTag != null &&
+                                (continueWatchingList?[index].releaseTag ?? "")
+                                    .isNotEmpty)
+                            ? Container(
+                                decoration: const BoxDecoration(
+                                  color: black,
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(4),
+                                    bottomRight: Radius.circular(4),
+                                  ),
+                                  shape: BoxShape.rectangle,
+                                ),
+                                alignment: Alignment.center,
+                                width: Dimens.widthContiLand,
+                                height: 15,
+                                child: MyText(
+                                  color: white,
+                                  multilanguage: false,
+                                  text:
+                                      continueWatchingList?[index].releaseTag ??
+                                          "",
+                                  textalign: TextAlign.center,
+                                  fontsize: 6,
+                                  maxline: 1,
+                                  fontwaight: FontWeight.w700,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       ],
                     ),
                   ],
@@ -708,8 +766,7 @@ class HomeState extends State<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -756,8 +813,7 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl: sectionDataList?[index].landscape.toString() ??
-                      Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].landscape.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -779,8 +835,7 @@ class HomeState extends State<Home> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
         ),
@@ -825,8 +880,7 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
-                      Constant.placeHolderPort,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -847,8 +901,7 @@ class HomeState extends State<Home> {
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         separatorBuilder: (context, index) => const SizedBox(
           width: 5,
@@ -894,8 +947,7 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
-                      Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -915,8 +967,7 @@ class HomeState extends State<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -951,8 +1002,7 @@ class HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl: sectionDataList?[index].image.toString() ??
-                          Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ?? "",
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,
@@ -988,8 +1038,7 @@ class HomeState extends State<Home> {
       child: ListView.separated(
         itemCount: sectionDataList?.length ?? 0,
         shrinkWrap: true,
-        physics:
-            const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         separatorBuilder: (context, index) => const SizedBox(
@@ -1024,8 +1073,7 @@ class HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl: sectionDataList?[index].image.toString() ??
-                          Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ?? "",
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,

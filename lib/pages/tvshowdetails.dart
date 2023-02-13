@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
-import 'package:dtlive/pages/allpayment.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/subscription.dart';
@@ -44,6 +43,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
   @override
   void initState() {
+    episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");
@@ -51,14 +51,16 @@ class TvShowDetailsState extends State<TvShowDetails> {
     _getData();
   }
 
-  void _getData() async {
+  Future<void> _getData() async {
     Utils.getCurrencySymbol();
     showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
-    episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     await showDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
@@ -133,10 +135,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         .isNotEmpty
                                     ? (showDetailsProvider.sectionDetailModel
                                             .result?.landscape ??
-                                        Constant.placeHolderLand)
+                                        "")
                                     : (showDetailsProvider.sectionDetailModel
                                             .result?.thumbnail ??
-                                        Constant.placeHolderLand),
+                                        ""),
                               ),
                             ),
                             Container(
@@ -220,8 +222,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                       .sectionDetailModel
                                                       .result
                                                       ?.thumbnail ??
-                                                  Constant.placeHolderPort)
-                                              : Constant.placeHolderPort,
+                                                  "")
+                                              : "",
                                         ),
                                       ),
                                     ),
@@ -656,14 +658,18 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     /* Download */
-                                    Consumer<EpisodeProvider>(
+                                    Consumer<ShowDetailsProvider>(
                                       builder: (context, showDetailsProvider,
                                           child) {
                                         if (showDetailsProvider
-                                                .episodeBySeasonModel
-                                                .result?[0]
-                                                .videoUploadType ==
-                                            "server_video") {
+                                                    .mCurrentEpiPos !=
+                                                -1 &&
+                                            showDetailsProvider
+                                                    .episodeBySeasonModel
+                                                    .result?[showDetailsProvider
+                                                        .mCurrentEpiPos]
+                                                    .videoUploadType ==
+                                                "server_video") {
                                           return Expanded(
                                             child: Column(
                                               mainAxisAlignment:
@@ -1156,12 +1162,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
-                                              15, 0, 15, 0),
+                                              20, 0, 20, 0),
                                           child: MyText(
                                             color: white,
                                             text: "customer_also_watch",
                                             multilanguage: true,
-                                            textalign: TextAlign.center,
+                                            textalign: TextAlign.start,
                                             fontsize: 16,
                                             maxline: 1,
                                             fontwaight: FontWeight.w600,
@@ -1207,12 +1213,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
-                                              15, 0, 15, 0),
+                                              20, 0, 20, 0),
                                           child: MyText(
                                             color: white,
                                             text: "castandcrew",
                                             multilanguage: true,
-                                            textalign: TextAlign.center,
+                                            textalign: TextAlign.start,
                                             fontsize: 16,
                                             maxline: 1,
                                             fontwaight: FontWeight.w600,
@@ -1558,198 +1564,13 @@ class TvShowDetailsState extends State<TvShowDetails> {
     if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
       if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        if ((showDetailsProvider.episodeBySeasonModel.result?[0].stopTime ??
-                    0) >
-                0 &&
-            showDetailsProvider.episodeBySeasonModel.result?[0].videoDuration !=
-                null) {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Show");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          MyImage(
-                            width: 20,
-                            height: 20,
-                            imagePath: "ic_play.png",
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              MyText(
-                                color: white,
-                                text: "continuewatching",
-                                multilanguage: true,
-                                textalign: TextAlign.start,
-                                fontsize: 15,
-                                fontwaight: FontWeight.w600,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              Row(
-                                children: [
-                                  MyText(
-                                    color: white,
-                                    text: Utils.remainTimeInMin(
-                                        ((showDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration ??
-                                                    0) -
-                                                (showDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.stopTime ??
-                                                    0))
-                                            .abs()),
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: false,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  MyText(
-                                    color: white,
-                                    text: "left",
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: true,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 4,
-                      constraints: const BoxConstraints(minWidth: 0),
-                      margin: const EdgeInsets.all(3),
-                      child: LinearPercentIndicator(
-                        padding: const EdgeInsets.all(0),
-                        barRadius: const Radius.circular(2),
-                        lineHeight: 4,
-                        percent: Utils.getPercentage(
-                            showDetailsProvider
-                                    .sectionDetailModel.result?.videoDuration ??
-                                0,
-                            showDetailsProvider
-                                    .sectionDetailModel.result?.stopTime ??
-                                0),
-                        backgroundColor: secProgressColor,
-                        progressColor: primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Show");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyImage(
-                      width: 20,
-                      height: 20,
-                      imagePath: "ic_play.png",
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
-                      textalign: TextAlign.start,
-                      fontsize: 15,
-                      fontwaight: FontWeight.w600,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
+        return _buildWatchNow();
       } else {
         return InkWell(
           borderRadius: BorderRadius.circular(5),
           onTap: () async {
             if (Constant.userID != null) {
-              await Navigator.push(
+              dynamic isRented = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
@@ -1757,6 +1578,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
                   },
                 ),
               );
+              if (isRented != null && isRented == true) {
+                _getData();
+              }
             } else {
               Navigator.push(
                 context,
@@ -1813,228 +1637,34 @@ class TvShowDetailsState extends State<TvShowDetails> {
         1) {
       if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        if ((showDetailsProvider.episodeBySeasonModel.result?[0].stopTime ??
-                    0) >
-                0 &&
-            showDetailsProvider.episodeBySeasonModel.result?[0].videoDuration !=
-                null) {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Show");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          MyImage(
-                            width: 20,
-                            height: 20,
-                            imagePath: "ic_play.png",
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              MyText(
-                                color: white,
-                                text: "continuewatching",
-                                multilanguage: true,
-                                textalign: TextAlign.start,
-                                fontsize: 15,
-                                fontwaight: FontWeight.w600,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              Row(
-                                children: [
-                                  MyText(
-                                    color: white,
-                                    text: Utils.remainTimeInMin(
-                                        ((showDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration ??
-                                                    0) -
-                                                (showDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.stopTime ??
-                                                    0))
-                                            .abs()),
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: false,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  MyText(
-                                    color: white,
-                                    text: "left",
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: true,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 4,
-                      constraints: const BoxConstraints(minWidth: 0),
-                      margin: const EdgeInsets.all(3),
-                      child: LinearPercentIndicator(
-                        padding: const EdgeInsets.all(0),
-                        barRadius: const Radius.circular(2),
-                        lineHeight: 4,
-                        percent: Utils.getPercentage(
-                            showDetailsProvider
-                                    .sectionDetailModel.result?.videoDuration ??
-                                0,
-                            showDetailsProvider
-                                    .sectionDetailModel.result?.stopTime ??
-                                0),
-                        backgroundColor: secProgressColor,
-                        progressColor: primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Show");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyImage(
-                      width: 20,
-                      height: 20,
-                      imagePath: "ic_play.png",
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
-                      textalign: TextAlign.start,
-                      fontsize: 15,
-                      fontwaight: FontWeight.w600,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
+        return _buildWatchNow();
       } else {
         return InkWell(
           borderRadius: BorderRadius.circular(5),
           onTap: () async {
             if (Constant.userID != null) {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return AllPayment(
-                      payType: 'Rent',
-                      itemId: showDetailsProvider.sectionDetailModel.result?.id
-                              .toString() ??
-                          '',
-                      price: showDetailsProvider
-                              .sectionDetailModel.result?.rentPrice
-                              .toString() ??
-                          '',
-                      itemTitle: showDetailsProvider
-                              .sectionDetailModel.result?.name
-                              .toString() ??
-                          '',
-                      typeId: showDetailsProvider
-                              .sectionDetailModel.result?.typeId
-                              .toString() ??
-                          '',
-                      videoType: showDetailsProvider
-                              .sectionDetailModel.result?.videoType
-                              .toString() ??
-                          '',
-                      productPackage: '',
-                      currency: '',
-                    );
-                  },
-                ),
+              dynamic isRented = await Utils.paymentForRent(
+                context: context,
+                videoId: showDetailsProvider.sectionDetailModel.result?.id
+                        .toString() ??
+                    '',
+                rentPrice: showDetailsProvider
+                        .sectionDetailModel.result?.rentPrice
+                        .toString() ??
+                    '',
+                vTitle: showDetailsProvider.sectionDetailModel.result?.name
+                        .toString() ??
+                    '',
+                typeId: showDetailsProvider.sectionDetailModel.result?.typeId
+                        .toString() ??
+                    '',
+                vType: showDetailsProvider.sectionDetailModel.result?.videoType
+                        .toString() ??
+                    '',
               );
+              if (isRented != null && isRented == true) {
+                _getData();
+              }
             } else {
               Navigator.push(
                 context,
@@ -2051,7 +1681,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
             width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: white,
               borderRadius: BorderRadius.circular(5),
@@ -2089,186 +1718,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
         );
       }
     } else {
-      if ((showDetailsProvider.episodeBySeasonModel.result?[0].stopTime ?? 0) >
-              0 &&
-          showDetailsProvider.episodeBySeasonModel.result?[0].videoDuration !=
-              null) {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          child: InkWell(
-            onTap: () {
-              if (Constant.userID != null) {
-                openPlayer("Show");
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: 55,
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        MyImage(
-                            width: 20, height: 20, imagePath: "ic_play.png"),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            MyText(
-                              color: white,
-                              text: "continuewatching",
-                              multilanguage: true,
-                              textalign: TextAlign.start,
-                              fontsize: 15,
-                              fontwaight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                            Row(
-                              children: [
-                                MyText(
-                                  color: white,
-                                  text: Utils.remainTimeInMin(
-                                      ((showDetailsProvider.sectionDetailModel
-                                                      .result?.videoDuration ??
-                                                  0) -
-                                              (showDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.stopTime ??
-                                                  0))
-                                          .abs()),
-                                  textalign: TextAlign.start,
-                                  fontsize: 10,
-                                  multilanguage: false,
-                                  fontwaight: FontWeight.normal,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                                const SizedBox(width: 5),
-                                MyText(
-                                  color: white,
-                                  text: "left",
-                                  textalign: TextAlign.start,
-                                  fontsize: 10,
-                                  multilanguage: true,
-                                  fontwaight: FontWeight.normal,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 4,
-                    constraints: const BoxConstraints(minWidth: 0),
-                    margin: const EdgeInsets.all(3),
-                    child: LinearPercentIndicator(
-                      padding: const EdgeInsets.all(0),
-                      barRadius: const Radius.circular(2),
-                      lineHeight: 4,
-                      percent: Utils.getPercentage(
-                          showDetailsProvider
-                                  .sectionDetailModel.result?.videoDuration ??
-                              0,
-                          showDetailsProvider
-                                  .sectionDetailModel.result?.stopTime ??
-                              0),
-                      backgroundColor: secProgressColor,
-                      progressColor: primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      } else {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          child: InkWell(
-            onTap: () {
-              if (Constant.userID != null) {
-                openPlayer("Show");
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: 50,
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MyImage(
-                    width: 20,
-                    height: 20,
-                    imagePath: "ic_play.png",
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  MyText(
-                    color: white,
-                    text: "watch_now",
-                    multilanguage: true,
-                    textalign: TextAlign.start,
-                    fontsize: 15,
-                    fontwaight: FontWeight.w600,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
+      return _buildWatchNow();
     }
   }
 
@@ -2283,37 +1733,28 @@ class TvShowDetailsState extends State<TvShowDetails> {
           borderRadius: BorderRadius.circular(5),
           onTap: () async {
             if (Constant.userID != null) {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return AllPayment(
-                      payType: 'Rent',
-                      itemId: showDetailsProvider.sectionDetailModel.result?.id
-                              .toString() ??
-                          '',
-                      price: showDetailsProvider
-                              .sectionDetailModel.result?.rentPrice
-                              .toString() ??
-                          '',
-                      itemTitle: showDetailsProvider
-                              .sectionDetailModel.result?.name
-                              .toString() ??
-                          '',
-                      typeId: showDetailsProvider
-                              .sectionDetailModel.result?.typeId
-                              .toString() ??
-                          '',
-                      videoType: showDetailsProvider
-                              .sectionDetailModel.result?.videoType
-                              .toString() ??
-                          '',
-                      productPackage: '',
-                      currency: '',
-                    );
-                  },
-                ),
+              dynamic isRented = await Utils.paymentForRent(
+                context: context,
+                videoId: showDetailsProvider.sectionDetailModel.result?.id
+                        .toString() ??
+                    '',
+                rentPrice: showDetailsProvider
+                        .sectionDetailModel.result?.rentPrice
+                        .toString() ??
+                    '',
+                vTitle: showDetailsProvider.sectionDetailModel.result?.name
+                        .toString() ??
+                    '',
+                typeId: showDetailsProvider.sectionDetailModel.result?.typeId
+                        .toString() ??
+                    '',
+                vType: showDetailsProvider.sectionDetailModel.result?.videoType
+                        .toString() ??
+                    '',
               );
+              if (isRented != null && isRented == true) {
+                _getData();
+              }
             } else {
               Navigator.push(
                 context,
@@ -2370,6 +1811,214 @@ class TvShowDetailsState extends State<TvShowDetails> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildWatchNow() {
+    return Consumer<ShowDetailsProvider>(
+      builder: (context, showDetailsProvider, child) {
+        if (showDetailsProvider.mCurrentEpiPos != -1 &&
+            (showDetailsProvider.episodeBySeasonModel
+                        .result?[showDetailsProvider.mCurrentEpiPos].stopTime ??
+                    0) >
+                0 &&
+            showDetailsProvider
+                    .episodeBySeasonModel
+                    .result?[showDetailsProvider.mCurrentEpiPos]
+                    .videoDuration !=
+                null) {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+            child: InkWell(
+              onTap: () {
+                if (Constant.userID != null) {
+                  openPlayer("Show");
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginSocial();
+                      },
+                    ),
+                  );
+                }
+              },
+              borderRadius: BorderRadius.circular(5),
+              child: Container(
+                height: 55,
+                decoration: BoxDecoration(
+                  color: primaryDark,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          MyImage(
+                            width: 20,
+                            height: 20,
+                            imagePath: "ic_play.png",
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              MyText(
+                                color: white,
+                                text:
+                                    "Continue Watching Episode ${(showDetailsProvider.mCurrentEpiPos + 1)}",
+                                multilanguage: false,
+                                textalign: TextAlign.start,
+                                fontsize: 15,
+                                fontwaight: FontWeight.w600,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
+                              Row(
+                                children: [
+                                  MyText(
+                                    color: white,
+                                    text: Utils.remainTimeInMin(
+                                        ((showDetailsProvider
+                                                        .episodeBySeasonModel
+                                                        .result?[
+                                                            showDetailsProvider
+                                                                .mCurrentEpiPos]
+                                                        .videoDuration ??
+                                                    0) -
+                                                (showDetailsProvider
+                                                        .episodeBySeasonModel
+                                                        .result?[
+                                                            showDetailsProvider
+                                                                .mCurrentEpiPos]
+                                                        .stopTime ??
+                                                    0))
+                                            .abs()),
+                                    textalign: TextAlign.start,
+                                    fontsize: 10,
+                                    multilanguage: false,
+                                    fontwaight: FontWeight.normal,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  MyText(
+                                    color: white,
+                                    text: "left",
+                                    textalign: TextAlign.start,
+                                    fontsize: 10,
+                                    multilanguage: true,
+                                    fontwaight: FontWeight.normal,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 4,
+                      constraints: const BoxConstraints(minWidth: 0),
+                      margin: const EdgeInsets.all(3),
+                      child: LinearPercentIndicator(
+                        padding: const EdgeInsets.all(0),
+                        barRadius: const Radius.circular(2),
+                        lineHeight: 4,
+                        percent: Utils.getPercentage(
+                            showDetailsProvider
+                                    .episodeBySeasonModel
+                                    .result?[showDetailsProvider.mCurrentEpiPos]
+                                    .videoDuration ??
+                                0,
+                            showDetailsProvider
+                                    .episodeBySeasonModel
+                                    .result?[showDetailsProvider.mCurrentEpiPos]
+                                    .stopTime ??
+                                0),
+                        backgroundColor: secProgressColor,
+                        progressColor: primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+            child: InkWell(
+              onTap: () {
+                if (Constant.userID != null) {
+                  openPlayer("Show");
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginSocial();
+                      },
+                    ),
+                  );
+                }
+              },
+              borderRadius: BorderRadius.circular(5),
+              child: Container(
+                height: 50,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                decoration: BoxDecoration(
+                  color: primaryDark,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    MyImage(
+                      width: 20,
+                      height: 20,
+                      imagePath: "ic_play.png",
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    MyText(
+                      color: white,
+                      text: "Watch Episode 1",
+                      multilanguage: false,
+                      textalign: TextAlign.start,
+                      fontsize: 15,
+                      fontwaight: FontWeight.w600,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   double getDynamicHeight(String? videoType, String? layoutType) {
@@ -2836,7 +2485,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
       shrinkWrap: true,
       padding: const EdgeInsets.only(left: 20, right: 20),
       scrollDirection: Axis.horizontal,
-      physics: const PageScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
       separatorBuilder: (context, index) => const SizedBox(
         width: 5,
       ),
@@ -2975,21 +2624,33 @@ class TvShowDetailsState extends State<TvShowDetails> {
   }
 
   void openPlayer(String playType) async {
-    if ((showDetailsProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
-      int? epiID =
-          (showDetailsProvider.episodeBySeasonModel.result?[0].id ?? 0);
+    Utils.deleteCacheDir();
+    log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
+    if (showDetailsProvider.mCurrentEpiPos != -1 &&
+        (showDetailsProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
+      int? epiID = (showDetailsProvider.episodeBySeasonModel
+              .result?[showDetailsProvider.mCurrentEpiPos].id ??
+          0);
       int? vType =
           (showDetailsProvider.sectionDetailModel.result?.videoType ?? 0);
       int? vTypeID = widget.typeId;
-      int? stopTime =
-          (showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0);
-      String? vUploadType = (showDetailsProvider
-              .episodeBySeasonModel.result?[0].videoUploadType ??
+      int? stopTime;
+      if (playType == "startOver") {
+        stopTime = 0;
+      } else {
+        stopTime = (showDetailsProvider.episodeBySeasonModel
+                .result?[showDetailsProvider.mCurrentEpiPos].stopTime ??
+            0);
+      }
+      String? vUploadType = (showDetailsProvider.episodeBySeasonModel
+              .result?[showDetailsProvider.mCurrentEpiPos].videoUploadType ??
           "");
-      String? epiUrl =
-          (showDetailsProvider.episodeBySeasonModel.result?[0].video320 ?? "");
-      String? vSubtitle =
-          (showDetailsProvider.episodeBySeasonModel.result?[0].subtitle ?? "");
+      String? epiUrl = (showDetailsProvider.episodeBySeasonModel
+              .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
+          "");
+      String? vSubtitle = (showDetailsProvider.episodeBySeasonModel
+              .result?[showDetailsProvider.mCurrentEpiPos].subtitle ??
+          "");
       log("epiID ========> $epiID");
       log("vType ========> $vType");
       log("vTypeID ======> $vTypeID");
@@ -3025,14 +2686,14 @@ class TvShowDetailsState extends State<TvShowDetails> {
           MaterialPageRoute(
             builder: (context) {
               return PlayerPage(
-                  epiID, vType, vTypeID, epiUrl, vSubtitle, stopTime);
+                  "Show", epiID, vType, vTypeID, epiUrl, vSubtitle, stopTime);
             },
           ),
         );
         log("isContinue ===> $isContinue");
         if (isContinue != null && isContinue == true) {
-          _getData();
-          getAllEpisode(showDetailsProvider.seasonPos,
+          await _getData();
+          await getAllEpisode(showDetailsProvider.seasonPos,
               showDetailsProvider.sectionDetailModel.session);
         }
       }

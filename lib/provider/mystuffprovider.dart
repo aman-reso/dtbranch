@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:dtlive/model/profilemodel.dart';
 import 'package:dtlive/model/rentmodel.dart';
+import 'package:dtlive/model/successmodel.dart';
 import 'package:dtlive/model/watchlistmodel.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ class MyStuffProvider extends ChangeNotifier {
   ProfileModel profileModel = ProfileModel();
   WatchlistModel watchlistModel = WatchlistModel();
   RentModel rentModel = RentModel();
+  SuccessModel successModel = SuccessModel();
 
   bool loadingProfile = false,
       loadingDownload = false,
@@ -37,6 +40,37 @@ class MyStuffProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setBookMark(
+      BuildContext context, position, typeId, videoType, videoId) async {
+    loadingWatchlist = true;
+    debugPrint("setBookMark typeId :==> $typeId");
+    debugPrint("setBookMark videoType :==> $videoType");
+    debugPrint("setBookMark videoId :==> $videoId");
+    debugPrint(
+        "watchlistModel videoId :==> ${(watchlistModel.result?[position].id ?? 0)}");
+    if ((watchlistModel.result?[position].isBookmark ?? 0) == 0) {
+      watchlistModel.result?[position].isBookmark = 1;
+      Utils.showSnackbar(context, "WatchlistAdd", "addwatchlistmessage");
+    } else {
+      watchlistModel.result?[position].isBookmark = 0;
+      watchlistModel.result?.removeAt(position);
+      Utils.showSnackbar(context, "WatchlistRemove", "removewatchlistmessage");
+    }
+    loadingWatchlist = false;
+    notifyListeners();
+    getAddBookMark(typeId, videoType, videoId);
+  }
+
+  Future<void> getAddBookMark(typeId, videoType, videoId) async {
+    debugPrint("getAddBookMark typeId :==> $typeId");
+    debugPrint("getAddBookMark videoType :==> $videoType");
+    debugPrint("getAddBookMark videoId :==> $videoId");
+    successModel =
+        await ApiService().addRemoveBookmark(typeId, videoType, videoId);
+    debugPrint("add_remove_bookmark status :==> ${successModel.status}");
+    debugPrint("add_remove_bookmark message :==> ${successModel.message}");
+  }
+
   Future<void> getUserRentVideoList() async {
     debugPrint("getUserRentVideoList userID :==> ${Constant.userID}");
     loadingPurchase = true;
@@ -52,5 +86,6 @@ class MyStuffProvider extends ChangeNotifier {
     profileModel = ProfileModel();
     rentModel = RentModel();
     watchlistModel = WatchlistModel();
+    successModel = SuccessModel();
   }
 }

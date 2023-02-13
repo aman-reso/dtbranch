@@ -418,6 +418,12 @@ class GetRelatedVideo {
     this.noOfRating,
     this.status,
     this.isTitle,
+    this.video320,
+    this.video480,
+    this.video720,
+    this.video1080,
+    this.subtitleType,
+    this.subtitle,
     this.isPremium,
     this.createdAt,
     this.updatedAt,
@@ -469,6 +475,12 @@ class GetRelatedVideo {
   int? noOfRating;
   String? status;
   String? isTitle;
+  String? video320;
+  String? video480;
+  String? video720;
+  String? video1080;
+  String? subtitleType;
+  String? subtitle;
   int? isPremium;
   String? createdAt;
   String? updatedAt;
@@ -521,6 +533,12 @@ class GetRelatedVideo {
         noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
+        video320: json["video_320"],
+        video480: json["video_480"],
+        video720: json["video_720"],
+        video1080: json["video_1080"],
+        subtitleType: json["subtitle_type"],
+        subtitle: json["subtitle"],
         isPremium: json["is_premium"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
@@ -573,6 +591,12 @@ class GetRelatedVideo {
         "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
+        "video_320": video320,
+        "video_480": video480,
+        "video_720": video720,
+        "video_1080": video1080,
+        "subtitle_type": subtitleType,
+        "subtitle": subtitle,
         "is_premium": isPremium,
         "created_at": createdAt,
         "updated_at": updatedAt,

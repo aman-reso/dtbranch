@@ -52,21 +52,21 @@ class Result {
   PaymentGatewayData? payTm;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-        inAppPurchage: PaymentGatewayData.fromJson(json["InApp Purchage"]),
-        paypal: PaymentGatewayData.fromJson(json["Paypal"]),
-        razorpay: PaymentGatewayData.fromJson(json["Razorpay"]),
-        flutterWave: PaymentGatewayData.fromJson(json["FlutterWave"]),
-        payUMoney: PaymentGatewayData.fromJson(json["PayUMoney"]),
-        payTm: PaymentGatewayData.fromJson(json["PayTm"]),
+        inAppPurchage: PaymentGatewayData.fromJson(json["inapppurchage"]),
+        paypal: PaymentGatewayData.fromJson(json["paypal"]),
+        razorpay: PaymentGatewayData.fromJson(json["razorpay"]),
+        flutterWave: PaymentGatewayData.fromJson(json["flutterWave"]),
+        payUMoney: PaymentGatewayData.fromJson(json["payumoney"]),
+        payTm: PaymentGatewayData.fromJson(json["paytm"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "InApp Purchage": inAppPurchage?.toJson() ?? {},
-        "Paypal": paypal?.toJson() ?? {},
-        "Razorpay": razorpay?.toJson() ?? {},
-        "FlutterWave": flutterWave?.toJson() ?? {},
-        "PayUMoney": payUMoney?.toJson() ?? {},
-        "PayTm": payTm?.toJson() ?? {},
+        "inapppurchage": inAppPurchage?.toJson() ?? {},
+        "paypal": paypal?.toJson() ?? {},
+        "razorpay": razorpay?.toJson() ?? {},
+        "flutterWave": flutterWave?.toJson() ?? {},
+        "payumoney": payUMoney?.toJson() ?? {},
+        "paytm": payTm?.toJson() ?? {},
       };
 }
 

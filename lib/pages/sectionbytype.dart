@@ -10,7 +10,6 @@ import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/sectionbytypeprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -435,8 +434,7 @@ class SectionByTypeState extends State<SectionByType> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl: sectionDataList?[index].landscape.toString() ??
-                      Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].landscape.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -503,8 +501,7 @@ class SectionByTypeState extends State<SectionByType> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
-                      Constant.placeHolderPort,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -571,8 +568,7 @@ class SectionByTypeState extends State<SectionByType> {
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: MyNetworkImage(
-                  imageUrl: sectionDataList?[index].thumbnail.toString() ??
-                      Constant.placeHolderLand,
+                  imageUrl: sectionDataList?[index].thumbnail.toString() ?? "",
                   fit: BoxFit.cover,
                   imgHeight: MediaQuery.of(context).size.height,
                   imgWidth: MediaQuery.of(context).size.width,
@@ -627,8 +623,7 @@ class SectionByTypeState extends State<SectionByType> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl: sectionDataList?[index].image.toString() ??
-                          Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ?? "",
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,
@@ -699,8 +694,7 @@ class SectionByTypeState extends State<SectionByType> {
                     borderRadius: BorderRadius.circular(4),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: MyNetworkImage(
-                      imageUrl: sectionDataList?[index].image.toString() ??
-                          Constant.placeHolderLand,
+                      imageUrl: sectionDataList?[index].image.toString() ?? "",
                       fit: BoxFit.cover,
                       imgHeight: MediaQuery.of(context).size.height,
                       imgWidth: MediaQuery.of(context).size.width,

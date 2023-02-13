@@ -13,7 +13,7 @@ class ShowDetailsProvider extends ChangeNotifier {
   EpisodeBySeasonModel episodeBySeasonModel = EpisodeBySeasonModel();
 
   bool loading = false;
-  int seasonPos = 0;
+  int seasonPos = 0, mCurrentEpiPos = -1;
 
   Future<void> getSectionDetails(typeId, videoType, videoId) async {
     loading = true;
@@ -24,8 +24,30 @@ class ShowDetailsProvider extends ChangeNotifier {
   }
 
   setEpisodeBySeason(episodeModel) async {
+    episodeBySeasonModel = EpisodeBySeasonModel();
     episodeBySeasonModel = episodeModel;
+    await getLastWatchedEpisode();
     notifyListeners();
+  }
+
+  getLastWatchedEpisode() {
+    for (var i = 0; i < (episodeBySeasonModel.result?.length ?? 0); i++) {
+      if ((episodeBySeasonModel.result?[i].stopTime ?? 0) > 0) {
+        if (episodeBySeasonModel.result?[i].videoDuration != null) {
+          if ((episodeBySeasonModel.result?[i].videoDuration ?? 0) > 0 &&
+              (episodeBySeasonModel.result?[i].videoDuration ?? 0) !=
+                  (episodeBySeasonModel.result?[i].stopTime ?? 0) &&
+              (episodeBySeasonModel.result?[i].videoDuration ?? 0) >
+                  (episodeBySeasonModel.result?[i].stopTime ?? 0)) {
+            mCurrentEpiPos = i;
+            return;
+          } else {
+            mCurrentEpiPos = 0;
+          }
+        }
+      }
+    }
+    log("getLastWatchedEpisode mCurrentEpiPos ========> $mCurrentEpiPos");
   }
 
   Future<void> setBookMark(
@@ -77,5 +99,6 @@ class ShowDetailsProvider extends ChangeNotifier {
     episodeBySeasonModel = EpisodeBySeasonModel();
     successModel = SuccessModel();
     seasonPos = 0;
+    mCurrentEpiPos = -1;
   }
 }

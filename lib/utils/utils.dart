@@ -2,6 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as number;
 
+import 'package:dtlive/pages/allpayment.dart';
+import 'package:dtlive/pages/player.dart';
+import 'package:dtlive/pages/vimeoplayer.dart';
+import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
@@ -31,6 +35,108 @@ class Utils {
       fontSize: 16,
     );
   }
+
+  static Future<dynamic> paymentForRent({
+    required BuildContext context,
+    required String? videoId,
+    required String? vTitle,
+    required String? vType,
+    required String? typeId,
+    required String? rentPrice,
+  }) async {
+    dynamic isRented = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return AllPayment(
+            payType: 'Rent',
+            itemId: videoId.toString(),
+            price: rentPrice.toString(),
+            itemTitle: vTitle.toString(),
+            typeId: typeId.toString(),
+            videoType: vType.toString(),
+            productPackage: '',
+            currency: '',
+          );
+        },
+      ),
+    );
+    return isRented;
+  }
+
+  /* ========= Open Player ========= */
+  static Future<dynamic> openPlayer(
+      {required BuildContext context,
+      required String? playType,
+      required int? videoId,
+      required int? videoType,
+      required int? typeId,
+      required String? videoUrl,
+      required String? trailerUrl,
+      required String? uploadType,
+      required String? vSubtitle,
+      required int? vStopTime}) async {
+    deleteCacheDir();
+    dynamic isContinue;
+    int? vID = (videoId ?? 0);
+    int? vType = (videoType ?? 0);
+    int? vTypeID = (typeId ?? 0);
+
+    int? stopTime;
+    if (playType == "startOver") {
+      stopTime = 0;
+    } else {
+      stopTime = (vStopTime ?? 0);
+    }
+
+    String? vUrl, vSubtitle, vUploadType;
+    if (playType == "Trailer") {
+      vUploadType = "Trailer";
+      vUrl = (trailerUrl ?? "");
+      vSubtitle = "";
+    } else {
+      vUrl = (videoUrl ?? "");
+      vSubtitle = (vSubtitle ?? "");
+      vUploadType = (uploadType ?? "");
+    }
+    log("===>vUploadType $vUploadType");
+    if (vUploadType == "youtube") {
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return YoutubeVideo(
+              videoUrl: vUrl,
+            );
+          },
+        ),
+      );
+    } else if (vUploadType == "vimeo") {
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return VimeoPlayerPage(
+              url: vUrl,
+            );
+          },
+        ),
+      );
+    } else {
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerPage("Video", vID, vType, vTypeID, vUrl ?? "",
+                vSubtitle ?? "", stopTime);
+          },
+        ),
+      );
+    }
+    log("isContinue ===> $isContinue");
+    return isContinue;
+  }
+  /* ========= Open Player ========= */
 
   static void getCurrencySymbol() async {
     SharedPre sharedPref = SharedPre();
@@ -271,15 +377,11 @@ class Utils {
     String convTime = "";
 
     try {
-      log("timeInMilli ==> $timeInMilli");
+      log("timeInMilli ==> ${(timeInMilli / 1000)}");
       if (timeInMilli > 0) {
         int seconds = ((timeInMilli / 1000) % 60).round();
         int minutes = ((timeInMilli / (1000 * 60)) % 60).round();
         int hours = ((timeInMilli / (1000 * 60 * 60)) % 24).round();
-
-        log("==>seconds : $seconds");
-        log("==>minutes : $minutes");
-        log("==>hours : $hours");
 
         if (hours > 0) {
           if (minutes > 0 && seconds > 0) {
@@ -313,15 +415,11 @@ class Utils {
     String convTime = "";
 
     try {
-      log("timeInMilli ==> $timeInMilli");
+      log("timeInMilli ==> ${(timeInMilli / 1000)}");
       if (timeInMilli > 0) {
         int seconds = ((timeInMilli / 1000) % 60).round();
         int minutes = ((timeInMilli / (1000 * 60)) % 60).round();
         int hours = ((timeInMilli / (1000 * 60 * 60)) % 24).round();
-
-        log("==>seconds : $seconds");
-        log("==>minutes : $minutes");
-        log("==>hours : $hours");
 
         if (hours > 0) {
           if (minutes > 0 && seconds > 0) {
@@ -361,10 +459,6 @@ class Utils {
         int minutes = ((remainWatch / (1000 * 60)) % 60).round();
         int hours = ((remainWatch / (1000 * 60 * 60)) % 24).round();
 
-        log("second ==> $seconds");
-        log("minutes ==> $minutes");
-        log("hour ==> $hours");
-
         if (hours > 0) {
           if (minutes > 0 && seconds > 0) {
             convTime = "$hours hr $minutes min $seconds sec";
@@ -397,10 +491,8 @@ class Utils {
     String convTime = "";
 
     try {
-      log("remainWatch ==> ${(remainWatch / 1000)}");
       if (remainWatch > 0) {
         int minutes = ((remainWatch / (1000 * 60)) % 60).round();
-        log("minutes ==> $minutes");
         if (minutes == 0) {
           convTime = "00 min";
         } else if (minutes < 10) {
@@ -425,13 +517,11 @@ class Utils {
       } else {
         percentage = 0.0;
       }
-      log("getPercentage percentage ==> $percentage");
     } catch (e) {
       log("getPercentage Exception ==> $e");
       percentage = 0.0;
     }
     percentage = (percentage.round() / 100);
-    log("getPercentage percentage ===FINAL===> $percentage");
     return percentage;
   }
 

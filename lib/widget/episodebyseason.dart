@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/player.dart';
+import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/pages/vimeoplayer.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
 import 'package:dtlive/pages/youtubevideo.dart';
@@ -18,10 +19,11 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class EpisodeBySeason extends StatefulWidget {
-  final int videoId, typeId, seasonPos;
+  final int? videoId, typeId, seasonPos;
   final List<Session>? seasonList;
   final Result? sectionDetails;
   const EpisodeBySeason(this.videoId, this.typeId, this.seasonPos,
@@ -51,10 +53,13 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         Provider.of<ShowDetailsProvider>(context, listen: false);
     episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     await episodeProvider.getEpisodeBySeason(
-        widget.seasonList?[widget.seasonPos].id ?? 0, widget.videoId);
+        widget.seasonList?[(widget.seasonPos ?? 0)].id ?? 0, widget.videoId);
     await showDetailsProvider
         .setEpisodeBySeason(episodeProvider.episodeBySeasonModel);
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
@@ -90,41 +95,60 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      InkWell(
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () {
-                          debugPrint("===> index $index");
-                          if (Constant.userID != null) {
-                            openPlayer("Show", index,
-                                episodeProvider.episodeBySeasonModel.result);
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const LoginSocial();
-                                },
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          alignment: Alignment.centerLeft,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: MyImage(
-                              fit: BoxFit.cover,
-                              height: 32,
+                      Column(
+                        children: [
+                          InkWell(
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () async {
+                              debugPrint("===> index $index");
+                              _onTapEpisodePlay(index);
+                            },
+                            child: Container(
                               width: 32,
-                              imagePath: "play.png",
+                              height: 32,
+                              alignment: Alignment.centerLeft,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: MyImage(
+                                  fit: BoxFit.cover,
+                                  height: 32,
+                                  width: 32,
+                                  imagePath: "play.png",
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          (episodeProvider.episodeBySeasonModel.result?[index]
+                                          .videoDuration !=
+                                      null &&
+                                  (episodeProvider.episodeBySeasonModel
+                                              .result?[index].stopTime ??
+                                          0) >
+                                      0)
+                              ? Container(
+                                  height: 2,
+                                  width: 32,
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: LinearPercentIndicator(
+                                    padding: const EdgeInsets.all(0),
+                                    barRadius: const Radius.circular(2),
+                                    lineHeight: 2,
+                                    percent: Utils.getPercentage(
+                                        episodeProvider.episodeBySeasonModel
+                                                .result?[index].videoDuration ??
+                                            0,
+                                        episodeProvider.episodeBySeasonModel
+                                                .result?[index].stopTime ??
+                                            0),
+                                    backgroundColor: secProgressColor,
+                                    progressColor: primaryColor,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ],
                       ),
                       const SizedBox(
                         width: 12,
@@ -259,6 +283,100 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
     );
   }
 
+  _onTapEpisodePlay(index) async {
+    final showDetailsProvider =
+        Provider.of<ShowDetailsProvider>(context, listen: false);
+    final episodeProvider =
+        Provider.of<EpisodeProvider>(context, listen: false);
+    if (Constant.userID != null) {
+      if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) ==
+          1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          openPlayer(
+              "Show", index, episodeProvider.episodeBySeasonModel.result);
+        } else {
+          if (Constant.userID != null) {
+            dynamic isSubscribed = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const Subscription();
+                },
+              ),
+            );
+            if (isSubscribed != null && isSubscribed == true) {
+              await showDetailsProvider.getSectionDetails(
+                  widget.typeId,
+                  showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
+                  widget.videoId);
+              getAllEpisode();
+            }
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const LoginSocial();
+                },
+              ),
+            );
+          }
+        }
+      } else if ((showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+          1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          openPlayer(
+              "Show", index, episodeProvider.episodeBySeasonModel.result);
+        } else {
+          if (Constant.userID != null) {
+            dynamic isRented = await Utils.paymentForRent(
+                context: context,
+                videoId: widget.videoId.toString(),
+                vTitle: showDetailsProvider.sectionDetailModel.result?.name
+                    .toString(),
+                vType: showDetailsProvider.sectionDetailModel.result?.videoType
+                    .toString(),
+                typeId: widget.typeId.toString(),
+                rentPrice: showDetailsProvider
+                    .sectionDetailModel.result?.rentPrice
+                    .toString());
+            if (isRented != null && isRented == true) {
+              await showDetailsProvider.getSectionDetails(
+                  widget.typeId,
+                  showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
+                  widget.videoId);
+              getAllEpisode();
+            }
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const LoginSocial();
+                },
+              ),
+            );
+          }
+        }
+      } else {
+        openPlayer("Show", index, episodeProvider.episodeBySeasonModel.result);
+      }
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginSocial();
+          },
+        ),
+      );
+    }
+  }
+
   void openPlayer(
       String playType, int epiPos, List<episode.Result>? episodeList) async {
     final showDetailsProvider =
@@ -310,7 +428,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
           MaterialPageRoute(
             builder: (context) {
               return PlayerPage(
-                  epiID, vType, vTypeID, epiUrl, vSubtitle, stopTime);
+                  playType, epiID, vType, vTypeID, epiUrl, vSubtitle, stopTime);
             },
           ),
         );

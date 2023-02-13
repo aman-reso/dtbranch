@@ -1,6 +1,5 @@
 import 'package:dtlive/provider/avatarprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/nodata.dart';
@@ -76,7 +75,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                                               .result?[position]
                                               .image
                                               .toString() ??
-                                          Constant.placeHolderLand;
+                                          "";
                                       debugPrint(
                                           "pickedImageUrl =====> $pickedImageUrl");
                                       onBackPressed();
@@ -91,7 +90,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                                           imageUrl: avatarProvider.avatarModel
                                                   .result?[position].image
                                                   .toString() ??
-                                              Constant.placeHolderLand,
+                                              "",
                                           fit: BoxFit.cover,
                                           imgHeight: MediaQuery.of(context)
                                               .size

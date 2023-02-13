@@ -59,6 +59,12 @@ class Result {
     this.isBuy,
     this.categoryName,
     this.sessionId,
+    this.video320,
+    this.video480,
+    this.video720,
+    this.video1080,
+    this.subtitleType,
+    this.subtitle,
   });
 
   String? name;
@@ -79,6 +85,12 @@ class Result {
   int? isBuy;
   String? categoryName;
   String? sessionId;
+  String? video320;
+  String? video480;
+  String? video720;
+  String? video1080;
+  String? subtitleType;
+  String? subtitle;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
         name: json["name"],
@@ -99,6 +111,12 @@ class Result {
         isBuy: json["is_buy"],
         categoryName: json["category_name"],
         sessionId: json["session_id"],
+        video320: json["video_320"],
+        video480: json["video_480"],
+        video720: json["video_720"],
+        video1080: json["video_1080"],
+        subtitleType: json["subtitle_type"],
+        subtitle: json["subtitle"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -120,5 +138,11 @@ class Result {
         "is_buy": isBuy,
         "category_name": categoryName,
         "session_id": sessionId,
+        "video_320": video320,
+        "video_480": video480,
+        "video_720": video720,
+        "video_1080": video1080,
+        "subtitle_type": subtitleType,
+        "subtitle": subtitle,
       };
 }

@@ -1,5 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
+import 'package:dtlive/provider/downloadprovider.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/castdetails.dart';
@@ -20,7 +24,9 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
@@ -35,12 +41,44 @@ class MovieDetails extends StatefulWidget {
 }
 
 class MovieDetailsState extends State<MovieDetails> {
+  /* Download init */
+  final ReceivePort _receivePort = ReceivePort();
+  late bool _permissionReady;
+  late DownloadProvider downloadProvider;
+
   List<Cast>? directorList;
-  VideoDetailsProvider videoDetailsProvider = VideoDetailsProvider();
+  late VideoDetailsProvider videoDetailsProvider;
   Map<String, String> qualityUrlList = <String, String>{};
+
+  @pragma('vm:entry-point')
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort? send =
+        IsolateNameServer.lookupPortByName(Constant.downloadVideoPortName);
+    send?.send([id, status, progress]);
+  }
 
   @override
   void initState() {
+    videoDetailsProvider =
+        Provider.of<VideoDetailsProvider>(context, listen: false);
+    downloadProvider = Provider.of<DownloadProvider>(context, listen: false);
+
+    /* Download init */
+    IsolateNameServer.registerPortWithName(
+        _receivePort.sendPort, Constant.downloadVideoPortName);
+    _receivePort.listen((dynamic data) {
+      String? id = data[0];
+      DownloadTaskStatus? status = data[1];
+      int? progress = data[2];
+
+      log("_receivePort id ==> $id");
+      log("_receivePort status ==> $status");
+      log("_receivePort progress ==> $progress");
+    });
+    FlutterDownloader.registerCallback(downloadCallback);
+    /* Download init */
+
     super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");
@@ -50,8 +88,6 @@ class MovieDetailsState extends State<MovieDetails> {
 
   void _getData() async {
     Utils.getCurrencySymbol();
-    videoDetailsProvider =
-        Provider.of<VideoDetailsProvider>(context, listen: false);
     await videoDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
 
@@ -83,6 +119,7 @@ class MovieDetailsState extends State<MovieDetails> {
   @override
   void dispose() {
     super.dispose();
+    IsolateNameServer.removePortNameMapping(Constant.downloadVideoPortName);
     videoDetailsProvider.clearProvider();
   }
 
@@ -344,55 +381,6 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       ),
                                                     )
                                                   : const SizedBox.shrink(),
-                                              /* Age Limit */
-                                              (videoDetailsProvider
-                                                              .sectionDetailModel
-                                                              .result
-                                                              ?.ageRestriction !=
-                                                          null &&
-                                                      videoDetailsProvider
-                                                              .sectionDetailModel
-                                                              .result
-                                                              ?.ageRestriction !=
-                                                          "")
-                                                  ? Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              right: 10),
-                                                      padding: const EdgeInsets
-                                                          .fromLTRB(5, 1, 5, 1),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                          color: otherColor,
-                                                          width: .7,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(4),
-                                                        shape:
-                                                            BoxShape.rectangle,
-                                                      ),
-                                                      child: MyText(
-                                                        color: otherColor,
-                                                        text: videoDetailsProvider
-                                                                .sectionDetailModel
-                                                                .result
-                                                                ?.ageRestriction ??
-                                                            "",
-                                                        textalign:
-                                                            TextAlign.center,
-                                                        fontsize: 10,
-                                                        multilanguage: false,
-                                                        fontwaight:
-                                                            FontWeight.normal,
-                                                        maxline: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontstyle:
-                                                            FontStyle.normal,
-                                                      ),
-                                                    )
-                                                  : const SizedBox.shrink(),
                                               /* MaxQuality */
                                               (videoDetailsProvider
                                                               .sectionDetailModel
@@ -557,7 +545,7 @@ class MovieDetailsState extends State<MovieDetails> {
                               /* Subscription Button */
                               _buildPlayWithSubsCheck(),
                               /* Rent Button */
-                              _buildRentButton(),
+                              _buildRentBtn(),
 
                               /* Included Features buttons */
                               Container(
@@ -711,76 +699,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     ),
 
                                     /* Download */
-                                    (videoDetailsProvider.sectionDetailModel
-                                                .result?.videoUploadType ==
-                                            "server_video")
-                                        ? Expanded(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                InkWell(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          Dimens.featureSize /
-                                                              2),
-                                                  onTap: () {
-                                                    if (Constant.userID !=
-                                                        null) {
-                                                    } else {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) {
-                                                            return const LoginSocial();
-                                                          },
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    width: Dimens.featureSize,
-                                                    height: Dimens.featureSize,
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                        color: primaryLight,
-                                                      ),
-                                                      borderRadius: BorderRadius
-                                                          .circular(Dimens
-                                                                  .featureSize /
-                                                              2),
-                                                    ),
-                                                    child: MyImage(
-                                                      width: Dimens
-                                                          .featureIconSize,
-                                                      height: Dimens
-                                                          .featureIconSize,
-                                                      color: lightGray,
-                                                      imagePath:
-                                                          "ic_download.png",
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                MyText(
-                                                  color: white,
-                                                  text: "download",
-                                                  multilanguage: true,
-                                                  fontsize: 12,
-                                                  fontwaight: FontWeight.normal,
-                                                  maxline: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textalign: TextAlign.center,
-                                                  fontstyle: FontStyle.normal,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
+                                    _buildDownloadWithSubCheck(),
 
                                     /* Watchlist */
                                     Expanded(
@@ -1502,6 +1421,32 @@ class MovieDetailsState extends State<MovieDetails> {
     );
   }
 
+  double getDynamicHeight(String? videoType, String? layoutType) {
+    if (videoType == "1" || videoType == "2") {
+      if (layoutType == "landscape") {
+        return Dimens.heightLand;
+      } else if (layoutType == "potrait") {
+        return Dimens.heightPort;
+      } else if (layoutType == "square") {
+        return Dimens.heightSquare;
+      } else {
+        return Dimens.heightLand;
+      }
+    } else if (videoType == "3" || videoType == "4") {
+      return Dimens.heightLangGen;
+    } else {
+      if (layoutType == "landscape") {
+        return Dimens.heightLand;
+      } else if (layoutType == "potrait") {
+        return Dimens.heightPort;
+      } else if (layoutType == "square") {
+        return Dimens.heightSquare;
+      } else {
+        return Dimens.heightLand;
+      }
+    }
+  }
+
   Widget _buildPlayWithSubsCheck() {
     if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
       if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
@@ -2208,7 +2153,7 @@ class MovieDetailsState extends State<MovieDetails> {
     }
   }
 
-  Widget _buildRentButton() {
+  Widget _buildRentBtn() {
     if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1 &&
         (videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) == 1) {
       if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
@@ -2298,31 +2243,181 @@ class MovieDetailsState extends State<MovieDetails> {
     }
   }
 
-  double getDynamicHeight(String? videoType, String? layoutType) {
-    if (videoType == "1" || videoType == "2") {
-      if (layoutType == "landscape") {
-        return Dimens.heightLand;
-      } else if (layoutType == "potrait") {
-        return Dimens.heightPort;
-      } else if (layoutType == "square") {
-        return Dimens.heightSquare;
+  /* ========= Download ========= */
+
+  Widget _buildDownloadWithSubCheck() {
+    if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
+      if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+          (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
+        return _buildDownloadBtn();
       } else {
-        return Dimens.heightLand;
+        return const SizedBox.shrink();
       }
-    } else if (videoType == "3" || videoType == "4") {
-      return Dimens.heightLangGen;
-    } else {
-      if (layoutType == "landscape") {
-        return Dimens.heightLand;
-      } else if (layoutType == "potrait") {
-        return Dimens.heightPort;
-      } else if (layoutType == "square") {
-        return Dimens.heightSquare;
+    } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+        1) {
+      if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+          (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
+        return _buildDownloadBtn();
       } else {
-        return Dimens.heightLand;
+        return const SizedBox.shrink();
+      }
+    } else {
+      return _buildDownloadBtn();
+    }
+  }
+
+  Widget _buildDownloadBtn() {
+    if (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ==
+        "server_video") {
+      return Expanded(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+              onTap: () {
+                if (Constant.userID != null) {
+                  if (downloadProvider.currentProgress(
+                          videoDetailsProvider.sectionDetailModel.result?.id ??
+                              0) ==
+                      0) {
+                    _checkAndDownload();
+                  } else {
+                    Utils.showSnackbar(context, "response", "please_wait");
+                  }
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginSocial();
+                      },
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                width: Dimens.featureSize,
+                height: Dimens.featureSize,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: primaryLight,
+                  ),
+                  borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                ),
+                child: Consumer<DownloadProvider>(
+                  builder: (context, downloadProvider, child) {
+                    if (downloadProvider.currentProgress(videoDetailsProvider
+                                .sectionDetailModel.result?.id ??
+                            0) >
+                        0) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: downloadProvider.currentProgress(
+                              videoDetailsProvider
+                                      .sectionDetailModel.result?.id ??
+                                  0),
+                        ),
+                      );
+                    } else {
+                      return MyImage(
+                        width: Dimens.featureIconSize,
+                        height: Dimens.featureIconSize,
+                        color: lightGray,
+                        imagePath: (videoDetailsProvider
+                                    .sectionDetailModel.result?.isDownloaded ==
+                                1)
+                            ? "ic_download_done.png"
+                            : "ic_download.png",
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Consumer<DownloadProvider>(
+                builder: (context, downloadProvider, child) {
+              return MyText(
+                color: white,
+                text: (videoDetailsProvider
+                            .sectionDetailModel.result?.isDownloaded ==
+                        1)
+                    ? "complete"
+                    : "download",
+                multilanguage: true,
+                fontsize: 12,
+                fontwaight: FontWeight.normal,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                textalign: TextAlign.center,
+                fontstyle: FontStyle.normal,
+              );
+            }),
+          ],
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  _checkAndDownload() async {
+    _permissionReady = await Utils.checkPermission();
+    if (_permissionReady) {
+      if (videoDetailsProvider.sectionDetailModel.result?.isDownloaded == 0) {
+        if ((videoDetailsProvider.sectionDetailModel.result?.video320 ?? "")
+            .isNotEmpty) {
+          File? mTargetFile;
+          String? mFileName =
+              '${(videoDetailsProvider.sectionDetailModel.result?.name ?? "").replaceAll(RegExp(r'[^\w\s]+'), '_').replaceAll(RegExp(" "), "")}'
+              '${(videoDetailsProvider.sectionDetailModel.result?.id ?? 0)}${(Constant.userID)}';
+          try {
+            Directory? directory;
+            if (Platform.isAndroid) {
+              directory = await getExternalStorageDirectory();
+            } else {
+              directory = await getApplicationDocumentsDirectory();
+            }
+            String localPath = directory?.absolute.path ?? "";
+            final savedDir = Directory(localPath);
+            bool hasExisted = await savedDir.exists();
+            if (!hasExisted) {
+              savedDir.create();
+            }
+            log("savedDir ====> ${savedDir.absolute.path}");
+            mTargetFile = File(path.join(localPath,
+                '$mFileName.${(videoDetailsProvider.sectionDetailModel.result?.videoExtension ?? ".mp4")}'));
+            // This is a sync operation on a real
+            // app you'd probably prefer to use writeAsByte and handle its Future
+          } catch (e) {
+            debugPrint("saveVideoStorage Exception ===> $e");
+          }
+          log("mFileName ========> $mFileName");
+          log("mTargetFile ========> ${mTargetFile?.absolute.path ?? ""}");
+          if (mTargetFile != null) {
+            try {
+              downloadProvider.downloadVideo(
+                mTargetFile.absolute.path,
+                videoDetailsProvider.sectionDetailModel.result?.video320 ?? "",
+                videoDetailsProvider.sectionDetailModel.result?.id ?? 0,
+              );
+              log("mTargetFile length ========> ${mTargetFile.length()}");
+            } catch (e) {
+              log("Downloading... Exception ======> $e");
+            }
+          }
+        } else {
+          if (!mounted) return;
+          Utils.showSnackbar(context, "response", "invalid_url");
+        }
       }
     }
   }
+  /* ========= Download ========= */
 
   /* ========= Dialogs ========= */
   buildLangSubtitleDialog(List<Language>? languageList) {

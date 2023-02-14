@@ -55,7 +55,7 @@ class Result {
         inAppPurchage: PaymentGatewayData.fromJson(json["inapppurchage"]),
         paypal: PaymentGatewayData.fromJson(json["paypal"]),
         razorpay: PaymentGatewayData.fromJson(json["razorpay"]),
-        flutterWave: PaymentGatewayData.fromJson(json["flutterWave"]),
+        flutterWave: PaymentGatewayData.fromJson(json["flutterwave"]),
         payUMoney: PaymentGatewayData.fromJson(json["payumoney"]),
         payTm: PaymentGatewayData.fromJson(json["paytm"]),
       );
@@ -64,7 +64,7 @@ class Result {
         "inapppurchage": inAppPurchage?.toJson() ?? {},
         "paypal": paypal?.toJson() ?? {},
         "razorpay": razorpay?.toJson() ?? {},
-        "flutterWave": flutterWave?.toJson() ?? {},
+        "flutterwave": flutterWave?.toJson() ?? {},
         "payumoney": payUMoney?.toJson() ?? {},
         "paytm": payTm?.toJson() ?? {},
       };

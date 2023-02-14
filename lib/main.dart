@@ -5,6 +5,7 @@ import 'package:dtlive/pages/splash.dart';
 import 'package:dtlive/provider/avatarprovider.dart';
 import 'package:dtlive/provider/castdetailsprovider.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
+import 'package:dtlive/provider/downloadprovider.dart';
 import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/provider/generalprovider.dart';
@@ -13,6 +14,7 @@ import 'package:dtlive/provider/mystuffprovider.dart';
 import 'package:dtlive/provider/paymentprovider.dart';
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/provider/profileprovider.dart';
+import 'package:dtlive/provider/purchaselistprovider.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/provider/sectionbytypeprovider.dart';
@@ -21,10 +23,12 @@ import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/provider/subscriptionprovider.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
+import 'package:dtlive/provider/watchlistprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +36,7 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await Locales.init(['en', 'ar', 'hi']);
   //Remove this method to stop OneSignal Debugging
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
@@ -66,6 +71,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SectionByTypeProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
         ChangeNotifierProvider(create: (_) => MyStuffProvider()),
+        ChangeNotifierProvider(create: (_) => WatchlistProvider()),
+        ChangeNotifierProvider(create: (_) => DownloadProvider()),
+        ChangeNotifierProvider(create: (_) => PurchaselistProvider()),
         ChangeNotifierProvider(create: (_) => AvatarProvider()),
         ChangeNotifierProvider(create: (_) => CastDetailsProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),

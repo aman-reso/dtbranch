@@ -29,6 +29,8 @@ class Dimens {
   static double widthLangGen = 172;
   static double heightLangGen = 177;
 
+  static double heightWatchlist = 100;
+
   static double homeBanner = 230;
   static double detailPoster = 250;
   static double detailTabs = 50;

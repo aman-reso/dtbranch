@@ -18,6 +18,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:path_provider/path_provider.dart';
@@ -34,6 +35,23 @@ class Utils {
       textColor: black,
       fontSize: 16,
     );
+  }
+
+  static Future<bool> checkPermission() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.status;
+      if (status != PermissionStatus.granted) {
+        final result = await Permission.storage.request();
+        if (result == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
   }
 
   static Future<dynamic> paymentForRent({

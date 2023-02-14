@@ -62,6 +62,7 @@
     "sms" : "SMS",
     "instagram_stories" : "Instagram stories",
     "link_copied" : "Link copied",
+    "please_wait": "Please wait...",
 
     "addwatchlistmessage" : "Successfully added to Watchlist",
     "removewatchlistmessage" : "Successfully removed from Watchlist",
@@ -101,7 +102,11 @@
     "chooseanavatar" : "Choose an Avatar.",
     "addphoto" :"Add photo!",
     "downloads" : "Downloads",
-    "parchases" : "Purchases",
+    "watchlist" : "Watchlist",
+    "purchases" : "Purchases",
+    "view_your_watchlist" : "View your watchlist video & tv shows",
+    "view_your_downloads" : "Manage your downloads",
+    "view_your_purchases" : "View your purchased video & tv shows",
     "purchasvideo" : "Purchased Videos",
     "purchaschow" : "Purchased Shows",
 
@@ -109,7 +114,6 @@
     "trailer": "Trailer",
     "complite": "Complete",
     "startover": "Start Over",
-    "watchlist" : "Watchlist",
     "share" : "Share",
     "languages_" : "Langauges:",
     "left" : "left",
@@ -123,6 +127,7 @@
     "directors" : "Directors",
     "episodes" : "Episodes",
     "season" : "Season",
+    "invalid_url" : "Invalid URL!!!",
 
     "forgotpassnote" : "We will send new password to this email address.",
     "acceptprivacypolicymsg" : "Please, accept the Privacy Policy of this app.",

@@ -14,14 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class Store extends StatefulWidget {
-  const Store({Key? key}) : super(key: key);
+class RentStore extends StatefulWidget {
+  const RentStore({Key? key}) : super(key: key);
 
   @override
-  State<Store> createState() => StoreState();
+  State<RentStore> createState() => RentStoreState();
 }
 
-class StoreState extends State<Store> {
+class RentStoreState extends State<RentStore> {
   @override
   void initState() {
     super.initState();

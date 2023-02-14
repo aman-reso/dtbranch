@@ -38,11 +38,13 @@ class TvShowDetails extends StatefulWidget {
 
 class TvShowDetailsState extends State<TvShowDetails> {
   List<Cast>? directorList;
-  ShowDetailsProvider showDetailsProvider = ShowDetailsProvider();
-  EpisodeProvider episodeProvider = EpisodeProvider();
+  late ShowDetailsProvider showDetailsProvider;
+  late EpisodeProvider episodeProvider;
 
   @override
   void initState() {
+    showDetailsProvider =
+        Provider.of<ShowDetailsProvider>(context, listen: false);
     episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     super.initState();
     log("initState videoId ==> ${widget.videoId}");
@@ -53,13 +55,13 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
   Future<void> _getData() async {
     Utils.getCurrencySymbol();
-    showDetailsProvider =
-        Provider.of<ShowDetailsProvider>(context, listen: false);
     await showDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
-    Future.delayed(const Duration(seconds: 1)).then((value) {
+    Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
-      setState(() {});
+      setState(() {
+        log("setState videoId ======================> ${widget.videoId}");
+      });
     });
   }
 
@@ -72,8 +74,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final showDetailsProvider =
-        Provider.of<ShowDetailsProvider>(context, listen: false);
     if (showDetailsProvider.sectionDetailModel.cast != null &&
         (showDetailsProvider.sectionDetailModel.cast?.length ?? 0) > 0) {
       directorList = <Cast>[];
@@ -100,7 +100,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
           cast.updatedAt =
               showDetailsProvider.sectionDetailModel.cast?[i].updatedAt ?? "";
           directorList?.add(cast);
-          log("directorList size ===> ${directorList?.length ?? 0}");
         }
       }
     }
@@ -1055,7 +1054,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                                           (showDetailsProvider
                                                                       .episodeBySeasonModel
                                                                       .result?[
-                                                                          0]
+                                                                          showDetailsProvider
+                                                                              .mCurrentEpiPos]
                                                                       .subtitle ??
                                                                   "")
                                                               .isNotEmpty)
@@ -1814,14 +1814,14 @@ class TvShowDetailsState extends State<TvShowDetails> {
   }
 
   Widget _buildWatchNow() {
-    return Consumer<ShowDetailsProvider>(
-      builder: (context, showDetailsProvider, child) {
+    return Consumer<EpisodeProvider>(
+      builder: (context, episodeProvider, child) {
         if (showDetailsProvider.mCurrentEpiPos != -1 &&
-            (showDetailsProvider.episodeBySeasonModel
+            (episodeProvider.episodeBySeasonModel
                         .result?[showDetailsProvider.mCurrentEpiPos].stopTime ??
                     0) >
                 0 &&
-            showDetailsProvider
+            episodeProvider
                     .episodeBySeasonModel
                     .result?[showDetailsProvider.mCurrentEpiPos]
                     .videoDuration !=
@@ -1889,14 +1889,14 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                   MyText(
                                     color: white,
                                     text: Utils.remainTimeInMin(
-                                        ((showDetailsProvider
+                                        ((episodeProvider
                                                         .episodeBySeasonModel
                                                         .result?[
                                                             showDetailsProvider
                                                                 .mCurrentEpiPos]
                                                         .videoDuration ??
                                                     0) -
-                                                (showDetailsProvider
+                                                (episodeProvider
                                                         .episodeBySeasonModel
                                                         .result?[
                                                             showDetailsProvider
@@ -1943,12 +1943,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                         barRadius: const Radius.circular(2),
                         lineHeight: 4,
                         percent: Utils.getPercentage(
-                            showDetailsProvider
+                            episodeProvider
                                     .episodeBySeasonModel
                                     .result?[showDetailsProvider.mCurrentEpiPos]
                                     .videoDuration ??
                                 0,
-                            showDetailsProvider
+                            episodeProvider
                                     .episodeBySeasonModel
                                     .result?[showDetailsProvider.mCurrentEpiPos]
                                     .stopTime ??
@@ -2473,8 +2473,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
   Future<void> getAllEpisode(int position, List<Session>? seasonList) async {
     log("position ====> $position");
     log("seasonList seasonID ====> ${seasonList?[position].id}");
-    final episodeProvider =
-        Provider.of<EpisodeProvider>(context, listen: false);
     await episodeProvider.getEpisodeBySeason(
         seasonList?[position].id ?? 0, widget.videoId);
   }
@@ -2627,28 +2625,27 @@ class TvShowDetailsState extends State<TvShowDetails> {
     Utils.deleteCacheDir();
     log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
     if (showDetailsProvider.mCurrentEpiPos != -1 &&
-        (showDetailsProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
-      int? epiID = (showDetailsProvider.episodeBySeasonModel
+        (episodeProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
+      int? epiID = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].id ??
           0);
-      int? vType =
-          (showDetailsProvider.sectionDetailModel.result?.videoType ?? 0);
+      int? vType = widget.videoType;
       int? vTypeID = widget.typeId;
       int? stopTime;
       if (playType == "startOver") {
         stopTime = 0;
       } else {
-        stopTime = (showDetailsProvider.episodeBySeasonModel
+        stopTime = (episodeProvider.episodeBySeasonModel
                 .result?[showDetailsProvider.mCurrentEpiPos].stopTime ??
             0);
       }
-      String? vUploadType = (showDetailsProvider.episodeBySeasonModel
+      String? vUploadType = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].videoUploadType ??
           "");
-      String? epiUrl = (showDetailsProvider.episodeBySeasonModel
+      String? epiUrl = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
           "");
-      String? vSubtitle = (showDetailsProvider.episodeBySeasonModel
+      String? vSubtitle = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].subtitle ??
           "");
       log("epiID ========> $epiID");

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/pages/bottombar.dart';
 import 'package:dtlive/pages/otpverify.dart';
 import 'package:dtlive/provider/generalprovider.dart';
+import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -403,6 +404,7 @@ class LoginSocialState extends State<LoginSocial> {
     if (!prDialog.isShowing()) {
       Utils.showProgress(context, prDialog);
     }
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     final generalProvider =
@@ -431,6 +433,7 @@ class LoginSocialState extends State<LoginSocial> {
         Constant.userID = generalProvider.loginGmailModel.result?.id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
+        await homeProvider.setSelectedTab(0);
         await sectionDataProvider.getSectionBanner("0", "1");
         await sectionDataProvider.getSectionList("0", "1");
 

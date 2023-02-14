@@ -36,4 +36,8 @@ class Constant {
       "https://apps.apple.com/us/app/${appName?.toLowerCase()}/${Constant.appPackageName}";
 
   static Map<String, String> resolutionsUrls = <String, String>{};
+
+  /* Download init */
+  static String downloadVideoPortName = 'downloader_video_send_port';
+  static String downloadSeasonPortName = 'downloader_season_send_port';
 }

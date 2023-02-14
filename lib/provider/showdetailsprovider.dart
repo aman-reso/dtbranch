@@ -17,6 +17,7 @@ class ShowDetailsProvider extends ChangeNotifier {
 
   Future<void> getSectionDetails(typeId, videoType, videoId) async {
     loading = true;
+    sectionDetailModel = SectionDetailModel();
     sectionDetailModel =
         await ApiService().sectionDetails(typeId, videoType, videoId);
     loading = false;
@@ -26,6 +27,7 @@ class ShowDetailsProvider extends ChangeNotifier {
   setEpisodeBySeason(episodeModel) async {
     episodeBySeasonModel = EpisodeBySeasonModel();
     episodeBySeasonModel = episodeModel;
+    log("setEpisodeBySeason episodeBySeasonModel ================> ${episodeBySeasonModel.result?.length}");
     await getLastWatchedEpisode();
     notifyListeners();
   }

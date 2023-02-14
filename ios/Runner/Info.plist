@@ -45,6 +45,8 @@
 		<false/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
+		<key>UISupportsDocumentBrowser</key>
+		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>LSApplicationQueriesSchemes</key>
@@ -83,8 +85,6 @@
 			</dict>
 		</array>
 		<!-- End of the Google Sign-in Section -->
-		<key>UISupportsDocumentBrowser</key>
-		<true/>
 		<key>FacebookAppID</key>
 		<string>983695575596881</string>
 		<key>FacebookClientToken</key>

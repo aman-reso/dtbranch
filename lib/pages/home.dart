@@ -40,10 +40,13 @@ class HomeState extends State<Home> {
   void initState() {
     tabScrollController = ScrollController();
     super.initState();
-    _getData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getData();
+    });
   }
 
   _getData() async {
+    Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);

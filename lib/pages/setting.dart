@@ -3,8 +3,12 @@ import 'dart:io';
 
 import 'package:dtlive/pages/aboutprivacyterms.dart';
 import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/pages/profileedit.dart';
+import 'package:dtlive/pages/mypurchaselist.dart';
 import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/pages/mywatchlist.dart';
+import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -134,6 +138,195 @@ class SettingState extends State<Setting> {
                         MyText(
                           color: otherColor,
                           text: "manageprofile",
+                          multilanguage: true,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+
+                /* Watchlist */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    if (Constant.userID != null) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const MyWatchlist(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Dimens.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "watchlist",
+                          fontsize: 15,
+                          maxline: 1,
+                          multilanguage: true,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: "view_your_watchlist",
+                          multilanguage: true,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+
+                /* Purchases */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    if (Constant.userID != null) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const MyPurchaselist(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Dimens.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "purchases",
+                          fontsize: 15,
+                          maxline: 1,
+                          multilanguage: true,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: "view_your_purchases",
+                          multilanguage: true,
+                          fontsize: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.normal,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 16, bottom: 16),
+                  color: white,
+                ),
+
+                /* Downloads */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    if (Constant.userID != null) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const MyDownloads(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Dimens.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "downloads",
+                          fontsize: 15,
+                          maxline: 1,
+                          multilanguage: true,
+                          overflow: TextOverflow.ellipsis,
+                          fontwaight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        MyText(
+                          color: otherColor,
+                          text: "view_your_downloads",
                           multilanguage: true,
                           fontsize: 13,
                           maxline: 1,
@@ -802,9 +995,13 @@ class SettingState extends State<Setting> {
                         ),
                         InkWell(
                           onTap: () async {
+                            final homeProvider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
                             final sectionDataProvider =
                                 Provider.of<SectionDataProvider>(context,
                                     listen: false);
+                            await homeProvider.setSelectedTab(0);
                             await sectionDataProvider.clearProvider();
                             // Firebase Signout
                             await auth.signOut();

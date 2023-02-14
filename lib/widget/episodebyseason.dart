@@ -36,12 +36,16 @@ class EpisodeBySeason extends StatefulWidget {
 }
 
 class _EpisodeBySeasonState extends State<EpisodeBySeason> {
-  EpisodeProvider episodeProvider = EpisodeProvider();
+  late EpisodeProvider episodeProvider;
+  late ShowDetailsProvider showDetailsProvider;
   String? finalVUrl = "";
   Map<String, String> qualityUrlList = <String, String>{};
 
   @override
   void initState() {
+    episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
+    showDetailsProvider =
+        Provider.of<ShowDetailsProvider>(context, listen: false);
     getAllEpisode();
     super.initState();
   }
@@ -49,9 +53,6 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
   getAllEpisode() async {
     debugPrint("seasonPos =====EpisodeBySeason=======> ${widget.seasonPos}");
     debugPrint("videoId =====EpisodeBySeason=======> ${widget.videoId}");
-    final showDetailsProvider =
-        Provider.of<ShowDetailsProvider>(context, listen: false);
-    episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     await episodeProvider.getEpisodeBySeason(
         widget.seasonList?[(widget.seasonPos ?? 0)].id ?? 0, widget.videoId);
     await showDetailsProvider
@@ -64,8 +65,6 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
 
   @override
   Widget build(BuildContext context) {
-    final episodeProvider =
-        Provider.of<EpisodeProvider>(context, listen: false);
     return AlignedGridView.count(
       shrinkWrap: true,
       crossAxisCount: 1,
@@ -386,11 +385,8 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       int? vType =
           (showDetailsProvider.sectionDetailModel.result?.videoType ?? 0);
       int? vTypeID = widget.typeId;
-      int? stopTime =
-          (showDetailsProvider.sectionDetailModel.result?.stopTime ?? 0);
-      String? vUploadType =
-          (showDetailsProvider.sectionDetailModel.result?.videoUploadType ??
-              "");
+      int? stopTime = (episodeList?[epiPos].stopTime ?? 0);
+      String? vUploadType = (episodeList?[epiPos].videoUploadType ?? "");
       String? epiUrl = (episodeList?[epiPos].video320 ?? "");
       String? vSubtitle = (episodeList?[epiPos].subtitle ?? "");
       log("epiID ========> $epiID");

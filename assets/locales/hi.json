@@ -74,6 +74,7 @@
     "sms" : "एसएमएस",
     "instagram_stories" : "इंस्टाग्राम कहानियां",
     "link_copied" : "लिंक कॉपी किया गया",
+    "please_wait": "कृपया प्रतीक्षा करें...",
 
     "login" : "लॉग इन करें",
     "login_with_mobile_note":"लॉगिन करने के लिए अपना मोबाइल नंबर दर्ज करें",
@@ -100,7 +101,10 @@
     "chooseanavatar" : "एक अवतार चुनें।",
     "addphoto" :"तस्वीर जोड़ो!",
     "downloads" : "डाउनलोड",
-    "parchases" : "खरीदी",
+    "purchases" : "खरीदी",
+    "view_your_watchlist" : "अपनी वॉचलिस्ट वीडियो और टीवी शो देखें",
+    "view_your_downloads" : "अपने डाउनलोड प्रबंधित करें",
+    "view_your_purchases" : "अपने ख़रीदे गए वीडियो और टीवी शो देखें",
     "purchasvideo" : "खरीदे गए वीडियो",
     "purchaschow" : "खरीदे गए शो",
 
@@ -122,6 +126,7 @@
     "directors" : "निदेशक",
     "episodes" : "एपिसोड",
     "season" : "मौसम",
+    "invalid_url" : "अमान्य यूआरएल!!!",
 
     "forgotpassnote" : "हम इस ईमेल पते पर नया पासवर्ड भेजेंगे।",
     "acceptprivacypolicymsg" : "कृपया, इस ऐप की गोपनीयता नीति को स्वीकार करें।",

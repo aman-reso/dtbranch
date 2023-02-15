@@ -17,8 +17,8 @@ class SectionDataProvider extends ChangeNotifier {
     debugPrint("getSectionBanner isHomePage :==> $isHomePage");
     loadingBanner = true;
     sectionBannerModel = await ApiService().sectionBanner(typeId, isHomePage);
-    debugPrint("get_banner status :==> ${sectionBannerModel.status}");
-    debugPrint("get_banner message :==> ${sectionBannerModel.message}");
+    // debugPrint("get_banner status :==> ${sectionBannerModel.status}");
+    // debugPrint("get_banner message :==> ${sectionBannerModel.message}");
     loadingBanner = false;
     notifyListeners();
   }
@@ -44,8 +44,8 @@ class SectionDataProvider extends ChangeNotifier {
     debugPrint("getSectionList isHomePage :==> $isHomePage");
     loadingSection = true;
     sectionListModel = await ApiService().sectionList(typeId, isHomePage);
-    debugPrint("section_list status :==> ${sectionListModel.status}");
-    debugPrint("section_list message :==> ${sectionListModel.message}");
+    // debugPrint("section_list status :==> ${sectionListModel.status}");
+    // debugPrint("section_list message :==> ${sectionListModel.message}");
     loadingSection = false;
     notifyListeners();
   }

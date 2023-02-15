@@ -1001,15 +1001,37 @@ class HomeState extends State<Home> {
                   width: Dimens.widthLangGen,
                   height: Dimens.heightLangGen,
                   alignment: Alignment.center,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: MyNetworkImage(
-                      imageUrl: sectionDataList?[index].image.toString() ?? "",
-                      fit: BoxFit.cover,
-                      imgHeight: MediaQuery.of(context).size.height,
-                      imgWidth: MediaQuery.of(context).size.width,
-                    ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: MyNetworkImage(
+                          imageUrl:
+                              sectionDataList?[index].image.toString() ?? "",
+                          fit: BoxFit.fill,
+                          imgHeight: MediaQuery.of(context).size.height,
+                          imgWidth: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
+                        height: Dimens.homeBanner,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.center,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              transparentColor,
+                              transparentColor,
+                              appBgColor,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -1072,15 +1094,37 @@ class HomeState extends State<Home> {
                   width: Dimens.widthLangGen,
                   height: Dimens.heightLangGen,
                   alignment: Alignment.center,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: MyNetworkImage(
-                      imageUrl: sectionDataList?[index].image.toString() ?? "",
-                      fit: BoxFit.cover,
-                      imgHeight: MediaQuery.of(context).size.height,
-                      imgWidth: MediaQuery.of(context).size.width,
-                    ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: MyNetworkImage(
+                          imageUrl:
+                              sectionDataList?[index].image.toString() ?? "",
+                          fit: BoxFit.fill,
+                          imgHeight: MediaQuery.of(context).size.height,
+                          imgWidth: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
+                        height: Dimens.homeBanner,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.center,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              transparentColor,
+                              transparentColor,
+                              appBgColor,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

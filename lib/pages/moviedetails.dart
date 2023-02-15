@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:ui';
 import 'package:dtlive/provider/downloadprovider.dart';
 import 'package:path/path.dart' as path;
@@ -24,7 +23,6 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -42,7 +40,6 @@ class MovieDetails extends StatefulWidget {
 
 class MovieDetailsState extends State<MovieDetails> {
   /* Download init */
-  final ReceivePort _receivePort = ReceivePort();
   late bool _permissionReady;
   late DownloadProvider downloadProvider;
 
@@ -50,35 +47,11 @@ class MovieDetailsState extends State<MovieDetails> {
   late VideoDetailsProvider videoDetailsProvider;
   Map<String, String> qualityUrlList = <String, String>{};
 
-  @pragma('vm:entry-point')
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
-    final SendPort? send =
-        IsolateNameServer.lookupPortByName(Constant.downloadVideoPortName);
-    send?.send([id, status, progress]);
-  }
-
   @override
   void initState() {
     videoDetailsProvider =
         Provider.of<VideoDetailsProvider>(context, listen: false);
     downloadProvider = Provider.of<DownloadProvider>(context, listen: false);
-
-    /* Download init */
-    IsolateNameServer.registerPortWithName(
-        _receivePort.sendPort, Constant.downloadVideoPortName);
-    _receivePort.listen((dynamic data) {
-      String? id = data[0];
-      DownloadTaskStatus? status = data[1];
-      int? progress = data[2];
-
-      log("_receivePort id ==> $id");
-      log("_receivePort status ==> $status");
-      log("_receivePort progress ==> $progress");
-    });
-    FlutterDownloader.registerCallback(downloadCallback);
-    /* Download init */
-
     super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");

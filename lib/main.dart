@@ -28,15 +28,14 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await Locales.init(['en', 'ar', 'hi']);
   //Remove this method to stop OneSignal Debugging
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
@@ -140,6 +139,22 @@ class _MyAppState extends State<MyApp> {
         localeResolutionCallback:
             (Locale? locale, Iterable<Locale> supportedLocales) {
           return locale;
+        },
+        builder: (context, child) {
+          return ResponsiveWrapper.builder(
+            BouncingScrollWrapper.builder(context, child!),
+            minWidth: 360,
+            defaultScale: true,
+            breakpoints: [
+              const ResponsiveBreakpoint.resize(360, name: MOBILE),
+              const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+              const ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
+              const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+            ],
+            background: Container(
+              color: appBgColor,
+            ),
+          );
         },
         home: const Splash(),
       ),

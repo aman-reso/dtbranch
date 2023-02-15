@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/bottombar.dart';
+import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/intro.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
@@ -81,7 +82,7 @@ class SplashState extends State<Splash> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return const Bottombar();
+              return const Home();
             },
           ),
         );

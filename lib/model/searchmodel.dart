@@ -106,7 +106,7 @@ class Tvshow {
   String? thumbnail;
   String? landscape;
   int? view;
-  int? imdbRating;
+  dynamic imdbRating;
   int? avgRating;
   int? noOfRating;
   String? status;
@@ -292,7 +292,7 @@ class Video {
   int? videoDuration;
   int? videoSize;
   int? view;
-  int? imdbRating;
+  dynamic imdbRating;
   int? download;
   int? avgRating;
   int? noOfRating;

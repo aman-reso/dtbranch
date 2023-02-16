@@ -151,11 +151,11 @@ class AllPaymentState extends State<AllPayment> {
                                         MyText(
                                           color: whiteLight,
                                           text: "payment_methods",
-                                          fontsize: 17,
+                                          fontsizeNormal: 17,
                                           maxline: 1,
                                           multilanguage: true,
                                           overflow: TextOverflow.ellipsis,
-                                          fontwaight: FontWeight.w500,
+                                          fontweight: FontWeight.w500,
                                           textalign: TextAlign.center,
                                           fontstyle: FontStyle.normal,
                                         ),
@@ -165,10 +165,10 @@ class AllPaymentState extends State<AllPayment> {
                                           text:
                                               "choose_a_payment_methods_to_pay",
                                           multilanguage: true,
-                                          fontsize: 14,
+                                          fontsizeNormal: 14,
                                           maxline: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          fontwaight: FontWeight.normal,
+                                          fontweight: FontWeight.normal,
                                           textalign: TextAlign.center,
                                           fontstyle: FontStyle.normal,
                                         ),
@@ -177,10 +177,10 @@ class AllPaymentState extends State<AllPayment> {
                                           color: complimentryColor,
                                           text: "pay_with",
                                           multilanguage: true,
-                                          fontsize: 16,
+                                          fontsizeNormal: 16,
                                           maxline: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          fontwaight: FontWeight.w800,
+                                          fontweight: FontWeight.w800,
                                           textalign: TextAlign.center,
                                           fontstyle: FontStyle.normal,
                                         ),
@@ -249,12 +249,13 @@ class AllPaymentState extends State<AllPayment> {
                                                                     "InApp Purchase",
                                                                 multilanguage:
                                                                     false,
-                                                                fontsize: 14,
+                                                                fontsizeNormal:
+                                                                    14,
                                                                 maxline: 2,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                fontwaight:
+                                                                fontweight:
                                                                     FontWeight
                                                                         .w600,
                                                                 textalign:
@@ -345,12 +346,13 @@ class AllPaymentState extends State<AllPayment> {
                                                                 text: "Paypal",
                                                                 multilanguage:
                                                                     false,
-                                                                fontsize: 14,
+                                                                fontsizeNormal:
+                                                                    14,
                                                                 maxline: 2,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                fontwaight:
+                                                                fontweight:
                                                                     FontWeight
                                                                         .w600,
                                                                 textalign:
@@ -443,12 +445,13 @@ class AllPaymentState extends State<AllPayment> {
                                                                     "Razorpay",
                                                                 multilanguage:
                                                                     false,
-                                                                fontsize: 14,
+                                                                fontsizeNormal:
+                                                                    14,
                                                                 maxline: 2,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                fontwaight:
+                                                                fontweight:
                                                                     FontWeight
                                                                         .w600,
                                                                 textalign:
@@ -539,12 +542,13 @@ class AllPaymentState extends State<AllPayment> {
                                                                 text: "Paytm",
                                                                 multilanguage:
                                                                     false,
-                                                                fontsize: 14,
+                                                                fontsizeNormal:
+                                                                    14,
                                                                 maxline: 2,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                fontwaight:
+                                                                fontweight:
                                                                     FontWeight
                                                                         .w600,
                                                                 textalign:
@@ -636,12 +640,13 @@ class AllPaymentState extends State<AllPayment> {
                                                                     "Flutterwave",
                                                                 multilanguage:
                                                                     false,
-                                                                fontsize: 14,
+                                                                fontsizeNormal:
+                                                                    14,
                                                                 maxline: 2,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                fontwaight:
+                                                                fontweight:
                                                                     FontWeight
                                                                         .w600,
                                                                 textalign:
@@ -733,12 +738,13 @@ class AllPaymentState extends State<AllPayment> {
                                                                     "PayU Money",
                                                                 multilanguage:
                                                                     false,
-                                                                fontsize: 14,
+                                                                fontsizeNormal:
+                                                                    14,
                                                                 maxline: 2,
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                fontwaight:
+                                                                fontweight:
                                                                     FontWeight
                                                                         .w600,
                                                                 textalign:

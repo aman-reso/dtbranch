@@ -237,7 +237,7 @@ class Result {
   int? videoSize;
   int? download;
   int? view;
-  int? imdbRating;
+  dynamic imdbRating;
   int? avgRating;
   int? noOfRating;
   String? status;
@@ -470,7 +470,7 @@ class GetRelatedVideo {
   int? videoDuration;
   int? videoSize;
   int? view;
-  int? imdbRating;
+  dynamic imdbRating;
   int? avgRating;
   int? noOfRating;
   String? status;

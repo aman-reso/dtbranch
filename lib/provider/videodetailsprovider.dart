@@ -11,6 +11,7 @@ class VideoDetailsProvider extends ChangeNotifier {
   SectionDetailModel sectionDetailModel = SectionDetailModel();
 
   bool loading = false;
+  String tabClickedOn = "related";
 
   Future<void> getSectionDetails(typeId, videoType, videoId) async {
     debugPrint("getSectionDetails typeId :==> $typeId");
@@ -71,9 +72,16 @@ class VideoDetailsProvider extends ChangeNotifier {
     }
   }
 
+  setTabClick(clickedOn) {
+    log("clickedOn ===> $clickedOn");
+    tabClickedOn = clickedOn;
+    notifyListeners();
+  }
+
   clearProvider() {
     log("<================ clearProvider ================>");
     sectionDetailModel = SectionDetailModel();
     successModel = SuccessModel();
+    tabClickedOn = "related";
   }
 }

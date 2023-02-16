@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dtlive/provider/downloadprovider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
@@ -98,6 +99,7 @@ class MovieDetailsState extends State<MovieDetails> {
 
   @override
   Widget build(BuildContext context) {
+    String? audioLanguages;
     final videoDetailsProvider =
         Provider.of<VideoDetailsProvider>(context, listen: false);
     if (videoDetailsProvider.sectionDetailModel.status == 200) {
@@ -132,6 +134,23 @@ class MovieDetailsState extends State<MovieDetails> {
                       "";
               directorList?.add(cast);
               log("directorList size ===> ${directorList?.length ?? 0}");
+            }
+          }
+        }
+        if ((videoDetailsProvider.sectionDetailModel.language?.length ?? 0) >
+            0) {
+          for (int i = 0;
+              i <
+                  (videoDetailsProvider.sectionDetailModel.language?.length ??
+                      0);
+              i++) {
+            if (i == 0) {
+              audioLanguages =
+                  videoDetailsProvider.sectionDetailModel.language?[i].name ??
+                      "";
+            } else {
+              audioLanguages =
+                  "$audioLanguages, ${videoDetailsProvider.sectionDetailModel.language?[i].name ?? ""}";
             }
           }
         }
@@ -236,16 +255,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                           imgHeight: 85,
                                           imgWidth: 65,
                                           imageUrl: videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.thumbnail !=
-                                                  ""
-                                              ? (videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.thumbnail ??
-                                                  "")
-                                              : "",
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.thumbnail ??
+                                              "",
                                         ),
                                       ),
                                     ),
@@ -266,8 +279,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                                     ?.name ??
                                                 "",
                                             textalign: TextAlign.start,
-                                            fontsize: 24,
-                                            fontwaight: FontWeight.w800,
+                                            fontsizeNormal: 24,
+                                            fontweight: FontWeight.w800,
+                                            fontsizeWeb: 24,
                                             maxline: 2,
                                             multilanguage: false,
                                             overflow: TextOverflow.ellipsis,
@@ -303,10 +317,11 @@ class MovieDetailsState extends State<MovieDetails> {
                                                             "",
                                                         textalign:
                                                             TextAlign.center,
-                                                        fontsize: 13,
+                                                        fontsizeNormal: 13,
+                                                        fontweight:
+                                                            FontWeight.w500,
+                                                        fontsizeWeb: 15,
                                                         multilanguage: false,
-                                                        fontwaight:
-                                                            FontWeight.normal,
                                                         maxline: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -343,9 +358,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                                             : "",
                                                         textalign:
                                                             TextAlign.center,
-                                                        fontsize: 13,
-                                                        fontwaight:
-                                                            FontWeight.normal,
+                                                        fontsizeNormal: 13,
+                                                        fontweight:
+                                                            FontWeight.w500,
+                                                        fontsizeWeb: 15,
                                                         maxline: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -391,10 +407,11 @@ class MovieDetailsState extends State<MovieDetails> {
                                                             "",
                                                         textalign:
                                                             TextAlign.center,
-                                                        fontsize: 10,
-                                                        multilanguage: false,
-                                                        fontwaight:
+                                                        fontsizeNormal: 10,
+                                                        fontweight:
                                                             FontWeight.normal,
+                                                        fontsizeWeb: 12,
+                                                        multilanguage: false,
                                                         maxline: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -433,9 +450,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                             color: primaryColor,
                                             text: "primetag",
                                             textalign: TextAlign.start,
-                                            fontsize: 16,
+                                            fontsizeNormal: 16,
+                                            fontweight: FontWeight.w700,
+                                            fontsizeWeb: 17,
                                             multilanguage: true,
-                                            fontwaight: FontWeight.w700,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
                                             fontstyle: FontStyle.normal,
@@ -448,8 +466,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                             text: "primetagdesc",
                                             multilanguage: true,
                                             textalign: TextAlign.center,
-                                            fontsize: 12,
-                                            fontwaight: FontWeight.normal,
+                                            fontsizeNormal: 12,
+                                            fontweight: FontWeight.w400,
+                                            fontsizeWeb: 14,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
                                             fontstyle: FontStyle.normal,
@@ -485,9 +504,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                               color: white,
                                               text: Constant.currencySymbol,
                                               textalign: TextAlign.center,
-                                              fontsize: 11,
+                                              fontsizeNormal: 11,
+                                              fontweight: FontWeight.w800,
+                                              fontsizeWeb: 13,
                                               multilanguage: false,
-                                              fontwaight: FontWeight.w800,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
                                               fontstyle: FontStyle.normal,
@@ -500,9 +520,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                               color: white,
                                               text: "renttag",
                                               textalign: TextAlign.center,
-                                              fontsize: 12,
+                                              fontsizeNormal: 12,
                                               multilanguage: true,
-                                              fontwaight: FontWeight.normal,
+                                              fontweight: FontWeight.normal,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
                                               fontstyle: FontStyle.normal,
@@ -515,304 +535,325 @@ class MovieDetailsState extends State<MovieDetails> {
 
                               /* Continue Watching Button */
                               /* Watch Now button */
-                              /* Subscription Button */
                               _buildPlayWithSubsCheck(),
-                              /* Rent Button */
-                              _buildRentBtn(),
 
                               /* Included Features buttons */
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                constraints: const BoxConstraints(minHeight: 0),
-                                margin:
-                                    const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                              Align(
                                 alignment: Alignment.center,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: Consumer<VideoDetailsProvider>(
-                                        builder: (context, videoDetailsProvider,
-                                            child) {
-                                          if ((videoDetailsProvider
-                                                          .sectionDetailModel
-                                                          .result
-                                                          ?.stopTime ??
-                                                      0) >
-                                                  0 &&
-                                              videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.videoDuration !=
-                                                  null) {
-                                            /* Start Over */
-                                            return Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                InkWell(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          Dimens.featureSize /
-                                                              2),
-                                                  onTap: () async {
-                                                    if (Constant.userID !=
-                                                        null) {
-                                                      openPlayer("startOver");
-                                                    } else {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) {
-                                                            return const LoginSocial();
-                                                          },
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    width: Dimens.featureSize,
-                                                    height: Dimens.featureSize,
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                        color: primaryLight,
-                                                      ),
-                                                      borderRadius: BorderRadius
-                                                          .circular(Dimens
-                                                                  .featureSize /
-                                                              2),
-                                                    ),
-                                                    child: MyImage(
-                                                      width: Dimens
-                                                          .featureIconSize,
-                                                      height: Dimens
-                                                          .featureIconSize,
-                                                      color: lightGray,
-                                                      imagePath:
-                                                          "ic_restart.png",
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                MyText(
-                                                  color: white,
-                                                  text: "startover",
-                                                  multilanguage: true,
-                                                  fontsize: 12,
-                                                  fontwaight: FontWeight.normal,
-                                                  maxline: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textalign: TextAlign.center,
-                                                  fontstyle: FontStyle.normal,
-                                                ),
-                                              ],
-                                            );
-                                          } else {
-                                            /* Trailer */
-                                            return Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                InkWell(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          Dimens.featureSize /
-                                                              2),
-                                                  onTap: () {
-                                                    openPlayer("Trailer");
-                                                  },
-                                                  child: Container(
-                                                    width: Dimens.featureSize,
-                                                    height: Dimens.featureSize,
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                        color: primaryLight,
-                                                      ),
-                                                      borderRadius: BorderRadius
-                                                          .circular(Dimens
-                                                                  .featureSize /
-                                                              2),
-                                                    ),
-                                                    child: MyImage(
-                                                      width: Dimens
-                                                          .featureIconSize,
-                                                      height: Dimens
-                                                          .featureIconSize,
-                                                      color: lightGray,
-                                                      imagePath:
-                                                          "ic_borderplay.png",
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                MyText(
-                                                  color: white,
-                                                  text: "trailer",
-                                                  fontsize: 12,
-                                                  multilanguage: true,
-                                                  fontwaight: FontWeight.normal,
-                                                  maxline: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textalign: TextAlign.center,
-                                                  fontstyle: FontStyle.normal,
-                                                ),
-                                              ],
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ),
-
-                                    /* Download */
-                                    _buildDownloadWithSubCheck(),
-
-                                    /* Watchlist */
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          InkWell(
-                                            onTap: () async {
-                                              log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                                              if (Constant.userID != null) {
-                                                await videoDetailsProvider
-                                                    .setBookMark(
-                                                  context,
-                                                  widget.typeId,
-                                                  widget.videoType,
-                                                  widget.videoId,
-                                                );
-                                              } else {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) {
-                                                      return const LoginSocial();
+                                child: Container(
+                                  width: kIsWeb
+                                      ? (MediaQuery.of(context).size.width / 2)
+                                      : MediaQuery.of(context).size.width,
+                                  constraints:
+                                      const BoxConstraints(minHeight: 0),
+                                  margin:
+                                      const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Consumer<VideoDetailsProvider>(
+                                          builder: (context,
+                                              videoDetailsProvider, child) {
+                                            if ((videoDetailsProvider
+                                                            .sectionDetailModel
+                                                            .result
+                                                            ?.stopTime ??
+                                                        0) >
+                                                    0 &&
+                                                videoDetailsProvider
+                                                        .sectionDetailModel
+                                                        .result
+                                                        ?.videoDuration !=
+                                                    null) {
+                                              /* Start Over */
+                                              return Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  InkWell(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            Dimens.featureSize /
+                                                                2),
+                                                    onTap: () async {
+                                                      if (Constant.userID !=
+                                                          null) {
+                                                        openPlayer("startOver");
+                                                      } else {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) {
+                                                              return const LoginSocial();
+                                                            },
+                                                          ),
+                                                        );
+                                                      }
                                                     },
+                                                    child: Container(
+                                                      width: Dimens.featureSize,
+                                                      height:
+                                                          Dimens.featureSize,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                          color: primaryLight,
+                                                        ),
+                                                        borderRadius: BorderRadius
+                                                            .circular(Dimens
+                                                                    .featureSize /
+                                                                2),
+                                                      ),
+                                                      child: MyImage(
+                                                        width: Dimens
+                                                            .featureIconSize,
+                                                        height: Dimens
+                                                            .featureIconSize,
+                                                        color: lightGray,
+                                                        imagePath:
+                                                            "ic_restart.png",
+                                                      ),
+                                                    ),
                                                   ),
-                                                );
-                                              }
-                                            },
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.featureSize / 2),
-                                            child: Container(
-                                              width: Dimens.featureSize,
-                                              height: Dimens.featureSize,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: primaryLight,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        Dimens.featureSize / 2),
-                                              ),
-                                              child: Consumer<
-                                                  VideoDetailsProvider>(
-                                                builder: (context,
-                                                    videoDetailsProvider,
-                                                    child) {
-                                                  return MyImage(
-                                                    width:
-                                                        Dimens.featureIconSize,
-                                                    height:
-                                                        Dimens.featureIconSize,
-                                                    color: lightGray,
-                                                    imagePath: (videoDetailsProvider
-                                                                    .sectionDetailModel
-                                                                    .result
-                                                                    ?.isBookmark ??
-                                                                0) ==
-                                                            1
-                                                        ? "watchlist_remove.png"
-                                                        : "ic_plus.png",
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          MyText(
-                                            color: white,
-                                            text: "watchlist",
-                                            fontsize: 12,
-                                            multilanguage: true,
-                                            fontwaight: FontWeight.normal,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            textalign: TextAlign.center,
-                                            fontstyle: FontStyle.normal,
-                                          ),
-                                        ],
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  MyText(
+                                                    color: white,
+                                                    text: "startover",
+                                                    multilanguage: true,
+                                                    fontsizeNormal: 12,
+                                                    fontweight: FontWeight.w500,
+                                                    fontsizeWeb: 14,
+                                                    maxline: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textalign: TextAlign.center,
+                                                    fontstyle: FontStyle.normal,
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              /* Trailer */
+                                              return Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  InkWell(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            Dimens.featureSize /
+                                                                2),
+                                                    onTap: () {
+                                                      openPlayer("Trailer");
+                                                    },
+                                                    child: Container(
+                                                      width: Dimens.featureSize,
+                                                      height:
+                                                          Dimens.featureSize,
+                                                      alignment:
+                                                          Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                          color: primaryLight,
+                                                        ),
+                                                        borderRadius: BorderRadius
+                                                            .circular(Dimens
+                                                                    .featureSize /
+                                                                2),
+                                                      ),
+                                                      child: MyImage(
+                                                        width: Dimens
+                                                            .featureIconSize,
+                                                        height: Dimens
+                                                            .featureIconSize,
+                                                        color: lightGray,
+                                                        imagePath:
+                                                            "ic_borderplay.png",
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  MyText(
+                                                    color: white,
+                                                    text: "trailer",
+                                                    fontsizeNormal: 12,
+                                                    fontweight: FontWeight.w500,
+                                                    fontsizeWeb: 14,
+                                                    multilanguage: true,
+                                                    maxline: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textalign: TextAlign.center,
+                                                    fontstyle: FontStyle.normal,
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                          },
+                                        ),
                                       ),
-                                    ),
 
-                                    /* More */
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          InkWell(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.featureSize / 2),
-                                            onTap: () {
-                                              buildMoreDialog(
-                                                  videoDetailsProvider
-                                                          .sectionDetailModel
-                                                          .result
-                                                          ?.stopTime ??
-                                                      0);
-                                            },
-                                            child: Container(
-                                              width: Dimens.featureSize,
-                                              height: Dimens.featureSize,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: primaryLight,
+                                      /* Rent Button */
+                                      _buildRentBtn(),
+
+                                      /* Download */
+                                      !kIsWeb
+                                          ? _buildDownloadWithSubCheck()
+                                          : const SizedBox.shrink(),
+
+                                      /* Watchlist */
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            InkWell(
+                                              onTap: () async {
+                                                log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                                                if (Constant.userID != null) {
+                                                  await videoDetailsProvider
+                                                      .setBookMark(
+                                                    context,
+                                                    widget.typeId,
+                                                    widget.videoType,
+                                                    widget.videoId,
+                                                  );
+                                                } else {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) {
+                                                        return const LoginSocial();
+                                                      },
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      Dimens.featureSize / 2),
+                                              child: Container(
+                                                width: Dimens.featureSize,
+                                                height: Dimens.featureSize,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: primaryLight,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          Dimens.featureSize /
+                                                              2),
                                                 ),
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        Dimens.featureSize / 2),
-                                              ),
-                                              child: MyImage(
-                                                width: Dimens.featureIconSize,
-                                                height: Dimens.featureIconSize,
-                                                color: lightGray,
-                                                imagePath: "ic_more.png",
+                                                child: Consumer<
+                                                    VideoDetailsProvider>(
+                                                  builder: (context,
+                                                      videoDetailsProvider,
+                                                      child) {
+                                                    return MyImage(
+                                                      width: Dimens
+                                                          .featureIconSize,
+                                                      height: Dimens
+                                                          .featureIconSize,
+                                                      color: lightGray,
+                                                      imagePath: (videoDetailsProvider
+                                                                      .sectionDetailModel
+                                                                      .result
+                                                                      ?.isBookmark ??
+                                                                  0) ==
+                                                              1
+                                                          ? "watchlist_remove.png"
+                                                          : "ic_plus.png",
+                                                    );
+                                                  },
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          MyText(
-                                            color: white,
-                                            multilanguage: true,
-                                            text: "more",
-                                            fontsize: 12,
-                                            fontwaight: FontWeight.normal,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            textalign: TextAlign.center,
-                                            fontstyle: FontStyle.normal,
-                                          ),
-                                        ],
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            MyText(
+                                              color: white,
+                                              text: "watchlist",
+                                              fontsizeNormal: 12,
+                                              fontweight: FontWeight.w500,
+                                              fontsizeWeb: 14,
+                                              multilanguage: true,
+                                              maxline: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textalign: TextAlign.center,
+                                              fontstyle: FontStyle.normal,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+
+                                      /* More */
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      Dimens.featureSize / 2),
+                                              onTap: () {
+                                                buildMoreDialog(
+                                                    videoDetailsProvider
+                                                            .sectionDetailModel
+                                                            .result
+                                                            ?.stopTime ??
+                                                        0);
+                                              },
+                                              child: Container(
+                                                width: Dimens.featureSize,
+                                                height: Dimens.featureSize,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: primaryLight,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          Dimens.featureSize /
+                                                              2),
+                                                ),
+                                                child: MyImage(
+                                                  width: Dimens.featureIconSize,
+                                                  height:
+                                                      Dimens.featureIconSize,
+                                                  color: lightGray,
+                                                  imagePath: "ic_more.png",
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            MyText(
+                                              color: white,
+                                              multilanguage: true,
+                                              text: "more",
+                                              fontsizeNormal: 12,
+                                              fontweight: FontWeight.w500,
+                                              fontsizeWeb: 14,
+                                              maxline: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textalign: TextAlign.center,
+                                              fontstyle: FontStyle.normal,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
 
@@ -820,7 +861,7 @@ class MovieDetailsState extends State<MovieDetails> {
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 margin:
-                                    const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                                    const EdgeInsets.fromLTRB(20, 30, 20, 20),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -836,13 +877,13 @@ class MovieDetailsState extends State<MovieDetails> {
                                             "",
                                         expandText: more,
                                         collapseText: less_,
-                                        maxLines: 3,
-                                        linkColor: white,
+                                        maxLines: kIsWeb ? 50 : 3,
+                                        linkColor: otherColor,
                                         style: const TextStyle(
-                                          fontSize: 14,
+                                          fontSize: kIsWeb ? 15 : 14,
                                           fontStyle: FontStyle.normal,
                                           color: white,
-                                          fontWeight: FontWeight.normal,
+                                          fontWeight: FontWeight.w400,
                                         ),
                                       ),
                                     ),
@@ -864,8 +905,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                           text:
                                               "${videoDetailsProvider.sectionDetailModel.result?.imdbRating ?? 0}",
                                           textalign: TextAlign.start,
-                                          fontwaight: FontWeight.w600,
-                                          fontsize: 14,
+                                          fontsizeNormal: 14,
+                                          fontweight: FontWeight.w600,
+                                          fontsizeWeb: 16,
                                           multilanguage: false,
                                           maxline: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -876,510 +918,125 @@ class MovieDetailsState extends State<MovieDetails> {
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                    InkWell(
-                                      borderRadius: BorderRadius.circular(4),
-                                      onTap: () {
-                                        log("language Length ====> ${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}");
-                                        buildLangSubtitleDialog(
-                                            videoDetailsProvider
-                                                .sectionDetailModel.language);
-                                      },
-                                      child: Container(
-                                        constraints:
-                                            const BoxConstraints(minHeight: 30),
-                                        child: Row(
-                                          children: [
-                                            MyText(
-                                              color: white,
-                                              text: "language_",
-                                              textalign: TextAlign.center,
-                                              fontwaight: FontWeight.normal,
-                                              fontsize: 13,
-                                              maxline: 1,
-                                              multilanguage: true,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontstyle: FontStyle.normal,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            MyText(
-                                              color: white,
-                                              text: "audios",
-                                              textalign: TextAlign.center,
-                                              fontwaight: FontWeight.normal,
-                                              fontsize: 13,
-                                              maxline: 1,
-                                              multilanguage: true,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontstyle: FontStyle.normal,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            MyText(
-                                              color: white,
-                                              text:
-                                                  "(${videoDetailsProvider.sectionDetailModel.language?.length ?? 0}),",
-                                              textalign: TextAlign.center,
-                                              fontwaight: FontWeight.normal,
-                                              fontsize: 13,
-                                              multilanguage: false,
-                                              maxline: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontstyle: FontStyle.normal,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            MyText(
-                                              color: white,
-                                              text: "subtitle",
-                                              textalign: TextAlign.center,
-                                              fontwaight: FontWeight.normal,
-                                              fontsize: 13,
-                                              maxline: 1,
-                                              multilanguage: true,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontstyle: FontStyle.normal,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            MyText(
-                                              color: white,
-                                              text: (videoDetailsProvider
-                                                              .sectionDetailModel
-                                                              .result
-                                                              ?.subtitle ??
-                                                          "")
-                                                      .isNotEmpty
-                                                  ? "(1)"
-                                                  : "(0)",
-                                              textalign: TextAlign.center,
-                                              fontwaight: FontWeight.normal,
-                                              fontsize: 13,
-                                              maxline: 1,
-                                              multilanguage: false,
-                                              overflow: TextOverflow.ellipsis,
-                                              fontstyle: FontStyle.normal,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            MyImage(
-                                              width: 7,
-                                              height: 7,
-                                              imagePath: "ic_dropdown.png",
-                                              color: lightGray,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              /* Customers also watched */
-                              (videoDetailsProvider.sectionDetailModel
-                                              .getRelatedVideo !=
-                                          null &&
-                                      (videoDetailsProvider.sectionDetailModel
-                                                  .getRelatedVideo?.length ??
-                                              0) >
-                                          0)
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(height: 25),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              20, 0, 20, 0),
-                                          child: MyText(
-                                            color: white,
-                                            text: "customer_also_watch",
-                                            multilanguage: true,
-                                            textalign: TextAlign.start,
-                                            fontsize: 16,
-                                            maxline: 1,
-                                            fontwaight: FontWeight.w600,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontstyle: FontStyle.normal,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 12,
-                                        ),
-                                        /* video_type =>  1-video,  2-show,  3-language,  4-category */
-                                        /* screen_layout =>  landscape, potrait, square */
-                                        SizedBox(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: getDynamicHeight(
-                                            "${videoDetailsProvider.sectionDetailModel.result?.videoType ?? ""}",
-                                            "landscape",
-                                          ),
-                                          child: landscape(videoDetailsProvider
-                                              .sectionDetailModel
-                                              .getRelatedVideo),
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink(),
-
-                              /* Cast & Crew */
-                              (videoDetailsProvider.sectionDetailModel.cast !=
-                                          null &&
-                                      (videoDetailsProvider.sectionDetailModel
-                                                  .cast?.length ??
-                                              0) >
-                                          0)
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(height: 25),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              20, 0, 20, 0),
-                                          child: MyText(
-                                            color: white,
-                                            text: "castandcrew",
-                                            multilanguage: true,
-                                            textalign: TextAlign.start,
-                                            fontsize: 16,
-                                            maxline: 1,
-                                            fontwaight: FontWeight.w600,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontstyle: FontStyle.normal,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 2,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                    right: 10),
-                                                child: MyText(
-                                                  color: otherColor,
-                                                  text: "detailsfrom",
-                                                  multilanguage: true,
-                                                  textalign: TextAlign.center,
-                                                  fontsize: 13,
-                                                  fontwaight: FontWeight.normal,
-                                                  maxline: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontstyle: FontStyle.normal,
-                                                ),
-                                              ),
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                    right: 10),
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5, 1, 5, 1),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: otherColor,
-                                                    width: .7,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
-                                                  shape: BoxShape.rectangle,
-                                                ),
-                                                child: MyText(
-                                                  color: otherColor,
-                                                  text: "IMDb",
-                                                  multilanguage: false,
-                                                  textalign: TextAlign.center,
-                                                  fontsize: 12,
-                                                  fontwaight: FontWeight.w500,
-                                                  maxline: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontstyle: FontStyle.normal,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 12,
-                                        ),
-                                        AlignedGridView.count(
-                                          shrinkWrap: true,
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 6,
-                                          mainAxisSpacing: 8,
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20, bottom: 15),
-                                          itemCount: videoDetailsProvider
-                                                  .sectionDetailModel
-                                                  .cast
-                                                  ?.length ??
-                                              0,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (BuildContext context,
-                                              int position) {
-                                            return InkWell(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              onTap: () {
-                                                log("Item Clicked! => $position");
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) => CastDetails(
-                                                        castID: videoDetailsProvider
-                                                                .sectionDetailModel
-                                                                .cast?[position]
-                                                                .id
-                                                                .toString() ??
-                                                            ""),
-                                                  ),
-                                                );
-                                              },
-                                              child: Stack(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                clipBehavior: Clip.antiAlias,
-                                                children: <Widget>[
-                                                  SizedBox(
-                                                    height: Dimens.heightCast,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              Dimens
-                                                                  .cardRadius),
-                                                      child: MyNetworkImage(
-                                                        imageUrl: videoDetailsProvider
-                                                                .sectionDetailModel
-                                                                .cast?[position]
-                                                                .image ??
-                                                            Constant
-                                                                .userPlaceholder,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.all(0),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    height: Dimens.heightCast,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      gradient: LinearGradient(
-                                                        begin: Alignment.center,
-                                                        end: Alignment
-                                                            .bottomCenter,
-                                                        colors: [
-                                                          transparentColor,
-                                                          blackTransparent,
-                                                          black,
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(5),
-                                                    child: MyText(
-                                                      multilanguage: false,
-                                                      text: videoDetailsProvider
-                                                              .sectionDetailModel
-                                                              .cast?[position]
-                                                              .name ??
-                                                          "",
-                                                      fontstyle:
-                                                          FontStyle.normal,
-                                                      fontsize: 12,
-                                                      maxline: 3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontwaight:
-                                                          FontWeight.normal,
-                                                      textalign:
-                                                          TextAlign.center,
-                                                      color: white,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink(),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 0.7,
-                                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                color: primaryColor,
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-
-                              /* Director */
-                              (directorList != null &&
-                                      (directorList?.length ?? 0) > 0)
-                                  ? Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      constraints: BoxConstraints(
-                                          minHeight: Dimens.heightCast),
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 0, 20, 0),
+                                    Container(
+                                      constraints:
+                                          const BoxConstraints(minHeight: 30),
                                       child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
                                         children: [
-                                          InkWell(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimens.cardRadius),
-                                            onTap: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CastDetails(
-                                                          castID: directorList?[
-                                                                      0]
-                                                                  .id
-                                                                  .toString() ??
-                                                              ""),
-                                                ),
-                                              );
-                                            },
-                                            child: Stack(
-                                              alignment: Alignment.bottomCenter,
-                                              clipBehavior: Clip.antiAlias,
-                                              children: <Widget>[
-                                                SizedBox(
-                                                  height: Dimens.heightCast,
-                                                  width: Dimens.widthCast,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            Dimens.cardRadius),
-                                                    child: MyNetworkImage(
-                                                      imageUrl: directorList?[0]
-                                                              .image ??
-                                                          Constant
-                                                              .userPlaceholder,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(0),
-                                                  width: Dimens.widthCast,
-                                                  height: Dimens.heightCast,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: Alignment.center,
-                                                      end: Alignment
-                                                          .bottomCenter,
-                                                      colors: [
-                                                        transparentColor,
-                                                        blackTransparent,
-                                                        black,
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  child: MyText(
-                                                    multilanguage: false,
-                                                    text:
-                                                        directorList?[0].name ??
-                                                            "",
-                                                    fontstyle: FontStyle.normal,
-                                                    fontsize: 12,
-                                                    maxline: 3,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    fontwaight:
-                                                        FontWeight.normal,
-                                                    textalign: TextAlign.center,
-                                                    color: white,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                          MyText(
+                                            color: white,
+                                            text: "language_",
+                                            textalign: TextAlign.center,
+                                            fontsizeNormal: 14,
+                                            fontweight: FontWeight.w600,
+                                            fontsizeWeb: 15,
+                                            maxline: 1,
+                                            multilanguage: true,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
                                           ),
                                           const SizedBox(
-                                            width: 12,
+                                            width: 5,
                                           ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.max,
+                                          MyText(
+                                            color: white,
+                                            text: ":",
+                                            textalign: TextAlign.center,
+                                            fontsizeNormal: 14,
+                                            fontweight: FontWeight.w500,
+                                            fontsizeWeb: 15,
+                                            maxline: 1,
+                                            multilanguage: false,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          MyText(
+                                            color: white,
+                                            text: audioLanguages ?? "",
+                                            textalign: TextAlign.center,
+                                            fontsizeNormal: 13,
+                                            fontweight: FontWeight.w500,
+                                            fontsizeWeb: 14,
+                                            multilanguage: false,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    (videoDetailsProvider.sectionDetailModel
+                                                    .result?.subtitle ??
+                                                "")
+                                            .isNotEmpty
+                                        ? Container(
+                                            constraints: const BoxConstraints(
+                                                minHeight: 30),
+                                            child: Row(
                                               children: [
                                                 MyText(
                                                   color: white,
-                                                  text: "directors",
-                                                  multilanguage: true,
-                                                  textalign: TextAlign.start,
-                                                  fontsize: 14,
-                                                  fontwaight: FontWeight.w600,
+                                                  text: "subtitle",
+                                                  textalign: TextAlign.center,
+                                                  fontsizeNormal: 14,
+                                                  fontweight: FontWeight.w500,
+                                                  fontsizeWeb: 15,
                                                   maxline: 1,
+                                                  multilanguage: true,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   fontstyle: FontStyle.normal,
                                                 ),
                                                 const SizedBox(
-                                                  height: 6,
+                                                  width: 5,
                                                 ),
                                                 MyText(
-                                                  color: otherColor,
-                                                  text: directorList?[0]
-                                                          .personalInfo ??
-                                                      "",
-                                                  textalign: TextAlign.start,
+                                                  color: white,
+                                                  text: ":",
+                                                  textalign: TextAlign.center,
+                                                  fontsizeNormal: 14,
+                                                  fontweight: FontWeight.w500,
+                                                  fontsizeWeb: 15,
+                                                  maxline: 1,
                                                   multilanguage: false,
-                                                  fontsize: 13,
-                                                  fontwaight: FontWeight.normal,
-                                                  maxline: 7,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontstyle: FontStyle.normal,
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                MyText(
+                                                  color: white,
+                                                  text: "Available",
+                                                  textalign: TextAlign.center,
+                                                  fontsizeNormal: 13,
+                                                  fontweight: FontWeight.w500,
+                                                  fontsizeWeb: 14,
+                                                  maxline: 1,
+                                                  multilanguage: false,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   fontstyle: FontStyle.normal,
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
+                                          )
+                                        : const SizedBox.shrink(),
+                                  ],
+                                ),
+                              ),
+
+                              /* Related ~ More Details */
+                              Consumer<VideoDetailsProvider>(
+                                builder:
+                                    (context, videoDetailsProvider, child) {
+                                  return _buildTabs();
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -1422,536 +1079,39 @@ class MovieDetailsState extends State<MovieDetails> {
 
   Widget _buildPlayWithSubsCheck() {
     if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
-      if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-          (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) >
-                0 &&
-            videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
-                null) {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Video");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          MyImage(
-                            width: 20,
-                            height: 20,
-                            imagePath: "ic_play.png",
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              MyText(
-                                color: white,
-                                text: "continuewatching",
-                                multilanguage: true,
-                                textalign: TextAlign.start,
-                                fontsize: 15,
-                                fontwaight: FontWeight.w600,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              Row(
-                                children: [
-                                  MyText(
-                                    color: white,
-                                    text: Utils.remainTimeInMin(
-                                        ((videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration ??
-                                                    0) -
-                                                (videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.stopTime ??
-                                                    0))
-                                            .abs()),
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: false,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  MyText(
-                                    color: white,
-                                    text: "left",
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: true,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 4,
-                      constraints: const BoxConstraints(minWidth: 0),
-                      margin: const EdgeInsets.all(3),
-                      child: LinearPercentIndicator(
-                        padding: const EdgeInsets.all(0),
-                        barRadius: const Radius.circular(2),
-                        lineHeight: 4,
-                        percent: Utils.getPercentage(
-                            videoDetailsProvider
-                                    .sectionDetailModel.result?.videoDuration ??
-                                0,
-                            videoDetailsProvider
-                                    .sectionDetailModel.result?.stopTime ??
-                                0),
-                        backgroundColor: secProgressColor,
-                        progressColor: primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Video");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    MyImage(
-                      width: 20,
-                      height: 20,
-                      imagePath: "ic_play.png",
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
-                      textalign: TextAlign.start,
-                      fontsize: 15,
-                      fontwaight: FontWeight.w600,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
-      } else {
-        return InkWell(
-          borderRadius: BorderRadius.circular(5),
-          onTap: () async {
-            if (Constant.userID != null) {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const Subscription();
-                  },
-                ),
-              );
-              _getData();
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const LoginSocial();
-                  },
-                ),
-              );
-            }
-          },
-          child: Container(
-            height: 55,
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(
-                  color: black,
-                  text: "watch_with",
-                  textalign: TextAlign.center,
-                  fontsize: 15,
-                  multilanguage: true,
-                  fontwaight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: black,
-                  text: "appname",
-                  textalign: TextAlign.center,
-                  fontsize: 15,
-                  fontwaight: FontWeight.w600,
-                  multilanguage: true,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
-        1) {
-      if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-          (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) >
-                0 &&
-            videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
-                null) {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Video");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          MyImage(
-                              width: 20, height: 20, imagePath: "ic_play.png"),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              MyText(
-                                color: white,
-                                text: "continuewatching",
-                                multilanguage: true,
-                                textalign: TextAlign.start,
-                                fontsize: 15,
-                                fontwaight: FontWeight.w600,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              Row(
-                                children: [
-                                  MyText(
-                                    color: white,
-                                    text: Utils.remainTimeInMin(
-                                        ((videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration ??
-                                                    0) -
-                                                (videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.stopTime ??
-                                                    0))
-                                            .abs()),
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: false,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  MyText(
-                                    color: white,
-                                    text: "left",
-                                    textalign: TextAlign.start,
-                                    fontsize: 10,
-                                    multilanguage: true,
-                                    fontwaight: FontWeight.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 4,
-                      constraints: const BoxConstraints(minWidth: 0),
-                      margin: const EdgeInsets.all(3),
-                      child: LinearPercentIndicator(
-                        padding: const EdgeInsets.all(0),
-                        barRadius: const Radius.circular(2),
-                        lineHeight: 4,
-                        percent: Utils.getPercentage(
-                            videoDetailsProvider
-                                    .sectionDetailModel.result?.videoDuration ??
-                                0,
-                            videoDetailsProvider
-                                    .sectionDetailModel.result?.stopTime ??
-                                0),
-                        backgroundColor: secProgressColor,
-                        progressColor: primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            child: InkWell(
-              onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Video");
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    MyImage(
-                      width: 20,
-                      height: 20,
-                      imagePath: "ic_play.png",
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
-                      textalign: TextAlign.start,
-                      fontsize: 15,
-                      fontwaight: FontWeight.w600,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
-      } else {
-        return InkWell(
-          onTap: () async {
-            if (Constant.userID != null) {
-              dynamic isRented = await Utils.paymentForRent(
-                context: context,
-                videoId: videoDetailsProvider.sectionDetailModel.result?.id
-                        .toString() ??
-                    '',
-                rentPrice: videoDetailsProvider
-                        .sectionDetailModel.result?.rentPrice
-                        .toString() ??
-                    '',
-                vTitle: videoDetailsProvider.sectionDetailModel.result?.name
-                        .toString() ??
-                    '',
-                typeId: videoDetailsProvider.sectionDetailModel.result?.typeId
-                        .toString() ??
-                    '',
-                vType: videoDetailsProvider.sectionDetailModel.result?.videoType
-                        .toString() ??
-                    '',
-              );
-              if (isRented != null && isRented == true) {
-                _getData();
-              }
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const LoginSocial();
-                  },
-                ),
-              );
-            }
-          },
-          child: Container(
-            height: 55,
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(
-                  color: black,
-                  text: "rentmovieatjust",
-                  textalign: TextAlign.center,
-                  fontsize: 15,
-                  multilanguage: true,
-                  fontwaight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: black,
-                  text:
-                      "${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                  textalign: TextAlign.center,
-                  fontsize: 15,
-                  multilanguage: false,
-                  fontwaight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    } else {
       if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
           videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
               null) {
         return Container(
+          alignment: Alignment.center,
           margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
           child: InkWell(
-            onTap: () {
+            onTap: () async {
               if (Constant.userID != null) {
-                openPlayer("Video");
+                if ((videoDetailsProvider
+                            .sectionDetailModel.result?.isPremium ??
+                        0) ==
+                    1) {
+                  if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ??
+                              0) ==
+                          1 ||
+                      (videoDetailsProvider
+                                  .sectionDetailModel.result?.rentBuy ??
+                              0) ==
+                          1) {
+                    openPlayer("Video");
+                  } else {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const Subscription();
+                        },
+                      ),
+                    );
+                    _getData();
+                  }
+                }
               } else {
                 Navigator.push(
                   context,
@@ -1966,6 +1126,267 @@ class MovieDetailsState extends State<MovieDetails> {
             borderRadius: BorderRadius.circular(5),
             child: Container(
               height: 55,
+              constraints: BoxConstraints(
+                maxWidth: kIsWeb
+                    ? (MediaQuery.of(context).size.width * 0.4)
+                    : MediaQuery.of(context).size.width,
+              ),
+              decoration: BoxDecoration(
+                color: primaryDark,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        MyImage(
+                          width: 20,
+                          height: 20,
+                          imagePath: "ic_play.png",
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            MyText(
+                              color: white,
+                              text: "continuewatching",
+                              multilanguage: true,
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 15,
+                              fontweight: FontWeight.w600,
+                              fontsizeWeb: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
+                            Row(
+                              children: [
+                                MyText(
+                                  color: white,
+                                  text: Utils.remainTimeInMin(
+                                      ((videoDetailsProvider.sectionDetailModel
+                                                      .result?.videoDuration ??
+                                                  0) -
+                                              (videoDetailsProvider
+                                                      .sectionDetailModel
+                                                      .result
+                                                      ?.stopTime ??
+                                                  0))
+                                          .abs()),
+                                  textalign: TextAlign.start,
+                                  fontsizeNormal: 10,
+                                  fontweight: FontWeight.w500,
+                                  fontsizeWeb: 12,
+                                  multilanguage: false,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                                const SizedBox(width: 5),
+                                MyText(
+                                  color: white,
+                                  text: "left",
+                                  textalign: TextAlign.start,
+                                  fontsizeNormal: 10,
+                                  fontweight: FontWeight.w500,
+                                  fontsizeWeb: 12,
+                                  multilanguage: true,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 4,
+                    constraints: const BoxConstraints(minWidth: 0),
+                    margin: const EdgeInsets.all(3),
+                    child: LinearPercentIndicator(
+                      padding: const EdgeInsets.all(0),
+                      barRadius: const Radius.circular(2),
+                      lineHeight: 4,
+                      percent: Utils.getPercentage(
+                          videoDetailsProvider
+                                  .sectionDetailModel.result?.videoDuration ??
+                              0,
+                          videoDetailsProvider
+                                  .sectionDetailModel.result?.stopTime ??
+                              0),
+                      backgroundColor: secProgressColor,
+                      progressColor: primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+          child: InkWell(
+            onTap: () async {
+              if (Constant.userID != null) {
+                if ((videoDetailsProvider
+                            .sectionDetailModel.result?.isPremium ??
+                        0) ==
+                    1) {
+                  if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ??
+                              0) ==
+                          1 ||
+                      (videoDetailsProvider
+                                  .sectionDetailModel.result?.rentBuy ??
+                              0) ==
+                          1) {
+                    openPlayer("Video");
+                  } else {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const Subscription();
+                        },
+                      ),
+                    );
+                    _getData();
+                  }
+                }
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginSocial();
+                    },
+                  ),
+                );
+              }
+            },
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              height: 50,
+              constraints: BoxConstraints(
+                maxWidth: kIsWeb
+                    ? (MediaQuery.of(context).size.width * 0.4)
+                    : MediaQuery.of(context).size.width,
+              ),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              decoration: BoxDecoration(
+                color: primaryDark,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MyImage(
+                    width: 20,
+                    height: 20,
+                    imagePath: "ic_play.png",
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  MyText(
+                    color: white,
+                    text: "watch_now",
+                    multilanguage: true,
+                    textalign: TextAlign.start,
+                    fontsizeNormal: 15,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 16,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+        1) {
+      if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
+          videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
+              null) {
+        return Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+          child: InkWell(
+            onTap: () async {
+              if (Constant.userID != null) {
+                if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ??
+                            0) ==
+                        1 ||
+                    (videoDetailsProvider.sectionDetailModel.result?.rentBuy ??
+                            0) ==
+                        1) {
+                  openPlayer("Video");
+                } else {
+                  dynamic isRented = await Utils.paymentForRent(
+                    context: context,
+                    videoId: videoDetailsProvider.sectionDetailModel.result?.id
+                            .toString() ??
+                        '',
+                    rentPrice: videoDetailsProvider
+                            .sectionDetailModel.result?.rentPrice
+                            .toString() ??
+                        '',
+                    vTitle: videoDetailsProvider.sectionDetailModel.result?.name
+                            .toString() ??
+                        '',
+                    typeId: videoDetailsProvider
+                            .sectionDetailModel.result?.typeId
+                            .toString() ??
+                        '',
+                    vType: videoDetailsProvider
+                            .sectionDetailModel.result?.videoType
+                            .toString() ??
+                        '',
+                  );
+                  if (isRented != null && isRented == true) {
+                    _getData();
+                  }
+                }
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginSocial();
+                    },
+                  ),
+                );
+              }
+            },
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              height: 55,
+              constraints: BoxConstraints(
+                maxWidth: kIsWeb
+                    ? (MediaQuery.of(context).size.width * 0.4)
+                    : MediaQuery.of(context).size.width,
+              ),
               decoration: BoxDecoration(
                 color: primaryDark,
                 borderRadius: BorderRadius.circular(5),
@@ -1994,8 +1415,9 @@ class MovieDetailsState extends State<MovieDetails> {
                               text: "continuewatching",
                               multilanguage: true,
                               textalign: TextAlign.start,
-                              fontsize: 15,
-                              fontwaight: FontWeight.w600,
+                              fontsizeNormal: 15,
+                              fontweight: FontWeight.w600,
+                              fontsizeWeb: 16,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontstyle: FontStyle.normal,
@@ -2015,9 +1437,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                                   0))
                                           .abs()),
                                   textalign: TextAlign.start,
-                                  fontsize: 10,
+                                  fontsizeNormal: 10,
                                   multilanguage: false,
-                                  fontwaight: FontWeight.normal,
+                                  fontweight: FontWeight.normal,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
                                   fontstyle: FontStyle.normal,
@@ -2027,9 +1449,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                   color: white,
                                   text: "left",
                                   textalign: TextAlign.start,
-                                  fontsize: 10,
+                                  fontsizeNormal: 10,
+                                  fontweight: FontWeight.w600,
+                                  fontsizeWeb: 11,
                                   multilanguage: true,
-                                  fontwaight: FontWeight.normal,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
                                   fontstyle: FontStyle.normal,
@@ -2089,6 +1512,11 @@ class MovieDetailsState extends State<MovieDetails> {
             borderRadius: BorderRadius.circular(5),
             child: Container(
               height: 50,
+              constraints: BoxConstraints(
+                maxWidth: kIsWeb
+                    ? (MediaQuery.of(context).size.width * 0.4)
+                    : MediaQuery.of(context).size.width,
+              ),
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               decoration: BoxDecoration(
                 color: primaryDark,
@@ -2111,8 +1539,206 @@ class MovieDetailsState extends State<MovieDetails> {
                     text: "watch_now",
                     multilanguage: true,
                     textalign: TextAlign.start,
-                    fontsize: 15,
-                    fontwaight: FontWeight.w600,
+                    fontsizeNormal: 15,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 16,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    } else {
+      if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
+          videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
+              null) {
+        return Container(
+          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+          alignment: Alignment.center,
+          child: InkWell(
+            onTap: () {
+              if (Constant.userID != null) {
+                openPlayer("Video");
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginSocial();
+                    },
+                  ),
+                );
+              }
+            },
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              height: 55,
+              constraints: BoxConstraints(
+                maxWidth: kIsWeb
+                    ? (MediaQuery.of(context).size.width * 0.4)
+                    : MediaQuery.of(context).size.width,
+              ),
+              decoration: BoxDecoration(
+                color: primaryDark,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        MyImage(
+                            width: 20, height: 20, imagePath: "ic_play.png"),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            MyText(
+                              color: white,
+                              text: "continuewatching",
+                              multilanguage: true,
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 15,
+                              fontweight: FontWeight.w600,
+                              fontsizeWeb: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
+                            Row(
+                              children: [
+                                MyText(
+                                  color: white,
+                                  text: Utils.remainTimeInMin(
+                                      ((videoDetailsProvider.sectionDetailModel
+                                                      .result?.videoDuration ??
+                                                  0) -
+                                              (videoDetailsProvider
+                                                      .sectionDetailModel
+                                                      .result
+                                                      ?.stopTime ??
+                                                  0))
+                                          .abs()),
+                                  textalign: TextAlign.start,
+                                  fontsizeNormal: 10,
+                                  fontweight: FontWeight.w500,
+                                  fontsizeWeb: 11,
+                                  multilanguage: false,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                                const SizedBox(width: 5),
+                                MyText(
+                                  color: white,
+                                  text: "left",
+                                  textalign: TextAlign.start,
+                                  fontsizeNormal: 10,
+                                  fontweight: FontWeight.w500,
+                                  fontsizeWeb: 11,
+                                  multilanguage: true,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 4,
+                    constraints: const BoxConstraints(minWidth: 0),
+                    margin: const EdgeInsets.all(3),
+                    child: LinearPercentIndicator(
+                      padding: const EdgeInsets.all(0),
+                      barRadius: const Radius.circular(2),
+                      lineHeight: 4,
+                      percent: Utils.getPercentage(
+                          videoDetailsProvider
+                                  .sectionDetailModel.result?.videoDuration ??
+                              0,
+                          videoDetailsProvider
+                                  .sectionDetailModel.result?.stopTime ??
+                              0),
+                      backgroundColor: secProgressColor,
+                      progressColor: primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+          alignment: Alignment.center,
+          child: InkWell(
+            onTap: () {
+              if (Constant.userID != null) {
+                openPlayer("Video");
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginSocial();
+                    },
+                  ),
+                );
+              }
+            },
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              height: 50,
+              constraints: BoxConstraints(
+                maxWidth: kIsWeb
+                    ? (MediaQuery.of(context).size.width * 0.4)
+                    : MediaQuery.of(context).size.width,
+              ),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              decoration: BoxDecoration(
+                color: primaryDark,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MyImage(
+                    width: 20,
+                    height: 20,
+                    imagePath: "ic_play.png",
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  MyText(
+                    color: white,
+                    text: "watch_now",
+                    multilanguage: true,
+                    textalign: TextAlign.start,
+                    fontsizeNormal: 15,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 16,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     fontstyle: FontStyle.normal,
@@ -2133,87 +1759,715 @@ class MovieDetailsState extends State<MovieDetails> {
           (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return InkWell(
-          onTap: () async {
-            if (Constant.userID != null) {
-              dynamic isRented = await Utils.paymentForRent(
-                context: context,
-                videoId: videoDetailsProvider.sectionDetailModel.result?.id
-                        .toString() ??
-                    '',
-                rentPrice: videoDetailsProvider
-                        .sectionDetailModel.result?.rentPrice
-                        .toString() ??
-                    '',
-                vTitle: videoDetailsProvider.sectionDetailModel.result?.name
-                        .toString() ??
-                    '',
-                typeId: videoDetailsProvider.sectionDetailModel.result?.typeId
-                        .toString() ??
-                    '',
-                vType: videoDetailsProvider.sectionDetailModel.result?.videoType
-                        .toString() ??
-                    '',
-              );
-              if (isRented != null && isRented == true) {
-                _getData();
-              }
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const LoginSocial();
-                  },
+        return Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                onTap: () async {
+                  if (Constant.userID != null) {
+                    dynamic isRented = await Utils.paymentForRent(
+                      context: context,
+                      videoId: videoDetailsProvider
+                              .sectionDetailModel.result?.id
+                              .toString() ??
+                          '',
+                      rentPrice: videoDetailsProvider
+                              .sectionDetailModel.result?.rentPrice
+                              .toString() ??
+                          '',
+                      vTitle: videoDetailsProvider
+                              .sectionDetailModel.result?.name
+                              .toString() ??
+                          '',
+                      typeId: videoDetailsProvider
+                              .sectionDetailModel.result?.typeId
+                              .toString() ??
+                          '',
+                      vType: videoDetailsProvider
+                              .sectionDetailModel.result?.videoType
+                              .toString() ??
+                          '',
+                    );
+                    if (isRented != null && isRented == true) {
+                      _getData();
+                    }
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginSocial();
+                        },
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  width: Dimens.featureSize,
+                  height: Dimens.featureSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: primaryLight,
+                    ),
+                    borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                  ),
+                  child: MyImage(
+                    width: Dimens.featureIconSize,
+                    height: Dimens.featureIconSize,
+                    color: lightGray,
+                    imagePath: "ic_store.png",
+                  ),
                 ),
-              );
-            }
-          },
-          child: Container(
-            height: 55,
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(
-                  color: black,
-                  text: "rentmovieatjust",
-                  textalign: TextAlign.center,
-                  fontsize: 15,
-                  multilanguage: true,
-                  fontwaight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              MyText(
+                color: white,
+                multilanguage: false,
+                text:
+                    "Rent at just ${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                fontsizeNormal: 13,
+                fontweight: FontWeight.w600,
+                fontsizeWeb: 15,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                textalign: TextAlign.center,
+                fontstyle: FontStyle.normal,
+              ),
+            ],
+          ),
+        );
+      }
+    } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+        1) {
+      if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+          (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
+        return const SizedBox.shrink();
+      } else {
+        return Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                onTap: () async {
+                  if (Constant.userID != null) {
+                    dynamic isRented = await Utils.paymentForRent(
+                      context: context,
+                      videoId: videoDetailsProvider
+                              .sectionDetailModel.result?.id
+                              .toString() ??
+                          '',
+                      rentPrice: videoDetailsProvider
+                              .sectionDetailModel.result?.rentPrice
+                              .toString() ??
+                          '',
+                      vTitle: videoDetailsProvider
+                              .sectionDetailModel.result?.name
+                              .toString() ??
+                          '',
+                      typeId: videoDetailsProvider
+                              .sectionDetailModel.result?.typeId
+                              .toString() ??
+                          '',
+                      vType: videoDetailsProvider
+                              .sectionDetailModel.result?.videoType
+                              .toString() ??
+                          '',
+                    );
+                    if (isRented != null && isRented == true) {
+                      _getData();
+                    }
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginSocial();
+                        },
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  width: Dimens.featureSize,
+                  height: Dimens.featureSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: primaryLight,
+                    ),
+                    borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                  ),
+                  child: MyImage(
+                    width: Dimens.featureIconSize,
+                    height: Dimens.featureIconSize,
+                    color: lightGray,
+                    imagePath: "ic_store.png",
+                  ),
                 ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: black,
-                  text:
-                      "${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                  textalign: TextAlign.center,
-                  fontsize: 15,
-                  multilanguage: false,
-                  fontwaight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              MyText(
+                color: white,
+                multilanguage: false,
+                text:
+                    "${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                fontsizeNormal: 12,
+                fontweight: FontWeight.w500,
+                fontsizeWeb: 14,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                textalign: TextAlign.center,
+                fontstyle: FontStyle.normal,
+              ),
+            ],
           ),
         );
       }
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildTabs() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: kIsWeb
+                ? (MediaQuery.of(context).size.width * 0.5)
+                : MediaQuery.of(context).size.width,
+          ),
+          height: Dimens.detailTabs,
+          child: Row(
+            children: [
+              /* Related */
+              Expanded(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () async {
+                    await videoDetailsProvider.setTabClick("related");
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: MyText(
+                            color: white,
+                            text: "related",
+                            multilanguage: true,
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 16,
+                            fontweight: FontWeight.w600,
+                            fontsizeWeb: 17,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontstyle: FontStyle.normal,
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: videoDetailsProvider.tabClickedOn == "related",
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 2,
+                          color: white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              /* More Details */
+              Expanded(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () async {
+                    await videoDetailsProvider.setTabClick("moredetails");
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: MyText(
+                            color: white,
+                            text: "moredetails",
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 16,
+                            fontweight: FontWeight.w600,
+                            fontsizeWeb: 17,
+                            multilanguage: true,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontstyle: FontStyle.normal,
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible:
+                            videoDetailsProvider.tabClickedOn == "moredetails",
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 2,
+                          color: white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 0.5,
+          constraints: BoxConstraints(
+            maxWidth: kIsWeb
+                ? (MediaQuery.of(context).size.width * 0.5)
+                : MediaQuery.of(context).size.width,
+          ),
+          color: otherColor,
+        ),
+        /* Data */
+        (videoDetailsProvider.tabClickedOn == "related")
+            ? SingleChildScrollView(
+                child: Column(
+                  children: [
+                    /* Customers also watched */
+                    _buildRelatedVideos(),
+
+                    /* Cast & Crew */
+                    _buildCastAndCrew(),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 0.7,
+                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      color: primaryColor,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+
+                    /* Director */
+                    _buildDirector(),
+                  ],
+                ),
+              )
+            : ((videoDetailsProvider.sectionDetailModel.moreDetails != null)
+                ? /* More Details */
+                _buildMoreDetails()
+                : const NoData(
+                    title: '',
+                    subTitle: '',
+                  ))
+      ],
+    );
+  }
+
+  Widget _buildRelatedVideos() {
+    if (videoDetailsProvider.sectionDetailModel.getRelatedVideo != null &&
+        (videoDetailsProvider.sectionDetailModel.getRelatedVideo?.length ?? 0) >
+            0) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 25),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: MyText(
+              color: white,
+              text: "customer_also_watch",
+              multilanguage: true,
+              textalign: TextAlign.start,
+              fontsizeNormal: 16,
+              fontweight: FontWeight.w600,
+              fontsizeWeb: 17,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              fontstyle: FontStyle.normal,
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          /* video_type =>  1-video,  2-show,  3-language,  4-category */
+          /* screen_layout =>  landscape, potrait, square */
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: getDynamicHeight(
+              "${videoDetailsProvider.sectionDetailModel.result?.videoType ?? ""}",
+              "landscape",
+            ),
+            child: landscape(
+                videoDetailsProvider.sectionDetailModel.getRelatedVideo),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildCastAndCrew() {
+    if (videoDetailsProvider.sectionDetailModel.cast != null &&
+        (videoDetailsProvider.sectionDetailModel.cast?.length ?? 0) > 0) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 25),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: MyText(
+              color: white,
+              text: "castandcrew",
+              multilanguage: true,
+              textalign: TextAlign.start,
+              fontsizeNormal: 16,
+              fontweight: FontWeight.w600,
+              fontsizeWeb: 17,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              fontstyle: FontStyle.normal,
+            ),
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  child: MyText(
+                    color: otherColor,
+                    text: "detailsfrom",
+                    multilanguage: true,
+                    textalign: TextAlign.center,
+                    fontsizeNormal: 13,
+                    fontweight: FontWeight.w500,
+                    fontsizeWeb: 14,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.fromLTRB(5, 1, 5, 1),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: otherColor,
+                      width: .7,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                    shape: BoxShape.rectangle,
+                  ),
+                  child: MyText(
+                    color: otherColor,
+                    text: "IMDb",
+                    multilanguage: false,
+                    textalign: TextAlign.center,
+                    fontsizeNormal: 12,
+                    fontweight: FontWeight.w700,
+                    fontsizeWeb: 13,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          AlignedGridView.count(
+            shrinkWrap: true,
+            crossAxisCount: (kIsWeb) ? 7 : 3,
+            crossAxisSpacing: 6,
+            mainAxisSpacing: 8,
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15),
+            itemCount:
+                videoDetailsProvider.sectionDetailModel.cast?.length ?? 0,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (BuildContext context, int position) {
+              return InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () {
+                  log("Item Clicked! => $position");
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CastDetails(
+                          castID: videoDetailsProvider
+                                  .sectionDetailModel.cast?[position].id
+                                  .toString() ??
+                              ""),
+                    ),
+                  );
+                },
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  clipBehavior: Clip.antiAlias,
+                  children: <Widget>[
+                    SizedBox(
+                      height: kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                      width: MediaQuery.of(context).size.width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Dimens.cardRadius),
+                        child: MyNetworkImage(
+                          imageUrl: videoDetailsProvider
+                                  .sectionDetailModel.cast?[position].image ??
+                              Constant.userPlaceholder,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(0),
+                      width: MediaQuery.of(context).size.width,
+                      height: kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            transparentColor,
+                            blackTransparent,
+                            black,
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: MyText(
+                        multilanguage: false,
+                        text: videoDetailsProvider
+                                .sectionDetailModel.cast?[position].name ??
+                            "",
+                        fontstyle: FontStyle.normal,
+                        fontsizeNormal: 12,
+                        fontweight: FontWeight.w500,
+                        fontsizeWeb: 13,
+                        maxline: 3,
+                        overflow: TextOverflow.ellipsis,
+                        textalign: TextAlign.center,
+                        color: white,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildDirector() {
+    if (directorList != null && (directorList?.length ?? 0) > 0) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        constraints: BoxConstraints(minHeight: Dimens.heightCast),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(Dimens.cardRadius),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CastDetails(
+                        castID: directorList?[0].id.toString() ?? ""),
+                  ),
+                );
+              },
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                clipBehavior: Clip.antiAlias,
+                children: <Widget>[
+                  SizedBox(
+                    height: kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                    width: kIsWeb ? Dimens.widthCastWeb : Dimens.widthCast,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(Dimens.cardRadius),
+                      child: MyNetworkImage(
+                        imageUrl:
+                            directorList?[0].image ?? Constant.userPlaceholder,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(0),
+                    height: kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                    width: kIsWeb ? Dimens.widthCastWeb : Dimens.widthCast,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.center,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          transparentColor,
+                          blackTransparent,
+                          black,
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: MyText(
+                      multilanguage: false,
+                      text: directorList?[0].name ?? "",
+                      fontstyle: FontStyle.normal,
+                      fontsizeNormal: 12,
+                      fontweight: FontWeight.w500,
+                      fontsizeWeb: 13,
+                      maxline: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textalign: TextAlign.center,
+                      color: white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  MyText(
+                    color: white,
+                    text: "directors",
+                    multilanguage: true,
+                    textalign: TextAlign.start,
+                    fontsizeNormal: 14,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 15,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  MyText(
+                    color: otherColor,
+                    text: directorList?[0].personalInfo ?? "",
+                    textalign: TextAlign.start,
+                    multilanguage: false,
+                    fontsizeNormal: 13,
+                    fontweight: FontWeight.w500,
+                    fontsizeWeb: 14,
+                    maxline: 7,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildMoreDetails() {
+    return AlignedGridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 1,
+      crossAxisSpacing: 0,
+      mainAxisSpacing: 25,
+      padding: const EdgeInsets.all(kIsWeb ? 30 : 20),
+      itemCount:
+          videoDetailsProvider.sectionDetailModel.moreDetails?.length ?? 0,
+      scrollDirection: Axis.vertical,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        if ((videoDetailsProvider
+                    .sectionDetailModel.moreDetails?[index].description ??
+                "")
+            .isNotEmpty) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyText(
+                color: white,
+                text: videoDetailsProvider
+                        .sectionDetailModel.moreDetails?[index].title ??
+                    "",
+                textalign: TextAlign.start,
+                fontsizeNormal: 14,
+                fontweight: FontWeight.w600,
+                fontsizeWeb: 15,
+                multilanguage: false,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                fontstyle: FontStyle.normal,
+              ),
+              const SizedBox(
+                height: 3,
+              ),
+              MyText(
+                color: otherColor,
+                text: videoDetailsProvider
+                        .sectionDetailModel.moreDetails?[index].description ??
+                    "",
+                textalign: TextAlign.start,
+                fontsizeNormal: 13,
+                fontweight: FontWeight.w500,
+                fontsizeWeb: 14,
+                multilanguage: false,
+                maxline: 20,
+                overflow: TextOverflow.ellipsis,
+                fontstyle: FontStyle.normal,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                constraints: BoxConstraints(
+                  maxWidth: kIsWeb
+                      ? (MediaQuery.of(context).size.width * 0.5)
+                      : MediaQuery.of(context).size.width,
+                ),
+                height: 0.4,
+                color: otherColor,
+              ),
+            ],
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
   }
 
   /* ========= Download ========= */
@@ -2322,8 +2576,9 @@ class MovieDetailsState extends State<MovieDetails> {
                     ? "complete"
                     : "download",
                 multilanguage: true,
-                fontsize: 12,
-                fontwaight: FontWeight.normal,
+                fontsizeNormal: 12,
+                fontweight: FontWeight.w500,
+                fontsizeWeb: 13,
                 maxline: 1,
                 overflow: TextOverflow.ellipsis,
                 textalign: TextAlign.center,
@@ -2426,9 +2681,10 @@ class MovieDetailsState extends State<MovieDetails> {
                 children: <Widget>[
                   MyText(
                     text: "avalablelanguage",
-                    fontsize: 17,
+                    fontsizeNormal: 17,
+                    fontweight: FontWeight.w700,
+                    fontsizeWeb: 18,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.bold,
                     maxline: 1,
                     multilanguage: true,
                     overflow: TextOverflow.ellipsis,
@@ -2440,9 +2696,10 @@ class MovieDetailsState extends State<MovieDetails> {
                   ),
                   MyText(
                     text: "languagechangenote",
-                    fontsize: 13,
+                    fontsizeNormal: 13,
+                    fontweight: FontWeight.w500,
+                    fontsizeWeb: 14,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.normal,
                     maxline: 1,
                     multilanguage: true,
                     overflow: TextOverflow.ellipsis,
@@ -2454,9 +2711,10 @@ class MovieDetailsState extends State<MovieDetails> {
                   ),
                   MyText(
                     text: "audios",
-                    fontsize: 17,
+                    fontsizeNormal: 17,
+                    fontweight: FontWeight.w500,
+                    fontsizeWeb: 18,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.bold,
                     maxline: 1,
                     multilanguage: true,
                     overflow: TextOverflow.ellipsis,
@@ -2468,9 +2726,10 @@ class MovieDetailsState extends State<MovieDetails> {
                   ),
                   MyText(
                     text: audioLanguages ?? "-",
-                    fontsize: 13,
+                    fontsizeNormal: 13,
+                    fontweight: FontWeight.w500,
+                    fontsizeWeb: 14,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.normal,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -2484,10 +2743,11 @@ class MovieDetailsState extends State<MovieDetails> {
                   ),
                   MyText(
                     text: "subtitle",
-                    fontsize: 17,
+                    fontsizeNormal: 17,
+                    fontweight: FontWeight.w700,
+                    fontsizeWeb: 16,
                     multilanguage: true,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.bold,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -2503,9 +2763,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             .isNotEmpty
                         ? "Available"
                         : "-",
-                    fontsize: 13,
+                    fontsizeNormal: 16,
+                    fontweight: FontWeight.w500,
+                    fontsizeWeb: 17,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.normal,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -2568,10 +2829,11 @@ class MovieDetailsState extends State<MovieDetails> {
                             child: MyText(
                               text: "share",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
+                              fontweight: FontWeight.w500,
+                              fontsizeWeb: 17,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -2611,10 +2873,11 @@ class MovieDetailsState extends State<MovieDetails> {
                                   child: MyText(
                                     text: "trailer",
                                     multilanguage: true,
-                                    fontsize: 16,
+                                    fontsizeNormal: 16,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 17,
                                     color: white,
                                     fontstyle: FontStyle.normal,
-                                    fontwaight: FontWeight.normal,
                                     maxline: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textalign: TextAlign.start,
@@ -2659,10 +2922,10 @@ class MovieDetailsState extends State<MovieDetails> {
                         videoDetailsProvider.sectionDetailModel.result?.name ??
                             "",
                     multilanguage: false,
-                    fontsize: 18,
+                    fontsizeNormal: 18,
                     color: white,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.w700,
+                    fontweight: FontWeight.w700,
                     maxline: 2,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -2688,10 +2951,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                         .result?.ageRestriction ??
                                     "",
                                 multilanguage: false,
-                                fontsize: 10,
+                                fontsizeNormal: 10,
                                 color: otherColor,
                                 fontstyle: FontStyle.normal,
-                                fontwaight: FontWeight.normal,
+                                fontweight: FontWeight.normal,
                                 maxline: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textalign: TextAlign.start,
@@ -2745,10 +3008,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             child: MyText(
                               text: "sms",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -2789,10 +3052,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             child: MyText(
                               text: "instagram_stories",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -2838,10 +3101,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             child: MyText(
                               text: "copy_link",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -2882,10 +3145,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             child: MyText(
                               text: "more",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,

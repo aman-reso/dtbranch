@@ -39,11 +39,11 @@ class NoData extends StatelessWidget {
                 ? MyText(
                     color: white,
                     text: title ?? "",
-                    fontsize: 17,
+                    fontsizeNormal: 17,
                     maxline: 2,
                     multilanguage: true,
                     overflow: TextOverflow.ellipsis,
-                    fontwaight: FontWeight.w600,
+                    fontweight: FontWeight.w600,
                     textalign: TextAlign.center,
                     fontstyle: FontStyle.normal,
                   )
@@ -55,11 +55,11 @@ class NoData extends StatelessWidget {
                 ? MyText(
                     color: otherColor,
                     text: subTitle ?? "",
-                    fontsize: 14,
+                    fontsizeNormal: 14,
                     maxline: 5,
                     multilanguage: true,
                     overflow: TextOverflow.ellipsis,
-                    fontwaight: FontWeight.normal,
+                    fontweight: FontWeight.normal,
                     textalign: TextAlign.center,
                     fontstyle: FontStyle.normal,
                   )

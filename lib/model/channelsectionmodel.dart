@@ -278,7 +278,7 @@ class Datum {
   int? videoDuration;
   int? videoSize;
   int? view;
-  int? imdbRating;
+  dynamic imdbRating;
   int? download;
   int? avgRating;
   int? noOfRating;

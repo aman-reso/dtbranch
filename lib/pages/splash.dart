@@ -9,6 +9,7 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/utils/sharedpre.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -77,7 +78,7 @@ class SplashState extends State<Splash> {
       log('seen ==> $seen');
       log('Constant userID ==> ${Constant.userID}');
       if (!mounted) return;
-      if (seen == "1") {
+      if (kIsWeb) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -87,14 +88,25 @@ class SplashState extends State<Splash> {
           ),
         );
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const Intro();
-            },
-          ),
-        );
+        if (seen == "1") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Bottombar();
+              },
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Intro();
+              },
+            ),
+          );
+        }
       }
     }
   }

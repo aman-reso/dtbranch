@@ -52,6 +52,7 @@
     "continuewatching" : "استمر في المشاهدة",
     "primetag" : "رئيس ديتي",
     "primetagdesc" : "متضمن في الاشتراك",
+    "subscription" : "الاشتراك",
     "addwatchlistmessage" : "تمت الإضافة إلى قائمة المراقبة بنجاح",
     "removewatchlistmessage" : "تمت الإزالة بنجاح من قائمة المراقبة",
     "somethingwentwronge" : "هناك خطأ ما...",
@@ -186,6 +187,5 @@
     "subscriptiondesc" : "قم بالترقية للاستفادة بشكل أكبر من اشتراكك",
     "chooseplan" : "اختر خطة",
     "signed_in_as" : "وقعت باسم"
-
 
 }

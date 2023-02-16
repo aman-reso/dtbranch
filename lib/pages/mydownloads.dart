@@ -1,9 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/downloadprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -12,10 +9,8 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
-import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 
@@ -200,8 +195,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                           textalign: TextAlign.start,
                           maxline: 2,
                           overflow: TextOverflow.ellipsis,
-                          fontsize: 13,
-                          fontwaight: FontWeight.w600,
+                          fontsizeNormal: 13,
+                          fontweight: FontWeight.w600,
                           fontstyle: FontStyle.normal,
                         ),
                         const SizedBox(
@@ -232,8 +227,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                                 maxline: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textalign: TextAlign.start,
-                                fontsize: 12,
-                                fontwaight: FontWeight.normal,
+                                fontsizeNormal: 12,
+                                fontweight: FontWeight.normal,
                                 fontstyle: FontStyle.normal,
                               ),
                             ) /* : const SizedBox.shrink() */,
@@ -266,8 +261,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                                 textalign: TextAlign.start,
                                 maxline: 1,
                                 overflow: TextOverflow.ellipsis,
-                                fontsize: 12,
-                                fontwaight: FontWeight.normal,
+                                fontsizeNormal: 12,
+                                fontweight: FontWeight.normal,
                                 fontstyle: FontStyle.normal,
                               ),
                             ) /* 
@@ -294,8 +289,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                               text: "primetag",
                               multilanguage: true,
                               textalign: TextAlign.start,
-                              fontsize: 10,
-                              fontwaight: FontWeight.w800,
+                              fontsizeNormal: 10,
+                              fontweight: FontWeight.w800,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontstyle: FontStyle.normal,
@@ -316,8 +311,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                               text: "renttag",
                               multilanguage: true,
                               textalign: TextAlign.start,
-                              fontsize: 11,
-                              fontwaight: FontWeight.w500,
+                              fontsizeNormal: 11,
+                              fontweight: FontWeight.w500,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontstyle: FontStyle.normal,
@@ -382,10 +377,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                   MyText(
                     text: "",
                     multilanguage: false,
-                    fontsize: 18,
+                    fontsizeNormal: 18,
                     color: white,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.w700,
+                    fontweight: FontWeight.w700,
                     maxline: 2,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -406,8 +401,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           textalign: TextAlign.center,
-                          fontsize: 12,
-                          fontwaight: FontWeight.w500,
+                          fontsizeNormal: 12,
+                          fontweight: FontWeight.w500,
                           fontstyle: FontStyle.normal,
                         ),
                       ),
@@ -419,8 +414,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                           textalign: TextAlign.center,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
-                          fontsize: 12,
-                          fontwaight: FontWeight.w500,
+                          fontsizeNormal: 12,
+                          fontweight: FontWeight.w500,
                           fontstyle: FontStyle.normal,
                         ),
                       ),
@@ -446,8 +441,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                         text: "primetag",
                         multilanguage: true,
                         textalign: TextAlign.start,
-                        fontsize: 12,
-                        fontwaight: FontWeight.w800,
+                        fontsizeNormal: 12,
+                        fontweight: FontWeight.w800,
                         maxline: 1,
                         overflow: TextOverflow.ellipsis,
                         fontstyle: FontStyle.normal,
@@ -474,9 +469,9 @@ class _MyDownloadsState extends State<MyDownloads> {
                               color: white,
                               text: Constant.currencySymbol,
                               textalign: TextAlign.center,
-                              fontsize: 10,
+                              fontsizeNormal: 10,
                               multilanguage: false,
-                              fontwaight: FontWeight.w800,
+                              fontweight: FontWeight.w800,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontstyle: FontStyle.normal,
@@ -487,8 +482,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                             text: "renttag",
                             multilanguage: true,
                             textalign: TextAlign.start,
-                            fontsize: 12,
-                            fontwaight: FontWeight.normal,
+                            fontsizeNormal: 12,
+                            fontweight: FontWeight.normal,
                             maxline: 1,
                             overflow: TextOverflow.ellipsis,
                             fontstyle: FontStyle.normal,
@@ -534,10 +529,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "watch_now",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -610,10 +605,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                   //                 ? "remove_from_watchlist"
                   //                 : "add_to_watchlist",
                   //             multilanguage: true,
-                  //             fontsize: 16,
+                  //             fontsizeNormal: 16,
                   //             color: white,
                   //             fontstyle: FontStyle.normal,
-                  //             fontwaight: FontWeight.normal,
+                  //             fontweight: FontWeight.normal,
                   //             maxline: 1,
                   //             overflow: TextOverflow.ellipsis,
                   //             textalign: TextAlign.start,
@@ -656,10 +651,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "download",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -698,10 +693,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "share",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -785,10 +780,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "view_details",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -830,10 +825,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                   MyText(
                     text: "",
                     multilanguage: false,
-                    fontsize: 18,
+                    fontsizeNormal: 18,
                     color: white,
                     fontstyle: FontStyle.normal,
-                    fontwaight: FontWeight.w700,
+                    fontweight: FontWeight.w700,
                     maxline: 2,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -853,10 +848,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                         child: MyText(
                           text: "",
                           multilanguage: false,
-                          fontsize: 10,
+                          fontsizeNormal: 10,
                           color: otherColor,
                           fontstyle: FontStyle.normal,
-                          fontwaight: FontWeight.normal,
+                          fontweight: FontWeight.normal,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           textalign: TextAlign.start,
@@ -909,10 +904,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "sms",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -953,10 +948,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "instagram_stories",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1002,10 +997,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "copy_link",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1046,10 +1041,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "more",
                               multilanguage: true,
-                              fontsize: 16,
+                              fontsizeNormal: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontwaight: FontWeight.normal,
+                              fontweight: FontWeight.normal,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,

@@ -1,11 +1,11 @@
 import 'package:dtlive/provider/castdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -55,10 +55,14 @@ class _CastDetailsState extends State<CastDetails> {
                   automaticallyImplyLeading: false,
                   backgroundColor: appBgColor,
                   titleSpacing: 0,
-                  toolbarHeight: MediaQuery.of(context).size.height * 0.65,
+                  toolbarHeight: kIsWeb
+                      ? MediaQuery.of(context).size.height
+                      : (MediaQuery.of(context).size.height * 0.65),
                   title: Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.65,
+                    height: kIsWeb
+                        ? MediaQuery.of(context).size.height
+                        : (MediaQuery.of(context).size.height * 0.65),
                     alignment: Alignment.center,
                     child: Stack(
                       alignment: Alignment.bottomCenter,
@@ -73,17 +77,21 @@ class _CastDetailsState extends State<CastDetails> {
                                       ? (castDetailsProvider
                                               .castDetailModel.result?[0].image
                                               .toString() ??
-                                          Constant.userPlaceholder)
-                                      : Constant.userPlaceholder
-                                  : Constant.userPlaceholder,
+                                          "")
+                                      : ""
+                                  : "",
                           fit: BoxFit.cover,
-                          imgHeight: MediaQuery.of(context).size.height * 0.65,
+                          imgHeight: kIsWeb
+                              ? MediaQuery.of(context).size.height
+                              : (MediaQuery.of(context).size.height * 0.65),
                           imgWidth: MediaQuery.of(context).size.width,
                         ),
                         Container(
                           padding: const EdgeInsets.all(0),
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.65,
+                          height: kIsWeb
+                              ? MediaQuery.of(context).size.height
+                              : (MediaQuery.of(context).size.height * 0.65),
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.center,
@@ -99,7 +107,9 @@ class _CastDetailsState extends State<CastDetails> {
                       ],
                     ),
                   ),
-                  expandedHeight: MediaQuery.of(context).size.height * 0.65,
+                  expandedHeight: kIsWeb
+                      ? MediaQuery.of(context).size.height
+                      : (MediaQuery.of(context).size.height * 0.65),
                 ),
               ),
             ];
@@ -124,8 +134,8 @@ class _CastDetailsState extends State<CastDetails> {
                             : "-",
                         color: white,
                         textalign: TextAlign.start,
-                        fontwaight: FontWeight.w700,
-                        fontsize: 29,
+                        fontweight: FontWeight.w700,
+                        fontsizeNormal: 29,
                         multilanguage: false,
                         maxline: 1,
                         overflow: TextOverflow.ellipsis,

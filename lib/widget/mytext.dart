@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,23 +8,29 @@ import 'package:google_fonts/google_fonts.dart';
 // ignore: must_be_immutable
 class MyText extends StatelessWidget {
   String text;
-  double? fontsize;
-  var maxline, fontstyle, fontwaight, textalign, multilanguage;
+  double? fontsizeNormal, fontsizeWeb;
+  var maxline, fontstyle, fontweight, textalign, multilanguage;
   Color color;
   var overflow;
 
-  MyText(
-      {Key? key,
-      required this.color,
-      required this.text,
-      this.fontsize,
-      this.maxline,
-      this.multilanguage,
-      this.overflow,
-      this.textalign,
-      this.fontwaight,
-      this.fontstyle})
-      : super(key: key);
+  MyText({
+    Key? key,
+    required this.color,
+    required this.text,
+    this.fontsizeNormal,
+    this.fontsizeWeb,
+    this.maxline,
+    this.multilanguage,
+    this.overflow,
+    this.textalign,
+    this.fontweight,
+    this.fontstyle,
+  }) : super(key: key);
+
+  static getAdaptiveTextSize(BuildContext context, dynamic value) {
+    // 720 is medium screen height
+    return (value / (kIsWeb ? 650 : 720)) * MediaQuery.of(context).size.height;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +41,11 @@ class MyText extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             maxLines: maxline,
             style: GoogleFonts.inter(
-              fontSize: fontsize,
+              fontSize: getAdaptiveTextSize(
+                  context, kIsWeb ? fontsizeWeb : fontsizeNormal),
               fontStyle: fontstyle,
               color: color,
-              fontWeight: fontwaight,
+              fontWeight: fontweight,
             ),
           )
         : Text(
@@ -46,10 +54,11 @@ class MyText extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             maxLines: maxline,
             style: GoogleFonts.inter(
-              fontSize: fontsize,
+              fontSize: getAdaptiveTextSize(
+                  context, kIsWeb ? fontsizeWeb : fontsizeNormal),
               fontStyle: fontstyle,
               color: color,
-              fontWeight: fontwaight,
+              fontWeight: fontweight,
             ),
           );
   }

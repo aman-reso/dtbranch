@@ -8,8 +8,10 @@ import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
@@ -20,6 +22,7 @@ import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -32,12 +35,13 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  double tabHeight = 60;
   CarouselController pageController = CarouselController();
   late ScrollController tabScrollController;
+  late HomeProvider homeProvider;
 
   @override
   void initState() {
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
     tabScrollController = ScrollController();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -73,119 +77,287 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
       body: SafeArea(
-        child: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverOverlapAbsorber(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverAppBar(
-                  automaticallyImplyLeading: false,
-                  backgroundColor: appBgColor,
-                  toolbarHeight: 65,
-                  title: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    alignment: Alignment.center,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      splashColor: transparentColor,
-                      highlightColor: transparentColor,
-                      onTap: () async {
-                        await getTabData(
-                            0, homeProvider.sectionTypeModel.result);
-                      },
-                      child: MyImage(
-                          width: 80, height: 80, imagePath: "appicon.png"),
-                    ),
-                  ), // This is the title in the app bar.
-                  pinned: false,
-                  expandedHeight: 0,
-                  forceElevated: innerBoxIsScrolled,
-                ),
-              ),
-            ];
-          },
-          body: homeProvider.loading
-              ? Utils.pageLoader()
-              : (homeProvider.sectionTypeModel.status == 200)
-                  ? (homeProvider.sectionTypeModel.result != null ||
-                          (homeProvider.sectionTypeModel.result?.length ?? 0) >
-                              0)
-                      ? Stack(
-                          children: [
-                            tabItem(homeProvider.sectionTypeModel.result),
-                            tabTitle(homeProvider.sectionTypeModel.result),
-                          ],
-                        )
-                      : const NoData(title: '', subTitle: '')
-                  : const NoData(title: '', subTitle: ''),
-        ),
+        child: kIsWeb ? _webAppBarWithDetails() : _mobileAppBarWithDetails(),
       ),
     );
   }
 
-  Widget tabTitle(List<type.Result>? sectionTypeList) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: Dimens.homeTabHeight,
-      padding: const EdgeInsets.only(top: 8, bottom: 8),
-      color: black.withOpacity(0.9),
-      child: ListView.separated(
-        itemCount: (sectionTypeList?.length ?? 0) + 1,
-        controller: tabScrollController,
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 12,
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return Consumer<HomeProvider>(
-            builder: (context, homeProvider, child) {
-              return InkWell(
-                borderRadius: BorderRadius.circular(25),
-                onTap: () async {
-                  debugPrint("index ===========> $index");
-                  await getTabData(index, homeProvider.sectionTypeModel.result);
-                },
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 30),
-                  decoration: Utils.setBackground(
-                    homeProvider.selectedIndex == index
-                        ? white
-                        : transparentColor,
-                    20,
-                  ),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: MyText(
-                    color: homeProvider.selectedIndex == index ? black : white,
-                    multilanguage: false,
-                    text: index == 0
-                        ? "All"
-                        : index > 0
-                            ? (sectionTypeList?[index - 1].name.toString() ??
-                                "")
-                            : "",
-                    fontsize: 14,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontwaight: FontWeight.w500,
-                    textalign: TextAlign.center,
-                    fontstyle: FontStyle.normal,
-                  ),
+  Widget _mobileAppBarWithDetails() {
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: appBgColor,
+              toolbarHeight: 65,
+              title: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                alignment: Alignment.center,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  splashColor: transparentColor,
+                  highlightColor: transparentColor,
+                  onTap: () async {
+                    await getTabData(0, homeProvider.sectionTypeModel.result);
+                  },
+                  child:
+                      MyImage(width: 80, height: 80, imagePath: "appicon.png"),
                 ),
-              );
-            },
-          );
-        },
-      ),
+              ), // This is the title in the app bar.
+              pinned: false,
+              expandedHeight: 0,
+              forceElevated: innerBoxIsScrolled,
+            ),
+          ),
+        ];
+      },
+      body: homeProvider.loading
+          ? Utils.pageLoader()
+          : (homeProvider.sectionTypeModel.status == 200)
+              ? (homeProvider.sectionTypeModel.result != null ||
+                      (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
+                  ? Stack(
+                      children: [
+                        tabItem(homeProvider.sectionTypeModel.result),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeTabHeight,
+                          padding: const EdgeInsets.only(top: 8, bottom: 8),
+                          color: black.withOpacity(0.8),
+                          child: tabTitle(homeProvider.sectionTypeModel.result),
+                        ),
+                      ],
+                    )
+                  : const NoData(title: '', subTitle: '')
+              : const NoData(title: '', subTitle: ''),
+    );
+  }
+
+  Widget _webAppBarWithDetails() {
+    return Container(
+      child: homeProvider.loading
+          ? Utils.pageLoader()
+          : (homeProvider.sectionTypeModel.status == 200)
+              ? (homeProvider.sectionTypeModel.result != null ||
+                      (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
+                  ? Stack(
+                      children: [
+                        tabItem(homeProvider.sectionTypeModel.result),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeTabHeight,
+                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                          color: black.withOpacity(0.75),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              /* App Icon */
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                splashColor: transparentColor,
+                                highlightColor: transparentColor,
+                                onTap: () async {
+                                  await getTabData(
+                                      0, homeProvider.sectionTypeModel.result);
+                                },
+                                child: MyImage(
+                                  width: 80,
+                                  height: 80,
+                                  imagePath: "appicon.png",
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+
+                              /* Types */
+                              Expanded(
+                                child: tabTitle(
+                                    homeProvider.sectionTypeModel.result),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+
+                              /* Feature buttons */
+                              /* Search */
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () async {},
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: MyImage(
+                                    width: 40,
+                                    height: 40,
+                                    imagePath: "ic_find.png",
+                                    fit: BoxFit.contain,
+                                    color: white,
+                                  ),
+                                ),
+                              ),
+
+                              /* Channels */
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () async {},
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: MyText(
+                                    color: white,
+                                    multilanguage: false,
+                                    text: bottomView3,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontsizeNormal: 14,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 15,
+                                    textalign: TextAlign.center,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+
+                              /* Rent */
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () async {},
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: MyText(
+                                    color: white,
+                                    multilanguage: false,
+                                    text: bottomView4,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontsizeNormal: 14,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 15,
+                                    textalign: TextAlign.center,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+
+                              /* Subscription */
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const Subscription();
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration:
+                                      Utils.setBackground(primaryColor, 4),
+                                  child: MyText(
+                                    color: black,
+                                    multilanguage: true,
+                                    text: "subscription",
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontsizeNormal: 14,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 15,
+                                    textalign: TextAlign.center,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+
+                              /* Login / MyStuff */
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () async {},
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: MyText(
+                                    color: white,
+                                    multilanguage:
+                                        Constant.userID != null ? false : true,
+                                    text: Constant.userID != null
+                                        ? bottomView5
+                                        : "login",
+                                    fontsizeNormal: 14,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 15,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textalign: TextAlign.center,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : const NoData(title: '', subTitle: '')
+              : const NoData(title: '', subTitle: ''),
+    );
+  }
+
+  Widget tabTitle(List<type.Result>? sectionTypeList) {
+    return ListView.separated(
+      itemCount: (sectionTypeList?.length ?? 0) + 1,
+      controller: tabScrollController,
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+      separatorBuilder: (context, index) => const SizedBox(width: 5),
+      itemBuilder: (BuildContext context, int index) {
+        return Consumer<HomeProvider>(
+          builder: (context, homeProvider, child) {
+            return InkWell(
+              borderRadius: BorderRadius.circular(25),
+              onTap: () async {
+                debugPrint("index ===========> $index");
+                await getTabData(index, homeProvider.sectionTypeModel.result);
+              },
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: 30),
+                decoration: Utils.setBackground(
+                  homeProvider.selectedIndex == index
+                      ? white
+                      : transparentColor,
+                  20,
+                ),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: MyText(
+                  color: homeProvider.selectedIndex == index ? black : white,
+                  multilanguage: false,
+                  text: index == 0
+                      ? "Home"
+                      : index > 0
+                          ? (sectionTypeList?[index - 1].name.toString() ?? "")
+                          : "",
+                  fontsizeNormal: 14,
+                  fontweight: FontWeight.w500,
+                  fontsizeWeb: 15,
+                  maxline: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textalign: TextAlign.center,
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -212,8 +384,13 @@ class HomeState extends State<Home> {
                 } else {
                   if (sectionDataProvider.sectionBannerModel.status == 200 &&
                       sectionDataProvider.sectionBannerModel.result != null) {
-                    return homebanner(
-                        sectionDataProvider.sectionBannerModel.result);
+                    if (kIsWeb) {
+                      return _webHomeBanner(
+                          sectionDataProvider.sectionBannerModel.result);
+                    } else {
+                      return _mobileHomeBanner(
+                          sectionDataProvider.sectionBannerModel.result);
+                    }
                   } else {
                     return const SizedBox.shrink();
                   }
@@ -290,12 +467,13 @@ class HomeState extends State<Home> {
         position == 0 ? "1" : "2");
   }
 
-  Widget homebanner(List<banner.Result>? sectionBannerList) {
+  Widget _mobileHomeBanner(List<banner.Result>? sectionBannerList) {
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -310,7 +488,7 @@ class HomeState extends State<Home> {
                 autoPlay: true,
                 autoPlayCurve: Curves.fastOutSlowIn,
                 enableInfiniteScroll: true,
-                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                autoPlayAnimationDuration: const Duration(milliseconds: 1000),
                 viewportFraction: 1.0,
                 onPageChanged: (val, _) async {
                   await sectionDataProvider.setCurrentBanner(val);
@@ -408,6 +586,106 @@ class HomeState extends State<Home> {
     }
   }
 
+  Widget _webHomeBanner(List<banner.Result>? sectionBannerList) {
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
+    if ((sectionBannerList?.length ?? 0) > 0) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: Dimens.homeBanner,
+        child: CarouselSlider.builder(
+          itemCount: (sectionBannerList?.length ?? 0),
+          carouselController: pageController,
+          options: CarouselOptions(
+            initialPage: 0,
+            height: Dimens.homeBanner,
+            enlargeCenterPage: false,
+            autoPlay: true,
+            autoPlayCurve: Curves.fastOutSlowIn,
+            enableInfiniteScroll: true,
+            autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+            viewportFraction: 0.95,
+            onPageChanged: (val, _) async {
+              await sectionDataProvider.setCurrentBanner(val);
+            },
+          ),
+          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+            return InkWell(
+              onTap: () {
+                log("Clicked on index ==> $index");
+                if ((sectionBannerList?[index].videoType ?? 0) == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return MovieDetails(
+                          sectionBannerList?[index].id ?? 0,
+                          sectionBannerList?[index].videoType ?? 0,
+                          sectionBannerList?[index].typeId ?? 0,
+                        );
+                      },
+                    ),
+                  );
+                } else if ((sectionBannerList?[index].videoType ?? 0) == 2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return TvShowDetails(
+                          sectionBannerList?[index].id ?? 0,
+                          sectionBannerList?[index].videoType ?? 0,
+                          sectionBannerList?[index].typeId ?? 0,
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: Stack(
+                  alignment: AlignmentDirectional.centerEnd,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.65,
+                      height: Dimens.homeBanner,
+                      child: MyNetworkImage(
+                        imageUrl: sectionBannerList?[index].landscape ?? "",
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(0),
+                      width: MediaQuery.of(context).size.width,
+                      height: Dimens.homeBanner,
+                      alignment: Alignment.centerLeft,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            appBgColor,
+                            appBgColor,
+                            appBgColor,
+                            transparentColor,
+                            transparentColor,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget continueWatchingLayout(List<ContinueWatching>? continueWatchingList) {
     if ((continueWatchingList?.length ?? 0) > 0) {
       final sectionDataProvider =
@@ -426,9 +704,10 @@ class HomeState extends State<Home> {
               text: "continuewatching",
               multilanguage: true,
               textalign: TextAlign.center,
-              fontsize: 16,
+              fontsizeNormal: 16,
               maxline: 1,
-              fontwaight: FontWeight.w600,
+              fontweight: FontWeight.w600,
+              fontsizeWeb: 16,
               overflow: TextOverflow.ellipsis,
               fontstyle: FontStyle.normal,
             ),
@@ -610,9 +889,10 @@ class HomeState extends State<Home> {
                                       continueWatchingList?[index].releaseTag ??
                                           "",
                                   textalign: TextAlign.center,
-                                  fontsize: 6,
+                                  fontsizeNormal: 6,
+                                  fontweight: FontWeight.w700,
+                                  fontsizeWeb: 10,
                                   maxline: 1,
-                                  fontwaight: FontWeight.w700,
                                   overflow: TextOverflow.ellipsis,
                                   fontstyle: FontStyle.normal,
                                 ),
@@ -653,10 +933,11 @@ class HomeState extends State<Home> {
                   color: white,
                   text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
-                  fontsize: 16,
+                  fontsizeNormal: 16,
+                  fontweight: FontWeight.w600,
+                  fontsizeWeb: 16,
                   multilanguage: false,
                   maxline: 1,
-                  fontwaight: FontWeight.w600,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
@@ -1002,6 +1283,7 @@ class HomeState extends State<Home> {
                   height: Dimens.heightLangGen,
                   alignment: Alignment.center,
                   child: Stack(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4),
@@ -1041,10 +1323,11 @@ class HomeState extends State<Home> {
                   color: white,
                   text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
-                  fontsize: 14,
+                  fontsizeNormal: 14,
+                  fontweight: FontWeight.w500,
+                  fontsizeWeb: 16,
                   multilanguage: false,
                   maxline: 1,
-                  fontwaight: FontWeight.normal,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
@@ -1095,6 +1378,7 @@ class HomeState extends State<Home> {
                   height: Dimens.heightLangGen,
                   alignment: Alignment.center,
                   child: Stack(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4),
@@ -1134,10 +1418,11 @@ class HomeState extends State<Home> {
                   color: white,
                   text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
-                  fontsize: 14,
+                  fontsizeNormal: 14,
+                  fontweight: FontWeight.w500,
+                  fontsizeWeb: 16,
                   multilanguage: false,
                   maxline: 1,
-                  fontwaight: FontWeight.normal,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),

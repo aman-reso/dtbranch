@@ -88,6 +88,7 @@ dependencies:
   permission_handler: ^10.2.0
   flutter_local_notifications: ^8.2.0
   responsive_framework: ^0.2.0
+  dropdown_button2: ^1.9.2
 
 
 dev_dependencies:

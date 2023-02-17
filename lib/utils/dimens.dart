@@ -6,7 +6,7 @@ class Dimens {
   static double buttonHeight = 45;
   static double backBtnHeight = 15;
   static double backBtnWidth = 19;
-  static double homeTabHeight = 60;
+  static double homeTabHeight = 53;
 
   static double cardRadius = 4;
   static double widthPort = 100;
@@ -34,6 +34,8 @@ class Dimens {
   static double heightWatchlist = 100;
 
   static double homeBanner = 250;
+  static double homeWebBanner = 290;
+  static double webBannerImgPr = 0.59; // Should be less than 1.0
   static double detailPoster = 250;
   static double detailTabs = 50;
   static double featureSize = 50;

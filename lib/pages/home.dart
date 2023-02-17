@@ -3,12 +3,12 @@ import 'dart:developer';
 
 import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
@@ -140,173 +140,274 @@ class HomeState extends State<Home> {
   }
 
   Widget _webAppBarWithDetails() {
-    return Container(
-      child: homeProvider.loading
-          ? Utils.pageLoader()
-          : (homeProvider.sectionTypeModel.status == 200)
-              ? (homeProvider.sectionTypeModel.result != null ||
-                      (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
-                  ? Stack(
-                      children: [
-                        tabItem(homeProvider.sectionTypeModel.result),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: Dimens.homeTabHeight,
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                          color: black.withOpacity(0.75),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              /* App Icon */
-                              InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                splashColor: transparentColor,
-                                highlightColor: transparentColor,
-                                onTap: () async {
-                                  await getTabData(
-                                      0, homeProvider.sectionTypeModel.result);
-                                },
-                                child: MyImage(
-                                  width: 80,
-                                  height: 80,
-                                  imagePath: "appicon.png",
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-
-                              /* Types */
-                              Expanded(
-                                child: tabTitle(
-                                    homeProvider.sectionTypeModel.result),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-
-                              /* Feature buttons */
-                              /* Search */
-                              InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                onTap: () async {},
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: MyImage(
-                                    width: 40,
+    if (homeProvider.loading) {
+      return Utils.pageLoader();
+    } else {
+      if (homeProvider.sectionTypeModel.status == 200) {
+        if (homeProvider.sectionTypeModel.result != null ||
+            (homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
+          return Stack(
+            children: [
+              tabItem(homeProvider.sectionTypeModel.result),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: Dimens.homeTabHeight,
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                color: black.withOpacity(0.75),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    /* Menu */
+                    (MediaQuery.of(context).size.width < 800)
+                        ? Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 20,
+                            ),
+                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                            child: Consumer<HomeProvider>(
+                                builder: (context, homeProvider, child) {
+                              return DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  isExpanded: false,
+                                  customButton: MyImage(
                                     height: 40,
-                                    imagePath: "ic_find.png",
+                                    imagePath: "ic_menu.png",
                                     fit: BoxFit.contain,
                                     color: white,
                                   ),
+                                  items: _buildWebDropDownItems(),
+                                  onChanged: (type.Result? value) async {
+                                    debugPrint(
+                                        'value id ===============> ${value?.id.toString()}');
+                                    if (value?.id == 0) {
+                                      await getTabData(0,
+                                          homeProvider.sectionTypeModel.result);
+                                    } else {
+                                      for (var i = 0;
+                                          i <
+                                              (homeProvider.sectionTypeModel
+                                                      .result?.length ??
+                                                  0);
+                                          i++) {
+                                        if (value?.id ==
+                                            homeProvider.sectionTypeModel
+                                                .result?[i].id) {
+                                          await getTabData(
+                                              i + 1,
+                                              homeProvider
+                                                  .sectionTypeModel.result);
+                                          return;
+                                        }
+                                      }
+                                    }
+                                  },
+                                  dropdownPadding: const EdgeInsets.only(
+                                      left: 10, right: 10),
+                                  dropdownWidth: 150,
+                                  dropdownElevation: 8,
+                                  dropdownDecoration:
+                                      Utils.setBackground(appBgColor, 5),
+                                  itemPadding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
                                 ),
-                              ),
+                              );
+                            }),
+                          )
+                        : const SizedBox.shrink(),
 
-                              /* Channels */
-                              InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                onTap: () async {},
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: MyText(
-                                    color: white,
-                                    multilanguage: false,
-                                    text: bottomView3,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontsizeNormal: 14,
-                                    fontweight: FontWeight.w500,
-                                    fontsizeWeb: 15,
-                                    textalign: TextAlign.center,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ),
-                              ),
+                    /* App Icon */
+                    InkWell(
+                      splashColor: transparentColor,
+                      highlightColor: transparentColor,
+                      onTap: () async {
+                        await getTabData(
+                            0, homeProvider.sectionTypeModel.result);
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: MyImage(
+                        width: 70,
+                        height: 70,
+                        imagePath: "appicon.png",
+                      ),
+                    ),
 
-                              /* Rent */
-                              InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                onTap: () async {},
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: MyText(
-                                    color: white,
-                                    multilanguage: false,
-                                    text: bottomView4,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontsizeNormal: 14,
-                                    fontweight: FontWeight.w500,
-                                    fontsizeWeb: 15,
-                                    textalign: TextAlign.center,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ),
-                              ),
+                    /* Types */
+                    (MediaQuery.of(context).size.width >= 800)
+                        ? Expanded(
+                            child:
+                                tabTitle(homeProvider.sectionTypeModel.result),
+                          )
+                        : const Expanded(child: SizedBox.shrink()),
+                    const SizedBox(
+                      width: 20,
+                    ),
 
-                              /* Subscription */
-                              InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                onTap: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return const Subscription();
-                                      },
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration:
-                                      Utils.setBackground(primaryColor, 4),
-                                  child: MyText(
-                                    color: black,
-                                    multilanguage: true,
-                                    text: "subscription",
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontsizeNormal: 14,
-                                    fontweight: FontWeight.w500,
-                                    fontsizeWeb: 15,
-                                    textalign: TextAlign.center,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ),
-                              ),
-
-                              /* Login / MyStuff */
-                              InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                onTap: () async {},
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: MyText(
-                                    color: white,
-                                    multilanguage:
-                                        Constant.userID != null ? false : true,
-                                    text: Constant.userID != null
-                                        ? bottomView5
-                                        : "login",
-                                    fontsizeNormal: 14,
-                                    fontweight: FontWeight.w500,
-                                    fontsizeWeb: 15,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.center,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                    /* Feature buttons */
+                    /* Search */
+                    InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () async {},
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 20,
+                          maxWidth: 40,
                         ),
-                      ],
-                    )
-                  : const NoData(title: '', subTitle: '')
-              : const NoData(title: '', subTitle: ''),
-    );
+                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                        child: MyImage(
+                          height: 40,
+                          imagePath: "ic_find.png",
+                          fit: BoxFit.contain,
+                          color: white,
+                        ),
+                      ),
+                    ),
+
+                    /* Channels */
+                    InkWell(
+                      onTap: () async {},
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: MyText(
+                          color: white,
+                          multilanguage: false,
+                          text: bottomView3,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontsizeNormal: 14,
+                          fontweight: FontWeight.w600,
+                          fontsizeWeb: 15,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ),
+                    ),
+
+                    /* Rent */
+                    InkWell(
+                      onTap: () async {},
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: MyText(
+                          color: white,
+                          multilanguage: false,
+                          text: bottomView4,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontsizeNormal: 14,
+                          fontweight: FontWeight.w600,
+                          fontsizeWeb: 15,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ),
+                    ),
+
+                    /* Subscription */
+                    InkWell(
+                      onTap: () async {},
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                        decoration: Utils.setBackground(primaryColor, 4),
+                        child: MyText(
+                          color: black,
+                          multilanguage: true,
+                          text: "subscribe",
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontsizeNormal: 14,
+                          fontweight: FontWeight.w600,
+                          fontsizeWeb: 15,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ),
+                    ),
+
+                    /* Login / MyStuff */
+                    InkWell(
+                      onTap: () async {},
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: MyText(
+                          color: white,
+                          multilanguage: Constant.userID != null ? false : true,
+                          text: Constant.userID != null ? bottomView5 : "login",
+                          fontsizeNormal: 14,
+                          fontweight: FontWeight.w600,
+                          fontsizeWeb: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      } else {
+        return const SizedBox.shrink();
+      }
+    }
+  }
+
+  List<DropdownMenuItem<type.Result>>? _buildWebDropDownItems() {
+    List<type.Result>? typeDropDownList = [];
+    for (var i = 0;
+        i < (homeProvider.sectionTypeModel.result?.length ?? 0) + 1;
+        i++) {
+      if (i == 0) {
+        type.Result typeHomeResult = type.Result();
+        typeHomeResult.id = 0;
+        typeHomeResult.name = "Home";
+        typeDropDownList.insert(i, typeHomeResult);
+      } else {
+        typeDropDownList.insert(i,
+            (homeProvider.sectionTypeModel.result?[(i - 1)] ?? type.Result()));
+      }
+    }
+    return typeDropDownList
+        .map<DropdownMenuItem<type.Result>>((type.Result value) {
+      return DropdownMenuItem<type.Result>(
+        value: value,
+        child: Container(
+          constraints: const BoxConstraints(maxHeight: 30, minWidth: 0),
+          decoration: Utils.setBackground(
+            (typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                    (value.id ?? 0)
+                ? white
+                : transparentColor,
+            20,
+          ),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: MyText(
+            color: (typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                    (value.id ?? 0)
+                ? black
+                : white,
+            multilanguage: false,
+            text: (value.name.toString()),
+            fontsizeNormal: 14,
+            fontweight: FontWeight.w600,
+            fontsizeWeb: 15,
+            maxline: 1,
+            overflow: TextOverflow.ellipsis,
+            textalign: TextAlign.center,
+            fontstyle: FontStyle.normal,
+          ),
+        ),
+      );
+    }).toList();
   }
 
   Widget tabTitle(List<type.Result>? sectionTypeList) {
@@ -346,7 +447,7 @@ class HomeState extends State<Home> {
                           ? (sectionTypeList?[index - 1].name.toString() ?? "")
                           : "",
                   fontsizeNormal: 14,
-                  fontweight: FontWeight.w500,
+                  fontweight: FontWeight.w600,
                   fontsizeWeb: 15,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
@@ -385,8 +486,13 @@ class HomeState extends State<Home> {
                   if (sectionDataProvider.sectionBannerModel.status == 200 &&
                       sectionDataProvider.sectionBannerModel.result != null) {
                     if (kIsWeb) {
-                      return _webHomeBanner(
-                          sectionDataProvider.sectionBannerModel.result);
+                      if (MediaQuery.of(context).size.width < 720) {
+                        return _mobileHomeBanner(
+                            sectionDataProvider.sectionBannerModel.result);
+                      } else {
+                        return _webHomeBanner(
+                            sectionDataProvider.sectionBannerModel.result);
+                      }
                     } else {
                       return _mobileHomeBanner(
                           sectionDataProvider.sectionBannerModel.result);
@@ -592,13 +698,13 @@ class HomeState extends State<Home> {
     if ((sectionBannerList?.length ?? 0) > 0) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
-        height: Dimens.homeBanner,
+        height: Dimens.homeWebBanner,
         child: CarouselSlider.builder(
           itemCount: (sectionBannerList?.length ?? 0),
           carouselController: pageController,
           options: CarouselOptions(
             initialPage: 0,
-            height: Dimens.homeBanner,
+            height: Dimens.homeWebBanner,
             enlargeCenterPage: false,
             autoPlay: true,
             autoPlayCurve: Curves.fastOutSlowIn,
@@ -641,40 +747,122 @@ class HomeState extends State<Home> {
                   );
                 }
               },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Stack(
-                  alignment: AlignmentDirectional.centerEnd,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.65,
-                      height: Dimens.homeBanner,
-                      child: MyNetworkImage(
-                        imageUrl: sectionBannerList?[index].landscape ?? "",
-                        fit: BoxFit.fill,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Stack(
+                    alignment: AlignmentDirectional.centerEnd,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            (Dimens.webBannerImgPr),
+                        height: Dimens.homeWebBanner,
+                        child: MyNetworkImage(
+                          imageUrl: sectionBannerList?[index].landscape ?? "",
+                          fit: BoxFit.fill,
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(0),
-                      width: MediaQuery.of(context).size.width,
-                      height: Dimens.homeBanner,
-                      alignment: Alignment.centerLeft,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                            appBgColor,
-                            appBgColor,
-                            appBgColor,
-                            transparentColor,
-                            transparentColor,
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
+                        height: Dimens.homeWebBanner,
+                        alignment: Alignment.centerLeft,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              appBgColor,
+                              appBgColor,
+                              appBgColor,
+                              appBgColor,
+                              transparentColor,
+                              transparentColor,
+                              transparentColor,
+                              transparentColor,
+                              transparentColor,
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: Dimens.homeWebBanner,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width *
+                                  (1.0 - Dimens.webBannerImgPr),
+                              constraints: const BoxConstraints(minHeight: 0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(35, 50, 55, 35),
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  MyText(
+                                    color: white,
+                                    text: sectionBannerList?[index].name ?? "",
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 14,
+                                    fontweight: FontWeight.w700,
+                                    fontsizeWeb: 25,
+                                    multilanguage: false,
+                                    maxline: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  MyText(
+                                    color: whiteLight,
+                                    text: sectionBannerList?[index]
+                                            .categoryName ??
+                                        "",
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 14,
+                                    fontweight: FontWeight.w600,
+                                    fontsizeWeb: 15,
+                                    multilanguage: false,
+                                    maxline: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Expanded(
+                                    child: MyText(
+                                      color: whiteLight,
+                                      text: sectionBannerList?[index]
+                                              .description ??
+                                          "",
+                                      textalign: TextAlign.start,
+                                      fontsizeNormal: 14,
+                                      fontweight: FontWeight.w600,
+                                      fontsizeWeb: 15,
+                                      multilanguage: false,
+                                      maxline:
+                                          (MediaQuery.of(context).size.width <
+                                                  1000)
+                                              ? 2
+                                              : 5,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontstyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Expanded(child: SizedBox()),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );

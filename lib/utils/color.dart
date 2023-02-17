@@ -42,5 +42,5 @@ const lightBlack = Color(0xff2D2D2D);
 const gray = Color(0xffa9aaac);
 const lightGray = Color(0xffc3c3c3);
 const white = Color(0xffffffff);
-const whiteLight = Color(0xffFAF9F6);
+const whiteLight = Color(0xCCFAF9F6);
 const whiteTransparent = Color(0x50FFFFFF);

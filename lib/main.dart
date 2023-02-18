@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:dtlive/firebase_options.dart';
 import 'package:dtlive/pages/splash.dart';
@@ -131,6 +132,12 @@ class _MyAppState extends State<MyApp> {
           primaryColorDark: primaryDarkColor,
           primaryColorLight: primaryLight,
           scaffoldBackgroundColor: appBgColor,
+        ).copyWith(
+          scrollbarTheme: const ScrollbarThemeData().copyWith(
+            thumbColor: MaterialStateProperty.all(white),
+            trackVisibility: MaterialStateProperty.all(true),
+            trackColor: MaterialStateProperty.all(whiteTransparent),
+          ),
         ),
         title: Constant.appName ?? "DTLive",
         localizationsDelegates: Locales.delegates,
@@ -157,6 +164,15 @@ class _MyAppState extends State<MyApp> {
           );
         },
         home: const Splash(),
+        scrollBehavior: const MaterialScrollBehavior().copyWith(
+          dragDevices: {
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.unknown,
+            PointerDeviceKind.trackpad
+          },
+        ),
       ),
     );
   }

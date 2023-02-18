@@ -44,7 +44,7 @@ class Dimens {
   static double castCrewPoster = 525;
   static double channelPoster = 222;
   static double channelBanner = 250;
-  static double channelVideoBanner = 195;
+  static double channelWebBanner = 290;
   static double rentBanner = 103;
 
   static double minHeightSettings = 45;

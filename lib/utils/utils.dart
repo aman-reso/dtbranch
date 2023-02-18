@@ -217,6 +217,19 @@ class Utils {
     );
   }
 
+  static BoxDecoration setGradientBGWithCenter(
+      Color colorStart, Color colorCenter, Color colorEnd, double radius) {
+    return BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: <Color>[colorStart, colorCenter, colorEnd],
+      ),
+      borderRadius: BorderRadius.circular(radius),
+      shape: BoxShape.rectangle,
+    );
+  }
+
   static BoxDecoration r4DarkBGWithBorder() {
     return BoxDecoration(
       color: primaryDarkColor,
@@ -281,6 +294,7 @@ class Utils {
         text: appBarTitle,
         multilanguage: true,
         fontsizeNormal: 17,
+        fontsizeWeb: 18,
         maxline: 1,
         overflow: TextOverflow.ellipsis,
         fontweight: FontWeight.bold,

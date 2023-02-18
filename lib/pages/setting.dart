@@ -979,7 +979,7 @@ class SettingState extends State<Setting> {
                             ),
                             child: MyText(
                               color: white,
-                              text: "cancle",
+                              text: "cancel",
                               multilanguage: true,
                               textalign: TextAlign.center,
                               fontsizeNormal: 16,

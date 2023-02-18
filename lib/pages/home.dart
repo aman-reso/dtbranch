@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/utils/sharedpre.dart';
+import 'package:dtlive/webwidget/footerweb.dart';
 
 import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -8,10 +11,14 @@ import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
+import 'package:dtlive/pages/channels.dart';
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/rentstore.dart';
+import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/webwidget/quicklinksweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
@@ -28,19 +35,27 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final String? pageName;
+  const Home({Key? key, required this.pageName}) : super(key: key);
 
   @override
   State<Home> createState() => HomeState();
 }
 
 class HomeState extends State<Home> {
+  SharedPre sharedPref = SharedPre();
   CarouselController pageController = CarouselController();
   late ScrollController tabScrollController;
   late HomeProvider homeProvider;
+  String? currentPage,
+      aboutUsUrl,
+      privacyUrl,
+      termsConditionUrl,
+      refundPolicyUrl;
 
   @override
   void initState() {
+    currentPage = widget.pageName ?? "";
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     tabScrollController = ScrollController();
     super.initState();
@@ -55,6 +70,16 @@ class HomeState extends State<Home> {
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+
+    aboutUsUrl = await sharedPref.read("about-us") ?? "";
+    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
+    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
+    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
+    log('aboutUsUrl ==> $aboutUsUrl');
+    log('privacyUrl ==> $privacyUrl');
+    log('termsConditionUrl ==> $termsConditionUrl');
+    log('refundPolicyUrl ==> $refundPolicyUrl');
+
     if (!homeProvider.loading) {
       if (homeProvider.sectionTypeModel.status == 200 &&
           homeProvider.sectionTypeModel.result != null) {
@@ -70,9 +95,86 @@ class HomeState extends State<Home> {
     }
   }
 
+  Future<void> setSelectedTab(int tabPos) async {
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    if (!mounted) return;
+    await homeProvider.setSelectedTab(tabPos);
+
+    debugPrint("getTabData position ====> $tabPos");
+    debugPrint(
+        "getTabData lastTabPosition ====> ${sectionDataProvider.lastTabPosition}");
+    if (sectionDataProvider.lastTabPosition == tabPos) {
+      return;
+    } else {
+      sectionDataProvider.setTabPosition(tabPos);
+    }
+  }
+
+  Future<void> getTabData(
+      int position, List<type.Result>? sectionTypeList) async {
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
+
+    await setSelectedTab(position);
+    await sectionDataProvider.setLoading(true);
+    await sectionDataProvider.getSectionBanner(
+        position == 0 ? "0" : (sectionTypeList?[position - 1].id),
+        position == 0 ? "1" : "2");
+    await sectionDataProvider.getSectionList(
+        position == 0 ? "0" : (sectionTypeList?[position - 1].id),
+        position == 0 ? "1" : "2");
+  }
+
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Widget _clickToRedirect({required String pageName}) {
+    switch (pageName) {
+      case "channel":
+        return const Channels();
+      case "store":
+        return const RentStore();
+      case "setting":
+        return const Setting();
+      case "login":
+        return const LoginSocial();
+      case "videodetail":
+        return const MovieDetails(0, 0, 0);
+      case "showdetail":
+        return const TvShowDetails(0, 0, 0);
+      case "aboutus":
+        return QuickLinksWeb(
+          pageName: "aboutus",
+          pageData: aboutUsUrl ?? "",
+        );
+      case "privacypolicy":
+        return QuickLinksWeb(
+          pageName: "privacypolicy",
+          pageData: privacyUrl ?? "",
+        );
+      case "termcondition":
+        return QuickLinksWeb(
+          pageName: "termcondition",
+          pageData: termsConditionUrl ?? "",
+        );
+      case "refundpolicy":
+        return QuickLinksWeb(
+          pageName: "refundpolicy",
+          pageData: refundPolicyUrl ?? "",
+        );
+      default:
+        return tabItem(homeProvider.sectionTypeModel.result);
+    }
+  }
+
+  void _onItemTapped(String page) {
+    setState(() {
+      currentPage = page;
+    });
   }
 
   @override
@@ -148,7 +250,7 @@ class HomeState extends State<Home> {
             (homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
           return Stack(
             children: [
-              tabItem(homeProvider.sectionTypeModel.result),
+              _clickToRedirect(pageName: currentPage ?? ""),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: Dimens.homeTabHeight,
@@ -164,54 +266,64 @@ class HomeState extends State<Home> {
                               minWidth: 20,
                             ),
                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                            child: Consumer<HomeProvider>(
-                                builder: (context, homeProvider, child) {
-                              return DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  isExpanded: false,
-                                  customButton: MyImage(
-                                    height: 40,
-                                    imagePath: "ic_menu.png",
-                                    fit: BoxFit.contain,
-                                    color: white,
-                                  ),
-                                  items: _buildWebDropDownItems(),
-                                  onChanged: (type.Result? value) async {
-                                    debugPrint(
-                                        'value id ===============> ${value?.id.toString()}');
-                                    if (value?.id == 0) {
-                                      await getTabData(0,
-                                          homeProvider.sectionTypeModel.result);
-                                    } else {
-                                      for (var i = 0;
-                                          i <
-                                              (homeProvider.sectionTypeModel
-                                                      .result?.length ??
-                                                  0);
-                                          i++) {
-                                        if (value?.id ==
-                                            homeProvider.sectionTypeModel
-                                                .result?[i].id) {
+                            child: Row(
+                              children: [
+                                Consumer<HomeProvider>(
+                                    builder: (context, homeProvider, child) {
+                                  return DropdownButtonHideUnderline(
+                                    child: DropdownButton2(
+                                      isExpanded: false,
+                                      customButton: MyImage(
+                                        height: 40,
+                                        imagePath: "ic_menu.png",
+                                        fit: BoxFit.contain,
+                                        color: white,
+                                      ),
+                                      items: _buildWebDropDownItems(),
+                                      onChanged: (type.Result? value) async {
+                                        if (kIsWeb) _onItemTapped("");
+                                        debugPrint(
+                                            'value id ===============> ${value?.id.toString()}');
+                                        if (value?.id == 0) {
                                           await getTabData(
-                                              i + 1,
+                                              0,
                                               homeProvider
                                                   .sectionTypeModel.result);
-                                          return;
+                                        } else {
+                                          for (var i = 0;
+                                              i <
+                                                  (homeProvider.sectionTypeModel
+                                                          .result?.length ??
+                                                      0);
+                                              i++) {
+                                            if (value?.id ==
+                                                homeProvider.sectionTypeModel
+                                                    .result?[i].id) {
+                                              await getTabData(
+                                                  i + 1,
+                                                  homeProvider
+                                                      .sectionTypeModel.result);
+                                              return;
+                                            }
+                                          }
                                         }
-                                      }
-                                    }
-                                  },
-                                  dropdownPadding: const EdgeInsets.only(
-                                      left: 10, right: 10),
-                                  dropdownWidth: 150,
-                                  dropdownElevation: 8,
-                                  dropdownDecoration:
-                                      Utils.setBackground(appBgColor, 5),
-                                  itemPadding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
+                                      },
+                                      dropdownPadding: const EdgeInsets.only(
+                                          left: 10, right: 10),
+                                      dropdownWidth: 150,
+                                      dropdownElevation: 8,
+                                      dropdownDecoration:
+                                          Utils.setBackground(appBgColor, 5),
+                                      itemPadding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                    ),
+                                  );
+                                }),
+                                const SizedBox(
+                                  width: 20,
                                 ),
-                              );
-                            }),
+                              ],
+                            ),
                           )
                         : const SizedBox.shrink(),
 
@@ -220,6 +332,7 @@ class HomeState extends State<Home> {
                       splashColor: transparentColor,
                       highlightColor: transparentColor,
                       onTap: () async {
+                        if (kIsWeb) _onItemTapped("");
                         await getTabData(
                             0, homeProvider.sectionTypeModel.result);
                       },
@@ -244,32 +357,74 @@ class HomeState extends State<Home> {
 
                     /* Feature buttons */
                     /* Search */
-                    InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () async {},
-                      child: Container(
-                        constraints: const BoxConstraints(
-                          minWidth: 20,
-                          maxWidth: 40,
-                        ),
-                        padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                        child: MyImage(
-                          height: 40,
-                          imagePath: "ic_find.png",
-                          fit: BoxFit.contain,
-                          color: white,
+                    Container(
+                      constraints: const BoxConstraints(
+                        minWidth: 20,
+                        maxWidth: 40,
+                      ),
+                      padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          isExpanded: false,
+                          customButton: MyImage(
+                            height: 40,
+                            imagePath: "ic_find.png",
+                            fit: BoxFit.contain,
+                            color:
+                                currentPage == "search" ? primaryColor : white,
+                          ),
+                          items: _buildWebDropDownItems(),
+                          onChanged: (type.Result? value) async {
+                            if (kIsWeb) {
+                              await setSelectedTab(-1);
+                              _onItemTapped("search");
+                            }
+                            // debugPrint(
+                            //     'value id ===============> ${value?.id.toString()}');
+                            // if (value?.id == 0) {
+                            //   await getTabData(
+                            //       0, homeProvider.sectionTypeModel.result);
+                            // } else {
+                            //   for (var i = 0;
+                            //       i <
+                            //           (homeProvider.sectionTypeModel.result
+                            //                   ?.length ??
+                            //               0);
+                            //       i++) {
+                            //     if (value?.id ==
+                            //         homeProvider
+                            //             .sectionTypeModel.result?[i].id) {
+                            //       await getTabData(i + 1,
+                            //           homeProvider.sectionTypeModel.result);
+                            //       return;
+                            //     }
+                            //   }
+                            // }
+                          },
+                          dropdownPadding:
+                              const EdgeInsets.only(left: 10, right: 10),
+                          dropdownElevation: 8,
+                          dropdownWidth: 275,
+                          dropdownDecoration:
+                              Utils.setBackground(lightBlack, 5),
+                          itemPadding:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
                         ),
                       ),
                     ),
 
                     /* Channels */
                     InkWell(
-                      onTap: () async {},
+                      onTap: () async {
+                        await setSelectedTab(-1);
+                        _onItemTapped("channel");
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
                         child: MyText(
-                          color: white,
+                          color:
+                              currentPage == "channel" ? primaryColor : white,
                           multilanguage: false,
                           text: bottomView3,
                           maxline: 1,
@@ -285,12 +440,15 @@ class HomeState extends State<Home> {
 
                     /* Rent */
                     InkWell(
-                      onTap: () async {},
+                      onTap: () async {
+                        await setSelectedTab(-1);
+                        _onItemTapped("store");
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
                         child: MyText(
-                          color: white,
+                          color: currentPage == "store" ? primaryColor : white,
                           multilanguage: false,
                           text: bottomView4,
                           maxline: 1,
@@ -305,35 +463,52 @@ class HomeState extends State<Home> {
                     ),
 
                     /* Subscription */
-                    InkWell(
-                      onTap: () async {},
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
-                        decoration: Utils.setBackground(primaryColor, 4),
-                        child: MyText(
-                          color: black,
-                          multilanguage: true,
-                          text: "subscribe",
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontsizeNormal: 14,
-                          fontweight: FontWeight.w600,
-                          fontsizeWeb: 15,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () async {
+                    //     await setSelectedTab(-1);
+                    //     _onItemTapped("subscribe");
+                    //   },
+                    //   borderRadius: BorderRadius.circular(8),
+                    //   child: Container(
+                    //     padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                    //     decoration: Utils.setBackground(
+                    //         currentPage == "subscribe"
+                    //             ? primaryColor
+                    //             : complimentryColor,
+                    //         4),
+                    //     child: MyText(
+                    //       color: currentPage == "subscribe" ? black : white,
+                    //       multilanguage: true,
+                    //       text: "subscribe",
+                    //       maxline: 1,
+                    //       overflow: TextOverflow.ellipsis,
+                    //       fontsizeNormal: 14,
+                    //       fontweight: FontWeight.w600,
+                    //       fontsizeWeb: 15,
+                    //       textalign: TextAlign.center,
+                    //       fontstyle: FontStyle.normal,
+                    //     ),
+                    //   ),
+                    // ),
 
                     /* Login / MyStuff */
                     InkWell(
-                      onTap: () async {},
+                      onTap: () async {
+                        await setSelectedTab(-1);
+                        if (Constant.userID != null) {
+                          _onItemTapped("setting");
+                        } else {
+                          _onItemTapped("login");
+                        }
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
                         child: MyText(
-                          color: white,
+                          color: (currentPage == "login" ||
+                                  currentPage == "setting")
+                              ? primaryColor
+                              : white,
                           multilanguage: Constant.userID != null ? false : true,
                           text: Constant.userID != null ? bottomView5 : "login",
                           fontsizeNormal: 14,
@@ -382,18 +557,22 @@ class HomeState extends State<Home> {
         child: Container(
           constraints: const BoxConstraints(maxHeight: 30, minWidth: 0),
           decoration: Utils.setBackground(
-            (typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
-                    (value.id ?? 0)
-                ? white
+            homeProvider.selectedIndex != -1
+                ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                        (value.id ?? 0)
+                    ? white
+                    : transparentColor)
                 : transparentColor,
             20,
           ),
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
           child: MyText(
-            color: (typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
-                    (value.id ?? 0)
-                ? black
+            color: homeProvider.selectedIndex != -1
+                ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                        (value.id ?? 0)
+                    ? black
+                    : white)
                 : white,
             multilanguage: false,
             text: (value.name.toString()),
@@ -426,6 +605,7 @@ class HomeState extends State<Home> {
               borderRadius: BorderRadius.circular(25),
               onTap: () async {
                 debugPrint("index ===========> $index");
+                if (kIsWeb) _onItemTapped("");
                 await getTabData(index, homeProvider.sectionTypeModel.result);
               },
               child: Container(
@@ -470,9 +650,7 @@ class HomeState extends State<Home> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            SizedBox(
-              height: Dimens.homeTabHeight,
-            ),
+            SizedBox(height: Dimens.homeTabHeight),
             /* Banner */
             Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
@@ -485,14 +663,9 @@ class HomeState extends State<Home> {
                 } else {
                   if (sectionDataProvider.sectionBannerModel.status == 200 &&
                       sectionDataProvider.sectionBannerModel.result != null) {
-                    if (kIsWeb) {
-                      if (MediaQuery.of(context).size.width < 720) {
-                        return _mobileHomeBanner(
-                            sectionDataProvider.sectionBannerModel.result);
-                      } else {
-                        return _webHomeBanner(
-                            sectionDataProvider.sectionBannerModel.result);
-                      }
+                    if (kIsWeb && MediaQuery.of(context).size.width > 720) {
+                      return _webHomeBanner(
+                          sectionDataProvider.sectionBannerModel.result);
                     } else {
                       return _mobileHomeBanner(
                           sectionDataProvider.sectionBannerModel.result);
@@ -541,36 +714,13 @@ class HomeState extends State<Home> {
             const SizedBox(
               height: 20,
             ),
+
+            /* Web Footer */
+            kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> getTabData(
-      int position, List<type.Result>? sectionTypeList) async {
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
-
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    if (!mounted) return;
-    await homeProvider.setSelectedTab(position);
-
-    debugPrint("getTabData position ====> $position");
-    debugPrint(
-        "getTabData lastTabPosition ====> ${sectionDataProvider.lastTabPosition}");
-    if (sectionDataProvider.lastTabPosition == position) {
-      return;
-    } else {
-      sectionDataProvider.setTabPosition(position);
-    }
-    await sectionDataProvider.setLoading(true);
-    await sectionDataProvider.getSectionBanner(
-        position == 0 ? "0" : (sectionTypeList?[position - 1].id),
-        position == 0 ? "1" : "2");
-    await sectionDataProvider.getSectionList(
-        position == 0 ? "0" : (sectionTypeList?[position - 1].id),
-        position == 0 ? "1" : "2");
   }
 
   Widget _mobileHomeBanner(List<banner.Result>? sectionBannerList) {

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -26,6 +27,7 @@ class AboutPrivacyTerms extends StatefulWidget {
 class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
   final _controller = Completer<WebViewController>();
   SharedPre sharedPref = SharedPre();
+
   @override
   void initState() {
     super.initState();
@@ -41,18 +43,32 @@ class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, widget.appBarTitle),
-      body: Container(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height,
-          minWidth: MediaQuery.of(context).size.width,
+    if (kIsWeb) {
+      return Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: appBgColor,
+        body: Container(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+            minWidth: MediaQuery.of(context).size.width,
+          ),
+          child: setWebView(),
         ),
-        child: setWebView(),
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: appBgColor,
+        appBar: Utils.myAppBar(context, widget.appBarTitle),
+        body: Container(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+            minWidth: MediaQuery.of(context).size.width,
+          ),
+          child: setWebView(),
+        ),
+      );
+    }
   }
 
   Widget setWebView() {

@@ -11,6 +11,7 @@ import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
@@ -21,6 +22,7 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,51 +56,58 @@ class ChannelsState extends State<Channels> {
 
   @override
   Widget build(BuildContext context) {
-    final channelSectionProvider =
-        Provider.of<ChannelSectionProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      body: channelSectionProvider.loading
-          ? Utils.pageLoader()
-          : (channelSectionProvider.channelSectionModel.status == 200 &&
-                  (channelSectionProvider.channelSectionModel.result != null &&
-                      channelSectionProvider.channelSectionModel.liveUrl !=
-                          null))
-              ? SafeArea(
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                      children: [
-                        /* Banner */
-                        (channelSectionProvider.channelSectionModel.liveUrl !=
-                                null)
-                            ? channelbanner(channelSectionProvider
-                                .channelSectionModel.liveUrl)
-                            : const SizedBox.shrink(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        /* Remaining Data */
-                        (channelSectionProvider.channelSectionModel.result !=
-                                null)
-                            ? setSectionByType(channelSectionProvider
-                                .channelSectionModel.result)
-                            : const SizedBox.shrink(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : const NoData(
-                  title: '',
-                  subTitle: '',
-                ),
+      body: _buildChannelPage(),
     );
   }
 
-  Widget channelbanner(List<banner.LiveUrl>? sectionBannerList) {
+  Widget _buildChannelPage() {
+    final channelSectionProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
+    if (channelSectionProvider.loading) {
+      return Utils.pageLoader();
+    } else {
+      if (channelSectionProvider.channelSectionModel.status == 200) {
+        return SafeArea(
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+                /* Banner */
+                (channelSectionProvider.channelSectionModel.liveUrl != null)
+                    ? ((kIsWeb && MediaQuery.of(context).size.width > 720)
+                        ? _webChannelBanner(
+                            channelSectionProvider.channelSectionModel.liveUrl)
+                        : _mobileChannelBanner(
+                            channelSectionProvider.channelSectionModel.liveUrl))
+                    : const SizedBox.shrink(),
+                const SizedBox(height: 20),
+
+                /* Remaining Data */
+                (channelSectionProvider.channelSectionModel.result != null)
+                    ? setSectionByType(
+                        channelSectionProvider.channelSectionModel.result)
+                    : const SizedBox.shrink(),
+                const SizedBox(height: 20),
+
+                /* Web Footer */
+                kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
+              ],
+            ),
+          ),
+        );
+      } else {
+        return const NoData(
+          title: '',
+          subTitle: '',
+        );
+      }
+    }
+  }
+
+  Widget _mobileChannelBanner(List<banner.LiveUrl>? sectionBannerList) {
     final channelSectionProvider =
         Provider.of<ChannelSectionProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
@@ -242,6 +251,172 @@ class ChannelsState extends State<Channels> {
     }
   }
 
+  Widget _webChannelBanner(List<banner.LiveUrl>? sectionBannerList) {
+    final sectionDataProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
+    if ((sectionBannerList?.length ?? 0) > 0) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: Dimens.channelWebBanner,
+        child: CarouselSlider.builder(
+          itemCount: (sectionBannerList?.length ?? 0),
+          carouselController: pageController,
+          options: CarouselOptions(
+            initialPage: 0,
+            height: Dimens.channelWebBanner,
+            enlargeCenterPage: false,
+            autoPlay: true,
+            autoPlayCurve: Curves.fastOutSlowIn,
+            enableInfiniteScroll: true,
+            autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+            viewportFraction: 0.95,
+            onPageChanged: (val, _) async {
+              await sectionDataProvider.setCurrentBanner(val);
+            },
+          ),
+          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+            return InkWell(
+              onTap: () async {
+                log("Clicked on index ==> $index");
+                if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
+                  if (Constant.userID != null) {
+                    if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            if ((sectionBannerList?[index].link ?? "")
+                                .contains("youtube")) {
+                              return YoutubeVideo(
+                                videoUrl: sectionBannerList?[index].link,
+                              );
+                            } else if ((sectionBannerList?[index].link ?? "")
+                                .contains("vimeo")) {
+                              return VimeoPlayerPage(
+                                url: sectionBannerList?[index].link,
+                              );
+                            } else {
+                              return PlayerPage(
+                                "Channel",
+                                0,
+                                0,
+                                0,
+                                sectionBannerList?[index].link ?? "",
+                                sectionBannerList?[index].name ?? "",
+                                0,
+                              );
+                            }
+                          },
+                        ),
+                      );
+                    } else {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const Subscription();
+                          },
+                        ),
+                      );
+                      _getData();
+                    }
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginSocial();
+                        },
+                      ),
+                    );
+                  }
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Stack(
+                    alignment: AlignmentDirectional.centerEnd,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            (Dimens.webBannerImgPr),
+                        height: Dimens.channelWebBanner,
+                        child: MyNetworkImage(
+                          imageUrl: sectionBannerList?[index].image ?? "",
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
+                        height: Dimens.channelWebBanner,
+                        alignment: Alignment.centerLeft,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              appBgColor,
+                              appBgColor,
+                              appBgColor,
+                              appBgColor,
+                              transparentColor,
+                              transparentColor,
+                              transparentColor,
+                              transparentColor,
+                              transparentColor,
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: Dimens.channelWebBanner,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width *
+                                  (1.0 - Dimens.webBannerImgPr),
+                              constraints: const BoxConstraints(minHeight: 0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(35, 50, 55, 35),
+                              alignment: Alignment.centerLeft,
+                              child: MyText(
+                                color: white,
+                                text: sectionBannerList?[index].name ?? "",
+                                textalign: TextAlign.start,
+                                fontsizeNormal: 14,
+                                fontweight: FontWeight.w700,
+                                fontsizeWeb: 25,
+                                multilanguage: false,
+                                maxline: 2,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                            const Expanded(child: SizedBox()),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget setSectionByType(List<list.Result>? sectionList) {
     return ListView.separated(
       itemCount: sectionList?.length ?? 0,
@@ -264,6 +439,7 @@ class ChannelsState extends State<Channels> {
                   text: sectionList?[index].channelName.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsizeNormal: 10,
+                  fontsizeWeb: 14,
                   multilanguage: false,
                   maxline: 1,
                   fontweight: FontWeight.w700,
@@ -281,6 +457,7 @@ class ChannelsState extends State<Channels> {
                   text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsizeNormal: 16,
+                  fontsizeWeb: 18,
                   multilanguage: false,
                   maxline: 1,
                   fontweight: FontWeight.bold,

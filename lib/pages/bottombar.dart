@@ -20,7 +20,7 @@ class BottombarState extends State<Bottombar> {
   int selectedIndex = 0;
 
   static List<Widget> widgetOptions = <Widget>[
-    const Home(),
+    const Home(pageName: ""),
     const Find(),
     const Channels(),
     const RentStore(),

@@ -4,12 +4,14 @@ import 'package:dtlive/model/subscriptionmodel.dart';
 import 'package:dtlive/pages/allpayment.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/provider/subscriptionprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +27,7 @@ class Subscription extends StatefulWidget {
 
 class SubscriptionState extends State<Subscription> {
   PageController pageController = PageController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -46,61 +49,77 @@ class SubscriptionState extends State<Subscription> {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return Scaffold(
+        backgroundColor: subscriptionBG,
+        body: _buildSubscription(),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: subscriptionBG,
+        appBar: Utils.myAppBarWithBack(context, "subsciption"),
+        body: _buildSubscription(),
+      );
+    }
+  }
+
+  Widget _buildSubscription() {
     final subscriptionProvider =
         Provider.of<SubscriptionProvider>(context, listen: false);
-    return Scaffold(
-      backgroundColor: subscriptionBG,
-      appBar: Utils.myAppBarWithBack(context, "subsciption"),
-      body: subscriptionProvider.loading
-          ? Utils.pageLoader()
-          : (subscriptionProvider.subscriptionModel.status == 200)
-              ? Column(
-                  children: [
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      alignment: Alignment.center,
-                      child: MyText(
-                        color: otherColor,
-                        text: "subscriptiondesc",
-                        multilanguage: true,
-                        textalign: TextAlign.center,
-                        fontsizeNormal: 16,
-                        maxline: 2,
-                        fontweight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        fontstyle: FontStyle.normal,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    /* Remaining Data */
-                    (subscriptionProvider.subscriptionModel.result != null)
-                        ? Flexible(
-                            child: buildPackageItem(
-                                subscriptionProvider.subscriptionModel.result),
-                          )
-                        : const SizedBox.shrink(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                )
-              : const NoData(
-                  title: '',
-                  subTitle: '',
-                ),
-    );
+    if (subscriptionProvider.loading) {
+      return Utils.pageLoader();
+    } else {
+      if (subscriptionProvider.subscriptionModel.status == 200) {
+        return Column(
+          children: [
+            if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+            const SizedBox(height: 12),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              alignment: Alignment.center,
+              child: MyText(
+                color: otherColor,
+                text: "subscriptiondesc",
+                multilanguage: true,
+                textalign: TextAlign.center,
+                fontsizeNormal: 16,
+                fontsizeWeb: 18,
+                maxline: 2,
+                fontweight: FontWeight.w600,
+                overflow: TextOverflow.ellipsis,
+                fontstyle: FontStyle.normal,
+              ),
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            /* Remaining Data */
+            (subscriptionProvider.subscriptionModel.result != null)
+                ? Flexible(
+                    child: buildPackageItem(
+                        subscriptionProvider.subscriptionModel.result),
+                  )
+                : const SizedBox.shrink(),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        );
+      } else {
+        return const NoData(
+          title: '',
+          subTitle: '',
+        );
+      }
+    }
   }
 
   Widget buildPackageItem(List<Result>? packageList) {
     return PageView.builder(
       itemCount: packageList?.length ?? 0,
       scrollDirection: Axis.horizontal,
+      controller: pageController,
       itemBuilder: (BuildContext context, int index) {
         return Padding(
           padding: const EdgeInsets.all(10),
@@ -129,6 +148,7 @@ class SubscriptionState extends State<Subscription> {
                             text: packageList?[index].name ?? "",
                             textalign: TextAlign.center,
                             fontsizeNormal: 22,
+                            fontsizeWeb: 24,
                             maxline: 1,
                             multilanguage: false,
                             overflow: TextOverflow.ellipsis,
@@ -143,6 +163,7 @@ class SubscriptionState extends State<Subscription> {
                                 "${packageList?[index].price.toString() ?? ""} / ${packageList?[index].time.toString() ?? ""} ${packageList?[index].type.toString() ?? ""}",
                             textalign: TextAlign.center,
                             fontsizeNormal: 20,
+                            fontsizeWeb: 22,
                             maxline: 1,
                             multilanguage: false,
                             overflow: TextOverflow.ellipsis,
@@ -164,6 +185,7 @@ class SubscriptionState extends State<Subscription> {
                             thickness: 3,
                             thumbVisibility: true,
                             scrollbarOrientation: ScrollbarOrientation.right,
+                            controller: scrollController,
                             radius: const Radius.circular(5),
                             child: AlignedGridView.count(
                               shrinkWrap: true,
@@ -197,6 +219,7 @@ class SubscriptionState extends State<Subscription> {
                                           textalign: TextAlign.start,
                                           multilanguage: false,
                                           fontsizeNormal: 16,
+                                          fontsizeWeb: 18,
                                           maxline: 3,
                                           overflow: TextOverflow.ellipsis,
                                           fontweight: FontWeight.w600,
@@ -254,6 +277,7 @@ class SubscriptionState extends State<Subscription> {
                                                   "",
                                               textalign: TextAlign.center,
                                               fontsizeNormal: 22,
+                                              fontsizeWeb: 24,
                                               multilanguage: false,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -342,6 +366,7 @@ class SubscriptionState extends State<Subscription> {
                             text: "chooseplan",
                             textalign: TextAlign.center,
                             fontsizeNormal: 18,
+                            fontsizeWeb: 20,
                             fontweight: FontWeight.w800,
                             multilanguage: true,
                             maxline: 1,

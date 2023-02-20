@@ -14,6 +14,7 @@ const primaryTras10 = Color(0x1Abafa34);
 const primaryTras5 = Color(0x0Dbafa34);
 
 const appBgColor = Color(0xFF000000);
+const dotsDefaultColor = Color(0xFF2D2D2D);
 const statusBarColor = Color.fromRGBO(0, 0, 0, 0);
 const tabDefaultColor = Color(0x990A4666);
 const subscriptionBG = Color(0xff0c0c0d);

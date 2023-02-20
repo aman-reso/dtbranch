@@ -19,6 +19,12 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setLoading(bool isLoading) {
+    log("setDataVisibility isLoading :==> $isLoading");
+    loading = isLoading;
+    notifyListeners();
+  }
+
   void setDataVisibility(bool isVideoVisible, bool isShowVisible) {
     log("setDataVisibility isVideoVisible :==> $isVideoVisible");
     log("setDataVisibility isShowVisible :==> $isShowVisible");

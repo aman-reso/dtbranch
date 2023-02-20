@@ -29,7 +29,7 @@ class MyText extends StatelessWidget {
 
   static getAdaptiveTextSize(BuildContext context, dynamic value) {
     // 720 is medium screen height
-    return (value / (kIsWeb ? 700 : 720)) * MediaQuery.of(context).size.height;
+    return (value / (kIsWeb ? 650 : 720)) * MediaQuery.of(context).size.height;
   }
 
   @override

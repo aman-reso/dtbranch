@@ -7,8 +7,18 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:dtlive/webwidget/interactive_icon.dart';
 import 'package:dtlive/webwidget/interactive_text.dart';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js' as js;
+import 'package:js/js.dart';
+
+@JS('launchUrl')
+external String launchUrl(String url, String target);
+_redirectToUrl(loadingUrl) async {
+  log("loadingUrl ---------> $loadingUrl");
+  /* 
+      _blank => open new Tab
+      _self => open in current Tab 
+    */
+  launchUrl(loadingUrl, '_blank');
+}
 
 class FooterWeb extends StatefulWidget {
   const FooterWeb({super.key});
@@ -36,14 +46,6 @@ class _FooterWebState extends State<FooterWeb> {
     log('privacyUrl ==> $privacyUrl');
     log('termsConditionUrl ==> $termsConditionUrl');
     log('refundPolicyUrl ==> $refundPolicyUrl');
-  }
-
-  _redirectToUrl(String loadingUrl) {
-    /* 
-    _blank => open new Tab
-    _self => open in current Tab 
-    */
-    js.context.callMethod('open', [loadingUrl, '_blank']);
   }
 
   @override

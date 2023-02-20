@@ -21,4 +21,8 @@ class HomeProvider extends ChangeNotifier {
     selectedIndex = index;
     notifyListeners();
   }
+
+  homeNotifyProvider() {
+    notifyListeners();
+  }
 }

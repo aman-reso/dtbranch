@@ -13,8 +13,6 @@ class Constant {
       "346606981660-juds0qd8k9p651md7gv38bd1bn9jq66v.apps.googleusercontent.com";
   static const String googleClientSecret =
       "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";
-  static int fixFourDigit = 1317;
-  static int fixSixDigit = 161613;
 
   static String? userID;
   static String userPlaceholder =
@@ -37,7 +35,8 @@ class Constant {
 
   static Map<String, String> resolutionsUrls = <String, String>{};
 
-  /* Download init */
-  static String downloadVideoPortName = 'downloader_video_send_port';
-  static String downloadSeasonPortName = 'downloader_season_send_port';
+  static int fixFourDigit = 1317;
+  static int fixSixDigit = 161613;
+  static int bannerDuration = 10000; // in milliseconds
+  static int animationDuration = 800; // in milliseconds
 }

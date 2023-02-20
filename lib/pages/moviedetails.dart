@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
 import 'package:dtlive/provider/downloadprovider.dart';
+import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 
@@ -93,7 +93,6 @@ class MovieDetailsState extends State<MovieDetails> {
   @override
   void dispose() {
     super.dispose();
-    IsolateNameServer.removePortNameMapping(Constant.downloadVideoPortName);
     videoDetailsProvider.clearProvider();
   }
 
@@ -168,6 +167,7 @@ class MovieDetailsState extends State<MovieDetails> {
                     scrollDirection: Axis.vertical,
                     child: Column(
                       children: [
+                        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
                         /* Poster */
                         Stack(
                           alignment: Alignment.center,
@@ -318,9 +318,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         textalign:
                                                             TextAlign.center,
                                                         fontsizeNormal: 13,
+                                                        fontsizeWeb: 15,
                                                         fontweight:
                                                             FontWeight.w500,
-                                                        fontsizeWeb: 15,
                                                         multilanguage: false,
                                                         maxline: 1,
                                                         overflow: TextOverflow
@@ -359,9 +359,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         textalign:
                                                             TextAlign.center,
                                                         fontsizeNormal: 13,
+                                                        fontsizeWeb: 15,
                                                         fontweight:
                                                             FontWeight.w500,
-                                                        fontsizeWeb: 15,
                                                         maxline: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -408,9 +408,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         textalign:
                                                             TextAlign.center,
                                                         fontsizeNormal: 10,
+                                                        fontsizeWeb: 12,
                                                         fontweight:
                                                             FontWeight.normal,
-                                                        fontsizeWeb: 12,
                                                         multilanguage: false,
                                                         maxline: 1,
                                                         overflow: TextOverflow
@@ -451,8 +451,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                             text: "primetag",
                                             textalign: TextAlign.start,
                                             fontsizeNormal: 16,
-                                            fontweight: FontWeight.w700,
                                             fontsizeWeb: 17,
+                                            fontweight: FontWeight.w700,
                                             multilanguage: true,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -467,8 +467,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                             multilanguage: true,
                                             textalign: TextAlign.center,
                                             fontsizeNormal: 12,
-                                            fontweight: FontWeight.w400,
                                             fontsizeWeb: 14,
+                                            fontweight: FontWeight.w400,
                                             maxline: 1,
                                             overflow: TextOverflow.ellipsis,
                                             fontstyle: FontStyle.normal,
@@ -505,8 +505,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                               text: Constant.currencySymbol,
                                               textalign: TextAlign.center,
                                               fontsizeNormal: 11,
-                                              fontweight: FontWeight.w800,
                                               fontsizeWeb: 13,
+                                              fontweight: FontWeight.w800,
                                               multilanguage: false,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -521,6 +521,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                               text: "renttag",
                                               textalign: TextAlign.center,
                                               fontsizeNormal: 12,
+                                              fontsizeWeb: 13,
                                               multilanguage: true,
                                               fontweight: FontWeight.normal,
                                               maxline: 1,
@@ -626,8 +627,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                     text: "startover",
                                                     multilanguage: true,
                                                     fontsizeNormal: 12,
-                                                    fontweight: FontWeight.w500,
                                                     fontsizeWeb: 14,
+                                                    fontweight: FontWeight.w500,
                                                     maxline: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -683,8 +684,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                     color: white,
                                                     text: "trailer",
                                                     fontsizeNormal: 12,
-                                                    fontweight: FontWeight.w500,
                                                     fontsizeWeb: 14,
+                                                    fontweight: FontWeight.w500,
                                                     multilanguage: true,
                                                     maxline: 1,
                                                     overflow:
@@ -782,8 +783,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                               color: white,
                                               text: "watchlist",
                                               fontsizeNormal: 12,
-                                              fontweight: FontWeight.w500,
                                               fontsizeWeb: 14,
+                                              fontweight: FontWeight.w500,
                                               multilanguage: true,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -842,8 +843,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                               multilanguage: true,
                                               text: "more",
                                               fontsizeNormal: 12,
-                                              fontweight: FontWeight.w500,
                                               fontsizeWeb: 14,
+                                              fontweight: FontWeight.w500,
                                               maxline: 1,
                                               overflow: TextOverflow.ellipsis,
                                               textalign: TextAlign.center,
@@ -906,8 +907,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                               "${videoDetailsProvider.sectionDetailModel.result?.imdbRating ?? 0}",
                                           textalign: TextAlign.start,
                                           fontsizeNormal: 14,
-                                          fontweight: FontWeight.w600,
                                           fontsizeWeb: 16,
+                                          fontweight: FontWeight.w600,
                                           multilanguage: false,
                                           maxline: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -1037,6 +1038,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                   return _buildTabs();
                                 },
                               ),
+                              const SizedBox(height: 20),
+
+                              /* Web Footer */
+                              kIsWeb
+                                  ? const FooterWeb()
+                                  : const SizedBox.shrink(),
                             ],
                           ),
                         ),

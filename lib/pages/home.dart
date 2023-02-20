@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 
@@ -14,11 +14,11 @@ import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/channels.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/rentstore.dart';
-import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/webwidget/quicklinksweb.dart';
+import 'package:dtlive/webwidget/searchweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
@@ -29,8 +29,10 @@ import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -43,19 +45,34 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
   CarouselController pageController = CarouselController();
   late ScrollController tabScrollController;
+  final TextEditingController searchController = TextEditingController();
   late HomeProvider homeProvider;
+  late SearchProvider searchProvider;
+  int? videoId, videoType, typeId;
   String? currentPage,
       aboutUsUrl,
       privacyUrl,
       termsConditionUrl,
-      refundPolicyUrl;
+      refundPolicyUrl,
+      mSearchText;
+
+  _onItemTapped(String page) async {
+    if (page != "") {
+      await setSelectedTab(-1);
+    }
+    setState(() {
+      currentPage = page;
+    });
+  }
 
   @override
   void initState() {
     currentPage = widget.pageName ?? "";
+    searchProvider = Provider.of<SearchProvider>(context, listen: false);
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     tabScrollController = ScrollController();
     super.initState();
@@ -132,20 +149,65 @@ class HomeState extends State<Home> {
     super.dispose();
   }
 
+  void _openDetailPage(
+      String pageName, int videoId, int videoType, int typeId) async {
+    debugPrint("pageName ==========> $pageName");
+    debugPrint("videoId ==========> $videoId");
+    debugPrint("videoType ==========> $videoType");
+    debugPrint("typeId ==========> $typeId");
+    if (kIsWeb) {
+      this.videoId = videoId;
+      this.videoType = videoType;
+      this.typeId = typeId;
+      _onItemTapped(pageName);
+      return;
+    }
+    if (videoType == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return MovieDetails(videoId, videoType, typeId);
+          },
+        ),
+      );
+    } else if (videoType == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return TvShowDetails(videoId, videoType, typeId);
+          },
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: appBgColor,
+      body: SafeArea(
+        child: kIsWeb ? _webAppBarWithDetails() : _mobileAppBarWithDetails(),
+      ),
+    );
+  }
+
   Widget _clickToRedirect({required String pageName}) {
     switch (pageName) {
       case "channel":
         return const Channels();
       case "store":
         return const RentStore();
-      case "setting":
-        return const Setting();
-      case "login":
-        return const LoginSocial();
+      case "search":
+        return SearchWeb(
+          searchText: mSearchText ?? "",
+          openDetailPage: _openDetailPage,
+        );
       case "videodetail":
-        return const MovieDetails(0, 0, 0);
+        return MovieDetails(videoId ?? 0, videoType ?? 0, typeId ?? 0);
       case "showdetail":
-        return const TvShowDetails(0, 0, 0);
+        return TvShowDetails(videoId ?? 0, videoType ?? 0, typeId ?? 0);
       case "aboutus":
         return QuickLinksWeb(
           pageName: "aboutus",
@@ -169,22 +231,6 @@ class HomeState extends State<Home> {
       default:
         return tabItem(homeProvider.sectionTypeModel.result);
     }
-  }
-
-  void _onItemTapped(String page) {
-    setState(() {
-      currentPage = page;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: appBgColor,
-      body: SafeArea(
-        child: kIsWeb ? _webAppBarWithDetails() : _mobileAppBarWithDetails(),
-      ),
-    );
   }
 
   Widget _mobileAppBarWithDetails() {
@@ -351,72 +397,154 @@ class HomeState extends State<Home> {
                                 tabTitle(homeProvider.sectionTypeModel.result),
                           )
                         : const Expanded(child: SizedBox.shrink()),
-                    const SizedBox(
-                      width: 20,
-                    ),
+                    const SizedBox(width: 20),
 
                     /* Feature buttons */
                     /* Search */
                     Container(
-                      constraints: const BoxConstraints(
-                        minWidth: 20,
-                        maxWidth: 40,
-                      ),
-                      padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2(
-                          isExpanded: false,
-                          customButton: MyImage(
-                            height: 40,
-                            imagePath: "ic_find.png",
-                            fit: BoxFit.contain,
-                            color:
-                                currentPage == "search" ? primaryColor : white,
-                          ),
-                          items: _buildWebDropDownItems(),
-                          onChanged: (type.Result? value) async {
-                            if (kIsWeb) {
-                              await setSelectedTab(-1);
-                              _onItemTapped("search");
-                            }
-                            // debugPrint(
-                            //     'value id ===============> ${value?.id.toString()}');
-                            // if (value?.id == 0) {
-                            //   await getTabData(
-                            //       0, homeProvider.sectionTypeModel.result);
-                            // } else {
-                            //   for (var i = 0;
-                            //       i <
-                            //           (homeProvider.sectionTypeModel.result
-                            //                   ?.length ??
-                            //               0);
-                            //       i++) {
-                            //     if (value?.id ==
-                            //         homeProvider
-                            //             .sectionTypeModel.result?[i].id) {
-                            //       await getTabData(i + 1,
-                            //           homeProvider.sectionTypeModel.result);
-                            //       return;
-                            //     }
-                            //   }
-                            // }
-                          },
-                          dropdownPadding:
-                              const EdgeInsets.only(left: 10, right: 10),
-                          dropdownElevation: 8,
-                          dropdownWidth: 275,
-                          dropdownDecoration:
-                              Utils.setBackground(lightBlack, 5),
-                          itemPadding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
+                      height: 30,
+                      constraints:
+                          const BoxConstraints(minWidth: 60, maxWidth: 140),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      decoration: BoxDecoration(
+                        color: transparentColor,
+                        border: Border.all(
+                          color: primaryColor,
+                          width: 0.5,
                         ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              alignment: Alignment.center,
+                              child: TextField(
+                                // onSubmitted: (value) async {
+                                //   log("value ====> $value");
+                                //   if (value.isNotEmpty) {
+                                //     mSearchText = value;
+                                //     debugPrint(
+                                //         "mSearchText ====> $mSearchText");
+                                //     _onItemTapped("search");
+                                //     await searchProvider.setLoading(true);
+                                //     await searchProvider
+                                //         .getSearchVideo(mSearchText);
+                                //   }
+                                // },
+                                onChanged: (value) async {
+                                  log("value ====> $value");
+                                  if (value.isNotEmpty) {
+                                    mSearchText = value;
+                                    debugPrint(
+                                        "mSearchText ====> $mSearchText");
+                                    _onItemTapped("search");
+                                    await searchProvider.setLoading(true);
+                                    await searchProvider
+                                        .getSearchVideo(mSearchText);
+                                  }
+                                },
+                                textInputAction: TextInputAction.done,
+                                obscureText: false,
+                                controller: searchController,
+                                keyboardType: TextInputType.text,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  color: white,
+                                  fontSize: 14,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  filled: true,
+                                  isCollapsed: true,
+                                  fillColor: transparentColor,
+                                  hintStyle: TextStyle(
+                                    color: otherColor,
+                                    fontSize: 14,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  hintText: searchHint2,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Consumer<SearchProvider>(
+                            builder: (context, searchProvider, child) {
+                              if (searchController.text.toString().isNotEmpty) {
+                                return InkWell(
+                                  borderRadius: BorderRadius.circular(5),
+                                  onTap: () async {
+                                    debugPrint("Click on Clear!");
+                                    _onItemTapped("");
+                                    searchController.clear();
+                                    await searchProvider.clearProvider();
+                                    await searchProvider.notifyProvider();
+                                  },
+                                  child: Container(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 25,
+                                      maxWidth: 25,
+                                    ),
+                                    padding: const EdgeInsets.all(5),
+                                    alignment: Alignment.center,
+                                    child: MyImage(
+                                      height: 25,
+                                      color: white,
+                                      fit: BoxFit.contain,
+                                      imagePath: "ic_close.png",
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return InkWell(
+                                  borderRadius: BorderRadius.circular(5),
+                                  onTap: () async {
+                                    debugPrint("Click on Search!");
+                                    if (searchController.text
+                                        .toString()
+                                        .isNotEmpty) {
+                                      mSearchText =
+                                          searchController.text.toString();
+                                      debugPrint(
+                                          "mSearchText ====> $mSearchText");
+                                      _onItemTapped("search");
+                                      await searchProvider.setLoading(true);
+                                      await searchProvider
+                                          .getSearchVideo(mSearchText);
+                                    }
+                                  },
+                                  child: Container(
+                                    constraints: const BoxConstraints(
+                                      minWidth: 25,
+                                      maxWidth: 25,
+                                    ),
+                                    padding: const EdgeInsets.all(5),
+                                    alignment: Alignment.center,
+                                    child: MyImage(
+                                      height: 25,
+                                      color: white,
+                                      fit: BoxFit.contain,
+                                      imagePath: "ic_find.png",
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ),
 
                     /* Channels */
                     InkWell(
                       onTap: () async {
-                        await setSelectedTab(-1);
                         _onItemTapped("channel");
                       },
                       borderRadius: BorderRadius.circular(8),
@@ -441,7 +569,6 @@ class HomeState extends State<Home> {
                     /* Rent */
                     InkWell(
                       onTap: () async {
-                        await setSelectedTab(-1);
                         _onItemTapped("store");
                       },
                       borderRadius: BorderRadius.circular(8),
@@ -491,35 +618,73 @@ class HomeState extends State<Home> {
                     //   ),
                     // ),
 
-                    /* Login / MyStuff */
+                    /* Login / MyProfile */
                     InkWell(
                       onTap: () async {
-                        await setSelectedTab(-1);
                         if (Constant.userID != null) {
-                          _onItemTapped("setting");
+                          Utils.buildWebAlertDialog(context, "profile", "");
                         } else {
-                          _onItemTapped("login");
+                          Utils.buildWebAlertDialog(context, "login", "");
                         }
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
-                        child: MyText(
-                          color: (currentPage == "login" ||
-                                  currentPage == "setting")
-                              ? primaryColor
-                              : white,
-                          multilanguage: Constant.userID != null ? false : true,
-                          text: Constant.userID != null ? bottomView5 : "login",
-                          fontsizeNormal: 14,
-                          fontweight: FontWeight.w600,
-                          fontsizeWeb: 15,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
+                        child: Consumer<HomeProvider>(
+                          builder: (context, homeProvider, child) {
+                            return MyText(
+                              color: (currentPage == "login" ||
+                                      currentPage == "setting")
+                                  ? primaryColor
+                                  : white,
+                              multilanguage:
+                                  Constant.userID != null ? false : true,
+                              text:
+                                  Constant.userID != null ? myProfile : "login",
+                              fontsizeNormal: 14,
+                              fontweight: FontWeight.w600,
+                              fontsizeWeb: 15,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.center,
+                              fontstyle: FontStyle.normal,
+                            );
+                          },
                         ),
                       ),
+                    ),
+
+                    /* Logout */
+                    Consumer<HomeProvider>(
+                      builder: (context, homeProvider, child) {
+                        if (Constant.userID != null) {
+                          return InkWell(
+                            onTap: () async {
+                              if (Constant.userID != null) {
+                                _buildLogoutDialog();
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: MyText(
+                                color: white,
+                                multilanguage: true,
+                                text: "sign_out",
+                                fontsizeNormal: 14,
+                                fontweight: FontWeight.w600,
+                                fontsizeWeb: 15,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textalign: TextAlign.center,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -651,6 +816,7 @@ class HomeState extends State<Home> {
         child: Column(
           children: [
             SizedBox(height: Dimens.homeTabHeight),
+
             /* Banner */
             Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
@@ -711,9 +877,7 @@ class HomeState extends State<Home> {
                 }
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
 
             /* Web Footer */
             kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
@@ -742,9 +906,12 @@ class HomeState extends State<Home> {
                 height: Dimens.homeBanner,
                 enlargeCenterPage: false,
                 autoPlay: true,
-                autoPlayCurve: Curves.fastOutSlowIn,
+                autoPlayCurve: Curves.easeInOutQuart,
                 enableInfiniteScroll: true,
-                autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+                autoPlayInterval:
+                    Duration(milliseconds: Constant.bannerDuration),
+                autoPlayAnimationDuration:
+                    Duration(milliseconds: Constant.animationDuration),
                 viewportFraction: 1.0,
                 onPageChanged: (val, _) async {
                   await sectionDataProvider.setCurrentBanner(val);
@@ -755,34 +922,14 @@ class HomeState extends State<Home> {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
-                    if ((sectionBannerList?[index].videoType ?? 0) == 1) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return MovieDetails(
-                              sectionBannerList?[index].id ?? 0,
-                              sectionBannerList?[index].videoType ?? 0,
-                              sectionBannerList?[index].typeId ?? 0,
-                            );
-                          },
-                        ),
-                      );
-                    } else if ((sectionBannerList?[index].videoType ?? 0) ==
-                        2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return TvShowDetails(
-                              sectionBannerList?[index].id ?? 0,
-                              sectionBannerList?[index].videoType ?? 0,
-                              sectionBannerList?[index].typeId ?? 0,
-                            );
-                          },
-                        ),
-                      );
-                    }
+                    _openDetailPage(
+                      (sectionBannerList?[index].videoType ?? 0) == 2
+                          ? "showdetail"
+                          : "videodetail",
+                      sectionBannerList?[index].id ?? 0,
+                      sectionBannerList?[index].videoType ?? 0,
+                      sectionBannerList?[index].typeId ?? 0,
+                    );
                   },
                   child: Stack(
                     alignment: AlignmentDirectional.bottomCenter,
@@ -829,7 +976,7 @@ class HomeState extends State<Home> {
                   height: 8,
                   width: 8,
                   cornerRadius: 4,
-                  color: lightBlack,
+                  color: dotsDefaultColor,
                   activeColor: white,
                 );
               },
@@ -857,9 +1004,11 @@ class HomeState extends State<Home> {
             height: Dimens.homeWebBanner,
             enlargeCenterPage: false,
             autoPlay: true,
-            autoPlayCurve: Curves.fastOutSlowIn,
+            autoPlayCurve: Curves.easeInOutQuart,
             enableInfiniteScroll: true,
-            autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+            autoPlayInterval: Duration(milliseconds: Constant.bannerDuration),
+            autoPlayAnimationDuration:
+                Duration(milliseconds: Constant.animationDuration),
             viewportFraction: 0.95,
             onPageChanged: (val, _) async {
               await sectionDataProvider.setCurrentBanner(val);
@@ -869,38 +1018,19 @@ class HomeState extends State<Home> {
             return InkWell(
               onTap: () {
                 log("Clicked on index ==> $index");
-                if ((sectionBannerList?[index].videoType ?? 0) == 1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MovieDetails(
-                          sectionBannerList?[index].id ?? 0,
-                          sectionBannerList?[index].videoType ?? 0,
-                          sectionBannerList?[index].typeId ?? 0,
-                        );
-                      },
-                    ),
-                  );
-                } else if ((sectionBannerList?[index].videoType ?? 0) == 2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return TvShowDetails(
-                          sectionBannerList?[index].id ?? 0,
-                          sectionBannerList?[index].videoType ?? 0,
-                          sectionBannerList?[index].typeId ?? 0,
-                        );
-                      },
-                    ),
-                  );
-                }
+                _openDetailPage(
+                  (sectionBannerList?[index].videoType ?? 0) == 2
+                      ? "showdetail"
+                      : "videodetail",
+                  sectionBannerList?[index].id ?? 0,
+                  sectionBannerList?[index].videoType ?? 0,
+                  sectionBannerList?[index].typeId ?? 0,
+                );
               },
               child: Container(
                 padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(4),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Stack(
                     alignment: AlignmentDirectional.centerEnd,
@@ -924,10 +1054,10 @@ class HomeState extends State<Home> {
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                             colors: [
-                              appBgColor,
-                              appBgColor,
-                              appBgColor,
-                              appBgColor,
+                              lightBlack,
+                              lightBlack,
+                              lightBlack,
+                              lightBlack,
                               transparentColor,
                               transparentColor,
                               transparentColor,
@@ -961,8 +1091,8 @@ class HomeState extends State<Home> {
                                     text: sectionBannerList?[index].name ?? "",
                                     textalign: TextAlign.start,
                                     fontsizeNormal: 14,
-                                    fontweight: FontWeight.w700,
                                     fontsizeWeb: 25,
+                                    fontweight: FontWeight.w700,
                                     multilanguage: false,
                                     maxline: 2,
                                     overflow: TextOverflow.ellipsis,
@@ -1073,36 +1203,16 @@ class HomeState extends State<Home> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on index ==> $index");
-                        if ((continueWatchingList?[index].videoType ?? 0) ==
-                            1) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return MovieDetails(
-                                  continueWatchingList?[index].id ?? 0,
-                                  continueWatchingList?[index].videoType ?? 0,
-                                  continueWatchingList?[index].typeId ?? 0,
-                                );
-                              },
-                            ),
-                          );
-                        } else if ((continueWatchingList?[index].videoType ??
-                                0) ==
-                            2) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return TvShowDetails(
-                                  continueWatchingList?[index].showId ?? 0,
-                                  continueWatchingList?[index].videoType ?? 0,
-                                  continueWatchingList?[index].typeId ?? 0,
-                                );
-                              },
-                            ),
-                          );
-                        }
+                        _openDetailPage(
+                          (continueWatchingList?[index].videoType ?? 0) == 2
+                              ? "showdetail"
+                              : "videodetail",
+                          (continueWatchingList?[index].videoType ?? 0) == 2
+                              ? (continueWatchingList?[index].showId ?? 0)
+                              : (continueWatchingList?[index].id ?? 0),
+                          continueWatchingList?[index].videoType ?? 0,
+                          continueWatchingList?[index].typeId ?? 0,
+                        );
                       },
                       child: Container(
                         width: Dimens.widthContiLand,
@@ -1273,7 +1383,7 @@ class HomeState extends State<Home> {
                   textalign: TextAlign.center,
                   fontsizeNormal: 16,
                   fontweight: FontWeight.w600,
-                  fontsizeWeb: 16,
+                  fontsizeWeb: 18,
                   multilanguage: false,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
@@ -1399,33 +1509,14 @@ class HomeState extends State<Home> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TvShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              _openDetailPage(
+                (sectionDataList?[index].videoType ?? 0) == 2
+                    ? "showdetail"
+                    : "videodetail",
+                sectionDataList?[index].id ?? 0,
+                sectionDataList?[index].videoType ?? 0,
+                sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthLand,
@@ -1466,33 +1557,14 @@ class HomeState extends State<Home> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TvShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              _openDetailPage(
+                (sectionDataList?[index].videoType ?? 0) == 2
+                    ? "showdetail"
+                    : "videodetail",
+                sectionDataList?[index].id ?? 0,
+                sectionDataList?[index].videoType ?? 0,
+                sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthPort,
@@ -1533,33 +1605,14 @@ class HomeState extends State<Home> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TvShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              _openDetailPage(
+                (sectionDataList?[index].videoType ?? 0) == 2
+                    ? "showdetail"
+                    : "videodetail",
+                sectionDataList?[index].id ?? 0,
+                sectionDataList?[index].videoType ?? 0,
+                sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthSquare,
@@ -1769,6 +1822,160 @@ class HomeState extends State<Home> {
           );
         },
       ),
+    );
+  }
+
+  Future<void> _buildLogoutDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          insetPadding: const EdgeInsets.fromLTRB(100, 25, 100, 25),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          backgroundColor: lightBlack,
+          child: Container(
+            padding: const EdgeInsets.all(25),
+            constraints: const BoxConstraints(
+              minWidth: 250,
+              maxWidth: 300,
+              minHeight: 100,
+              maxHeight: 150,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyText(
+                        color: white,
+                        text: "confirmsognout",
+                        multilanguage: true,
+                        textalign: TextAlign.center,
+                        fontsizeNormal: 16,
+                        fontsizeWeb: 18,
+                        fontweight: FontWeight.bold,
+                        maxline: 2,
+                        overflow: TextOverflow.ellipsis,
+                        fontstyle: FontStyle.normal,
+                      ),
+                      const SizedBox(
+                        height: 3,
+                      ),
+                      MyText(
+                        color: white,
+                        text: "areyousurewanrtosignout",
+                        multilanguage: true,
+                        textalign: TextAlign.center,
+                        fontsizeNormal: 13,
+                        fontsizeWeb: 14,
+                        fontweight: FontWeight.normal,
+                        maxline: 2,
+                        overflow: TextOverflow.ellipsis,
+                        fontstyle: FontStyle.normal,
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            minWidth: 75,
+                          ),
+                          height: 35,
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: otherColor,
+                              width: .5,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: MyText(
+                            color: white,
+                            text: "cancel",
+                            multilanguage: true,
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 16,
+                            fontsizeWeb: 17,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontweight: FontWeight.w600,
+                            fontstyle: FontStyle.normal,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          final homeProvider =
+                              Provider.of<HomeProvider>(context, listen: false);
+                          final sectionDataProvider =
+                              Provider.of<SectionDataProvider>(context,
+                                  listen: false);
+                          // Firebase Signout
+                          await auth.signOut();
+                          await GoogleSignIn().signOut();
+                          await Utils.setUserId(null);
+                          await sectionDataProvider.clearProvider();
+                          sectionDataProvider.getSectionBanner("0", "1");
+                          sectionDataProvider.getSectionList("0", "1");
+                          await homeProvider.homeNotifyProvider();
+                          if (!mounted) return;
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            minWidth: 75,
+                          ),
+                          height: 35,
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: primaryLight,
+                            borderRadius: BorderRadius.circular(5),
+                            shape: BoxShape.rectangle,
+                          ),
+                          child: MyText(
+                            color: black,
+                            text: "sign_out",
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 16,
+                            fontsizeWeb: 17,
+                            multilanguage: true,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontweight: FontWeight.w600,
+                            fontstyle: FontStyle.normal,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

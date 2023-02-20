@@ -176,6 +176,7 @@ class LoginSocialState extends State<LoginSocial> {
                     );
                   }
                 },
+                borderRadius: BorderRadius.circular(18),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 52,
@@ -253,6 +254,7 @@ class LoginSocialState extends State<LoginSocial> {
                   debugPrint("Clicked on : ====> loginWith Google");
                   _gmailLogin();
                 },
+                borderRadius: BorderRadius.circular(18),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 52,

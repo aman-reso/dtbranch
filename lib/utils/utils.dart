@@ -8,6 +8,9 @@ import 'package:dtlive/pages/vimeoplayer.dart';
 import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/webwidget/loginsocialweb.dart';
+import 'package:dtlive/webwidget/otpverifyweb.dart';
+import 'package:dtlive/webwidget/profileeditweb.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/sharedpre.dart';
@@ -80,6 +83,31 @@ class Utils {
       ),
     );
     return isRented;
+  }
+
+  static Future<void> buildWebAlertDialog(
+      BuildContext context, String pageName, String? reqData) async {
+    Widget? child;
+    if (pageName == "login") {
+      child = const LoginSocialWeb();
+    } else if (pageName == "profile") {
+      child = const ProfileEditWeb();
+    } else if (pageName == "otp") {
+      child = OTPVerifyWeb(reqData ?? "");
+    }
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          insetPadding: const EdgeInsets.fromLTRB(100, 25, 100, 25),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          backgroundColor: lightBlack,
+          child: child,
+        );
+      },
+    );
   }
 
   /* ========= Open Player ========= */

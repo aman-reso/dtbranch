@@ -90,7 +90,8 @@ dependencies:
   responsive_framework: ^0.2.0
   dropdown_button2: ^1.9.2
   universal_html: ^2.0.9
-  dropdown_search: ^5.0.5
+  js: ^0.6.5
+  search_page: ^2.3.0
 
 
 dev_dependencies:

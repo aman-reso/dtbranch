@@ -1,3 +1,4 @@
+import 'package:dtlive/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -44,16 +45,18 @@ class MyTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: mHint,
         hintStyle: GoogleFonts.inter(
-          fontSize: 16,
+          fontSize: 15,
           color: mHintTextColor,
           fontWeight: FontWeight.w500,
           fontStyle: FontStyle.normal,
         ),
         border: mInputBorder,
+        fillColor: transparentColor,
+        isCollapsed: true,
       ),
       style: GoogleFonts.inter(
         textStyle: TextStyle(
-          fontSize: 16,
+          fontSize: 15,
           color: mTextColor,
           fontWeight: FontWeight.w500,
           fontStyle: FontStyle.normal,

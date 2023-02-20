@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dtlive/pages/profileavatar.dart';
 import 'package:dtlive/provider/mystuffprovider.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dtlive/provider/profileprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -84,6 +85,7 @@ class ProfileEditState extends State<ProfileEdit> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
               /* Profile Image */
               Consumer<ProfileProvider>(
                 builder: (context, value, child) {
@@ -130,6 +132,7 @@ class ProfileEditState extends State<ProfileEdit> {
                   child: MyText(
                     text: "chnage",
                     fontsizeNormal: 16,
+                    fontsizeWeb: 16,
                     multilanguage: true,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
@@ -206,6 +209,7 @@ class ProfileEditState extends State<ProfileEdit> {
                         multilanguage: true,
                         textalign: TextAlign.center,
                         fontsizeNormal: 15,
+                        fontsizeWeb: 15,
                         fontweight: FontWeight.w600,
                         maxline: 1,
                         overflow: TextOverflow.ellipsis,

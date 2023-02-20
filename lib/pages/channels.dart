@@ -125,9 +125,12 @@ class ChannelsState extends State<Channels> {
                 height: Dimens.channelBanner,
                 enlargeCenterPage: false,
                 autoPlay: true,
-                autoPlayCurve: Curves.fastOutSlowIn,
+                autoPlayCurve: Curves.easeInOutQuart,
                 enableInfiniteScroll: true,
-                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                autoPlayInterval:
+                    Duration(milliseconds: Constant.bannerDuration),
+                autoPlayAnimationDuration:
+                    Duration(milliseconds: Constant.animationDuration),
                 viewportFraction: 1.0,
                 onPageChanged: (val, _) async {
                   await channelSectionProvider.setCurrentBanner(val);
@@ -238,7 +241,7 @@ class ChannelsState extends State<Channels> {
                   height: 8,
                   width: 8,
                   cornerRadius: 4,
-                  color: lightBlack,
+                  color: dotsDefaultColor,
                   activeColor: white,
                 );
               },
@@ -266,9 +269,11 @@ class ChannelsState extends State<Channels> {
             height: Dimens.channelWebBanner,
             enlargeCenterPage: false,
             autoPlay: true,
-            autoPlayCurve: Curves.fastOutSlowIn,
+            autoPlayCurve: Curves.easeInOutQuart,
             enableInfiniteScroll: true,
-            autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+            autoPlayInterval: Duration(milliseconds: Constant.bannerDuration),
+            autoPlayAnimationDuration:
+                Duration(milliseconds: Constant.animationDuration),
             viewportFraction: 0.95,
             onPageChanged: (val, _) async {
               await sectionDataProvider.setCurrentBanner(val);
@@ -335,7 +340,7 @@ class ChannelsState extends State<Channels> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(4),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Stack(
                     alignment: AlignmentDirectional.centerEnd,
@@ -359,10 +364,10 @@ class ChannelsState extends State<Channels> {
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                             colors: [
-                              appBgColor,
-                              appBgColor,
-                              appBgColor,
-                              appBgColor,
+                              lightBlack,
+                              lightBlack,
+                              lightBlack,
+                              lightBlack,
                               transparentColor,
                               transparentColor,
                               transparentColor,

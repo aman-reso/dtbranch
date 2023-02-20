@@ -6,6 +6,7 @@ import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/vimeoplayer.dart';
@@ -21,6 +22,7 @@ import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -115,6 +117,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                     scrollDirection: Axis.vertical,
                     child: Column(
                       children: [
+                        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
                         /* Poster */
                         Stack(
                           alignment: Alignment.center,
@@ -1545,6 +1548,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                         ],
                                       ),
                                     )
+                                  : const SizedBox.shrink(),
+                              const SizedBox(height: 20),
+
+                              /* Web Footer */
+                              kIsWeb
+                                  ? const FooterWeb()
                                   : const SizedBox.shrink(),
                             ],
                           ),

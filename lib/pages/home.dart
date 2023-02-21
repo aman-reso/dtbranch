@@ -309,67 +309,58 @@ class HomeState extends State<Home> {
                     (MediaQuery.of(context).size.width < 800)
                         ? Container(
                             constraints: const BoxConstraints(
-                              minWidth: 20,
+                              minWidth: 25,
                             ),
                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                            child: Row(
-                              children: [
-                                Consumer<HomeProvider>(
-                                    builder: (context, homeProvider, child) {
-                                  return DropdownButtonHideUnderline(
-                                    child: DropdownButton2(
-                                      isExpanded: false,
-                                      customButton: MyImage(
-                                        height: 40,
-                                        imagePath: "ic_menu.png",
-                                        fit: BoxFit.contain,
-                                        color: white,
-                                      ),
-                                      items: _buildWebDropDownItems(),
-                                      onChanged: (type.Result? value) async {
-                                        if (kIsWeb) _onItemTapped("");
-                                        debugPrint(
-                                            'value id ===============> ${value?.id.toString()}');
-                                        if (value?.id == 0) {
+                            child: Consumer<HomeProvider>(
+                                builder: (context, homeProvider, child) {
+                              return DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  isExpanded: false,
+                                  customButton: MyImage(
+                                    height: 40,
+                                    imagePath: "ic_menu.png",
+                                    fit: BoxFit.contain,
+                                    color: white,
+                                  ),
+                                  items: _buildWebDropDownItems(),
+                                  onChanged: (type.Result? value) async {
+                                    if (kIsWeb) _onItemTapped("");
+                                    debugPrint(
+                                        'value id ===============> ${value?.id.toString()}');
+                                    if (value?.id == 0) {
+                                      await getTabData(0,
+                                          homeProvider.sectionTypeModel.result);
+                                    } else {
+                                      for (var i = 0;
+                                          i <
+                                              (homeProvider.sectionTypeModel
+                                                      .result?.length ??
+                                                  0);
+                                          i++) {
+                                        if (value?.id ==
+                                            homeProvider.sectionTypeModel
+                                                .result?[i].id) {
                                           await getTabData(
-                                              0,
+                                              i + 1,
                                               homeProvider
                                                   .sectionTypeModel.result);
-                                        } else {
-                                          for (var i = 0;
-                                              i <
-                                                  (homeProvider.sectionTypeModel
-                                                          .result?.length ??
-                                                      0);
-                                              i++) {
-                                            if (value?.id ==
-                                                homeProvider.sectionTypeModel
-                                                    .result?[i].id) {
-                                              await getTabData(
-                                                  i + 1,
-                                                  homeProvider
-                                                      .sectionTypeModel.result);
-                                              return;
-                                            }
-                                          }
+                                          return;
                                         }
-                                      },
-                                      dropdownPadding: const EdgeInsets.only(
-                                          left: 10, right: 10),
-                                      dropdownWidth: 150,
-                                      dropdownElevation: 8,
-                                      dropdownDecoration:
-                                          Utils.setBackground(appBgColor, 5),
-                                      itemPadding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                    ),
-                                  );
-                                }),
-                                const SizedBox(
-                                  width: 20,
+                                      }
+                                    }
+                                  },
+                                  dropdownPadding: const EdgeInsets.only(
+                                      left: 10, right: 10),
+                                  dropdownWidth: 150,
+                                  dropdownElevation: 8,
+                                  dropdownDecoration:
+                                      Utils.setBackground(appBgColor, 5),
+                                  itemPadding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
                                 ),
-                              ],
-                            ),
+                              );
+                            }),
                           )
                         : const SizedBox.shrink(),
 
@@ -384,8 +375,8 @@ class HomeState extends State<Home> {
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: MyImage(
-                        width: 70,
-                        height: 70,
+                        width: 68,
+                        height: 68,
                         imagePath: "appicon.png",
                       ),
                     ),
@@ -397,14 +388,14 @@ class HomeState extends State<Home> {
                                 tabTitle(homeProvider.sectionTypeModel.result),
                           )
                         : const Expanded(child: SizedBox.shrink()),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 10),
 
                     /* Feature buttons */
                     /* Search */
                     Container(
-                      height: 30,
+                      height: 25,
                       constraints:
-                          const BoxConstraints(minWidth: 60, maxWidth: 140),
+                          const BoxConstraints(minWidth: 60, maxWidth: 130),
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       decoration: BoxDecoration(
                         color: transparentColor,
@@ -466,7 +457,7 @@ class HomeState extends State<Home> {
                                   fillColor: transparentColor,
                                   hintStyle: TextStyle(
                                     color: otherColor,
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -495,7 +486,7 @@ class HomeState extends State<Home> {
                                     padding: const EdgeInsets.all(5),
                                     alignment: Alignment.center,
                                     child: MyImage(
-                                      height: 25,
+                                      height: 23,
                                       color: white,
                                       fit: BoxFit.contain,
                                       imagePath: "ic_close.png",
@@ -528,7 +519,7 @@ class HomeState extends State<Home> {
                                     padding: const EdgeInsets.all(5),
                                     alignment: Alignment.center,
                                     child: MyImage(
-                                      height: 25,
+                                      height: 23,
                                       color: white,
                                       fit: BoxFit.contain,
                                       imagePath: "ic_find.png",
@@ -559,7 +550,7 @@ class HomeState extends State<Home> {
                           overflow: TextOverflow.ellipsis,
                           fontsizeNormal: 14,
                           fontweight: FontWeight.w600,
-                          fontsizeWeb: 15,
+                          fontsizeWeb: 14,
                           textalign: TextAlign.center,
                           fontstyle: FontStyle.normal,
                         ),
@@ -582,7 +573,7 @@ class HomeState extends State<Home> {
                           overflow: TextOverflow.ellipsis,
                           fontsizeNormal: 14,
                           fontweight: FontWeight.w600,
-                          fontsizeWeb: 15,
+                          fontsizeWeb: 14,
                           textalign: TextAlign.center,
                           fontstyle: FontStyle.normal,
                         ),
@@ -643,7 +634,7 @@ class HomeState extends State<Home> {
                                   Constant.userID != null ? myProfile : "login",
                               fontsizeNormal: 14,
                               fontweight: FontWeight.w600,
-                              fontsizeWeb: 15,
+                              fontsizeWeb: 14,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.center,
@@ -673,7 +664,7 @@ class HomeState extends State<Home> {
                                 text: "sign_out",
                                 fontsizeNormal: 14,
                                 fontweight: FontWeight.w600,
-                                fontsizeWeb: 15,
+                                fontsizeWeb: 14,
                                 maxline: 1,
                                 overflow: TextOverflow.ellipsis,
                                 textalign: TextAlign.center,
@@ -761,7 +752,7 @@ class HomeState extends State<Home> {
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+      padding: const EdgeInsets.fromLTRB(13, 5, 13, 5),
       separatorBuilder: (context, index) => const SizedBox(width: 5),
       itemBuilder: (BuildContext context, int index) {
         return Consumer<HomeProvider>(
@@ -774,7 +765,7 @@ class HomeState extends State<Home> {
                 await getTabData(index, homeProvider.sectionTypeModel.result);
               },
               child: Container(
-                constraints: const BoxConstraints(maxHeight: 30),
+                constraints: const BoxConstraints(maxHeight: 32),
                 decoration: Utils.setBackground(
                   homeProvider.selectedIndex == index
                       ? white
@@ -782,7 +773,7 @@ class HomeState extends State<Home> {
                   20,
                 ),
                 alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
                 child: MyText(
                   color: homeProvider.selectedIndex == index ? black : white,
                   multilanguage: false,
@@ -793,7 +784,7 @@ class HomeState extends State<Home> {
                           : "",
                   fontsizeNormal: 14,
                   fontweight: FontWeight.w600,
-                  fontsizeWeb: 15,
+                  fontsizeWeb: 14,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
                   textalign: TextAlign.center,
@@ -1383,7 +1374,7 @@ class HomeState extends State<Home> {
                   textalign: TextAlign.center,
                   fontsizeNormal: 16,
                   fontweight: FontWeight.w600,
-                  fontsizeWeb: 18,
+                  fontsizeWeb: 16,
                   multilanguage: false,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,

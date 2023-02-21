@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +8,8 @@ import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class SearchWeb extends StatefulWidget {
   final String? searchText;
@@ -26,7 +24,6 @@ class SearchWeb extends StatefulWidget {
 
 class _SearchWebState extends State<SearchWeb> {
   late SearchProvider searchProvider;
-  final minCount = 4;
 
   @override
   void initState() {
@@ -51,8 +48,6 @@ class _SearchWebState extends State<SearchWeb> {
 
   @override
   Widget build(BuildContext context) {
-    final widthCount = (MediaQuery.of(context).size.width ~/ 250).toInt();
-    debugPrint("widthCount ---------------> $widthCount");
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -71,7 +66,7 @@ class _SearchWebState extends State<SearchWeb> {
                   if (searchProvider.searchModel.status == 200) {
                     if (searchProvider.searchModel.video != null &&
                         searchProvider.searchModel.tvshow != null) {
-                      return _buildSearchPage(widthCount);
+                      return _buildSearchPage();
                     } else {
                       return const NoData(title: "", subTitle: "");
                     }
@@ -88,7 +83,7 @@ class _SearchWebState extends State<SearchWeb> {
     );
   }
 
-  Widget _buildSearchPage(widthCount) {
+  Widget _buildSearchPage() {
     return Column(
       children: [
         Container(
@@ -195,98 +190,112 @@ class _SearchWebState extends State<SearchWeb> {
         ),
         const SizedBox(height: 12),
         searchProvider.isVideoClick
-            ? Expanded(child: _buildVideos(widthCount))
+            ? Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: _buildVideos(),
+                ),
+              )
             : searchProvider.isShowClick
-                ? Expanded(child: _buildShows(widthCount))
+                ? Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: _buildShows(),
+                    ),
+                  )
                 : const SizedBox.shrink(),
       ],
     );
   }
 
-  Widget _buildVideos(widthCount) {
-    return AlignedGridView.count(
-      shrinkWrap: true,
-      crossAxisCount: min(widthCount ?? 0, minCount),
-      crossAxisSpacing: 8,
-      mainAxisSpacing: 8,
-      itemCount: (searchProvider.searchModel.video?.length ?? 0),
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int position) {
-        return InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: () {
-            debugPrint("Clicked on position ==> $position");
-            widget.openDetailPage(
-              "videodetail",
-              searchProvider.searchModel.video?[position].id ?? 0,
-              searchProvider.searchModel.video?[position].videoType ?? 0,
-              searchProvider.searchModel.video?[position].typeId ?? 0,
-            );
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: Dimens.heightLand,
-            alignment: Alignment.center,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: MyNetworkImage(
-                imageUrl: searchProvider.searchModel.video?[position].landscape
-                        .toString() ??
-                    "",
-                fit: BoxFit.cover,
-                imgHeight: MediaQuery.of(context).size.height,
-                imgWidth: MediaQuery.of(context).size.width,
+  Widget _buildVideos() {
+    return ResponsiveGridList(
+      minItemWidth: Dimens.widthLand,
+      minItemsPerRow: 2,
+      maxItemsPerRow: 7,
+      verticalGridSpacing: 8,
+      horizontalGridSpacing: 8,
+      children: List.generate(
+        (searchProvider.searchModel.video?.length ?? 0),
+        (position) {
+          return InkWell(
+            borderRadius: BorderRadius.circular(4),
+            onTap: () {
+              debugPrint("Clicked on position ==> $position");
+              widget.openDetailPage(
+                "videodetail",
+                searchProvider.searchModel.video?[position].id ?? 0,
+                searchProvider.searchModel.video?[position].videoType ?? 0,
+                searchProvider.searchModel.video?[position].typeId ?? 0,
+              );
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: Dimens.heightLand,
+              alignment: Alignment.center,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: MyNetworkImage(
+                  imageUrl: searchProvider
+                          .searchModel.video?[position].landscape
+                          .toString() ??
+                      "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildShows(widthCount) {
-    return AlignedGridView.count(
-      shrinkWrap: true,
-      crossAxisCount: min(widthCount ?? 0, minCount),
-      crossAxisSpacing: 8,
-      mainAxisSpacing: 8,
-      itemCount: (searchProvider.searchModel.tvshow?.length ?? 0),
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int position) {
-        return InkWell(
-          onTap: () {
-            debugPrint("Clicked on position ==> $position");
-            widget.openDetailPage(
-              "showdetail",
-              searchProvider.searchModel.tvshow?[position].id ?? 0,
-              searchProvider.searchModel.tvshow?[position].videoType ?? 0,
-              searchProvider.searchModel.tvshow?[position].typeId ?? 0,
-            );
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: Dimens.heightLand,
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: MyNetworkImage(
-                imageUrl: searchProvider.searchModel.tvshow?[position].landscape
-                        .toString() ??
-                    "",
-                fit: BoxFit.cover,
-                imgHeight: MediaQuery.of(context).size.height,
-                imgWidth: MediaQuery.of(context).size.width,
+  Widget _buildShows() {
+    return ResponsiveGridList(
+      minItemWidth: Dimens.widthLand,
+      minItemsPerRow: 2,
+      maxItemsPerRow: 7,
+      verticalGridSpacing: 8,
+      horizontalGridSpacing: 8,
+      children: List.generate(
+        (searchProvider.searchModel.tvshow?.length ?? 0),
+        (position) {
+          return InkWell(
+            onTap: () {
+              debugPrint("Clicked on position ==> $position");
+              widget.openDetailPage(
+                "showdetail",
+                searchProvider.searchModel.tvshow?[position].id ?? 0,
+                searchProvider.searchModel.tvshow?[position].videoType ?? 0,
+                searchProvider.searchModel.tvshow?[position].typeId ?? 0,
+              );
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: Dimens.heightLand,
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: MyNetworkImage(
+                  imageUrl: searchProvider
+                          .searchModel.tvshow?[position].landscape
+                          .toString() ??
+                      "",
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

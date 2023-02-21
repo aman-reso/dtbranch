@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -29,7 +31,13 @@ class MyText extends StatelessWidget {
 
   static getAdaptiveTextSize(BuildContext context, dynamic value) {
     // 720 is medium screen height
-    return (value / (kIsWeb ? 650 : 720)) * MediaQuery.of(context).size.height;
+    if (kIsWeb) {
+      return (value / 630) *
+          min(MediaQuery.of(context).size.height,
+              MediaQuery.of(context).size.width);
+    } else {
+      return (value / 720 * MediaQuery.of(context).size.height);
+    }
   }
 
   @override

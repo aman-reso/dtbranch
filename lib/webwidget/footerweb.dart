@@ -1,24 +1,23 @@
 import 'dart:developer';
 
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:dtlive/webwidget/interactive_icon.dart';
 import 'package:dtlive/webwidget/interactive_text.dart';
-import 'package:js/js.dart';
 
-@JS('launchUrl')
-external String launchUrl(String url, String target);
-_redirectToUrl(loadingUrl) async {
-  log("loadingUrl ---------> $loadingUrl");
-  /* 
-      _blank => open new Tab
-      _self => open in current Tab 
-    */
-  launchUrl(loadingUrl, '_blank');
-}
+// @JS('launchUrl')
+// @anonymous
+// external String launchUrl(String url, String target);
+// _redirectToUrl(loadingUrl) async {
+//   log("loadingUrl ---------> $loadingUrl");
+//   /*
+//       _blank => open new Tab
+//       _self => open in current Tab
+//     */
+//   launchUrl(loadingUrl, '_blank');
+// }
 
 class FooterWeb extends StatefulWidget {
   const FooterWeb({super.key});
@@ -51,7 +50,7 @@ class _FooterWebState extends State<FooterWeb> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
       child: (MediaQuery.of(context).size.width < 800)
           ? _buildColumnFooter()
           : _buildRowFooter(),
@@ -79,7 +78,7 @@ class _FooterWebState extends State<FooterWeb> {
                 children: [
                   InkWell(
                     onTap: () {
-                      _redirectToUrl(aboutUsUrl ?? "");
+                      // _redirectToUrl(aboutUsUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "aboutus",
@@ -93,7 +92,7 @@ class _FooterWebState extends State<FooterWeb> {
                   ),
                   InkWell(
                     onTap: () {
-                      _redirectToUrl(termsConditionUrl ?? "");
+                      // _redirectToUrl(termsConditionUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "termcondition",
@@ -107,7 +106,7 @@ class _FooterWebState extends State<FooterWeb> {
                   ),
                   InkWell(
                     onTap: () {
-                      _redirectToUrl(privacyUrl ?? "");
+                      // _redirectToUrl(privacyUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "privacypolicy",
@@ -121,7 +120,7 @@ class _FooterWebState extends State<FooterWeb> {
                   ),
                   InkWell(
                     onTap: () {
-                      _redirectToUrl(refundPolicyUrl ?? "");
+                      // _redirectToUrl(refundPolicyUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "refundpolicy",
@@ -244,7 +243,7 @@ class _FooterWebState extends State<FooterWeb> {
                     children: [
                       InkWell(
                         onTap: () {
-                          _redirectToUrl(Constant.androidAppUrl);
+                          // _redirectToUrl(Constant.androidAppUrl);
                         },
                         borderRadius: BorderRadius.circular(3),
                         child: InteractiveIcon(
@@ -260,7 +259,7 @@ class _FooterWebState extends State<FooterWeb> {
                       const SizedBox(width: 3),
                       InkWell(
                         onTap: () {
-                          _redirectToUrl(Constant.iosAppUrl);
+                          // _redirectToUrl(Constant.iosAppUrl);
                         },
                         borderRadius: BorderRadius.circular(3),
                         child: InteractiveIcon(
@@ -300,7 +299,7 @@ class _FooterWebState extends State<FooterWeb> {
           children: [
             InkWell(
               onTap: () {
-                _redirectToUrl(aboutUsUrl ?? "");
+                // _redirectToUrl(aboutUsUrl ?? "");
               },
               child: const InteractiveText(
                 text: "aboutus",
@@ -314,7 +313,7 @@ class _FooterWebState extends State<FooterWeb> {
             ),
             InkWell(
               onTap: () {
-                _redirectToUrl(termsConditionUrl ?? "");
+                // _redirectToUrl(termsConditionUrl ?? "");
               },
               child: const InteractiveText(
                 text: "termcondition",
@@ -328,7 +327,7 @@ class _FooterWebState extends State<FooterWeb> {
             ),
             InkWell(
               onTap: () {
-                _redirectToUrl(privacyUrl ?? "");
+                // _redirectToUrl(privacyUrl ?? "");
               },
               child: const InteractiveText(
                 text: "privacypolicy",
@@ -342,7 +341,7 @@ class _FooterWebState extends State<FooterWeb> {
             ),
             InkWell(
               onTap: () {
-                _redirectToUrl(refundPolicyUrl ?? "");
+                // _redirectToUrl(refundPolicyUrl ?? "");
               },
               child: const InteractiveText(
                 text: "refundpolicy",
@@ -460,7 +459,7 @@ class _FooterWebState extends State<FooterWeb> {
                   children: [
                     InkWell(
                       onTap: () {
-                        _redirectToUrl(Constant.androidAppUrl);
+                        // _redirectToUrl(Constant.androidAppUrl);
                       },
                       borderRadius: BorderRadius.circular(3),
                       child: InteractiveIcon(
@@ -476,7 +475,7 @@ class _FooterWebState extends State<FooterWeb> {
                     const SizedBox(width: 3),
                     InkWell(
                       onTap: () {
-                        _redirectToUrl(Constant.iosAppUrl);
+                        // _redirectToUrl(Constant.iosAppUrl);
                       },
                       borderRadius: BorderRadius.circular(3),
                       child: InteractiveIcon(

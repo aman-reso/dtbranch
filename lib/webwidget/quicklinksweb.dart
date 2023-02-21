@@ -1,6 +1,5 @@
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/utils/hover_extensions.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +77,7 @@ class _QuickLinksWebState extends State<QuickLinksWeb> {
           const SizedBox(
             height: 25,
           ),
-          _buildPageByName(widget.pageName).showCursorOnHover,
+          _buildPageByName(widget.pageName),
           const SizedBox(
             height: 50,
           ),

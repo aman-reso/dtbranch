@@ -25,8 +25,8 @@ class Dimens {
 
   static double widthCast = 116;
   static double heightCast = 164;
-  static double widthCastWeb = 132;
-  static double heightCastWeb = 200;
+  static double widthCastWeb = 120;
+  static double heightCastWeb = 220;
 
   static double widthLangGen = 120;
   static double heightLangGen = 120;
@@ -37,9 +37,12 @@ class Dimens {
   static double homeWebBanner = 290;
   static double webBannerImgPr = 0.59; // Should be less than 1.0
   static double detailPoster = 250;
+  static double detailWebPoster = 360;
   static double detailTabs = 50;
   static double featureSize = 50;
   static double featureIconSize = 20;
+  static double featureWebSize = 30;
+  static double featureIconWebSize = 13;
   static double epiPoster = 240;
   static double castCrewPoster = 525;
   static double channelPoster = 222;

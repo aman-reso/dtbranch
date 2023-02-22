@@ -134,10 +134,8 @@ class SearchState extends State<Search> {
                       return Utils.pageLoader();
                     } else {
                       if (searchProvider.searchModel.status == 200) {
-                        if (searchProvider.searchModel.video != null &&
+                        if (searchProvider.searchModel.video != null ||
                             searchProvider.searchModel.tvshow != null) {
-                          log("searchModel Video Size  ===>  ${(searchProvider.searchModel.video?.length ?? 0)}");
-                          log("searchModel TvShow Size  ===>  ${(searchProvider.searchModel.tvshow?.length ?? 0)}");
                           return Column(
                             children: [
                               Container(
@@ -241,230 +239,9 @@ class SearchState extends State<Search> {
                                 height: 22,
                               ),
                               searchProvider.isVideoClick
-                                  ? AlignedGridView.count(
-                                      shrinkWrap: true,
-                                      crossAxisCount: 2,
-                                      crossAxisSpacing: 8,
-                                      mainAxisSpacing: 8,
-                                      itemCount: (searchProvider
-                                              .searchModel.video?.length ??
-                                          0),
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemBuilder:
-                                          (BuildContext context, int position) {
-                                        return InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          onTap: () {
-                                            log("Clicked on position ==> $position");
-                                            if ((searchProvider
-                                                        .searchModel
-                                                        .video?[position]
-                                                        .videoType ??
-                                                    0) ==
-                                                1) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return MovieDetails(
-                                                      searchProvider
-                                                              .searchModel.video
-                                                              ?.elementAt(
-                                                                  position)
-                                                              .id ??
-                                                          0,
-                                                      searchProvider
-                                                              .searchModel.video
-                                                              ?.elementAt(
-                                                                  position)
-                                                              .videoType ??
-                                                          0,
-                                                      1,
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            } else if ((searchProvider
-                                                        .searchModel
-                                                        .video?[position]
-                                                        .videoType ??
-                                                    0) ==
-                                                2) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return TvShowDetails(
-                                                      searchProvider
-                                                              .searchModel.video
-                                                              ?.elementAt(
-                                                                  position)
-                                                              .id ??
-                                                          0,
-                                                      searchProvider
-                                                              .searchModel.video
-                                                              ?.elementAt(
-                                                                  position)
-                                                              .videoType ??
-                                                          0,
-                                                      4,
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: Dimens.heightLand,
-                                            alignment: Alignment.center,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              child: MyNetworkImage(
-                                                imageUrl: searchProvider
-                                                        .searchModel
-                                                        .video?[position]
-                                                        .landscape
-                                                        .toString() ??
-                                                    "",
-                                                fit: BoxFit.cover,
-                                                imgHeight:
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .height,
-                                                imgWidth: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    )
+                                  ? _buildVideoUI()
                                   : searchProvider.isShowClick
-                                      ? AlignedGridView.count(
-                                          shrinkWrap: true,
-                                          crossAxisCount: 2,
-                                          crossAxisSpacing: 8,
-                                          mainAxisSpacing: 8,
-                                          itemCount: (searchProvider
-                                                  .searchModel.tvshow?.length ??
-                                              0),
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (BuildContext context,
-                                              int position) {
-                                            return InkWell(
-                                              onTap: () {
-                                                log("Clicked on position ==> $position");
-                                                if ((searchProvider
-                                                            .searchModel.tvshow
-                                                            ?.elementAt(
-                                                                position)
-                                                            .videoType ??
-                                                        0) ==
-                                                    1) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return MovieDetails(
-                                                          searchProvider
-                                                                  .searchModel
-                                                                  .tvshow?[
-                                                                      position]
-                                                                  .id ??
-                                                              0,
-                                                          searchProvider
-                                                                  .searchModel
-                                                                  .tvshow?[
-                                                                      position]
-                                                                  .videoType ??
-                                                              0,
-                                                          1,
-                                                        );
-                                                      },
-                                                    ),
-                                                  );
-                                                } else if ((searchProvider
-                                                            .searchModel
-                                                            .tvshow?[position]
-                                                            .videoType ??
-                                                        0) ==
-                                                    2) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return TvShowDetails(
-                                                          searchProvider
-                                                                  .searchModel
-                                                                  .tvshow
-                                                                  ?.elementAt(
-                                                                      position)
-                                                                  .id ??
-                                                              0,
-                                                          searchProvider
-                                                                  .searchModel
-                                                                  .tvshow
-                                                                  ?.elementAt(
-                                                                      position)
-                                                                  .videoType ??
-                                                              0,
-                                                          4,
-                                                        );
-                                                      },
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: Dimens.heightLand,
-                                                alignment: Alignment.centerLeft,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
-                                                ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
-                                                  child: MyNetworkImage(
-                                                    imageUrl: searchProvider
-                                                            .searchModel.tvshow
-                                                            ?.elementAt(
-                                                                position)
-                                                            .landscape
-                                                            .toString() ??
-                                                        "",
-                                                    fit: BoxFit.cover,
-                                                    imgHeight:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .height,
-                                                    imgWidth:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        )
+                                      ? _buildShowUI()
                                       : const SizedBox.shrink(),
                             ],
                           );
@@ -556,7 +333,7 @@ class SearchState extends State<Search> {
                     color: otherColor,
                     fontSize: 15,
                     overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.normal,
+                    fontWeight: FontWeight.w500,
                   ),
                   hintText: searchHint,
                 ),
@@ -637,6 +414,109 @@ class SearchState extends State<Search> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildVideoUI() {
+    return AlignedGridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      crossAxisSpacing: 8,
+      mainAxisSpacing: 8,
+      itemCount: (searchProvider.searchModel.video?.length ?? 0),
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int position) {
+        return InkWell(
+          borderRadius: BorderRadius.circular(4),
+          onTap: () {
+            log("Clicked on position ==> $position");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return MovieDetails(
+                    searchProvider.searchModel.video?[position].id ?? 0,
+                    searchProvider.searchModel.video?[position].videoType ?? 0,
+                    searchProvider.searchModel.video?[position].typeId ?? 0,
+                    openDetailPage: null,
+                  );
+                },
+              ),
+            );
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: Dimens.heightLand,
+            alignment: Alignment.center,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: MyNetworkImage(
+                imageUrl: searchProvider.searchModel.video?[position].landscape
+                        .toString() ??
+                    "",
+                fit: BoxFit.cover,
+                imgHeight: MediaQuery.of(context).size.height,
+                imgWidth: MediaQuery.of(context).size.width,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildShowUI() {
+    return AlignedGridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      crossAxisSpacing: 8,
+      mainAxisSpacing: 8,
+      itemCount: (searchProvider.searchModel.tvshow?.length ?? 0),
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int position) {
+        return InkWell(
+          onTap: () {
+            log("Clicked on position ==> $position");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return TvShowDetails(
+                    searchProvider.searchModel.tvshow?[position].id ?? 0,
+                    searchProvider.searchModel.tvshow?[position].videoType ?? 0,
+                    searchProvider.searchModel.tvshow?[position].typeId ?? 0,
+                    openDetailPage: null,
+                  );
+                },
+              ),
+            );
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: Dimens.heightLand,
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: MyNetworkImage(
+                imageUrl: searchProvider.searchModel.tvshow
+                        ?.elementAt(position)
+                        .landscape
+                        .toString() ??
+                    "",
+                fit: BoxFit.cover,
+                imgHeight: MediaQuery.of(context).size.height,
+                imgWidth: MediaQuery.of(context).size.width,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -163,13 +163,13 @@ class _CastDetailsState extends State<CastDetails> {
                           maxLines: 10,
                           linkColor: otherColor,
                           textAlign: TextAlign.start,
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.montserrat(
                             letterSpacing: 0.5,
                             wordSpacing: 0.2,
                             fontSize: 14,
                             fontStyle: FontStyle.normal,
                             color: white,
-                            fontWeight: FontWeight.normal,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),

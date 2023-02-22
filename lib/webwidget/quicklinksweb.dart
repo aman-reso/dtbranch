@@ -111,7 +111,7 @@ class _QuickLinksWebState extends State<QuickLinksWeb> {
         fontsizeNormal: 15,
         fontsizeWeb: 15,
         maxline: 10000,
-        fontweight: FontWeight.normal,
+        fontweight: FontWeight.w500,
         textalign: TextAlign.start,
       ),
     );

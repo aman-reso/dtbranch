@@ -14,6 +14,7 @@ class ShowDetailsProvider extends ChangeNotifier {
 
   bool loading = false;
   int seasonPos = 0, mCurrentEpiPos = -1;
+  String tabClickedOn = "related";
 
   Future<void> getSectionDetails(typeId, videoType, videoId) async {
     loading = true;
@@ -95,6 +96,12 @@ class ShowDetailsProvider extends ChangeNotifier {
     }
   }
 
+  setTabClick(clickedOn) {
+    log("clickedOn ===> $clickedOn");
+    tabClickedOn = clickedOn;
+    notifyListeners();
+  }
+
   clearProvider() {
     log("<================ clearProvider ================>");
     sectionDetailModel = SectionDetailModel();
@@ -102,5 +109,6 @@ class ShowDetailsProvider extends ChangeNotifier {
     successModel = SuccessModel();
     seasonPos = 0;
     mCurrentEpiPos = -1;
+    tabClickedOn = "related";
   }
 }

@@ -271,7 +271,7 @@ class ProfileEditState extends State<ProfileEdit> {
                           text: "pickimagenote",
                           textalign: TextAlign.center,
                           fontsizeNormal: 13,
-                          fontweight: FontWeight.normal,
+                          fontweight: FontWeight.w500,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontstyle: FontStyle.normal,

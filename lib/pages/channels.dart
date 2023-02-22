@@ -592,7 +592,8 @@ class ChannelsState extends State<Channels> {
                       return MovieDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
-                        1,
+                        sectionDataList?[index].typeId ?? 0,
+                        openDetailPage: null,
                       );
                     },
                   ),
@@ -605,7 +606,8 @@ class ChannelsState extends State<Channels> {
                       return TvShowDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
-                        4,
+                        sectionDataList?[index].typeId ?? 0,
+                        openDetailPage: null,
                       );
                     },
                   ),
@@ -661,7 +663,8 @@ class ChannelsState extends State<Channels> {
                       return MovieDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
-                        1,
+                        sectionDataList?[index].typeId ?? 0,
+                        openDetailPage: null,
                       );
                     },
                   ),
@@ -674,7 +677,8 @@ class ChannelsState extends State<Channels> {
                       return TvShowDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
-                        4,
+                        sectionDataList?[index].typeId ?? 0,
+                        openDetailPage: null,
                       );
                     },
                   ),
@@ -729,7 +733,8 @@ class ChannelsState extends State<Channels> {
                       return MovieDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
-                        1,
+                        sectionDataList?[index].typeId ?? 0,
+                        openDetailPage: null,
                       );
                     },
                   ),
@@ -742,7 +747,8 @@ class ChannelsState extends State<Channels> {
                       return TvShowDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
-                        4,
+                        sectionDataList?[index].typeId ?? 0,
+                        openDetailPage: null,
                       );
                     },
                   ),

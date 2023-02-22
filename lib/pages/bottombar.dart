@@ -47,13 +47,13 @@ class BottombarState extends State<Bottombar> {
           color: black,
           child: BottomNavigationBar(
             backgroundColor: black,
-            selectedLabelStyle: GoogleFonts.inter(
+            selectedLabelStyle: GoogleFonts.montserrat(
               fontSize: 10,
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.w500,
               color: primaryColor,
             ),
-            unselectedLabelStyle: GoogleFonts.inter(
+            unselectedLabelStyle: GoogleFonts.montserrat(
               fontSize: 10,
               fontStyle: FontStyle.normal,
               fontWeight: FontWeight.w500,

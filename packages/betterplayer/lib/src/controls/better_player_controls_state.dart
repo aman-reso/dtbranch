@@ -436,7 +436,7 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget>
 
   TextStyle _getOverflowMenuElementTextStyle(bool isSelected) {
     return TextStyle(
-      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
       color: isSelected
           ? betterPlayerControlsConfiguration.overflowModalTextColor
           : betterPlayerControlsConfiguration.overflowModalTextColor

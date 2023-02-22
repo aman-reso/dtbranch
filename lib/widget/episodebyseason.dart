@@ -149,9 +149,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                               : const SizedBox.shrink(),
                         ],
                       ),
-                      const SizedBox(
-                        width: 12,
-                      ),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,15 +162,14 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                                   "",
                               textalign: TextAlign.start,
                               fontsizeNormal: 15,
+                              fontsizeWeb: 15,
                               multilanguage: false,
-                              fontweight: FontWeight.normal,
+                              fontweight: FontWeight.w500,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontstyle: FontStyle.normal,
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
+                            const SizedBox(height: 5),
                             MyText(
                               color: primaryColor,
                               text: ((episodeProvider.episodeBySeasonModel
@@ -187,6 +184,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                                   : "-",
                               textalign: TextAlign.start,
                               fontsizeNormal: 13,
+                              fontsizeWeb: 12,
                               fontweight: FontWeight.bold,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
@@ -219,9 +217,10 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                         textalign: TextAlign.start,
                         fontstyle: FontStyle.normal,
                         fontsizeNormal: 14,
+                        fontsizeWeb: 14,
                         maxline: 5,
                         overflow: TextOverflow.ellipsis,
-                        fontweight: FontWeight.normal,
+                        fontweight: FontWeight.w500,
                       ),
                     ),
                     Container(
@@ -243,7 +242,8 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                                 : "-",
                             textalign: TextAlign.start,
                             fontsizeNormal: 14,
-                            fontweight: FontWeight.normal,
+                            fontsizeWeb: 14,
+                            fontweight: FontWeight.w500,
                             maxline: 1,
                             overflow: TextOverflow.ellipsis,
                             fontstyle: FontStyle.normal,
@@ -255,6 +255,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                               text: "primetag",
                               textalign: TextAlign.start,
                               fontsizeNormal: 14,
+                              fontsizeWeb: 14,
                               multilanguage: true,
                               fontweight: FontWeight.w700,
                               maxline: 1,

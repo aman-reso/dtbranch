@@ -35,7 +35,8 @@ class ApiService {
   Options optHeaders = Options(headers: <String, dynamic>{
     'Content-Type': 'application/json',
     'auth_token': 'jQfq4I2q6lv',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*'
   });
 
   ApiService() {

@@ -238,6 +238,7 @@ class RentStoreState extends State<RentStore> {
                               rentStoreProvider
                                       .rentModel.video?[position].typeId ??
                                   0,
+                              openDetailPage: null,
                             );
                           },
                         ),
@@ -259,6 +260,7 @@ class RentStoreState extends State<RentStore> {
                               rentStoreProvider
                                       .rentModel.video?[position].typeId ??
                                   0,
+                              openDetailPage: null,
                             );
                           },
                         ),
@@ -472,6 +474,7 @@ class RentStoreState extends State<RentStore> {
                                   rentStoreProvider
                                           .rentModel.tvshow?[position].typeId ??
                                       0,
+                                  openDetailPage: null,
                                 );
                               },
                             ),
@@ -494,6 +497,7 @@ class RentStoreState extends State<RentStore> {
                                   rentStoreProvider
                                           .rentModel.tvshow?[position].typeId ??
                                       0,
+                                  openDetailPage: null,
                                 );
                               },
                             ),

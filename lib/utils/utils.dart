@@ -391,9 +391,10 @@ class Utils {
         content: MyText(
           text: message,
           fontsizeNormal: 14,
+          fontsizeWeb: 14,
           multilanguage: showFor != "response" ? true : false,
           fontstyle: FontStyle.normal,
-          fontweight: FontWeight.normal,
+          fontweight: FontWeight.w500,
           color: white,
           textalign: TextAlign.center,
         ),
@@ -426,7 +427,7 @@ class Utils {
       messageTextStyle: const TextStyle(
         color: black,
         fontSize: 14,
-        fontWeight: FontWeight.normal,
+        fontWeight: FontWeight.w500,
       ),
     );
 

@@ -102,7 +102,7 @@ class OTPVerifyState extends State<OTPVerify> {
                 color: otherColor,
                 text: "code_sent_desc",
                 fontsizeNormal: 15,
-                fontweight: FontWeight.normal,
+                fontweight: FontWeight.w500,
                 maxline: 3,
                 overflow: TextOverflow.ellipsis,
                 textalign: TextAlign.center,
@@ -113,7 +113,7 @@ class OTPVerifyState extends State<OTPVerify> {
                 color: otherColor,
                 text: widget.mobileNumber,
                 fontsizeNormal: 15,
-                fontweight: FontWeight.normal,
+                fontweight: FontWeight.w500,
                 maxline: 3,
                 overflow: TextOverflow.ellipsis,
                 textalign: TextAlign.center,
@@ -140,7 +140,7 @@ class OTPVerifyState extends State<OTPVerify> {
                     color: edtBG,
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  textStyle: GoogleFonts.inter(
+                  textStyle: GoogleFonts.montserrat(
                     color: white,
                     fontSize: 16,
                     fontStyle: FontStyle.normal,

@@ -107,7 +107,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                             textalign: TextAlign.center,
                                             fontsizeNormal: 13,
                                             maxline: 1,
-                                            fontweight: FontWeight.normal,
+                                            fontweight: FontWeight.w500,
                                             overflow: TextOverflow.ellipsis,
                                             fontstyle: FontStyle.normal,
                                           ),
@@ -217,6 +217,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
+                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),
@@ -250,6 +251,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
+                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),
@@ -332,7 +334,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                             textalign: TextAlign.center,
                                             fontsizeNormal: 13,
                                             maxline: 1,
-                                            fontweight: FontWeight.normal,
+                                            fontweight: FontWeight.w500,
                                             overflow: TextOverflow.ellipsis,
                                             fontstyle: FontStyle.normal,
                                           ),
@@ -442,6 +444,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
+                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),
@@ -475,6 +478,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
+                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),

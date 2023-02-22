@@ -104,7 +104,7 @@ class AllPaymentState extends State<AllPayment> {
                     textAlign: TextAlign.start,
                     text: TextSpan(
                       text: payableAmountIs,
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.montserrat(
                         textStyle: const TextStyle(
                           color: lightBlack,
                           fontSize: 16,
@@ -117,7 +117,7 @@ class AllPaymentState extends State<AllPayment> {
                         TextSpan(
                           text:
                               "${Constant.currencySymbol}${widget.price ?? ""}",
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.montserrat(
                             textStyle: const TextStyle(
                               color: black,
                               fontSize: 20,
@@ -168,7 +168,7 @@ class AllPaymentState extends State<AllPayment> {
                                           fontsizeNormal: 14,
                                           maxline: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          fontweight: FontWeight.normal,
+                                          fontweight: FontWeight.w500,
                                           textalign: TextAlign.center,
                                           fontstyle: FontStyle.normal,
                                         ),

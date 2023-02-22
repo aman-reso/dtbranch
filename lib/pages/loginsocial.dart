@@ -94,7 +94,7 @@ class LoginSocialState extends State<LoginSocial> {
                 fontsizeNormal: 15,
                 fontsizeWeb: 16,
                 multilanguage: true,
-                fontweight: FontWeight.normal,
+                fontweight: FontWeight.w500,
                 maxline: 1,
                 overflow: TextOverflow.ellipsis,
                 textalign: TextAlign.center,
@@ -127,7 +127,7 @@ class LoginSocialState extends State<LoginSocial> {
                   showCountryFlag: false,
                   showDropdownIcon: false,
                   initialCountryCode: 'IN',
-                  dropdownTextStyle: GoogleFonts.inter(
+                  dropdownTextStyle: GoogleFonts.montserrat(
                     color: white,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -137,7 +137,7 @@ class LoginSocialState extends State<LoginSocial> {
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     filled: false,
-                    hintStyle: GoogleFonts.inter(
+                    hintStyle: GoogleFonts.montserrat(
                       color: otherColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -166,7 +166,7 @@ class LoginSocialState extends State<LoginSocial> {
                   debugPrint("Click mobileNumber ==> $mobileNumber");
                   if (numberController.text.toString().isEmpty) {
                     Utils.showSnackbar(
-                        context, "TextField", enterYourMobileNumber);
+                        context, "TextField", "login_with_mobile_note");
                   } else {
                     log("mobileNumber ==> $mobileNumber");
                     Navigator.of(context).push(
@@ -228,7 +228,7 @@ class LoginSocialState extends State<LoginSocial> {
                     multilanguage: true,
                     fontsizeNormal: 14,
                     fontsizeWeb: 16,
-                    fontweight: FontWeight.normal,
+                    fontweight: FontWeight.w500,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.center,

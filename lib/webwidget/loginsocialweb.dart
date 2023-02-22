@@ -95,7 +95,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
               fontsizeNormal: 13,
               fontsizeWeb: 14,
               multilanguage: true,
-              fontweight: FontWeight.normal,
+              fontweight: FontWeight.w500,
               maxline: 2,
               overflow: TextOverflow.ellipsis,
               textalign: TextAlign.start,
@@ -131,7 +131,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                 showCountryFlag: false,
                 showDropdownIcon: false,
                 initialCountryCode: 'IN',
-                dropdownTextStyle: GoogleFonts.inter(
+                dropdownTextStyle: GoogleFonts.montserrat(
                   color: white,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -142,7 +142,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                   contentPadding: EdgeInsets.zero,
                   isCollapsed: true,
                   border: InputBorder.none,
-                  hintStyle: GoogleFonts.inter(
+                  hintStyle: GoogleFonts.montserrat(
                     color: otherColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -168,10 +168,9 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                 debugPrint("Click mobileNumber ==> $mobileNumber");
                 if (numberController.text.toString().isEmpty) {
                   Utils.showSnackbar(
-                      context, "TextField", enterYourMobileNumber);
+                      context, "TextField", "login_with_mobile_note");
                 } else {
                   log("mobileNumber ==> $mobileNumber");
-                  // Navigator.of(context);
                   Utils.buildWebAlertDialog(context, "otp", mobileNumber);
                 }
               },

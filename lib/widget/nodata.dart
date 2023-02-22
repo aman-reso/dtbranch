@@ -59,7 +59,7 @@ class NoData extends StatelessWidget {
                     maxline: 5,
                     multilanguage: true,
                     overflow: TextOverflow.ellipsis,
-                    fontweight: FontWeight.normal,
+                    fontweight: FontWeight.w500,
                     textalign: TextAlign.center,
                     fontstyle: FontStyle.normal,
                   )

@@ -149,7 +149,10 @@ class _MyAppState extends State<MyApp> {
         },
         builder: (context, child) {
           return ResponsiveWrapper.builder(
-            BouncingScrollWrapper.builder(context, child!),
+            BouncingScrollWrapper.builder(
+              context,
+              child!,
+            ),
             minWidth: 360,
             defaultScale: true,
             breakpoints: [

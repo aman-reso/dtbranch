@@ -42,32 +42,34 @@ class MyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return multilanguage == true
-        ? LocaleText(
-            text,
-            textAlign: textalign,
-            overflow: TextOverflow.ellipsis,
-            maxLines: maxline,
-            style: GoogleFonts.inter(
-              fontSize: getAdaptiveTextSize(
-                  context, kIsWeb ? fontsizeWeb : fontsizeNormal),
-              fontStyle: fontstyle,
-              color: color,
-              fontWeight: fontweight,
-            ),
-          )
-        : Text(
-            text,
-            textAlign: textalign,
-            overflow: TextOverflow.ellipsis,
-            maxLines: maxline,
-            style: GoogleFonts.inter(
-              fontSize: getAdaptiveTextSize(
-                  context, kIsWeb ? fontsizeWeb : fontsizeNormal),
-              fontStyle: fontstyle,
-              color: color,
-              fontWeight: fontweight,
-            ),
-          );
+    if (multilanguage == true) {
+      return LocaleText(
+        text,
+        textAlign: textalign,
+        overflow: overflow,
+        maxLines: maxline,
+        style: GoogleFonts.montserrat(
+          fontSize: getAdaptiveTextSize(
+              context, kIsWeb ? fontsizeWeb : fontsizeNormal),
+          fontStyle: fontstyle,
+          color: color,
+          fontWeight: fontweight,
+        ),
+      );
+    } else {
+      return Text(
+        text,
+        textAlign: textalign,
+        overflow: overflow,
+        maxLines: maxline,
+        style: GoogleFonts.montserrat(
+          fontSize: getAdaptiveTextSize(
+              context, kIsWeb ? fontsizeWeb : fontsizeNormal),
+          fontStyle: fontstyle,
+          color: color,
+          fontWeight: fontweight,
+        ),
+      );
+    }
   }
 }

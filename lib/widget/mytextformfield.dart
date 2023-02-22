@@ -44,7 +44,7 @@ class MyTextFormField extends StatelessWidget {
       readOnly: mReadOnly ?? false,
       decoration: InputDecoration(
         hintText: mHint,
-        hintStyle: GoogleFonts.inter(
+        hintStyle: GoogleFonts.montserrat(
           fontSize: 15,
           color: mHintTextColor,
           fontWeight: FontWeight.w500,
@@ -54,7 +54,7 @@ class MyTextFormField extends StatelessWidget {
         fillColor: transparentColor,
         isCollapsed: true,
       ),
-      style: GoogleFonts.inter(
+      style: GoogleFonts.montserrat(
         textStyle: TextStyle(
           fontSize: 15,
           color: mTextColor,

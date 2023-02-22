@@ -1,23 +1,13 @@
 import 'dart:developer';
 
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
+import 'package:dtlive/web_js/js_helper.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:dtlive/webwidget/interactive_icon.dart';
 import 'package:dtlive/webwidget/interactive_text.dart';
-
-// @JS('launchUrl')
-// @anonymous
-// external String launchUrl(String url, String target);
-// _redirectToUrl(loadingUrl) async {
-//   log("loadingUrl ---------> $loadingUrl");
-//   /*
-//       _blank => open new Tab
-//       _self => open in current Tab
-//     */
-//   launchUrl(loadingUrl, '_blank');
-// }
 
 class FooterWeb extends StatefulWidget {
   const FooterWeb({super.key});
@@ -27,6 +17,7 @@ class FooterWeb extends StatefulWidget {
 }
 
 class _FooterWebState extends State<FooterWeb> {
+  final JSHelper _jsHelper = JSHelper();
   SharedPre sharedPref = SharedPre();
   String? aboutUsUrl, privacyUrl, termsConditionUrl, refundPolicyUrl;
 
@@ -34,6 +25,16 @@ class _FooterWebState extends State<FooterWeb> {
   void initState() {
     _getData();
     super.initState();
+  }
+
+  _redirectToUrl(loadingUrl) async {
+    debugPrint("loadingUrl -----------> $loadingUrl");
+    /*
+      _blank => open new Tab
+      _self => open in current Tab
+    */
+    String dataFromJS = await _jsHelper.callOpenTab(loadingUrl, '_blank');
+    debugPrint("dataFromJS -----------> $dataFromJS");
   }
 
   _getData() async {
@@ -78,7 +79,7 @@ class _FooterWebState extends State<FooterWeb> {
                 children: [
                   InkWell(
                     onTap: () {
-                      // _redirectToUrl(aboutUsUrl ?? "");
+                      _redirectToUrl(aboutUsUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "aboutus",
@@ -92,7 +93,7 @@ class _FooterWebState extends State<FooterWeb> {
                   ),
                   InkWell(
                     onTap: () {
-                      // _redirectToUrl(termsConditionUrl ?? "");
+                      _redirectToUrl(termsConditionUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "termcondition",
@@ -106,7 +107,7 @@ class _FooterWebState extends State<FooterWeb> {
                   ),
                   InkWell(
                     onTap: () {
-                      // _redirectToUrl(privacyUrl ?? "");
+                      _redirectToUrl(privacyUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "privacypolicy",
@@ -120,7 +121,7 @@ class _FooterWebState extends State<FooterWeb> {
                   ),
                   InkWell(
                     onTap: () {
-                      // _redirectToUrl(refundPolicyUrl ?? "");
+                      _redirectToUrl(refundPolicyUrl ?? "");
                     },
                     child: const InteractiveText(
                       text: "refundpolicy",
@@ -134,15 +135,13 @@ class _FooterWebState extends State<FooterWeb> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
               MyText(
                 color: lightGray,
                 multilanguage: false,
                 text:
-                    "© 2023 STAR. All Rights Reserved. HBO, Home Box Office and all related channel and programming logos are service marks of, and all related programming visuals and elements are the property of, Home Box Office, Inc. All rights reserved.",
-                fontweight: FontWeight.normal,
+                    "© 2023 DivineTechs. All Rights Reserved. HBO, Home Box Office and all related channel and programming logos are service marks of, and all related programming visuals and elements are the property of, Home Box Office, Inc. All rights reserved.",
+                fontweight: FontWeight.w500,
                 fontsizeWeb: 12,
                 textalign: TextAlign.start,
                 fontstyle: FontStyle.normal,
@@ -174,9 +173,7 @@ class _FooterWebState extends State<FooterWeb> {
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   /* Social Icons */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -243,7 +240,7 @@ class _FooterWebState extends State<FooterWeb> {
                     children: [
                       InkWell(
                         onTap: () {
-                          // _redirectToUrl(Constant.androidAppUrl);
+                          _redirectToUrl(Constant.androidAppUrl);
                         },
                         borderRadius: BorderRadius.circular(3),
                         child: InteractiveIcon(
@@ -259,7 +256,7 @@ class _FooterWebState extends State<FooterWeb> {
                       const SizedBox(width: 3),
                       InkWell(
                         onTap: () {
-                          // _redirectToUrl(Constant.iosAppUrl);
+                          _redirectToUrl(Constant.iosAppUrl);
                         },
                         borderRadius: BorderRadius.circular(3),
                         child: InteractiveIcon(
@@ -299,7 +296,7 @@ class _FooterWebState extends State<FooterWeb> {
           children: [
             InkWell(
               onTap: () {
-                // _redirectToUrl(aboutUsUrl ?? "");
+                _redirectToUrl(aboutUsUrl ?? "");
               },
               child: const InteractiveText(
                 text: "aboutus",
@@ -313,7 +310,7 @@ class _FooterWebState extends State<FooterWeb> {
             ),
             InkWell(
               onTap: () {
-                // _redirectToUrl(termsConditionUrl ?? "");
+                _redirectToUrl(termsConditionUrl ?? "");
               },
               child: const InteractiveText(
                 text: "termcondition",
@@ -327,7 +324,7 @@ class _FooterWebState extends State<FooterWeb> {
             ),
             InkWell(
               onTap: () {
-                // _redirectToUrl(privacyUrl ?? "");
+                _redirectToUrl(privacyUrl ?? "");
               },
               child: const InteractiveText(
                 text: "privacypolicy",
@@ -341,7 +338,7 @@ class _FooterWebState extends State<FooterWeb> {
             ),
             InkWell(
               onTap: () {
-                // _redirectToUrl(refundPolicyUrl ?? "");
+                _redirectToUrl(refundPolicyUrl ?? "");
               },
               child: const InteractiveText(
                 text: "refundpolicy",
@@ -360,8 +357,8 @@ class _FooterWebState extends State<FooterWeb> {
           color: lightGray,
           multilanguage: false,
           text:
-              "© 2023 STAR. All Rights Reserved. HBO, Home Box Office and all related channel and programming logos are service marks of, and all related programming visuals and elements are the property of, Home Box Office, Inc. All rights reserved.",
-          fontweight: FontWeight.normal,
+              "© 2023 DivineTechs. All Rights Reserved. HBO, Home Box Office and all related channel and programming logos are service marks of, and all related programming visuals and elements are the property of, Home Box Office, Inc. All rights reserved.",
+          fontweight: FontWeight.w500,
           fontsizeWeb: 12,
           textalign: TextAlign.start,
           fontstyle: FontStyle.normal,
@@ -459,7 +456,7 @@ class _FooterWebState extends State<FooterWeb> {
                   children: [
                     InkWell(
                       onTap: () {
-                        // _redirectToUrl(Constant.androidAppUrl);
+                        _redirectToUrl(Constant.androidAppUrl);
                       },
                       borderRadius: BorderRadius.circular(3),
                       child: InteractiveIcon(
@@ -475,7 +472,7 @@ class _FooterWebState extends State<FooterWeb> {
                     const SizedBox(width: 3),
                     InkWell(
                       onTap: () {
-                        // _redirectToUrl(Constant.iosAppUrl);
+                        _redirectToUrl(Constant.iosAppUrl);
                       },
                       borderRadius: BorderRadius.circular(3),
                       child: InteractiveIcon(

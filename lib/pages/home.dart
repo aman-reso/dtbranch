@@ -61,6 +61,7 @@ class HomeState extends State<Home> {
       mSearchText;
 
   _onItemTapped(String page) async {
+    debugPrint("_onItemTapped -----------------> $page");
     if (page != "") {
       await setSelectedTab(-1);
     }
@@ -167,7 +168,12 @@ class HomeState extends State<Home> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return MovieDetails(videoId, videoType, typeId);
+            return MovieDetails(
+              videoId,
+              videoType,
+              typeId,
+              openDetailPage: null,
+            );
           },
         ),
       );
@@ -176,7 +182,12 @@ class HomeState extends State<Home> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return TvShowDetails(videoId, videoType, typeId);
+            return TvShowDetails(
+              videoId,
+              videoType,
+              typeId,
+              openDetailPage: null,
+            );
           },
         ),
       );
@@ -205,9 +216,19 @@ class HomeState extends State<Home> {
           openDetailPage: _openDetailPage,
         );
       case "videodetail":
-        return MovieDetails(videoId ?? 0, videoType ?? 0, typeId ?? 0);
+        return MovieDetails(
+          videoId ?? 0,
+          videoType ?? 0,
+          typeId ?? 0,
+          openDetailPage: _openDetailPage,
+        );
       case "showdetail":
-        return TvShowDetails(videoId ?? 0, videoType ?? 0, typeId ?? 0);
+        return TvShowDetails(
+          videoId ?? 0,
+          videoType ?? 0,
+          typeId ?? 0,
+          openDetailPage: _openDetailPage,
+        );
       case "aboutus":
         return QuickLinksWeb(
           pageName: "aboutus",
@@ -1865,7 +1886,7 @@ class HomeState extends State<Home> {
                         textalign: TextAlign.center,
                         fontsizeNormal: 13,
                         fontsizeWeb: 14,
-                        fontweight: FontWeight.normal,
+                        fontweight: FontWeight.w500,
                         maxline: 2,
                         overflow: TextOverflow.ellipsis,
                         fontstyle: FontStyle.normal,

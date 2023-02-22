@@ -135,7 +135,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
                   color: edtBG,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                textStyle: GoogleFonts.inter(
+                textStyle: GoogleFonts.montserrat(
                   color: white,
                   fontSize: 16,
                   fontStyle: FontStyle.normal,

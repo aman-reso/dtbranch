@@ -30,10 +30,10 @@ class VideoDetailsProvider extends ChangeNotifier {
       BuildContext context, typeId, videoType, videoId) async {
     if ((sectionDetailModel.result?.isBookmark ?? 0) == 0) {
       sectionDetailModel.result?.isBookmark = 1;
-      Utils.showSnackbar(context, "WatchlistAdd", "addwatchlistmessage");
+      Utils.showSnackbar(context, "success", "addwatchlistmessage", true);
     } else {
       sectionDetailModel.result?.isBookmark = 0;
-      Utils.showSnackbar(context, "WatchlistRemove", "removewatchlistmessage");
+      Utils.showSnackbar(context, "success", "removewatchlistmessage", true);
     }
     notifyListeners();
     getAddBookMark(typeId, videoType, videoId);

@@ -25,11 +25,11 @@ class _PlayerWebState extends State<PlayerWeb> {
     debugPrint("========> ${widget.videoUrl}");
     if (widget.vUploadType == "youtube") {
       playVideoFrom = PlayVideoFrom.youtube(
-        /* widget.videoUrl ??  */ "https://youtu.be/A3ltMaM6noM",
+        /* widget.videoUrl ??  */ "https://www.youtube.com/watch?v=xTEVWl3wqBI",
       );
     } else if (widget.vUploadType == "vimeo") {
       playVideoFrom = PlayVideoFrom.vimeo(
-        /* widget.videoUrl ??  */ "10679287",
+        /* widget.videoUrl ??  */ "https://vimeo.com/74861955",
       );
     } else {
       playVideoFrom = PlayVideoFrom.network(widget.videoUrl ?? "");
@@ -39,7 +39,7 @@ class _PlayerWebState extends State<PlayerWeb> {
       podPlayerConfig: const PodPlayerConfig(
         autoPlay: true,
         isLooping: false,
-        videoQualityPriority: [1080, 720, 360],
+        videoQualityPriority: [2160, 1440, 1080, 720, 360, 240, 144],
       ),
     );
     _initializeVideoPlayerFuture = _controller.initialise();

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
+import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/utils/color.dart';
@@ -12,9 +13,7 @@ import 'package:flutter/material.dart';
 
 class RelatedVideoShow extends StatefulWidget {
   final List<GetRelatedVideo>? relatedDataList;
-  final Function? openDetailPage;
-  const RelatedVideoShow(
-      {required this.relatedDataList, required this.openDetailPage, Key? key})
+  const RelatedVideoShow({required this.relatedDataList, Key? key})
       : super(key: key);
 
   @override
@@ -22,8 +21,11 @@ class RelatedVideoShow extends StatefulWidget {
 }
 
 class _RelatedVideoShowState extends State<RelatedVideoShow> {
+  HomeState? homeStateObject;
+
   @override
   void initState() {
+    homeStateObject = context.findAncestorStateOfType<HomeState>();
     super.initState();
   }
 
@@ -87,17 +89,14 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
           onTap: () {
             log("Clicked on index ==> $index");
             if (kIsWeb) {
-              if (widget.openDetailPage != null) {
-                widget.openDetailPage!(
-                  (relatedDataList?[index].videoType ?? 0) == 2
-                      ? "showdetail"
-                      : "videodetail",
-                  relatedDataList?[index].id ?? 0,
-                  relatedDataList?[index].videoType ?? 0,
-                  relatedDataList?[index].typeId ?? 0,
-                );
-                setState(() {});
-              }
+              homeStateObject?.openDetailPage(
+                (relatedDataList?[index].videoType ?? 0) == 2
+                    ? "showdetail"
+                    : "videodetail",
+                relatedDataList?[index].id ?? 0,
+                relatedDataList?[index].videoType ?? 0,
+                relatedDataList?[index].typeId ?? 0,
+              );
               return;
             }
             if ((relatedDataList?[index].videoType ?? 0) == 1) {
@@ -109,7 +108,6 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
                       relatedDataList?[index].id ?? 0,
                       relatedDataList?[index].videoType ?? 0,
                       relatedDataList?[index].typeId ?? 0,
-                      openDetailPage: null,
                     );
                   },
                 ),
@@ -123,7 +121,6 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
                       relatedDataList?[index].id ?? 0,
                       relatedDataList?[index].videoType ?? 0,
                       relatedDataList?[index].typeId ?? 0,
-                      openDetailPage: null,
                     );
                   },
                 ),

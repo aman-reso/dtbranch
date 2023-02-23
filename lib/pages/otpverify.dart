@@ -160,7 +160,7 @@ class OTPVerifyState extends State<OTPVerify> {
                       "Clicked sms Code =====> ${pinPutController.text}");
                   if (pinPutController.text.toString().isEmpty) {
                     Utils.showSnackbar(
-                        context, "TextField", "enterreceivedotp");
+                        context, "info", "enterreceivedotp", true);
                   } else {
                     Utils.showProgress(context, prDialog);
                     _login(widget.mobileNumber.toString());
@@ -276,7 +276,7 @@ class OTPVerifyState extends State<OTPVerify> {
   _onVerificationFailed(FirebaseAuthException exception) {
     if (exception.code == 'invalid-phone-number') {
       log("The phone number entered is invalid!");
-      Utils.showSnackbar(context, "fail", "invalidphonenumber");
+      Utils.showSnackbar(context, "fail", "invalidphonenumber", true);
     }
   }
 
@@ -331,7 +331,7 @@ class OTPVerifyState extends State<OTPVerify> {
       } else {
         if (!mounted) return;
         Utils.showSnackbar(
-            context, "fail", "${generalProvider.loginOTPModel.message}");
+            context, "fail", "${generalProvider.loginOTPModel.message}", false);
       }
     }
   }

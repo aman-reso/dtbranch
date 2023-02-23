@@ -12,11 +12,14 @@ import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
+import 'package:dtlive/webwidget/playerweb.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -298,6 +301,11 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               "Show", index, episodeProvider.episodeBySeasonModel.result);
         } else {
           if (Constant.userID != null) {
+            if (kIsWeb) {
+              Utils.showSnackbar(
+                  context, "info", webPaymentNotAvailable, false);
+              return;
+            }
             dynamic isSubscribed = await Navigator.push(
               context,
               MaterialPageRoute(
@@ -397,6 +405,20 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       log("vUploadType ==> $vUploadType");
       log("epiUrl =======> $epiUrl");
       log("vSubtitle ====> $vSubtitle");
+
+      if (kIsWeb) {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PlayerWeb("Show", epiID, vType, vTypeID, epiUrl, vSubtitle,
+                  stopTime, vUploadType);
+            },
+          ),
+        );
+        return;
+      }
+
       if (episodeList?[epiPos].videoUploadType == "youtube") {
         Navigator.push(
           context,

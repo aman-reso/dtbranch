@@ -309,7 +309,7 @@ class SubscriptionState extends State<Subscription> {
                                 debugPrint(
                                     "<============= Purchaged =============>");
                                 Utils.showSnackbar(
-                                    context, "", "already_purchased");
+                                    context, "info", "already_purchased", true);
                                 return;
                               }
                             }

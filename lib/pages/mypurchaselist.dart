@@ -217,7 +217,6 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
-                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),
@@ -251,7 +250,6 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
-                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),
@@ -444,7 +442,6 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
-                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),
@@ -478,7 +475,6 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                                                                     position]
                                                                 .typeId ??
                                                             0,
-                                                        openDetailPage: null,
                                                       );
                                                     },
                                                   ),

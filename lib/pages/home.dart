@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:dtlive/provider/searchprovider.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 
@@ -145,12 +146,7 @@ class HomeState extends State<Home> {
         position == 0 ? "1" : "2");
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void _openDetailPage(
+  openDetailPage(
       String pageName, int videoId, int videoType, int typeId) async {
     debugPrint("pageName ==========> $pageName");
     debugPrint("videoId ==========> $videoId");
@@ -172,7 +168,6 @@ class HomeState extends State<Home> {
               videoId,
               videoType,
               typeId,
-              openDetailPage: null,
             );
           },
         ),
@@ -186,12 +181,16 @@ class HomeState extends State<Home> {
               videoId,
               videoType,
               typeId,
-              openDetailPage: null,
             );
           },
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -211,23 +210,18 @@ class HomeState extends State<Home> {
       case "store":
         return const RentStore();
       case "search":
-        return SearchWeb(
-          searchText: mSearchText ?? "",
-          openDetailPage: _openDetailPage,
-        );
+        return SearchWeb(searchText: mSearchText ?? "");
       case "videodetail":
         return MovieDetails(
           videoId ?? 0,
           videoType ?? 0,
           typeId ?? 0,
-          openDetailPage: _openDetailPage,
         );
       case "showdetail":
         return TvShowDetails(
           videoId ?? 0,
           videoType ?? 0,
           typeId ?? 0,
-          openDetailPage: _openDetailPage,
         );
       case "aboutus":
         return QuickLinksWeb(
@@ -833,11 +827,11 @@ class HomeState extends State<Home> {
             Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
                 if (sectionDataProvider.loadingBanner) {
-                  return Container(
-                    height: 230,
-                    padding: const EdgeInsets.all(20),
-                    child: Utils.pageLoader(),
-                  );
+                  if (kIsWeb && MediaQuery.of(context).size.width > 720) {
+                    return ShimmerUtils.bannerWeb(context);
+                  } else {
+                    return ShimmerUtils.bannerMobile(context);
+                  }
                 } else {
                   if (sectionDataProvider.sectionBannerModel.status == 200 &&
                       sectionDataProvider.sectionBannerModel.result != null) {
@@ -859,11 +853,7 @@ class HomeState extends State<Home> {
             Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
                 if (sectionDataProvider.loadingSection) {
-                  return Container(
-                    height: 200,
-                    padding: const EdgeInsets.all(20),
-                    child: Utils.pageLoader(),
-                  );
+                  return sectionShimmer();
                 } else {
                   if (sectionDataProvider.sectionListModel.status == 200) {
                     return Column(
@@ -896,6 +886,34 @@ class HomeState extends State<Home> {
           ],
         ),
       ),
+    );
+  }
+
+  /* Section Shimmer */
+  Widget sectionShimmer() {
+    return Column(
+      children: [
+        /* Continue Watching */
+        if (Constant.userID != null) ShimmerUtils.continueWatching(context),
+
+        /* Remaining Sections */
+        ListView.builder(
+          itemCount: 5, // itemCount must be greater than 5
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 1) {
+              return ShimmerUtils.setSectionByType(context, "potrait");
+            } else if (index == 2) {
+              return ShimmerUtils.setSectionByType(context, "square");
+            } else if (index == 3) {
+              return ShimmerUtils.setSectionByType(context, "langGen");
+            } else {
+              return ShimmerUtils.setSectionByType(context, "landscape");
+            }
+          },
+        ),
+      ],
     );
   }
 
@@ -934,7 +952,7 @@ class HomeState extends State<Home> {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
-                    _openDetailPage(
+                    openDetailPage(
                       (sectionBannerList?[index].videoType ?? 0) == 2
                           ? "showdetail"
                           : "videodetail",
@@ -1030,7 +1048,7 @@ class HomeState extends State<Home> {
             return InkWell(
               onTap: () {
                 log("Clicked on index ==> $index");
-                _openDetailPage(
+                openDetailPage(
                   (sectionBannerList?[index].videoType ?? 0) == 2
                       ? "showdetail"
                       : "videodetail",
@@ -1215,7 +1233,7 @@ class HomeState extends State<Home> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on index ==> $index");
-                        _openDetailPage(
+                        openDetailPage(
                           (continueWatchingList?[index].videoType ?? 0) == 2
                               ? "showdetail"
                               : "videodetail",
@@ -1384,9 +1402,7 @@ class HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 25,
-              ),
+              const SizedBox(height: 25),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: MyText(
@@ -1402,9 +1418,7 @@ class HomeState extends State<Home> {
                   fontstyle: FontStyle.normal,
                 ),
               ),
-              const SizedBox(
-                height: 12,
-              ),
+              const SizedBox(height: 12),
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(
@@ -1415,9 +1429,8 @@ class HomeState extends State<Home> {
                   itemCount: (sectionList?[index].data?.length ?? 0),
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  separatorBuilder: (context, index) => const SizedBox(
-                    width: 5,
-                  ),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 5),
                   itemBuilder: (BuildContext context, int postion) {
                     /* video_type =>  1-video,  2-show,  3-language,  4-category */
                     /* screen_layout =>  landscape, potrait, square */
@@ -1513,15 +1526,13 @@ class HomeState extends State<Home> {
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              _openDetailPage(
+              openDetailPage(
                 (sectionDataList?[index].videoType ?? 0) == 2
                     ? "showdetail"
                     : "videodetail",
@@ -1561,15 +1572,13 @@ class HomeState extends State<Home> {
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              _openDetailPage(
+              openDetailPage(
                 (sectionDataList?[index].videoType ?? 0) == 2
                     ? "showdetail"
                     : "videodetail",
@@ -1609,15 +1618,13 @@ class HomeState extends State<Home> {
         scrollDirection: Axis.horizontal,
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              _openDetailPage(
+              openDetailPage(
                 (sectionDataList?[index].videoType ?? 0) == 2
                     ? "showdetail"
                     : "videodetail",
@@ -1657,9 +1664,7 @@ class HomeState extends State<Home> {
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return Stack(
             alignment: AlignmentDirectional.bottomStart,
@@ -1702,7 +1707,7 @@ class HomeState extends State<Home> {
                       Container(
                         padding: const EdgeInsets.all(0),
                         width: MediaQuery.of(context).size.width,
-                        height: Dimens.homeBanner,
+                        height: Dimens.heightLangGen,
                         alignment: Alignment.center,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
@@ -1752,9 +1757,7 @@ class HomeState extends State<Home> {
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return Stack(
             alignment: AlignmentDirectional.bottomStart,
@@ -1797,7 +1800,7 @@ class HomeState extends State<Home> {
                       Container(
                         padding: const EdgeInsets.all(0),
                         width: MediaQuery.of(context).size.width,
-                        height: Dimens.homeBanner,
+                        height: Dimens.heightLangGen,
                         alignment: Alignment.center,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(

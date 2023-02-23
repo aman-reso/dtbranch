@@ -37,6 +37,7 @@
     "termcondition" : "Terms & Conditions",
     "refundpolicy" : "Refund Policy",
     "delete_account" : "Delete Account",
+    "confirm_delete_account" : "Confirm Delete Account",
     "delete_account_msg" : "Are you sure want to Delete Account ?",
     "delete" : "Delete",
     "setting" : "Settings",

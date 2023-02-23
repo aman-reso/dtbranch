@@ -1,3 +1,4 @@
+import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,20 +14,19 @@ import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class SearchWeb extends StatefulWidget {
   final String? searchText;
-  final Function openDetailPage;
-  const SearchWeb(
-      {Key? key, required this.searchText, required this.openDetailPage})
-      : super(key: key);
+  const SearchWeb({Key? key, required this.searchText}) : super(key: key);
 
   @override
   State<SearchWeb> createState() => _SearchWebState();
 }
 
 class _SearchWebState extends State<SearchWeb> {
+  HomeState? homeStateObject;
   late SearchProvider searchProvider;
 
   @override
   void initState() {
+    homeStateObject = context.findAncestorStateOfType<HomeState>();
     searchProvider = Provider.of<SearchProvider>(context, listen: false);
     _getData();
     super.initState();
@@ -222,7 +222,7 @@ class _SearchWebState extends State<SearchWeb> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               debugPrint("Clicked on position ==> $position");
-              widget.openDetailPage(
+              homeStateObject?.openDetailPage(
                 "videodetail",
                 searchProvider.searchModel.video?[position].id ?? 0,
                 searchProvider.searchModel.video?[position].videoType ?? 0,
@@ -266,7 +266,7 @@ class _SearchWebState extends State<SearchWeb> {
           return InkWell(
             onTap: () {
               debugPrint("Clicked on position ==> $position");
-              widget.openDetailPage(
+              homeStateObject?.openDetailPage(
                 "showdetail",
                 searchProvider.searchModel.tvshow?[position].id ?? 0,
                 searchProvider.searchModel.tvshow?[position].videoType ?? 0,

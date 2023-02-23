@@ -56,7 +56,7 @@ class SearchState extends State<Search> {
     });
     Future.delayed(const Duration(seconds: 5), () {
       if (searchController.text.toString().isEmpty) {
-        Utils.showSnackbar(context, "TextField", "speechnotavailable");
+        Utils.showSnackbar(context, "info", "speechnotavailable", true);
         _stopListening();
       }
     });
@@ -439,7 +439,6 @@ class SearchState extends State<Search> {
                     searchProvider.searchModel.video?[position].id ?? 0,
                     searchProvider.searchModel.video?[position].videoType ?? 0,
                     searchProvider.searchModel.video?[position].typeId ?? 0,
-                    openDetailPage: null,
                   );
                 },
               ),
@@ -488,7 +487,6 @@ class SearchState extends State<Search> {
                     searchProvider.searchModel.tvshow?[position].id ?? 0,
                     searchProvider.searchModel.tvshow?[position].videoType ?? 0,
                     searchProvider.searchModel.tvshow?[position].typeId ?? 0,
-                    openDetailPage: null,
                   );
                 },
               ),

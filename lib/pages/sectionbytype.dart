@@ -174,7 +174,6 @@ class SectionByTypeState extends State<SectionByType> {
                               sectionBannerList?[index].id ?? 0,
                               sectionBannerList?[index].videoType ?? 0,
                               sectionBannerList?[index].typeId ?? 0,
-                              openDetailPage: null,
                             );
                           },
                         ),
@@ -189,7 +188,6 @@ class SectionByTypeState extends State<SectionByType> {
                               sectionBannerList?[index].id ?? 0,
                               sectionBannerList?[index].videoType ?? 0,
                               sectionBannerList?[index].typeId ?? 0,
-                              openDetailPage: null,
                             );
                           },
                         ),
@@ -409,7 +407,6 @@ class SectionByTypeState extends State<SectionByType> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -423,7 +420,6 @@ class SectionByTypeState extends State<SectionByType> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -478,7 +474,6 @@ class SectionByTypeState extends State<SectionByType> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -492,7 +487,6 @@ class SectionByTypeState extends State<SectionByType> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -547,7 +541,6 @@ class SectionByTypeState extends State<SectionByType> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -561,7 +554,6 @@ class SectionByTypeState extends State<SectionByType> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),

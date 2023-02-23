@@ -33,11 +33,11 @@ class WatchlistProvider extends ChangeNotifier {
         "watchlistModel videoId :==> ${(watchlistModel.result?[position].id ?? 0)}");
     if ((watchlistModel.result?[position].isBookmark ?? 0) == 0) {
       watchlistModel.result?[position].isBookmark = 1;
-      Utils.showSnackbar(context, "WatchlistAdd", "addwatchlistmessage");
+      Utils.showSnackbar(context, "success", "addwatchlistmessage", true);
     } else {
       watchlistModel.result?[position].isBookmark = 0;
       watchlistModel.result?.removeAt(position);
-      Utils.showSnackbar(context, "WatchlistRemove", "removewatchlistmessage");
+      Utils.showSnackbar(context, "success", "removewatchlistmessage", true);
     }
     loading = false;
     notifyListeners();

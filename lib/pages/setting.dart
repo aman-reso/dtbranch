@@ -39,7 +39,8 @@ class SettingState extends State<Setting> {
       userMobileNo,
       aboutUsUrl,
       privacyUrl,
-      termsConditionUrl;
+      termsConditionUrl,
+      refundPolicyUrl;
   SharedPre sharedPref = SharedPre();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -76,6 +77,7 @@ class SettingState extends State<Setting> {
     aboutUsUrl = await sharedPref.read("about-us") ?? "";
     privacyUrl = await sharedPref.read("privacy-policy") ?? "";
     termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
+    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
 
     isSwitched = await sharedPref.readBool("PUSH");
     log('getUserData isSwitched ==> $isSwitched');
@@ -409,6 +411,43 @@ class SettingState extends State<Setting> {
                   color: white,
                 ),
 
+                /* MaltiLanguage */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    _languageChangeDialog();
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: BoxConstraints(
+                      minHeight: Dimens.minHeightSettings,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "language_",
+                          multilanguage: true,
+                          fontsizeNormal: 15,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontweight: FontWeight.w500,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(top: 8, bottom: 8),
+                  color: white,
+                ),
+
                 /* Push Notification enable/disable */
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -472,7 +511,8 @@ class SettingState extends State<Setting> {
                   onTap: () async {
                     await Utils.deleteCacheDir();
                     if (!mounted) return;
-                    Utils.showSnackbar(context, "success", "cacheclearmsg");
+                    Utils.showSnackbar(
+                        context, "success", "cacheclearmsg", true);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -853,11 +893,18 @@ class SettingState extends State<Setting> {
                   color: white,
                 ),
 
-                /* MaltiLanguage */
+                /* Refund Policy */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () {
-                    _languageChangeDialog();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AboutPrivacyTerms(
+                          appBarTitle: "refundpolicy",
+                          loadURL: refundPolicyUrl ?? "",
+                        ),
+                      ),
+                    );
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -870,9 +917,9 @@ class SettingState extends State<Setting> {
                       children: [
                         MyText(
                           color: white,
-                          text: "language_",
-                          multilanguage: true,
+                          text: "refundpolicy",
                           fontsizeNormal: 15,
+                          multilanguage: true,
                           maxline: 1,
                           overflow: TextOverflow.ellipsis,
                           fontweight: FontWeight.w500,
@@ -889,170 +936,59 @@ class SettingState extends State<Setting> {
                   margin: const EdgeInsets.only(top: 8, bottom: 8),
                   color: white,
                 ),
+
+                /* Delete Account */
+                if (Constant.userID != null)
+                  InkWell(
+                    borderRadius: BorderRadius.circular(2),
+                    onTap: () async {
+                      if (Constant.userID != null) {
+                        deleteConfirmDialog();
+                      } else {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginSocial(),
+                          ),
+                        );
+                        setState(() {});
+                      }
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      constraints: BoxConstraints(
+                        minHeight: Dimens.minHeightSettings,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText(
+                            color: white,
+                            text: "delete_account",
+                            fontsizeNormal: 15,
+                            multilanguage: true,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontweight: FontWeight.w500,
+                            textalign: TextAlign.center,
+                            fontstyle: FontStyle.normal,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                if (Constant.userID != null)
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 0.5,
+                    margin: const EdgeInsets.only(top: 8, bottom: 8),
+                    color: white,
+                  ),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  void logoutConfirmDialog() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: lightBlack,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return Wrap(
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.all(23),
-              color: lightBlack,
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "confirmsognout",
-                          multilanguage: true,
-                          textalign: TextAlign.center,
-                          fontsizeNormal: 16,
-                          fontweight: FontWeight.bold,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        MyText(
-                          color: white,
-                          text: "areyousurewanrtosignout",
-                          multilanguage: true,
-                          textalign: TextAlign.center,
-                          fontsizeNormal: 13,
-                          fontweight: FontWeight.w500,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontstyle: FontStyle.normal,
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            constraints: const BoxConstraints(
-                              minWidth: 75,
-                            ),
-                            height: 50,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: otherColor,
-                                width: .5,
-                              ),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: MyText(
-                              color: white,
-                              text: "cancel",
-                              multilanguage: true,
-                              textalign: TextAlign.center,
-                              fontsizeNormal: 16,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontweight: FontWeight.w500,
-                              fontstyle: FontStyle.normal,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            final homeProvider = Provider.of<HomeProvider>(
-                                context,
-                                listen: false);
-                            final sectionDataProvider =
-                                Provider.of<SectionDataProvider>(context,
-                                    listen: false);
-                            await homeProvider.setSelectedTab(0);
-                            await sectionDataProvider.clearProvider();
-                            // Firebase Signout
-                            await auth.signOut();
-                            await GoogleSignIn().signOut();
-                            await Utils.setUserId(null);
-                            sectionDataProvider.getSectionBanner("0", "1");
-                            sectionDataProvider.getSectionList("0", "1");
-                            getUserData();
-                            if (!mounted) return;
-                            Navigator.pop(context);
-                            if (!mounted) return;
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const LoginSocial(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            constraints: const BoxConstraints(
-                              minWidth: 75,
-                            ),
-                            height: 50,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: primaryLight,
-                              borderRadius: BorderRadius.circular(5),
-                              shape: BoxShape.rectangle,
-                            ),
-                            child: MyText(
-                              color: black,
-                              text: "sign_out",
-                              textalign: TextAlign.center,
-                              fontsizeNormal: 16,
-                              multilanguage: true,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontweight: FontWeight.w500,
-                              fontstyle: FontStyle.normal,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -1253,6 +1189,324 @@ class SettingState extends State<Setting> {
               },
             );
           },
+        );
+      },
+    );
+  }
+
+  void logoutConfirmDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              color: lightBlack,
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "confirmsognout",
+                          multilanguage: true,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 16,
+                          fontweight: FontWeight.bold,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        MyText(
+                          color: white,
+                          text: "areyousurewanrtosignout",
+                          multilanguage: true,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 13,
+                          fontweight: FontWeight.w500,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: otherColor,
+                                width: .5,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: MyText(
+                              color: white,
+                              text: "cancel",
+                              multilanguage: true,
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            final homeProvider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
+                            final sectionDataProvider =
+                                Provider.of<SectionDataProvider>(context,
+                                    listen: false);
+                            await homeProvider.setSelectedTab(0);
+                            await sectionDataProvider.clearProvider();
+                            // Firebase Signout
+                            await auth.signOut();
+                            await GoogleSignIn().signOut();
+                            await Utils.setUserId(null);
+                            sectionDataProvider.getSectionBanner("0", "1");
+                            sectionDataProvider.getSectionList("0", "1");
+                            getUserData();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            if (!mounted) return;
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const LoginSocial(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: primaryLight,
+                              borderRadius: BorderRadius.circular(5),
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: MyText(
+                              color: black,
+                              text: "sign_out",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              multilanguage: true,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void deleteConfirmDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              color: lightBlack,
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "confirm_delete_account",
+                          multilanguage: true,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 16,
+                          fontweight: FontWeight.bold,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(
+                          height: 3,
+                        ),
+                        MyText(
+                          color: white,
+                          text: "delete_account_msg",
+                          multilanguage: true,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 13,
+                          fontweight: FontWeight.w500,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: otherColor,
+                                width: .5,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: MyText(
+                              color: white,
+                              text: "cancel",
+                              multilanguage: true,
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            final homeProvider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
+                            final sectionDataProvider =
+                                Provider.of<SectionDataProvider>(context,
+                                    listen: false);
+                            await homeProvider.setSelectedTab(0);
+                            await sectionDataProvider.clearProvider();
+                            // Firebase Signout
+                            await auth.signOut();
+                            await GoogleSignIn().signOut();
+                            await Utils.setUserId(null);
+                            sectionDataProvider.getSectionBanner("0", "1");
+                            sectionDataProvider.getSectionList("0", "1");
+                            getUserData();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            if (!mounted) return;
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const LoginSocial(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: primaryLight,
+                              borderRadius: BorderRadius.circular(5),
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: MyText(
+                              color: black,
+                              text: "delete",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              multilanguage: true,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         );
       },
     );

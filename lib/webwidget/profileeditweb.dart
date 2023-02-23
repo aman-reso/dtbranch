@@ -175,7 +175,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
                 log("nameController Name ==> ${nameController.text.toString()}");
                 log("pickedImageFile ==> ${pickedImageFile?.path ?? "not picked"}");
                 if (nameController.text.toString().isEmpty) {
-                  return Utils.showSnackbar(context, "TextField", enterName);
+                  return Utils.showSnackbar(context, "info", enterName, false);
                 }
                 await sharePref.save(
                     "username", nameController.text.toString());

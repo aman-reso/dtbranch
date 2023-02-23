@@ -176,7 +176,7 @@ class ProfileEditState extends State<ProfileEdit> {
                       log("pickedImageFile ==> ${pickedImageFile?.path ?? "not picked"}");
                       if (nameController.text.toString().isEmpty) {
                         return Utils.showSnackbar(
-                            context, "TextField", enterName);
+                            context, "info", enterName, false);
                       }
                       final myStuffProvider =
                           Provider.of<MyStuffProvider>(context, listen: false);

@@ -813,7 +813,7 @@ class AllPaymentState extends State<AllPayment> {
       razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
       razorpay.open(options);
     } else {
-      Utils.showSnackbar(context, "", "payment_not_processed");
+      Utils.showSnackbar(context, "", "payment_not_processed", true);
     }
   }
 
@@ -824,7 +824,7 @@ class AllPaymentState extends State<AllPayment> {
     * 2. Error Description
     * 3. Metadata
     * */
-    Utils.showSnackbar(context, "fail", "payment_fail");
+    Utils.showSnackbar(context, "fail", "payment_fail", true);
     await paymentProvider.setCurrentPayment("");
   }
 
@@ -837,7 +837,7 @@ class AllPaymentState extends State<AllPayment> {
     * */
     // paymentId = response.paymentId;
     debugPrint("paymentId ========> $paymentId");
-    Utils.showSnackbar(context, "success", "payment_success");
+    Utils.showSnackbar(context, "success", "payment_success", true);
     if (widget.payType == "Package") {
       addTransaction(widget.itemId, widget.itemTitle, widget.price, paymentId,
           widget.currency);
@@ -879,7 +879,7 @@ class AllPaymentState extends State<AllPayment> {
         isPaymentDone = false;
         if (!mounted) return;
         Utils.showSnackbar(
-            context, "response", paymentProvider.successModel.message ?? "");
+            context, "info", paymentProvider.successModel.message ?? "", false);
       }
     }
   }
@@ -911,7 +911,7 @@ class AllPaymentState extends State<AllPayment> {
         isPaymentDone = false;
         if (!mounted) return;
         Utils.showSnackbar(
-            context, "response", paymentProvider.successModel.message ?? "");
+            context, "info", paymentProvider.successModel.message ?? "", true);
       }
     }
   }

@@ -35,9 +35,7 @@ import 'package:social_share/social_share.dart';
 
 class MovieDetails extends StatefulWidget {
   final int videoId, videoType, typeId;
-  final Function? openDetailPage;
-  const MovieDetails(this.videoId, this.videoType, this.typeId,
-      {required this.openDetailPage, Key? key})
+  const MovieDetails(this.videoId, this.videoType, this.typeId, {Key? key})
       : super(key: key);
 
   @override
@@ -282,7 +280,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     .sectionDetailModel.result?.name ??
                                 "",
                             textalign: TextAlign.start,
-                            fontsizeNormal: 24,
+                            fontsizeNormal: 20,
                             fontsizeWeb: 24,
                             fontweight: FontWeight.w800,
                             maxline: 2,
@@ -513,6 +511,11 @@ class MovieDetailsState extends State<MovieDetails> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      /* Rent Button */
+                      Expanded(child: _buildRentBtn()),
+                      const SizedBox(width: 5),
+
+                      /* Start Over & Trailer */
                       Expanded(
                         child: Consumer<VideoDetailsProvider>(
                           builder: (context, videoDetailsProvider, child) {
@@ -528,8 +531,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   InkWell(
-                                    borderRadius: BorderRadius.circular(
-                                        Dimens.featureSize / 2),
+                                    borderRadius: BorderRadius.circular((kIsWeb
+                                            ? Dimens.featureWebSize
+                                            : Dimens.featureSize) /
+                                        2),
                                     onTap: () async {
                                       if (Constant.userID != null) {
                                         openPlayer("startOver");
@@ -550,19 +555,28 @@ class MovieDetailsState extends State<MovieDetails> {
                                       }
                                     },
                                     child: Container(
-                                      width: Dimens.featureSize,
-                                      height: Dimens.featureSize,
+                                      width: kIsWeb
+                                          ? Dimens.featureWebSize
+                                          : Dimens.featureSize,
+                                      height: kIsWeb
+                                          ? Dimens.featureWebSize
+                                          : Dimens.featureSize,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: primaryLight,
-                                        ),
+                                        border: Border.all(color: primaryLight),
                                         borderRadius: BorderRadius.circular(
-                                            Dimens.featureSize / 2),
+                                            (kIsWeb
+                                                    ? Dimens.featureWebSize
+                                                    : Dimens.featureSize) /
+                                                2),
                                       ),
                                       child: MyImage(
-                                        width: Dimens.featureIconSize,
-                                        height: Dimens.featureIconSize,
+                                        width: kIsWeb
+                                            ? Dimens.featureIconWebSize
+                                            : Dimens.featureIconSize,
+                                        height: kIsWeb
+                                            ? Dimens.featureIconWebSize
+                                            : Dimens.featureIconSize,
                                         color: lightGray,
                                         imagePath: "ic_restart.png",
                                       ),
@@ -589,25 +603,36 @@ class MovieDetailsState extends State<MovieDetails> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   InkWell(
-                                    borderRadius: BorderRadius.circular(
-                                        Dimens.featureSize / 2),
+                                    borderRadius: BorderRadius.circular((kIsWeb
+                                            ? Dimens.featureWebSize
+                                            : Dimens.featureSize) /
+                                        2),
                                     onTap: () {
                                       openPlayer("Trailer");
                                     },
                                     child: Container(
-                                      width: Dimens.featureSize,
-                                      height: Dimens.featureSize,
+                                      width: kIsWeb
+                                          ? Dimens.featureWebSize
+                                          : Dimens.featureSize,
+                                      height: kIsWeb
+                                          ? Dimens.featureWebSize
+                                          : Dimens.featureSize,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: primaryLight,
-                                        ),
+                                        border: Border.all(color: primaryLight),
                                         borderRadius: BorderRadius.circular(
-                                            Dimens.featureSize / 2),
+                                            (kIsWeb
+                                                    ? Dimens.featureWebSize
+                                                    : Dimens.featureSize) /
+                                                2),
                                       ),
                                       child: MyImage(
-                                        width: Dimens.featureIconSize,
-                                        height: Dimens.featureIconSize,
+                                        width: kIsWeb
+                                            ? Dimens.featureIconWebSize
+                                            : Dimens.featureIconSize,
+                                        height: kIsWeb
+                                            ? Dimens.featureIconWebSize
+                                            : Dimens.featureIconSize,
                                         color: lightGray,
                                         imagePath: "ic_borderplay.png",
                                       ),
@@ -632,9 +657,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           },
                         ),
                       ),
-
-                      /* Rent Button */
-                      _buildRentBtn(),
+                      const SizedBox(width: 5),
 
                       /* Download */
                       if (!kIsWeb) _buildDownloadWithSubCheck(),
@@ -670,25 +693,35 @@ class MovieDetailsState extends State<MovieDetails> {
                                   );
                                 }
                               },
-                              borderRadius:
-                                  BorderRadius.circular(Dimens.featureSize / 2),
+                              borderRadius: BorderRadius.circular((kIsWeb
+                                      ? Dimens.featureWebSize
+                                      : Dimens.featureSize) /
+                                  2),
                               child: Container(
-                                width: Dimens.featureSize,
-                                height: Dimens.featureSize,
+                                width: kIsWeb
+                                    ? Dimens.featureWebSize
+                                    : Dimens.featureSize,
+                                height: kIsWeb
+                                    ? Dimens.featureWebSize
+                                    : Dimens.featureSize,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: primaryLight,
-                                  ),
-                                  borderRadius: BorderRadius.circular(
-                                      Dimens.featureSize / 2),
+                                  border: Border.all(color: primaryLight),
+                                  borderRadius: BorderRadius.circular((kIsWeb
+                                          ? Dimens.featureWebSize
+                                          : Dimens.featureSize) /
+                                      2),
                                 ),
                                 child: Consumer<VideoDetailsProvider>(
                                   builder:
                                       (context, videoDetailsProvider, child) {
                                     return MyImage(
-                                      width: Dimens.featureIconSize,
-                                      height: Dimens.featureIconSize,
+                                      width: kIsWeb
+                                          ? Dimens.featureIconWebSize
+                                          : Dimens.featureIconSize,
+                                      height: kIsWeb
+                                          ? Dimens.featureIconWebSize
+                                          : Dimens.featureIconSize,
                                       color: lightGray,
                                       imagePath: (videoDetailsProvider
                                                       .sectionDetailModel
@@ -719,6 +752,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           ],
                         ),
                       ),
+                      const SizedBox(width: 5),
 
                       /* More */
                       if (!kIsWeb)
@@ -737,19 +771,27 @@ class MovieDetailsState extends State<MovieDetails> {
                                       0);
                                 },
                                 child: Container(
-                                  width: Dimens.featureSize,
-                                  height: Dimens.featureSize,
+                                  width: kIsWeb
+                                      ? Dimens.featureWebSize
+                                      : Dimens.featureSize,
+                                  height: kIsWeb
+                                      ? Dimens.featureWebSize
+                                      : Dimens.featureSize,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: primaryLight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                        Dimens.featureSize / 2),
+                                    border: Border.all(color: primaryLight),
+                                    borderRadius: BorderRadius.circular((kIsWeb
+                                            ? Dimens.featureWebSize
+                                            : Dimens.featureSize) /
+                                        2),
                                   ),
                                   child: MyImage(
-                                    width: Dimens.featureIconSize,
-                                    height: Dimens.featureIconSize,
+                                    width: kIsWeb
+                                        ? Dimens.featureIconWebSize
+                                        : Dimens.featureIconSize,
+                                    height: kIsWeb
+                                        ? Dimens.featureIconWebSize
+                                        : Dimens.featureIconSize,
                                     color: lightGray,
                                     imagePath: "ic_more.png",
                                   ),
@@ -1795,20 +1837,24 @@ class MovieDetailsState extends State<MovieDetails> {
 
                             /* Included Features buttons */
                             Container(
-                              width: MediaQuery.of(context).size.width,
+                              width: kIsWeb
+                                  ? (MediaQuery.of(context).size.width / 2)
+                                  : MediaQuery.of(context).size.width,
                               constraints: const BoxConstraints(minHeight: 0),
-                              margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
                               alignment: Alignment.center,
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  /* Rent Button */
+                                  _buildRentBtn(),
+                                  const SizedBox(width: 10),
+
                                   /* Trailer & StartOver Button */
                                   Container(
                                     constraints:
                                         const BoxConstraints(minWidth: 50),
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                     child: Consumer<VideoDetailsProvider>(
                                       builder: (context, videoDetailsProvider,
                                           child) {
@@ -1830,8 +1876,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                             children: [
                                               InkWell(
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        Dimens.featureSize / 2),
+                                                    BorderRadius.circular(kIsWeb
+                                                        ? Dimens.featureWebSize
+                                                        : Dimens.featureSize /
+                                                            2),
                                                 onTap: () async {
                                                   if (Constant.userID != null) {
                                                     openPlayer("startOver");
@@ -1852,23 +1900,36 @@ class MovieDetailsState extends State<MovieDetails> {
                                                   }
                                                 },
                                                 child: Container(
-                                                  width: Dimens.featureWebSize,
-                                                  height: Dimens.featureWebSize,
+                                                  width: kIsWeb
+                                                      ? Dimens.featureWebSize
+                                                      : Dimens.featureSize,
+                                                  height: kIsWeb
+                                                      ? Dimens.featureWebSize
+                                                      : Dimens.featureSize,
                                                   alignment: Alignment.center,
                                                   decoration: BoxDecoration(
                                                     border: Border.all(
                                                       color: primaryLight,
                                                     ),
                                                     borderRadius: BorderRadius
-                                                        .circular(Dimens
-                                                                .featureWebSize /
+                                                        .circular((kIsWeb
+                                                                ? Dimens
+                                                                    .featureWebSize
+                                                                : Dimens
+                                                                    .featureSize) /
                                                             2),
                                                   ),
                                                   child: MyImage(
-                                                    width: Dimens
-                                                        .featureIconWebSize,
-                                                    height: Dimens
-                                                        .featureIconWebSize,
+                                                    width: kIsWeb
+                                                        ? Dimens
+                                                            .featureIconWebSize
+                                                        : Dimens
+                                                            .featureIconSize,
+                                                    height: kIsWeb
+                                                        ? Dimens
+                                                            .featureIconWebSize
+                                                        : Dimens
+                                                            .featureIconSize,
                                                     color: lightGray,
                                                     imagePath: "ic_restart.png",
                                                   ),
@@ -1896,15 +1957,23 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               InkWell(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        Dimens.featureSize / 2),
+                                                borderRadius: BorderRadius
+                                                    .circular((kIsWeb
+                                                            ? Dimens
+                                                                .featureWebSize
+                                                            : Dimens
+                                                                .featureSize) /
+                                                        2),
                                                 onTap: () {
                                                   openPlayer("Trailer");
                                                 },
                                                 child: Container(
-                                                  width: Dimens.featureWebSize,
-                                                  height: Dimens.featureWebSize,
+                                                  width: kIsWeb
+                                                      ? Dimens.featureWebSize
+                                                      : Dimens.featureSize,
+                                                  height: kIsWeb
+                                                      ? Dimens.featureWebSize
+                                                      : Dimens.featureSize,
                                                   alignment: Alignment.center,
                                                   decoration: BoxDecoration(
                                                     border: Border.all(
@@ -1916,10 +1985,16 @@ class MovieDetailsState extends State<MovieDetails> {
                                                                 2),
                                                   ),
                                                   child: MyImage(
-                                                    width: Dimens
-                                                        .featureIconWebSize,
-                                                    height: Dimens
-                                                        .featureIconWebSize,
+                                                    width: kIsWeb
+                                                        ? Dimens
+                                                            .featureIconWebSize
+                                                        : Dimens
+                                                            .featureIconSize,
+                                                    height: kIsWeb
+                                                        ? Dimens
+                                                            .featureIconWebSize
+                                                        : Dimens
+                                                            .featureIconSize,
                                                     color: lightGray,
                                                     imagePath:
                                                         "ic_borderplay.png",
@@ -1945,120 +2020,12 @@ class MovieDetailsState extends State<MovieDetails> {
                                       },
                                     ),
                                   ),
-
-                                  /* Rent Button */
-                                  Container(
-                                    constraints:
-                                        const BoxConstraints(minWidth: 50),
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        InkWell(
-                                          borderRadius: BorderRadius.circular(
-                                              Dimens.featureWebSize / 2),
-                                          onTap: () async {
-                                            if (Constant.userID != null) {
-                                              dynamic isRented =
-                                                  await Utils.paymentForRent(
-                                                context: context,
-                                                videoId: videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.id
-                                                        .toString() ??
-                                                    '',
-                                                rentPrice: videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.rentPrice
-                                                        .toString() ??
-                                                    '',
-                                                vTitle: videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.name
-                                                        .toString() ??
-                                                    '',
-                                                typeId: videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.typeId
-                                                        .toString() ??
-                                                    '',
-                                                vType: videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoType
-                                                        .toString() ??
-                                                    '',
-                                              );
-                                              if (isRented != null &&
-                                                  isRented == true) {
-                                                _getData();
-                                              }
-                                            } else {
-                                              if (kIsWeb) {
-                                                Utils.buildWebAlertDialog(
-                                                    context, "login", "");
-                                                return;
-                                              }
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const LoginSocial();
-                                                  },
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          child: Container(
-                                            width: Dimens.featureWebSize,
-                                            height: Dimens.featureWebSize,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: primaryLight),
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      Dimens.featureWebSize /
-                                                          2),
-                                            ),
-                                            child: MyImage(
-                                              width: Dimens.featureIconWebSize,
-                                              height: Dimens.featureIconWebSize,
-                                              color: lightGray,
-                                              imagePath: "ic_store.png",
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        MyText(
-                                          color: white,
-                                          multilanguage: false,
-                                          text:
-                                              "Rent at just ${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                                          fontsizeNormal: 12,
-                                          fontweight: FontWeight.w500,
-                                          fontsizeWeb: 12,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          textalign: TextAlign.center,
-                                          fontstyle: FontStyle.normal,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  const SizedBox(width: 10),
 
                                   /* Watchlist */
                                   Container(
                                     constraints:
                                         const BoxConstraints(minWidth: 50),
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -2091,28 +2058,43 @@ class MovieDetailsState extends State<MovieDetails> {
                                             }
                                           },
                                           borderRadius: BorderRadius.circular(
-                                              Dimens.featureWebSize / 2),
+                                              (kIsWeb
+                                                      ? Dimens.featureWebSize
+                                                      : Dimens.featureSize) /
+                                                  2),
                                           child: Container(
-                                            width: Dimens.featureWebSize,
-                                            height: Dimens.featureWebSize,
+                                            width: kIsWeb
+                                                ? Dimens.featureWebSize
+                                                : Dimens.featureSize,
+                                            height: kIsWeb
+                                                ? Dimens.featureWebSize
+                                                : Dimens.featureSize,
                                             alignment: Alignment.center,
                                             decoration: BoxDecoration(
                                               border: Border.all(
                                                 color: primaryLight,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(
-                                                      Dimens.featureSize / 2),
+                                                  BorderRadius.circular((kIsWeb
+                                                          ? Dimens
+                                                              .featureWebSize
+                                                          : Dimens
+                                                              .featureSize) /
+                                                      2),
                                             ),
                                             child:
                                                 Consumer<VideoDetailsProvider>(
                                               builder: (context,
                                                   videoDetailsProvider, child) {
                                                 return MyImage(
-                                                  width:
-                                                      Dimens.featureIconWebSize,
-                                                  height:
-                                                      Dimens.featureIconWebSize,
+                                                  width: kIsWeb
+                                                      ? Dimens
+                                                          .featureIconWebSize
+                                                      : Dimens.featureIconSize,
+                                                  height: kIsWeb
+                                                      ? Dimens
+                                                          .featureIconWebSize
+                                                      : Dimens.featureIconSize,
                                                   color: lightGray,
                                                   imagePath: (videoDetailsProvider
                                                                   .sectionDetailModel
@@ -2127,9 +2109,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
+                                        const SizedBox(height: 5),
                                         MyText(
                                           color: white,
                                           text: "watchlist",
@@ -2229,6 +2209,11 @@ class MovieDetailsState extends State<MovieDetails> {
                           1) {
                     openPlayer("Video");
                   } else {
+                    if (kIsWeb) {
+                      Utils.showSnackbar(
+                          context, "info", webPaymentNotAvailable, false);
+                      return;
+                    }
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2385,6 +2370,11 @@ class MovieDetailsState extends State<MovieDetails> {
                           1) {
                     openPlayer("Video");
                   } else {
+                    if (kIsWeb) {
+                      Utils.showSnackbar(
+                          context, "info", webPaymentNotAvailable, false);
+                      return;
+                    }
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2471,6 +2461,11 @@ class MovieDetailsState extends State<MovieDetails> {
                         1) {
                   openPlayer("Video");
                 } else {
+                  if (kIsWeb) {
+                    Utils.showSnackbar(
+                        context, "info", webPaymentNotAvailable, false);
+                    return;
+                  }
                   dynamic isRented = await Utils.paymentForRent(
                     context: context,
                     videoId: videoDetailsProvider.sectionDetailModel.result?.id
@@ -2903,14 +2898,21 @@ class MovieDetailsState extends State<MovieDetails> {
           (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return Expanded(
+        return Container(
+          constraints: const BoxConstraints(minWidth: 50),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               InkWell(
-                borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                borderRadius: BorderRadius.circular(
+                    (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) / 2),
                 onTap: () async {
                   if (Constant.userID != null) {
+                    if (kIsWeb) {
+                      Utils.showSnackbar(
+                          context, "info", webPaymentNotAvailable, false);
+                      return;
+                    }
                     dynamic isRented = await Utils.paymentForRent(
                       context: context,
                       videoId: videoDetailsProvider
@@ -2953,16 +2955,22 @@ class MovieDetailsState extends State<MovieDetails> {
                   }
                 },
                 child: Container(
-                  width: Dimens.featureSize,
-                  height: Dimens.featureSize,
+                  width: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
+                  height: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     border: Border.all(color: primaryLight),
-                    borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                    borderRadius: BorderRadius.circular(
+                        (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) /
+                            2),
                   ),
                   child: MyImage(
-                    width: Dimens.featureIconSize,
-                    height: Dimens.featureIconSize,
+                    width: kIsWeb
+                        ? Dimens.featureIconWebSize
+                        : Dimens.featureIconSize,
+                    height: kIsWeb
+                        ? Dimens.featureIconWebSize
+                        : Dimens.featureIconSize,
                     color: lightGray,
                     imagePath: "ic_store.png",
                   ),
@@ -2975,7 +2983,7 @@ class MovieDetailsState extends State<MovieDetails> {
                 color: white,
                 multilanguage: false,
                 text:
-                    "Rent at just ${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                    "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
                 fontsizeNormal: 12,
                 fontweight: FontWeight.w500,
                 fontsizeWeb: 14,
@@ -2994,14 +3002,21 @@ class MovieDetailsState extends State<MovieDetails> {
           (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return Expanded(
+        return Container(
+          constraints: const BoxConstraints(minWidth: 50),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               InkWell(
-                borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                borderRadius: BorderRadius.circular(
+                    (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) / 2),
                 onTap: () async {
                   if (Constant.userID != null) {
+                    if (kIsWeb) {
+                      Utils.showSnackbar(
+                          context, "info", webPaymentNotAvailable, false);
+                      return;
+                    }
                     dynamic isRented = await Utils.paymentForRent(
                       context: context,
                       videoId: videoDetailsProvider
@@ -3044,31 +3059,33 @@ class MovieDetailsState extends State<MovieDetails> {
                   }
                 },
                 child: Container(
-                  width: Dimens.featureSize,
-                  height: Dimens.featureSize,
+                  width: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
+                  height: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: primaryLight,
-                    ),
-                    borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                    border: Border.all(color: primaryLight),
+                    borderRadius: BorderRadius.circular(
+                        (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) /
+                            2),
                   ),
                   child: MyImage(
-                    width: Dimens.featureIconSize,
-                    height: Dimens.featureIconSize,
+                    width: kIsWeb
+                        ? Dimens.featureIconWebSize
+                        : Dimens.featureIconSize,
+                    height: kIsWeb
+                        ? Dimens.featureIconWebSize
+                        : Dimens.featureIconSize,
                     color: lightGray,
                     imagePath: "ic_store.png",
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               MyText(
                 color: white,
                 multilanguage: false,
                 text:
-                    "Rent at just ${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                    "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
                 fontsizeNormal: 12,
                 fontweight: FontWeight.w500,
                 fontsizeWeb: 14,
@@ -3205,7 +3222,6 @@ class MovieDetailsState extends State<MovieDetails> {
                   children: [
                     /* Customers also watched */
                     RelatedVideoShow(
-                      openDetailPage: kIsWeb ? widget.openDetailPage : null,
                       relatedDataList: videoDetailsProvider
                           .sectionDetailModel.getRelatedVideo,
                     ),
@@ -3382,7 +3398,7 @@ class MovieDetailsState extends State<MovieDetails> {
                       0) {
                     _checkAndDownload();
                   } else {
-                    Utils.showSnackbar(context, "response", "please_wait");
+                    Utils.showSnackbar(context, "info", "please_wait", true);
                   }
                 } else {
                   if (kIsWeb) {
@@ -3516,7 +3532,7 @@ class MovieDetailsState extends State<MovieDetails> {
           }
         } else {
           if (!mounted) return;
-          Utils.showSnackbar(context, "response", "invalid_url");
+          Utils.showSnackbar(context, "fail", "invalid_url", true);
         }
       }
     }
@@ -3953,7 +3969,8 @@ class MovieDetailsState extends State<MovieDetails> {
                             : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n",
                       ).then((data) {
                         debugPrint(data);
-                        Utils.showSnackbar(context, "success", "link_copied");
+                        Utils.showSnackbar(
+                            context, "success", "link_copied", true);
                       });
                     },
                     child: Container(
@@ -4043,55 +4060,6 @@ class MovieDetailsState extends State<MovieDetails> {
     );
   }
   /* ========= Dialogs ========= */
-
-  Widget landscape(List<GetRelatedVideo>? relatedDataList) {
-    return ListView.separated(
-      itemCount: relatedDataList?.length ?? 0,
-      shrinkWrap: true,
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      scrollDirection: Axis.horizontal,
-      physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-      separatorBuilder: (context, index) => const SizedBox(
-        width: 5,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: () {
-            log("Clicked on index ==> $index");
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return MovieDetails(
-                    relatedDataList?[index].id ?? 0,
-                    relatedDataList?[index].videoType ?? 0,
-                    relatedDataList?[index].typeId ?? 0,
-                    openDetailPage: widget.openDetailPage,
-                  );
-                },
-              ),
-            );
-          },
-          child: Container(
-            width: Dimens.widthLand,
-            height: Dimens.heightLand,
-            alignment: Alignment.center,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: MyNetworkImage(
-                imageUrl: relatedDataList?[index].landscape.toString() ?? "",
-                fit: BoxFit.cover,
-                imgHeight: MediaQuery.of(context).size.height,
-                imgWidth: MediaQuery.of(context).size.width,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   /* ========= Open Player ========= */
   void openPlayer(String playType) async {

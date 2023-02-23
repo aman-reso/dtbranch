@@ -53,7 +53,7 @@ class FindState extends State<Find> {
     });
     Future.delayed(const Duration(seconds: 5), () {
       if (_isListening && searchController.text.toString().isEmpty) {
-        Utils.showSnackbar(context, "TextField", "speechnotavailable");
+        Utils.showSnackbar(context, "info", "speechnotavailable", true);
         _stopListening();
       }
     });

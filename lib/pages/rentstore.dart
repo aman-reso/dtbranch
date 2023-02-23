@@ -1,10 +1,9 @@
 import 'dart:developer';
 
-import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -24,8 +23,11 @@ class RentStore extends StatefulWidget {
 }
 
 class RentStoreState extends State<RentStore> {
+  HomeState? homeStateObject;
+
   @override
   void initState() {
+    homeStateObject = context.findAncestorStateOfType<HomeState>();
     super.initState();
     _getData();
   }
@@ -74,17 +76,11 @@ class RentStoreState extends State<RentStore> {
             child: Column(
               children: [
                 if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 _buildRentVideos(),
-                const SizedBox(
-                  height: 22,
-                ),
+                const SizedBox(height: 22),
                 _buildRentTVShows(),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
 
                 /* Web Footer */
                 kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
@@ -135,24 +131,20 @@ class RentStoreState extends State<RentStore> {
                     fontstyle: FontStyle.normal,
                   ),
                 ),
-                const SizedBox(
-                  width: 8,
-                ),
+                const SizedBox(width: 8),
                 MyText(
                   color: white,
                   text: "rentvideo",
                   multilanguage: true,
                   textalign: TextAlign.center,
-                  fontsizeNormal: 18,
-                  fontsizeWeb: 20,
+                  fontsizeNormal: 16,
+                  fontsizeWeb: 16,
                   maxline: 1,
                   fontweight: FontWeight.bold,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 MyText(
                   color: otherColor,
                   text: "(${(rentStoreProvider.rentModel.video?.length ?? 0)}",
@@ -165,9 +157,7 @@ class RentStoreState extends State<RentStore> {
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 MyText(
                   color: otherColor,
                   text: (rentStoreProvider.rentModel.video?.length ?? 0) <= 1
@@ -185,9 +175,7 @@ class RentStoreState extends State<RentStore> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: (rentStoreProvider.rentModel.video?.length ?? 0) == 1
@@ -221,51 +209,17 @@ class RentStoreState extends State<RentStore> {
                   borderRadius: BorderRadius.circular(4),
                   onTap: () {
                     log("Clicked on position ==> $position");
-                    if ((rentStoreProvider
-                                .rentModel.video?[position].videoType ??
-                            0) ==
-                        1) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return MovieDetails(
-                              rentStoreProvider.rentModel.video?[position].id ??
-                                  0,
-                              rentStoreProvider
-                                      .rentModel.video?[position].videoType ??
-                                  0,
-                              rentStoreProvider
-                                      .rentModel.video?[position].typeId ??
-                                  0,
-                              openDetailPage: null,
-                            );
-                          },
-                        ),
-                      );
-                    } else if ((rentStoreProvider
-                                .rentModel.video?[position].videoType ??
-                            0) ==
-                        2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return TvShowDetails(
-                              rentStoreProvider.rentModel.video?[position].id ??
-                                  0,
-                              rentStoreProvider
-                                      .rentModel.video?[position].videoType ??
-                                  0,
-                              rentStoreProvider
-                                      .rentModel.video?[position].typeId ??
-                                  0,
-                              openDetailPage: null,
-                            );
-                          },
-                        ),
-                      );
-                    }
+                    homeStateObject?.openDetailPage(
+                      (rentStoreProvider.rentModel.video?[position].videoType ??
+                                  0) ==
+                              2
+                          ? "showdetail"
+                          : "videodetail",
+                      rentStoreProvider.rentModel.video?[position].id ?? 0,
+                      rentStoreProvider.rentModel.video?[position].videoType ??
+                          0,
+                      rentStoreProvider.rentModel.video?[position].typeId ?? 0,
+                    );
                   },
                   child: Stack(
                     alignment: Alignment.topRight,
@@ -367,24 +321,20 @@ class RentStoreState extends State<RentStore> {
                     fontstyle: FontStyle.normal,
                   ),
                 ),
-                const SizedBox(
-                  width: 8,
-                ),
+                const SizedBox(width: 8),
                 MyText(
                   color: white,
                   text: "rentshow",
                   textalign: TextAlign.center,
                   multilanguage: true,
-                  fontsizeNormal: 18,
-                  fontsizeWeb: 20,
+                  fontsizeNormal: 16,
+                  fontsizeWeb: 16,
                   maxline: 1,
                   fontweight: FontWeight.bold,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 MyText(
                   color: otherColor,
                   text: "(${(rentStoreProvider.rentModel.tvshow?.length ?? 0)}",
@@ -397,9 +347,7 @@ class RentStoreState extends State<RentStore> {
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 MyText(
                   color: otherColor,
                   text: (rentStoreProvider.rentModel.video?.length ?? 0) <= 1
@@ -417,9 +365,7 @@ class RentStoreState extends State<RentStore> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: (rentStoreProvider.rentModel.tvshow?.length ?? 0) == 1
@@ -456,53 +402,21 @@ class RentStoreState extends State<RentStore> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on position ==> $position");
-                        if ((rentStoreProvider
-                                    .rentModel.tvshow?[position].videoType ??
-                                0) ==
-                            1) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return MovieDetails(
-                                  rentStoreProvider
-                                          .rentModel.tvshow?[position].id ??
-                                      0,
-                                  rentStoreProvider.rentModel.tvshow?[position]
+                        homeStateObject?.openDetailPage(
+                          (rentStoreProvider.rentModel.tvshow?[position]
                                           .videoType ??
-                                      0,
-                                  rentStoreProvider
-                                          .rentModel.tvshow?[position].typeId ??
-                                      0,
-                                  openDetailPage: null,
-                                );
-                              },
-                            ),
-                          );
-                        } else if ((rentStoreProvider
-                                    .rentModel.tvshow?[position].videoType ??
-                                0) ==
-                            2) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return TvShowDetails(
-                                  rentStoreProvider
-                                          .rentModel.tvshow?[position].id ??
-                                      0,
-                                  rentStoreProvider.rentModel.tvshow?[position]
-                                          .videoType ??
-                                      0,
-                                  rentStoreProvider
-                                          .rentModel.tvshow?[position].typeId ??
-                                      0,
-                                  openDetailPage: null,
-                                );
-                              },
-                            ),
-                          );
-                        }
+                                      0) ==
+                                  2
+                              ? "showdetail"
+                              : "videodetail",
+                          rentStoreProvider.rentModel.tvshow?[position].id ?? 0,
+                          rentStoreProvider
+                                  .rentModel.tvshow?[position].videoType ??
+                              0,
+                          rentStoreProvider
+                                  .rentModel.tvshow?[position].typeId ??
+                              0,
+                        );
                       },
                       child: Container(
                         width: Dimens.widthLand,

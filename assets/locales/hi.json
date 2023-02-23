@@ -36,6 +36,7 @@
     "termcondition" : "नियम एवं शर्तें",
     "refundpolicy" : "भुगतान वापसी की नीति",
     "delete_account" : "खाता हटा दो",
+    "confirm_delete_account":"डिलीट अकाउंट की पुष्टि करें",
     "delete_account_msg" : "क्या आप वाकई खाता हटाना चाहते हैं?",
     "delete" : "मिटाना",
     "setting" : "समायोजन",

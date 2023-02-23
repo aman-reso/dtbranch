@@ -36,6 +36,7 @@
     "termcondition" : "البنود و الظروف",
     "refundpolicy" : "سياسة الاسترجاع",
     "delete_account" : "حذف الحساب",
+    "confirm_delete_account":"أكد حذف الحساب",
     "delete_account_msg" : "هل أنت متأكد من أنك تريد حذف الحساب؟",
     "delete" : "يمسح",
     "setting" : "إعدادات",

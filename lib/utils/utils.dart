@@ -370,29 +370,25 @@ class Utils {
     );
   }
 
-  static void showSnackbar(
-      BuildContext context, String showFor, String message) {
+  static void showSnackbar(BuildContext context, String showFor, String message,
+      bool multilanguage) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        backgroundColor: showFor == "WatchlistAdd"
-            ? successBG
-            : showFor == "WatchlistRemove"
-                ? successBG
-                : showFor == "fail"
-                    ? failureBG
-                    : showFor == "TextField"
-                        ? infoBG
-                        : showFor == "success"
-                            ? successBG
-                            : infoBG,
+        backgroundColor: showFor == "fail"
+            ? failureBG
+            : showFor == "info"
+                ? infoBG
+                : showFor == "success"
+                    ? successBG
+                    : infoBG,
         content: MyText(
           text: message,
           fontsizeNormal: 14,
           fontsizeWeb: 14,
-          multilanguage: showFor != "response" ? true : false,
+          multilanguage: multilanguage,
           fontstyle: FontStyle.normal,
           fontweight: FontWeight.w500,
           color: white,

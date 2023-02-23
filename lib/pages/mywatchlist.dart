@@ -145,7 +145,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 watchlistProvider.watchlistModel
                                         .result?[position].typeId ??
                                     0,
-                                openDetailPage: null,
                               );
                             },
                           ),
@@ -168,7 +167,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 watchlistProvider.watchlistModel
                                         .result?[position].typeId ??
                                     0,
-                                openDetailPage: null,
                               );
                             },
                           ),
@@ -1003,7 +1001,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 watchlistProvider.watchlistModel
                                         .result?[position].typeId ??
                                     0,
-                                openDetailPage: null,
                               );
                             },
                           ),
@@ -1026,7 +1023,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 watchlistProvider.watchlistModel
                                         .result?[position].typeId ??
                                     0,
-                                openDetailPage: null,
                               );
                             },
                           ),
@@ -1256,7 +1252,8 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             : "Hey! I'm watching ${watchlistProvider.watchlistModel.result?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n",
                       ).then((data) {
                         debugPrint(data);
-                        Utils.showSnackbar(context, "success", "link_copied");
+                        Utils.showSnackbar(
+                            context, "success", "link_copied", true);
                       });
                     },
                     child: Container(

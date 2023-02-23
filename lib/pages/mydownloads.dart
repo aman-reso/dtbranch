@@ -973,7 +973,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                             : "Hey! I'm watching ${/* downloadProvider.watchlistModel.result?[position].name ?? */ ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n",
                       ).then((data) {
                         debugPrint(data);
-                        Utils.showSnackbar(context, "success", "link_copied");
+                        Utils.showSnackbar(
+                            context, "success", "link_copied", true);
                       });
                     },
                     child: Container(

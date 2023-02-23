@@ -168,7 +168,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                 debugPrint("Click mobileNumber ==> $mobileNumber");
                 if (numberController.text.toString().isEmpty) {
                   Utils.showSnackbar(
-                      context, "TextField", "login_with_mobile_note");
+                      context, "info", "login_with_mobile_note", true);
                 } else {
                   log("mobileNumber ==> $mobileNumber");
                   Utils.buildWebAlertDialog(context, "otp", mobileNumber);
@@ -399,8 +399,8 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
       } else {
         // Hide Progress Dialog
         if (!mounted) return;
-        Utils.showSnackbar(
-            context, "fail", "${generalProvider.loginGmailModel.message}");
+        Utils.showSnackbar(context, "fail",
+            "${generalProvider.loginGmailModel.message}", false);
       }
     }
   }

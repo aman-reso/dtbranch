@@ -9,8 +9,10 @@ import 'package:dtlive/model/channelsectionmodel.dart' as banner;
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player.dart';
@@ -66,7 +68,11 @@ class ChannelsState extends State<Channels> {
     final channelSectionProvider =
         Provider.of<ChannelSectionProvider>(context, listen: false);
     if (channelSectionProvider.loading) {
-      return Utils.pageLoader();
+      return SafeArea(
+        child: SingleChildScrollView(
+          child: channelShimmer(),
+        ),
+      );
     } else {
       if (channelSectionProvider.channelSectionModel.status == 200) {
         return SafeArea(
@@ -105,6 +111,42 @@ class ChannelsState extends State<Channels> {
         );
       }
     }
+  }
+
+  /* Section Shimmer */
+  Widget channelShimmer() {
+    return Column(
+      children: [
+        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+
+        /* Banner */
+        if (kIsWeb && MediaQuery.of(context).size.width > 720)
+          ShimmerUtils.channelBannerWeb(context)
+        else
+          ShimmerUtils.channelBannerMobile(context),
+
+        /* Continue Watching */
+        if (Constant.userID != null) ShimmerUtils.continueWatching(context),
+
+        /* Remaining Sections */
+        ListView.builder(
+          itemCount: 5, // itemCount must be greater than 5
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 1) {
+              return ShimmerUtils.setSectionByType(context, "potrait");
+            } else if (index == 2) {
+              return ShimmerUtils.setSectionByType(context, "square");
+            } else if (index == 3) {
+              return ShimmerUtils.setSectionByType(context, "langGen");
+            } else {
+              return ShimmerUtils.setSectionByType(context, "landscape");
+            }
+          },
+        ),
+      ],
+    );
   }
 
   Widget _mobileChannelBanner(List<banner.LiveUrl>? sectionBannerList) {
@@ -315,6 +357,11 @@ class ChannelsState extends State<Channels> {
                         ),
                       );
                     } else {
+                      if (kIsWeb) {
+                        Utils.showSnackbar(
+                            context, "info", webPaymentNotAvailable, false);
+                        return;
+                      }
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -593,7 +640,6 @@ class ChannelsState extends State<Channels> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -607,7 +653,6 @@ class ChannelsState extends State<Channels> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -664,7 +709,6 @@ class ChannelsState extends State<Channels> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -678,7 +722,6 @@ class ChannelsState extends State<Channels> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -734,7 +777,6 @@ class ChannelsState extends State<Channels> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),
@@ -748,7 +790,6 @@ class ChannelsState extends State<Channels> {
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
-                        openDetailPage: null,
                       );
                     },
                   ),

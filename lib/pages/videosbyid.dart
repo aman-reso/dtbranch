@@ -114,7 +114,6 @@ class VideosByIDState extends State<VideosByID> {
                                         videoByIDProvider.videoByIdModel
                                                 .result?[position].typeId ??
                                             0,
-                                        openDetailPage: null,
                                       );
                                     },
                                   ),
@@ -137,7 +136,6 @@ class VideosByIDState extends State<VideosByID> {
                                         videoByIDProvider.videoByIdModel
                                                 .result?[position].typeId ??
                                             0,
-                                        openDetailPage: null,
                                       );
                                     },
                                   ),

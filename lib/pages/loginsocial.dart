@@ -166,7 +166,7 @@ class LoginSocialState extends State<LoginSocial> {
                   debugPrint("Click mobileNumber ==> $mobileNumber");
                   if (numberController.text.toString().isEmpty) {
                     Utils.showSnackbar(
-                        context, "TextField", "login_with_mobile_note");
+                        context, "info", "login_with_mobile_note", true);
                   } else {
                     log("mobileNumber ==> $mobileNumber");
                     Navigator.of(context).push(
@@ -456,8 +456,8 @@ class LoginSocialState extends State<LoginSocial> {
         // Hide Progress Dialog
         await prDialog.hide();
         if (!mounted) return;
-        Utils.showSnackbar(
-            context, "fail", "${generalProvider.loginGmailModel.message}");
+        Utils.showSnackbar(context, "fail",
+            "${generalProvider.loginGmailModel.message}", false);
       }
     }
   }

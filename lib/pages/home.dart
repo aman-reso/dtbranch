@@ -55,6 +55,7 @@ class HomeState extends State<Home> {
   late SearchProvider searchProvider;
   int? videoId, videoType, typeId;
   String? currentPage,
+      langCatName,
       aboutUsUrl,
       privacyUrl,
       termsConditionUrl,
@@ -222,6 +223,18 @@ class HomeState extends State<Home> {
           videoId ?? 0,
           videoType ?? 0,
           typeId ?? 0,
+        );
+      case "bylanguage":
+        return VideosByID(
+          videoId ?? 0,
+          langCatName ?? "",
+          "ByLanguage",
+        );
+      case "bycategory":
+        return VideosByID(
+          videoId ?? 0,
+          langCatName ?? "",
+          "ByCategory",
         );
       case "aboutus":
         return QuickLinksWeb(
@@ -430,18 +443,6 @@ class HomeState extends State<Home> {
                               height: MediaQuery.of(context).size.height,
                               alignment: Alignment.center,
                               child: TextField(
-                                // onSubmitted: (value) async {
-                                //   log("value ====> $value");
-                                //   if (value.isNotEmpty) {
-                                //     mSearchText = value;
-                                //     debugPrint(
-                                //         "mSearchText ====> $mSearchText");
-                                //     _onItemTapped("search");
-                                //     await searchProvider.setLoading(true);
-                                //     await searchProvider
-                                //         .getSearchVideo(mSearchText);
-                                //   }
-                                // },
                                 onChanged: (value) async {
                                   log("value ====> $value");
                                   if (value.isNotEmpty) {
@@ -763,7 +764,6 @@ class HomeState extends State<Home> {
   Widget tabTitle(List<type.Result>? sectionTypeList) {
     return ListView.separated(
       itemCount: (sectionTypeList?.length ?? 0) + 1,
-      controller: tabScrollController,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
@@ -797,8 +797,8 @@ class HomeState extends State<Home> {
                       : index > 0
                           ? (sectionTypeList?[index - 1].name.toString() ?? "")
                           : "",
-                  fontsizeNormal: 14,
-                  fontweight: FontWeight.w600,
+                  fontsizeNormal: 12,
+                  fontweight: FontWeight.w700,
                   fontsizeWeb: 14,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
@@ -898,18 +898,18 @@ class HomeState extends State<Home> {
 
         /* Remaining Sections */
         ListView.builder(
-          itemCount: 5, // itemCount must be greater than 5
+          itemCount: 10, // itemCount must be greater than 5
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             if (index == 1) {
-              return ShimmerUtils.setSectionByType(context, "potrait");
+              return ShimmerUtils.setHomeSections(context, "potrait");
             } else if (index == 2) {
-              return ShimmerUtils.setSectionByType(context, "square");
+              return ShimmerUtils.setHomeSections(context, "square");
             } else if (index == 3) {
-              return ShimmerUtils.setSectionByType(context, "langGen");
+              return ShimmerUtils.setHomeSections(context, "langGen");
             } else {
-              return ShimmerUtils.setSectionByType(context, "landscape");
+              return ShimmerUtils.setHomeSections(context, "landscape");
             }
           },
         ),
@@ -1192,9 +1192,7 @@ class HomeState extends State<Home> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 25,
-          ),
+          const SizedBox(height: 25),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: MyText(
@@ -1202,10 +1200,10 @@ class HomeState extends State<Home> {
               text: "continuewatching",
               multilanguage: true,
               textalign: TextAlign.center,
-              fontsizeNormal: 16,
-              maxline: 1,
-              fontweight: FontWeight.w600,
+              fontsizeNormal: 14,
               fontsizeWeb: 16,
+              fontweight: FontWeight.w600,
+              maxline: 1,
               overflow: TextOverflow.ellipsis,
               fontstyle: FontStyle.normal,
             ),
@@ -1409,7 +1407,7 @@ class HomeState extends State<Home> {
                   color: white,
                   text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
-                  fontsizeNormal: 16,
+                  fontsizeNormal: 14,
                   fontweight: FontWeight.w600,
                   fontsizeWeb: 16,
                   multilanguage: false,
@@ -1673,6 +1671,12 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
+                  if (kIsWeb) {
+                    videoId = sectionDataList?[index].id ?? 0;
+                    langCatName = sectionDataList?[index].name ?? "";
+                    _onItemTapped("bylanguage");
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -1766,6 +1770,12 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
+                  if (kIsWeb) {
+                    videoId = sectionDataList?[index].id ?? 0;
+                    langCatName = sectionDataList?[index].name ?? "";
+                    _onItemTapped("bycategory");
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(

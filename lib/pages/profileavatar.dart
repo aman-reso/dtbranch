@@ -1,4 +1,5 @@
 import 'package:dtlive/provider/avatarprovider.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -48,7 +49,8 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: avatarProvider.loading
-                ? Utils.pageLoader()
+                ? ShimmerUtils.buildAvatarGrid(
+                    context, 77, MediaQuery.of(context).size.width, 4, 50)
                 : (avatarProvider.avatarModel.status == 200)
                     ? (avatarProvider.avatarModel.result != null)
                         ? (avatarProvider.avatarModel.result?.length ?? 0) > 0

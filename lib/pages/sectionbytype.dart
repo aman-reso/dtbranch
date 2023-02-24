@@ -9,11 +9,13 @@ import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/sectionbytypeprovider.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -85,11 +87,11 @@ class SectionByTypeState extends State<SectionByType> {
             Consumer<SectionByTypeProvider>(
               builder: (context, sectionByTypeProvider, child) {
                 if (sectionByTypeProvider.loadingBanner) {
-                  return Container(
-                    height: 230,
-                    padding: const EdgeInsets.all(20),
-                    child: Utils.pageLoader(),
-                  );
+                  if (kIsWeb && MediaQuery.of(context).size.width > 720) {
+                    return ShimmerUtils.bannerWeb(context);
+                  } else {
+                    return ShimmerUtils.bannerMobile(context);
+                  }
                 } else {
                   if (sectionByTypeProvider.sectionBannerModel.status == 200 &&
                       sectionByTypeProvider.sectionBannerModel.result != null) {
@@ -106,11 +108,7 @@ class SectionByTypeState extends State<SectionByType> {
             Consumer<SectionByTypeProvider>(
               builder: (context, sectionByTypeProvider, child) {
                 if (sectionByTypeProvider.loadingSection) {
-                  return Container(
-                    height: 200,
-                    padding: const EdgeInsets.all(20),
-                    child: Utils.pageLoader(),
-                  );
+                  return sectionShimmer();
                 } else {
                   if (sectionByTypeProvider.sectionListModel.status == 200) {
                     if (sectionByTypeProvider.sectionListModel.result != null) {
@@ -125,12 +123,30 @@ class SectionByTypeState extends State<SectionByType> {
                 }
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
+    );
+  }
+
+  /* Section Shimmer */
+  Widget sectionShimmer() {
+    return ListView.builder(
+      itemCount: 10, // itemCount must be greater than 5
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        if (index == 1) {
+          return ShimmerUtils.setHomeSections(context, "potrait");
+        } else if (index == 2) {
+          return ShimmerUtils.setHomeSections(context, "square");
+        } else if (index == 3) {
+          return ShimmerUtils.setHomeSections(context, "langGen");
+        } else {
+          return ShimmerUtils.setHomeSections(context, "landscape");
+        }
+      },
     );
   }
 
@@ -239,7 +255,7 @@ class SectionByTypeState extends State<SectionByType> {
                   height: 8,
                   width: 8,
                   cornerRadius: 4,
-                  color: lightBlack,
+                  color: dotsDefaultColor,
                   activeColor: white,
                 );
               },
@@ -261,27 +277,26 @@ class SectionByTypeState extends State<SectionByType> {
         if (sectionList?[index].data != null &&
             (sectionList?[index].data?.length ?? 0) > 0) {
           return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 55,
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                alignment: Alignment.bottomLeft,
+              const SizedBox(height: 25),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: MyText(
                   color: white,
                   text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
-                  multilanguage: false,
-                  fontsizeNormal: 16,
-                  maxline: 1,
+                  fontsizeNormal: 14,
                   fontweight: FontWeight.w600,
+                  fontsizeWeb: 16,
+                  multilanguage: false,
+                  maxline: 1,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
               ),
-              const SizedBox(
-                height: 12,
-              ),
+              const SizedBox(height: 12),
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(
@@ -390,9 +405,7 @@ class SectionByTypeState extends State<SectionByType> {
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             borderRadius: BorderRadius.circular(4),

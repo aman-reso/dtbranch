@@ -50,17 +50,15 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
               text: "customer_also_watch",
               multilanguage: true,
               textalign: TextAlign.start,
-              fontsizeNormal: 16,
+              fontsizeNormal: 15,
               fontweight: FontWeight.w600,
-              fontsizeWeb: 17,
+              fontsizeWeb: 16,
               maxline: 1,
               overflow: TextOverflow.ellipsis,
               fontstyle: FontStyle.normal,
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           /* video_type =>  1-video,  2-show,  3-language,  4-category */
           /* screen_layout =>  landscape, potrait, square */
           SizedBox(

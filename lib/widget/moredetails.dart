@@ -48,7 +48,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   color: white,
                   text: widget.moreDetailList?[index].title ?? "",
                   textalign: TextAlign.start,
-                  fontsizeNormal: 14,
+                  fontsizeNormal: 13,
                   fontweight: FontWeight.w600,
                   fontsizeWeb: 15,
                   multilanguage: false,
@@ -56,9 +56,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
-                const SizedBox(
-                  height: 3,
-                ),
+                const SizedBox(height: 3),
                 MyText(
                   color: otherColor,
                   text: widget.moreDetailList?[index].description ?? "",
@@ -71,9 +69,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Container(
                   constraints: BoxConstraints(
                     maxWidth: kIsWeb

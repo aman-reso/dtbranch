@@ -321,7 +321,7 @@ class Utils {
         color: primaryColor,
         text: appBarTitle,
         multilanguage: true,
-        fontsizeNormal: 17,
+        fontsizeNormal: 16,
         fontsizeWeb: 18,
         maxline: 1,
         overflow: TextOverflow.ellipsis,
@@ -442,22 +442,22 @@ class Utils {
 
         if (hours > 0) {
           if (minutes > 0 && seconds > 0) {
-            convTime = "$hours:$minutes:$seconds hr";
+            convTime = "$hours : $minutes : $seconds hr";
           } else if (minutes > 0 && seconds == 0) {
-            convTime = "$hours:$minutes:00 hr";
+            convTime = "$hours : $minutes : 00 hr";
           } else if (minutes == 0 && seconds > 0) {
-            convTime = "$hours:00:$seconds hr";
+            convTime = "$hours : 00 : $seconds hr";
           } else if (minutes == 0 && seconds == 0) {
-            convTime = "$hours:00 hr";
+            convTime = "$hours : 00 hr";
           }
         } else if (minutes > 0) {
           if (seconds > 0) {
-            convTime = "$minutes:$seconds min";
+            convTime = "$minutes : $seconds min";
           } else if (minutes > 0 && seconds == 0) {
-            convTime = "$minutes:00 min";
+            convTime = "$minutes : 00 min";
           }
         } else if (seconds > 0) {
-          convTime = "00:$seconds sec";
+          convTime = "00 : $seconds sec";
         }
       } else {
         convTime = "0";

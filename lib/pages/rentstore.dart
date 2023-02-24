@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/home.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
@@ -36,7 +37,7 @@ class RentStoreState extends State<RentStore> {
     final rentStoreProvider =
         Provider.of<RentStoreProvider>(context, listen: false);
     await rentStoreProvider.getRentVideoList();
-    Future.delayed(const Duration(seconds: 1)).then((value) {
+    Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {});
     });
@@ -66,35 +67,29 @@ class RentStoreState extends State<RentStore> {
   Widget _buildRentStore() {
     final rentStoreProvider =
         Provider.of<RentStoreProvider>(context, listen: false);
-    if (rentStoreProvider.loading) {
-      return Utils.pageLoader();
-    } else {
-      if (rentStoreProvider.rentModel.status == 200) {
-        return SafeArea(
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
-                const SizedBox(height: 8),
-                _buildRentVideos(),
-                const SizedBox(height: 22),
-                _buildRentTVShows(),
-                const SizedBox(height: 20),
+    return SafeArea(
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: (rentStoreProvider.loading)
+            ? ShimmerUtils.buildRentShimmer(
+                context, Dimens.heightLand, Dimens.widthLand)
+            : ((rentStoreProvider.rentModel.status == 200)
+                ? Column(
+                    children: [
+                      if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+                      const SizedBox(height: 8),
+                      _buildRentVideos(),
+                      const SizedBox(height: 22),
+                      _buildRentTVShows(),
+                      const SizedBox(height: 20),
 
-                /* Web Footer */
-                kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
-              ],
-            ),
-          ),
-        );
-      } else {
-        return const NoData(
-          title: '',
-          subTitle: '',
-        );
-      }
-    }
+                      /* Web Footer */
+                      kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
+                    ],
+                  )
+                : const NoData(title: '', subTitle: '')),
+      ),
+    );
   }
 
   Widget _buildRentVideos() {
@@ -280,10 +275,7 @@ class RentStoreState extends State<RentStore> {
         ],
       );
     } else {
-      return const NoData(
-        title: '',
-        subTitle: '',
-      );
+      return const NoData(title: '', subTitle: '');
     }
   }
 
@@ -474,10 +466,7 @@ class RentStoreState extends State<RentStore> {
         ],
       );
     } else {
-      return const NoData(
-        title: '',
-        subTitle: '',
-      );
+      return const NoData(title: '', subTitle: '');
     }
   }
 }

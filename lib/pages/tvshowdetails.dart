@@ -6,6 +6,7 @@ import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/webwidget/playerweb.dart';
@@ -132,7 +133,11 @@ class TvShowDetailsState extends State<TvShowDetails> {
       backgroundColor: appBgColor,
       body: SafeArea(
         child: showDetailsProvider.loading
-            ? Utils.pageLoader()
+            ? SingleChildScrollView(
+                child: (kIsWeb && MediaQuery.of(context).size.width > 720)
+                    ? ShimmerUtils.buildDetailWebShimmer(context, "show")
+                    : ShimmerUtils.buildDetailMobileShimmer(context, "show"),
+              )
             : (showDetailsProvider.sectionDetailModel.status == 200 &&
                     showDetailsProvider.sectionDetailModel.result != null)
                 ? SingleChildScrollView(
@@ -162,7 +167,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
               padding: const EdgeInsets.all(0),
               width: MediaQuery.of(context).size.width,
               height: kIsWeb ? Dimens.detailWebPoster : Dimens.detailPoster,
-              color: white,
               child: MyNetworkImage(
                 fit: BoxFit.fill,
                 imageUrl:
@@ -432,7 +436,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             color: primaryColor,
                             text: "primetag",
                             textalign: TextAlign.start,
-                            fontsizeNormal: 14,
+                            fontsizeNormal: 12,
                             fontsizeWeb: 15,
                             fontweight: FontWeight.w700,
                             multilanguage: true,
@@ -446,7 +450,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             text: "primetagdesc",
                             multilanguage: true,
                             textalign: TextAlign.center,
-                            fontsizeNormal: 11,
+                            fontsizeNormal: 12,
                             fontsizeWeb: 13,
                             fontweight: FontWeight.w500,
                             maxline: 1,
@@ -494,7 +498,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                               color: white,
                               text: "renttag",
                               textalign: TextAlign.center,
-                              fontsizeNormal: 11,
+                              fontsizeNormal: 12,
                               fontsizeWeb: 13,
                               multilanguage: true,
                               fontweight: FontWeight.w500,
@@ -527,7 +531,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /* Rent Button */
-                      Expanded(child: _buildRentBtn()),
+                      _buildRentBtn(),
                       const SizedBox(width: 5),
 
                       /* Download */
@@ -601,10 +605,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                       color: white,
                                       text: "download",
                                       multilanguage: true,
-                                      fontsizeNormal: 12,
+                                      fontsizeNormal: 10,
                                       fontsizeWeb: 14,
-                                      fontweight: FontWeight.w500,
-                                      maxline: 1,
+                                      fontweight: FontWeight.w600,
+                                      maxline: 2,
                                       overflow: TextOverflow.ellipsis,
                                       textalign: TextAlign.center,
                                       fontstyle: FontStyle.normal,
@@ -617,7 +621,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             }
                           },
                         ),
-                      const SizedBox(width: 5),
 
                       /* Watchlist */
                       Expanded(
@@ -695,17 +698,15 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
+                            const SizedBox(height: 5),
                             MyText(
                               color: white,
                               text: "watchlist",
                               multilanguage: true,
-                              fontsizeNormal: 12,
+                              fontsizeNormal: 10,
                               fontsizeWeb: 14,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
+                              fontweight: FontWeight.w600,
+                              maxline: 2,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.center,
                               fontstyle: FontStyle.normal,
@@ -713,7 +714,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 5),
 
                       /* Share */
                       if (!kIsWeb)
@@ -758,16 +758,15 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(
-                                height: 5,
-                              ),
+                              const SizedBox(height: 5),
                               MyText(
                                 color: white,
                                 text: "share",
                                 multilanguage: true,
-                                fontsizeNormal: 12,
-                                fontweight: FontWeight.w500,
-                                maxline: 1,
+                                fontsizeNormal: 10,
+                                fontsizeWeb: 14,
+                                fontweight: FontWeight.w600,
+                                maxline: 2,
                                 overflow: TextOverflow.ellipsis,
                                 textalign: TextAlign.center,
                                 fontstyle: FontStyle.normal,
@@ -832,17 +831,18 @@ class TvShowDetailsState extends State<TvShowDetails> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 5),
                     Container(
-                      constraints: const BoxConstraints(minHeight: 30),
+                      constraints: const BoxConstraints(minHeight: 0),
+                      margin: const EdgeInsets.only(top: 10),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           MyText(
                             color: white,
-                            text: "language_",
+                            text: "category",
                             textalign: TextAlign.center,
-                            fontsizeNormal: 14,
-                            fontweight: FontWeight.w600,
+                            fontsizeNormal: 13,
+                            fontweight: FontWeight.w500,
                             fontsizeWeb: 15,
                             maxline: 1,
                             multilanguage: true,
@@ -854,7 +854,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             color: white,
                             text: ":",
                             textalign: TextAlign.center,
-                            fontsizeNormal: 14,
+                            fontsizeNormal: 13,
                             fontweight: FontWeight.w500,
                             fontsizeWeb: 15,
                             maxline: 1,
@@ -863,17 +863,70 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             fontstyle: FontStyle.normal,
                           ),
                           const SizedBox(width: 5),
+                          Expanded(
+                            child: MyText(
+                              color: white,
+                              text: showDetailsProvider.sectionDetailModel
+                                      .result?.categoryName ??
+                                  "",
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 13,
+                              fontweight: FontWeight.w500,
+                              fontsizeWeb: 14,
+                              multilanguage: false,
+                              maxline: 5,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      constraints: const BoxConstraints(minHeight: 0),
+                      margin: const EdgeInsets.only(top: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           MyText(
                             color: white,
-                            text: audioLanguages ?? "",
+                            text: "language_",
                             textalign: TextAlign.center,
                             fontsizeNormal: 13,
                             fontweight: FontWeight.w500,
-                            fontsizeWeb: 14,
-                            multilanguage: false,
+                            fontsizeWeb: 15,
                             maxline: 1,
+                            multilanguage: true,
                             overflow: TextOverflow.ellipsis,
                             fontstyle: FontStyle.normal,
+                          ),
+                          const SizedBox(width: 5),
+                          MyText(
+                            color: white,
+                            text: ":",
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 13,
+                            fontweight: FontWeight.w500,
+                            fontsizeWeb: 15,
+                            maxline: 1,
+                            multilanguage: false,
+                            overflow: TextOverflow.ellipsis,
+                            fontstyle: FontStyle.normal,
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: MyText(
+                              color: white,
+                              text: audioLanguages ?? "",
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 13,
+                              fontweight: FontWeight.w500,
+                              fontsizeWeb: 14,
+                              multilanguage: false,
+                              maxline: 5,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
                           ),
                         ],
                       ),
@@ -882,14 +935,15 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                 "")
                             .isNotEmpty
                         ? Container(
-                            constraints: const BoxConstraints(minHeight: 30),
+                            constraints: const BoxConstraints(minHeight: 0),
+                            margin: const EdgeInsets.only(top: 10),
                             child: Row(
                               children: [
                                 MyText(
                                   color: white,
                                   text: "subtitle",
                                   textalign: TextAlign.center,
-                                  fontsizeNormal: 14,
+                                  fontsizeNormal: 13,
                                   fontweight: FontWeight.w500,
                                   fontsizeWeb: 15,
                                   maxline: 1,
@@ -904,7 +958,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                   color: white,
                                   text: ":",
                                   textalign: TextAlign.center,
-                                  fontsizeNormal: 14,
+                                  fontsizeNormal: 13,
                                   fontweight: FontWeight.w500,
                                   fontsizeWeb: 15,
                                   maxline: 1,
@@ -1820,7 +1874,11 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   /* Rent Button */
-                                  _buildRentBtn(),
+                                  Container(
+                                    constraints:
+                                        const BoxConstraints(minWidth: 50),
+                                    child: _buildRentBtn(),
+                                  ),
                                   const SizedBox(width: 10),
 
                                   /* Watchlist */
@@ -2186,7 +2244,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                   fontsizeNormal: 15,
                   fontsizeWeb: 15,
                   multilanguage: true,
-                  fontweight: FontWeight.w600,
+                  fontweight: FontWeight.w700,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
@@ -2198,103 +2256,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                   textalign: TextAlign.center,
                   fontsizeNormal: 15,
                   fontsizeWeb: 15,
-                  fontweight: FontWeight.w600,
+                  fontweight: FontWeight.w700,
                   multilanguage: true,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    } else if ((showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
-        1) {
-      if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-          (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        return _buildWatchNow();
-      } else {
-        return InkWell(
-          borderRadius: BorderRadius.circular(5),
-          onTap: () async {
-            if (Constant.userID != null) {
-              if (kIsWeb) {
-                Utils.showSnackbar(
-                    context, "info", webPaymentNotAvailable, false);
-                return;
-              }
-              dynamic isRented = await Utils.paymentForRent(
-                context: context,
-                videoId: showDetailsProvider.sectionDetailModel.result?.id
-                        .toString() ??
-                    '',
-                rentPrice: showDetailsProvider
-                        .sectionDetailModel.result?.rentPrice
-                        .toString() ??
-                    '',
-                vTitle: showDetailsProvider.sectionDetailModel.result?.name
-                        .toString() ??
-                    '',
-                typeId: showDetailsProvider.sectionDetailModel.result?.typeId
-                        .toString() ??
-                    '',
-                vType: showDetailsProvider.sectionDetailModel.result?.videoType
-                        .toString() ??
-                    '',
-              );
-              if (isRented != null && isRented == true) {
-                _getData();
-              }
-            } else {
-              if (kIsWeb) {
-                Utils.buildWebAlertDialog(context, "login", "");
-                return;
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const LoginSocial();
-                  },
-                ),
-              );
-            }
-          },
-          child: Container(
-            height: kIsWeb ? 40 : 55,
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(
-                  color: black,
-                  text: "rentmovieatjust",
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 15,
-                  fontsizeWeb: 15,
-                  multilanguage: true,
-                  fontweight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: black,
-                  text:
-                      "${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 15,
-                  fontsizeWeb: 15,
-                  multilanguage: false,
-                  fontweight: FontWeight.w600,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
@@ -2316,8 +2279,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return Container(
-          constraints: const BoxConstraints(minWidth: 50),
+        return Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -2399,8 +2361,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                 multilanguage: false,
                 text:
                     "Rent at just\n${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                fontsizeNormal: 12,
-                fontweight: FontWeight.w500,
+                fontsizeNormal: 10,
+                fontweight: FontWeight.w700,
                 fontsizeWeb: 14,
                 maxline: 2,
                 overflow: TextOverflow.ellipsis,
@@ -2417,8 +2379,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return Container(
-          constraints: const BoxConstraints(minWidth: 50),
+        return Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -2500,8 +2461,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                 multilanguage: false,
                 text:
                     "Rent at just\n${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                fontsizeNormal: 12,
-                fontweight: FontWeight.w500,
+                fontsizeNormal: 10,
+                fontweight: FontWeight.w700,
                 fontsizeWeb: 14,
                 maxline: 2,
                 overflow: TextOverflow.ellipsis,
@@ -2572,65 +2533,69 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             imagePath: "ic_play.png",
                           ),
                           const SizedBox(width: 15),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              MyText(
-                                color: white,
-                                text:
-                                    "Continue Watching Episode ${(showDetailsProvider.mCurrentEpiPos + 1)}",
-                                multilanguage: false,
-                                textalign: TextAlign.start,
-                                fontsizeNormal: 15,
-                                fontweight: FontWeight.w600,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              Row(
-                                children: [
-                                  MyText(
-                                    color: white,
-                                    text: Utils.remainTimeInMin(
-                                        ((episodeProvider
-                                                        .episodeBySeasonModel
-                                                        .result?[
-                                                            showDetailsProvider
-                                                                .mCurrentEpiPos]
-                                                        .videoDuration ??
-                                                    0) -
-                                                (episodeProvider
-                                                        .episodeBySeasonModel
-                                                        .result?[
-                                                            showDetailsProvider
-                                                                .mCurrentEpiPos]
-                                                        .stopTime ??
-                                                    0))
-                                            .abs()),
-                                    textalign: TextAlign.start,
-                                    fontsizeNormal: 10,
-                                    multilanguage: false,
-                                    fontweight: FontWeight.w500,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  MyText(
-                                    color: white,
-                                    text: "left",
-                                    textalign: TextAlign.start,
-                                    fontsizeNormal: 10,
-                                    multilanguage: true,
-                                    fontweight: FontWeight.w500,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ],
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                MyText(
+                                  color: white,
+                                  text:
+                                      "Continue Watching Episode ${(showDetailsProvider.mCurrentEpiPos + 1)}",
+                                  multilanguage: false,
+                                  textalign: TextAlign.start,
+                                  fontsizeNormal: 13,
+                                  fontsizeWeb: 15,
+                                  fontweight: FontWeight.w700,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                                Row(
+                                  children: [
+                                    MyText(
+                                      color: white,
+                                      text: Utils.remainTimeInMin(((episodeProvider
+                                                      .episodeBySeasonModel
+                                                      .result?[
+                                                          showDetailsProvider
+                                                              .mCurrentEpiPos]
+                                                      .videoDuration ??
+                                                  0) -
+                                              (episodeProvider
+                                                      .episodeBySeasonModel
+                                                      .result?[
+                                                          showDetailsProvider
+                                                              .mCurrentEpiPos]
+                                                      .stopTime ??
+                                                  0))
+                                          .abs()),
+                                      textalign: TextAlign.start,
+                                      fontsizeNormal: 10,
+                                      fontsizeWeb: 12,
+                                      multilanguage: false,
+                                      fontweight: FontWeight.w500,
+                                      maxline: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontstyle: FontStyle.normal,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    MyText(
+                                      color: white,
+                                      text: "left",
+                                      textalign: TextAlign.start,
+                                      fontsizeNormal: 10,
+                                      fontsizeWeb: 12,
+                                      multilanguage: true,
+                                      fontweight: FontWeight.w500,
+                                      maxline: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontstyle: FontStyle.normal,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(width: 20),
                         ],
@@ -2704,16 +2669,19 @@ class TvShowDetailsState extends State<TvShowDetails> {
                       imagePath: "ic_play.png",
                     ),
                     const SizedBox(width: 15),
-                    MyText(
-                      color: white,
-                      text: "Watch Episode 1",
-                      multilanguage: false,
-                      textalign: TextAlign.start,
-                      fontsizeNormal: 15,
-                      fontweight: FontWeight.w600,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
+                    Expanded(
+                      child: MyText(
+                        color: white,
+                        text: "Watch Episode 1",
+                        multilanguage: false,
+                        textalign: TextAlign.start,
+                        fontsizeNormal: 14,
+                        fontsizeWeb: 15,
+                        fontweight: FontWeight.w700,
+                        maxline: 2,
+                        overflow: TextOverflow.ellipsis,
+                        fontstyle: FontStyle.normal,
+                      ),
                     ),
                   ],
                 ),
@@ -2863,8 +2831,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                                     text: "episodes",
                                     multilanguage: true,
                                     textalign: TextAlign.center,
-                                    fontsizeNormal: 16,
-                                    fontsizeWeb: 15,
+                                    fontsizeNormal: 15,
+                                    fontsizeWeb: 16,
                                     maxline: 1,
                                     fontweight: FontWeight.w600,
                                     overflow: TextOverflow.ellipsis,

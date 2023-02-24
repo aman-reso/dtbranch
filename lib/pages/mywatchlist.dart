@@ -5,6 +5,7 @@ import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/watchlistprovider.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
@@ -59,7 +60,8 @@ class _MyWatchlistState extends State<MyWatchlist> {
             child: Consumer<WatchlistProvider>(
               builder: (context, watchlistProvider, child) {
                 if (watchlistProvider.loading) {
-                  return Utils.pageLoader();
+                  return Expanded(
+                      child: ShimmerUtils.buildWatchlistShimmer(context, 10));
                 } else {
                   if (watchlistProvider.watchlistModel.status == 200 &&
                       watchlistProvider.watchlistModel.result != null) {
@@ -104,9 +106,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
   Widget _buildWatchlistItem(position) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      constraints: BoxConstraints(
-        minHeight: Dimens.heightWatchlist,
-      ),
+      constraints: BoxConstraints(minHeight: Dimens.heightWatchlist),
       color: lightBlack,
       child: Row(
         children: [

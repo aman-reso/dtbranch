@@ -1,19 +1,18 @@
 import 'package:dtlive/utils/color.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class ShimmerWidget extends StatelessWidget {
   final double width;
   final double height;
   final ShapeBorder shapeBorder;
-  final Color shimmerColor;
+  final Color shimmerBgColor;
 
 // Rectangular
   const ShimmerWidget.rectangular(
       {super.key,
       this.width = double.infinity,
-      this.shimmerColor = lightBlack,
+      this.shimmerBgColor = lightBlack,
       required this.height})
       : shapeBorder = const RoundedRectangleBorder();
 
@@ -21,7 +20,7 @@ class ShimmerWidget extends StatelessWidget {
   const ShimmerWidget.circular({
     super.key,
     this.width = double.infinity,
-    this.shimmerColor = lightBlack,
+    this.shimmerBgColor = lightBlack,
     required this.height,
     this.shapeBorder = const CircleBorder(),
   });
@@ -30,7 +29,7 @@ class ShimmerWidget extends StatelessWidget {
   const ShimmerWidget.roundcorner({
     super.key,
     this.width = double.infinity,
-    this.shimmerColor = lightBlack,
+    this.shimmerBgColor = lightBlack,
     required this.height,
     this.shapeBorder = const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -40,25 +39,25 @@ class ShimmerWidget extends StatelessWidget {
   const ShimmerWidget.roundrectborder({
     super.key,
     this.width = double.infinity,
-    this.shimmerColor = lightBlack,
+    this.shimmerBgColor = lightBlack,
     required this.height,
     this.shapeBorder = const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(4))),
   });
 
   @override
-  Widget build(BuildContext context) => Shimmer.fromColors(
-        baseColor: shimmerColor,
-        highlightColor: lightGray.withOpacity(0.001),
+  Widget build(BuildContext context) => Shimmer(
+        duration: const Duration(milliseconds: 800),
+        interval: const Duration(milliseconds: 800),
+        color: shimmerColor,
+        colorOpacity: 0.3,
         enabled: true,
-        period: kIsWeb ? Duration.zero : const Duration(milliseconds: 800),
-        loop: 0,
-        direction: ShimmerDirection.ltr,
+        direction: const ShimmerDirection.fromLTRB(),
         child: Container(
           width: width,
           height: height,
           decoration: ShapeDecoration(
-            color: shimmerColor,
+            color: shimmerBgColor,
             shape: shapeBorder,
           ),
         ),

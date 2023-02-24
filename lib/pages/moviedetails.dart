@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:dtlive/provider/downloadprovider.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/webwidget/playerweb.dart';
 import 'package:dtlive/widget/castcrew.dart';
@@ -157,7 +158,11 @@ class MovieDetailsState extends State<MovieDetails> {
       backgroundColor: appBgColor,
       body: SafeArea(
         child: (videoDetailsProvider.loading)
-            ? Utils.pageLoader()
+            ? SingleChildScrollView(
+                child: (kIsWeb && MediaQuery.of(context).size.width > 720)
+                    ? ShimmerUtils.buildDetailWebShimmer(context, "video")
+                    : ShimmerUtils.buildDetailMobileShimmer(context, "video"),
+              )
             : (videoDetailsProvider.sectionDetailModel.status == 200 &&
                     videoDetailsProvider.sectionDetailModel.result != null)
                 ? SingleChildScrollView(
@@ -187,7 +192,6 @@ class MovieDetailsState extends State<MovieDetails> {
               padding: const EdgeInsets.all(0),
               width: MediaQuery.of(context).size.width,
               height: kIsWeb ? Dimens.detailWebPoster : Dimens.detailPoster,
-              color: white,
               child: MyNetworkImage(
                 fit: BoxFit.fill,
                 imageUrl:
@@ -404,9 +408,8 @@ class MovieDetailsState extends State<MovieDetails> {
                           0) ==
                       1
                   ? Container(
-                      margin: const EdgeInsets.only(top: 11),
+                      margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
                       width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -416,25 +419,23 @@ class MovieDetailsState extends State<MovieDetails> {
                             color: primaryColor,
                             text: "primetag",
                             textalign: TextAlign.start,
-                            fontsizeNormal: 16,
-                            fontsizeWeb: 17,
+                            fontsizeNormal: 12,
+                            fontsizeWeb: 15,
                             fontweight: FontWeight.w700,
                             multilanguage: true,
                             maxline: 1,
                             overflow: TextOverflow.ellipsis,
                             fontstyle: FontStyle.normal,
                           ),
-                          const SizedBox(
-                            height: 2,
-                          ),
+                          const SizedBox(height: 2),
                           MyText(
                             color: white,
                             text: "primetagdesc",
                             multilanguage: true,
                             textalign: TextAlign.center,
                             fontsizeNormal: 12,
-                            fontsizeWeb: 14,
-                            fontweight: FontWeight.w400,
+                            fontsizeWeb: 13,
+                            fontweight: FontWeight.w500,
                             maxline: 1,
                             overflow: TextOverflow.ellipsis,
                             fontstyle: FontStyle.normal,
@@ -447,9 +448,8 @@ class MovieDetailsState extends State<MovieDetails> {
               /* Rent TAG */
               (videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) == 1
                   ? Container(
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                       width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
@@ -466,8 +466,8 @@ class MovieDetailsState extends State<MovieDetails> {
                               color: white,
                               text: Constant.currencySymbol,
                               textalign: TextAlign.center,
-                              fontsizeNormal: 11,
-                              fontsizeWeb: 13,
+                              fontsizeNormal: 10,
+                              fontsizeWeb: 12,
                               fontweight: FontWeight.w800,
                               multilanguage: false,
                               maxline: 1,
@@ -512,7 +512,7 @@ class MovieDetailsState extends State<MovieDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /* Rent Button */
-                      Expanded(child: _buildRentBtn()),
+                      _buildRentBtn(),
                       const SizedBox(width: 5),
 
                       /* Start Over & Trailer */
@@ -536,23 +536,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                             : Dimens.featureSize) /
                                         2),
                                     onTap: () async {
-                                      if (Constant.userID != null) {
-                                        openPlayer("startOver");
-                                      } else {
-                                        if (kIsWeb) {
-                                          Utils.buildWebAlertDialog(
-                                              context, "login", "");
-                                          return;
-                                        }
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) {
-                                              return const LoginSocial();
-                                            },
-                                          ),
-                                        );
-                                      }
+                                      openPlayer("startOver");
                                     },
                                     child: Container(
                                       width: kIsWeb
@@ -587,10 +571,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                     color: white,
                                     text: "startover",
                                     multilanguage: true,
-                                    fontsizeNormal: 12,
+                                    fontsizeNormal: 10,
                                     fontsizeWeb: 14,
-                                    fontweight: FontWeight.w500,
-                                    maxline: 1,
+                                    fontweight: FontWeight.w600,
+                                    maxline: 2,
                                     overflow: TextOverflow.ellipsis,
                                     textalign: TextAlign.center,
                                     fontstyle: FontStyle.normal,
@@ -642,11 +626,11 @@ class MovieDetailsState extends State<MovieDetails> {
                                   MyText(
                                     color: white,
                                     text: "trailer",
-                                    fontsizeNormal: 12,
+                                    fontsizeNormal: 10,
                                     fontsizeWeb: 14,
-                                    fontweight: FontWeight.w500,
+                                    fontweight: FontWeight.w600,
                                     multilanguage: true,
-                                    maxline: 1,
+                                    maxline: 2,
                                     overflow: TextOverflow.ellipsis,
                                     textalign: TextAlign.center,
                                     fontstyle: FontStyle.normal,
@@ -657,7 +641,6 @@ class MovieDetailsState extends State<MovieDetails> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 5),
 
                       /* Download */
                       if (!kIsWeb) _buildDownloadWithSubCheck(),
@@ -740,11 +723,11 @@ class MovieDetailsState extends State<MovieDetails> {
                             MyText(
                               color: white,
                               text: "watchlist",
-                              fontsizeNormal: 12,
+                              fontsizeNormal: 10,
                               fontsizeWeb: 14,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               multilanguage: true,
-                              maxline: 1,
+                              maxline: 2,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.center,
                               fontstyle: FontStyle.normal,
@@ -752,7 +735,6 @@ class MovieDetailsState extends State<MovieDetails> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 5),
 
                       /* More */
                       if (!kIsWeb)
@@ -802,10 +784,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                 color: white,
                                 multilanguage: true,
                                 text: "more",
-                                fontsizeNormal: 12,
+                                fontsizeNormal: 10,
                                 fontsizeWeb: 14,
-                                fontweight: FontWeight.w500,
-                                maxline: 1,
+                                fontweight: FontWeight.w600,
+                                maxline: 2,
                                 overflow: TextOverflow.ellipsis,
                                 textalign: TextAlign.center,
                                 fontstyle: FontStyle.normal,
@@ -839,7 +821,7 @@ class MovieDetailsState extends State<MovieDetails> {
                         maxLines: kIsWeb ? 50 : 3,
                         linkColor: otherColor,
                         style: const TextStyle(
-                          fontSize: kIsWeb ? 13 : 14,
+                          fontSize: kIsWeb ? 12 : 14,
                           fontStyle: FontStyle.normal,
                           color: otherColor,
                           fontWeight: FontWeight.w500,
@@ -870,17 +852,18 @@ class MovieDetailsState extends State<MovieDetails> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 5),
                     Container(
-                      constraints: const BoxConstraints(minHeight: 30),
+                      constraints: const BoxConstraints(minHeight: 0),
+                      margin: const EdgeInsets.only(top: 10),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           MyText(
                             color: white,
-                            text: "language_",
+                            text: "category",
                             textalign: TextAlign.center,
-                            fontsizeNormal: 14,
-                            fontweight: FontWeight.w600,
+                            fontsizeNormal: 13,
+                            fontweight: FontWeight.w500,
                             fontsizeWeb: 15,
                             maxline: 1,
                             multilanguage: true,
@@ -892,7 +875,7 @@ class MovieDetailsState extends State<MovieDetails> {
                             color: white,
                             text: ":",
                             textalign: TextAlign.center,
-                            fontsizeNormal: 14,
+                            fontsizeNormal: 13,
                             fontweight: FontWeight.w500,
                             fontsizeWeb: 15,
                             maxline: 1,
@@ -901,17 +884,70 @@ class MovieDetailsState extends State<MovieDetails> {
                             fontstyle: FontStyle.normal,
                           ),
                           const SizedBox(width: 5),
+                          Expanded(
+                            child: MyText(
+                              color: white,
+                              text: videoDetailsProvider.sectionDetailModel
+                                      .result?.categoryName ??
+                                  "",
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 13,
+                              fontweight: FontWeight.w500,
+                              fontsizeWeb: 14,
+                              multilanguage: false,
+                              maxline: 5,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      constraints: const BoxConstraints(minHeight: 0),
+                      margin: const EdgeInsets.only(top: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           MyText(
                             color: white,
-                            text: audioLanguages ?? "",
+                            text: "language_",
                             textalign: TextAlign.center,
                             fontsizeNormal: 13,
                             fontweight: FontWeight.w500,
-                            fontsizeWeb: 14,
-                            multilanguage: false,
+                            fontsizeWeb: 15,
                             maxline: 1,
+                            multilanguage: true,
                             overflow: TextOverflow.ellipsis,
                             fontstyle: FontStyle.normal,
+                          ),
+                          const SizedBox(width: 5),
+                          MyText(
+                            color: white,
+                            text: ":",
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 13,
+                            fontweight: FontWeight.w500,
+                            fontsizeWeb: 15,
+                            maxline: 1,
+                            multilanguage: false,
+                            overflow: TextOverflow.ellipsis,
+                            fontstyle: FontStyle.normal,
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: MyText(
+                              color: white,
+                              text: audioLanguages ?? "",
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 13,
+                              fontweight: FontWeight.w500,
+                              fontsizeWeb: 14,
+                              multilanguage: false,
+                              maxline: 5,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
                           ),
                         ],
                       ),
@@ -920,14 +956,15 @@ class MovieDetailsState extends State<MovieDetails> {
                                 "")
                             .isNotEmpty
                         ? Container(
-                            constraints: const BoxConstraints(minHeight: 30),
+                            constraints: const BoxConstraints(minHeight: 0),
+                            margin: const EdgeInsets.only(top: 10),
                             child: Row(
                               children: [
                                 MyText(
                                   color: white,
                                   text: "subtitle",
                                   textalign: TextAlign.center,
-                                  fontsizeNormal: 14,
+                                  fontsizeNormal: 13,
                                   fontweight: FontWeight.w500,
                                   fontsizeWeb: 15,
                                   maxline: 1,
@@ -942,7 +979,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   color: white,
                                   text: ":",
                                   textalign: TextAlign.center,
-                                  fontsizeNormal: 14,
+                                  fontsizeNormal: 13,
                                   fontweight: FontWeight.w500,
                                   fontsizeWeb: 15,
                                   maxline: 1,
@@ -1338,17 +1375,19 @@ class MovieDetailsState extends State<MovieDetails> {
                                             fontstyle: FontStyle.normal,
                                           ),
                                           const SizedBox(width: 5),
-                                          MyText(
-                                            color: whiteLight,
-                                            text: audioLanguages ?? "",
-                                            textalign: TextAlign.center,
-                                            fontsizeNormal: 13,
-                                            fontweight: FontWeight.w500,
-                                            fontsizeWeb: 13,
-                                            multilanguage: false,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontstyle: FontStyle.normal,
+                                          Expanded(
+                                            child: MyText(
+                                              color: whiteLight,
+                                              text: audioLanguages ?? "",
+                                              textalign: TextAlign.center,
+                                              fontsizeNormal: 13,
+                                              fontweight: FontWeight.w500,
+                                              fontsizeWeb: 13,
+                                              multilanguage: false,
+                                              maxline: 5,
+                                              overflow: TextOverflow.ellipsis,
+                                              fontstyle: FontStyle.normal,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -1523,7 +1562,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           )
                                         : const SizedBox.shrink(),
 
-                                    /* Description, Languages & Subtitles */
+                                    /* Description */
                                     Expanded(
                                       child: SingleChildScrollView(
                                         child: Container(
@@ -1574,73 +1613,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                 alignment: Alignment.centerLeft,
                                 child: InkWell(
                                   onTap: () async {
-                                    if (Constant.userID != null) {
-                                      if ((videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.isBuy ??
-                                                  0) ==
-                                              1 ||
-                                          (videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.rentBuy ??
-                                                  0) ==
-                                              1) {
-                                        openPlayer("Video");
-                                      } else {
-                                        dynamic isRented =
-                                            await Utils.paymentForRent(
-                                          context: context,
-                                          videoId: videoDetailsProvider
-                                                  .sectionDetailModel.result?.id
-                                                  .toString() ??
-                                              '',
-                                          rentPrice: videoDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.rentPrice
-                                                  .toString() ??
-                                              '',
-                                          vTitle: videoDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.name
-                                                  .toString() ??
-                                              '',
-                                          typeId: videoDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.typeId
-                                                  .toString() ??
-                                              '',
-                                          vType: videoDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.videoType
-                                                  .toString() ??
-                                              '',
-                                        );
-                                        if (isRented != null &&
-                                            isRented == true) {
-                                          _getData();
-                                        }
-                                      }
-                                    } else {
-                                      if (kIsWeb) {
-                                        Utils.buildWebAlertDialog(
-                                            context, "login", "");
-                                        return;
-                                      }
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return const LoginSocial();
-                                          },
-                                        ),
-                                      );
-                                    }
+                                    openPlayer("Video");
                                   },
                                   borderRadius: BorderRadius.circular(4),
                                   child: Container(
@@ -1776,23 +1749,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                 alignment: Alignment.centerLeft,
                                 child: InkWell(
                                   onTap: () {
-                                    if (Constant.userID != null) {
-                                      openPlayer("Video");
-                                    } else {
-                                      if (kIsWeb) {
-                                        Utils.buildWebAlertDialog(
-                                            context, "login", "");
-                                        return;
-                                      }
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return const LoginSocial();
-                                          },
-                                        ),
-                                      );
-                                    }
+                                    openPlayer("Video");
                                   },
                                   borderRadius: BorderRadius.circular(4),
                                   child: Container(
@@ -1848,7 +1805,11 @@ class MovieDetailsState extends State<MovieDetails> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   /* Rent Button */
-                                  _buildRentBtn(),
+                                  Container(
+                                    constraints:
+                                        const BoxConstraints(minWidth: 50),
+                                    child: _buildRentBtn(),
+                                  ),
                                   const SizedBox(width: 10),
 
                                   /* Trailer & StartOver Button */
@@ -1881,23 +1842,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         : Dimens.featureSize /
                                                             2),
                                                 onTap: () async {
-                                                  if (Constant.userID != null) {
-                                                    openPlayer("startOver");
-                                                  } else {
-                                                    if (kIsWeb) {
-                                                      Utils.buildWebAlertDialog(
-                                                          context, "login", "");
-                                                      return;
-                                                    }
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) {
-                                                          return const LoginSocial();
-                                                        },
-                                                      ),
-                                                    );
-                                                  }
+                                                  openPlayer("startOver");
                                                 },
                                                 child: Container(
                                                   width: kIsWeb
@@ -2195,50 +2140,7 @@ class MovieDetailsState extends State<MovieDetails> {
           margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
           child: InkWell(
             onTap: () async {
-              if (Constant.userID != null) {
-                if ((videoDetailsProvider
-                            .sectionDetailModel.result?.isPremium ??
-                        0) ==
-                    1) {
-                  if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ??
-                              0) ==
-                          1 ||
-                      (videoDetailsProvider
-                                  .sectionDetailModel.result?.rentBuy ??
-                              0) ==
-                          1) {
-                    openPlayer("Video");
-                  } else {
-                    if (kIsWeb) {
-                      Utils.showSnackbar(
-                          context, "info", webPaymentNotAvailable, false);
-                      return;
-                    }
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const Subscription();
-                        },
-                      ),
-                    );
-                    _getData();
-                  }
-                }
-              } else {
-                if (kIsWeb) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
+              openPlayer("Video");
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
@@ -2259,70 +2161,74 @@ class MovieDetailsState extends State<MovieDetails> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 20),
                         MyImage(
                           width: 20,
                           height: 20,
                           imagePath: "ic_play.png",
                         ),
                         const SizedBox(width: 15),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            MyText(
-                              color: white,
-                              text: "continuewatching",
-                              multilanguage: true,
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 15,
-                              fontweight: FontWeight.w600,
-                              fontsizeWeb: 16,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                            Row(
-                              children: [
-                                MyText(
-                                  color: white,
-                                  text: Utils.remainTimeInMin(
-                                      ((videoDetailsProvider.sectionDetailModel
-                                                      .result?.videoDuration ??
-                                                  0) -
-                                              (videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.stopTime ??
-                                                  0))
-                                          .abs()),
-                                  textalign: TextAlign.start,
-                                  fontsizeNormal: 10,
-                                  fontweight: FontWeight.w500,
-                                  fontsizeWeb: 12,
-                                  multilanguage: false,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                                const SizedBox(width: 5),
-                                MyText(
-                                  color: white,
-                                  text: "left",
-                                  textalign: TextAlign.start,
-                                  fontsizeNormal: 10,
-                                  fontweight: FontWeight.w500,
-                                  fontsizeWeb: 12,
-                                  multilanguage: true,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ],
-                            ),
-                          ],
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              MyText(
+                                color: white,
+                                text: "continuewatching",
+                                multilanguage: true,
+                                textalign: TextAlign.start,
+                                fontsizeNormal: 13,
+                                fontsizeWeb: 15,
+                                fontweight: FontWeight.w600,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
+                              Row(
+                                children: [
+                                  MyText(
+                                    color: white,
+                                    text: Utils.remainTimeInMin(
+                                        ((videoDetailsProvider
+                                                        .sectionDetailModel
+                                                        .result
+                                                        ?.videoDuration ??
+                                                    0) -
+                                                (videoDetailsProvider
+                                                        .sectionDetailModel
+                                                        .result
+                                                        ?.stopTime ??
+                                                    0))
+                                            .abs()),
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 10,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 12,
+                                    multilanguage: false,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  MyText(
+                                    color: white,
+                                    text: "left",
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 10,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 12,
+                                    multilanguage: true,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 20),
                       ],
                     ),
                   ),
@@ -2352,58 +2258,14 @@ class MovieDetailsState extends State<MovieDetails> {
         );
       } else {
         return Container(
-          alignment: Alignment.center,
           margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
           child: InkWell(
-            onTap: () async {
-              if (Constant.userID != null) {
-                if ((videoDetailsProvider
-                            .sectionDetailModel.result?.isPremium ??
-                        0) ==
-                    1) {
-                  if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ??
-                              0) ==
-                          1 ||
-                      (videoDetailsProvider
-                                  .sectionDetailModel.result?.rentBuy ??
-                              0) ==
-                          1) {
-                    openPlayer("Video");
-                  } else {
-                    if (kIsWeb) {
-                      Utils.showSnackbar(
-                          context, "info", webPaymentNotAvailable, false);
-                      return;
-                    }
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const Subscription();
-                        },
-                      ),
-                    );
-                    _getData();
-                  }
-                }
-              } else {
-                if (kIsWeb) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
+            onTap: () {
+              openPlayer("Video");
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
-              height: kIsWeb ? 35 : 50,
+              height: 50,
               constraints: BoxConstraints(
                 maxWidth: kIsWeb
                     ? (MediaQuery.of(context).size.width * 0.4)
@@ -2424,17 +2286,19 @@ class MovieDetailsState extends State<MovieDetails> {
                     imagePath: "ic_play.png",
                   ),
                   const SizedBox(width: 15),
-                  MyText(
-                    color: white,
-                    text: "watch_now",
-                    multilanguage: true,
-                    textalign: TextAlign.start,
-                    fontsizeNormal: 15,
-                    fontweight: FontWeight.w600,
-                    fontsizeWeb: 16,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
+                  Expanded(
+                    child: MyText(
+                      color: white,
+                      text: "watch_now",
+                      multilanguage: true,
+                      textalign: TextAlign.start,
+                      fontsizeNormal: 15,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 16,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
                   ),
                 ],
               ),
@@ -2452,59 +2316,7 @@ class MovieDetailsState extends State<MovieDetails> {
           margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
           child: InkWell(
             onTap: () async {
-              if (Constant.userID != null) {
-                if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ??
-                            0) ==
-                        1 ||
-                    (videoDetailsProvider.sectionDetailModel.result?.rentBuy ??
-                            0) ==
-                        1) {
-                  openPlayer("Video");
-                } else {
-                  if (kIsWeb) {
-                    Utils.showSnackbar(
-                        context, "info", webPaymentNotAvailable, false);
-                    return;
-                  }
-                  dynamic isRented = await Utils.paymentForRent(
-                    context: context,
-                    videoId: videoDetailsProvider.sectionDetailModel.result?.id
-                            .toString() ??
-                        '',
-                    rentPrice: videoDetailsProvider
-                            .sectionDetailModel.result?.rentPrice
-                            .toString() ??
-                        '',
-                    vTitle: videoDetailsProvider.sectionDetailModel.result?.name
-                            .toString() ??
-                        '',
-                    typeId: videoDetailsProvider
-                            .sectionDetailModel.result?.typeId
-                            .toString() ??
-                        '',
-                    vType: videoDetailsProvider
-                            .sectionDetailModel.result?.videoType
-                            .toString() ??
-                        '',
-                  );
-                  if (isRented != null && isRented == true) {
-                    _getData();
-                  }
-                }
-              } else {
-                if (kIsWeb) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
+              openPlayer("Video");
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
@@ -2623,22 +2435,7 @@ class MovieDetailsState extends State<MovieDetails> {
           margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
           child: InkWell(
             onTap: () {
-              if (Constant.userID != null) {
-                openPlayer("Video");
-              } else {
-                if (kIsWeb) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
+              openPlayer("Video");
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
@@ -2662,20 +2459,20 @@ class MovieDetailsState extends State<MovieDetails> {
                     height: 20,
                     imagePath: "ic_play.png",
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  MyText(
-                    color: white,
-                    text: "watch_now",
-                    multilanguage: true,
-                    textalign: TextAlign.start,
-                    fontsizeNormal: 15,
-                    fontweight: FontWeight.w600,
-                    fontsizeWeb: 16,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: MyText(
+                      color: white,
+                      text: "watch_now",
+                      multilanguage: true,
+                      textalign: TextAlign.start,
+                      fontsizeNormal: 15,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 16,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
                   ),
                 ],
               ),
@@ -2692,22 +2489,7 @@ class MovieDetailsState extends State<MovieDetails> {
           alignment: Alignment.center,
           child: InkWell(
             onTap: () {
-              if (Constant.userID != null) {
-                openPlayer("Video");
-              } else {
-                if (kIsWeb) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
+              openPlayer("Video");
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
@@ -2825,25 +2607,9 @@ class MovieDetailsState extends State<MovieDetails> {
       } else {
         return Container(
           margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          alignment: Alignment.center,
           child: InkWell(
             onTap: () {
-              if (Constant.userID != null) {
-                openPlayer("Video");
-              } else {
-                if (kIsWeb) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
-              }
+              openPlayer("Video");
             },
             borderRadius: BorderRadius.circular(5),
             child: Container(
@@ -2867,20 +2633,20 @@ class MovieDetailsState extends State<MovieDetails> {
                     height: 20,
                     imagePath: "ic_play.png",
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  MyText(
-                    color: white,
-                    text: "watch_now",
-                    multilanguage: true,
-                    textalign: TextAlign.start,
-                    fontsizeNormal: 15,
-                    fontweight: FontWeight.w600,
-                    fontsizeWeb: 16,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: MyText(
+                      color: white,
+                      text: "watch_now",
+                      multilanguage: true,
+                      textalign: TextAlign.start,
+                      fontsizeNormal: 15,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 16,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
                   ),
                 ],
               ),
@@ -2898,112 +2664,7 @@ class MovieDetailsState extends State<MovieDetails> {
           (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return Container(
-          constraints: const BoxConstraints(minWidth: 50),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(
-                    (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) / 2),
-                onTap: () async {
-                  if (Constant.userID != null) {
-                    if (kIsWeb) {
-                      Utils.showSnackbar(
-                          context, "info", webPaymentNotAvailable, false);
-                      return;
-                    }
-                    dynamic isRented = await Utils.paymentForRent(
-                      context: context,
-                      videoId: videoDetailsProvider
-                              .sectionDetailModel.result?.id
-                              .toString() ??
-                          '',
-                      rentPrice: videoDetailsProvider
-                              .sectionDetailModel.result?.rentPrice
-                              .toString() ??
-                          '',
-                      vTitle: videoDetailsProvider
-                              .sectionDetailModel.result?.name
-                              .toString() ??
-                          '',
-                      typeId: videoDetailsProvider
-                              .sectionDetailModel.result?.typeId
-                              .toString() ??
-                          '',
-                      vType: videoDetailsProvider
-                              .sectionDetailModel.result?.videoType
-                              .toString() ??
-                          '',
-                    );
-                    if (isRented != null && isRented == true) {
-                      _getData();
-                    }
-                  } else {
-                    if (kIsWeb) {
-                      Utils.buildWebAlertDialog(context, "login", "");
-                      return;
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const LoginSocial();
-                        },
-                      ),
-                    );
-                  }
-                },
-                child: Container(
-                  width: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
-                  height: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryLight),
-                    borderRadius: BorderRadius.circular(
-                        (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) /
-                            2),
-                  ),
-                  child: MyImage(
-                    width: kIsWeb
-                        ? Dimens.featureIconWebSize
-                        : Dimens.featureIconSize,
-                    height: kIsWeb
-                        ? Dimens.featureIconWebSize
-                        : Dimens.featureIconSize,
-                    color: lightGray,
-                    imagePath: "ic_store.png",
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              MyText(
-                color: white,
-                multilanguage: false,
-                text:
-                    "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                fontsizeNormal: 12,
-                fontweight: FontWeight.w500,
-                fontsizeWeb: 14,
-                maxline: 2,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
-              ),
-            ],
-          ),
-        );
-      }
-    } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
-        1) {
-      if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-          (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        return const SizedBox.shrink();
-      } else {
-        return Container(
-          constraints: const BoxConstraints(minWidth: 50),
+        return Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -3086,8 +2747,109 @@ class MovieDetailsState extends State<MovieDetails> {
                 multilanguage: false,
                 text:
                     "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                fontsizeNormal: 12,
-                fontweight: FontWeight.w500,
+                fontsizeNormal: 10,
+                fontweight: FontWeight.w700,
+                fontsizeWeb: 14,
+                maxline: 2,
+                overflow: TextOverflow.ellipsis,
+                textalign: TextAlign.center,
+                fontstyle: FontStyle.normal,
+              ),
+            ],
+          ),
+        );
+      }
+    } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+        1) {
+      if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+          (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
+        return const SizedBox.shrink();
+      } else {
+        return Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(
+                    (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) / 2),
+                onTap: () async {
+                  if (Constant.userID != null) {
+                    if (kIsWeb) {
+                      Utils.showSnackbar(
+                          context, "info", webPaymentNotAvailable, false);
+                      return;
+                    }
+                    dynamic isRented = await Utils.paymentForRent(
+                      context: context,
+                      videoId: videoDetailsProvider
+                              .sectionDetailModel.result?.id
+                              .toString() ??
+                          '',
+                      rentPrice: videoDetailsProvider
+                              .sectionDetailModel.result?.rentPrice
+                              .toString() ??
+                          '',
+                      vTitle: videoDetailsProvider
+                              .sectionDetailModel.result?.name
+                              .toString() ??
+                          '',
+                      typeId: videoDetailsProvider
+                              .sectionDetailModel.result?.typeId
+                              .toString() ??
+                          '',
+                      vType: videoDetailsProvider
+                              .sectionDetailModel.result?.videoType
+                              .toString() ??
+                          '',
+                    );
+                    if (isRented != null && isRented == true) {
+                      _getData();
+                    }
+                  } else {
+                    if (kIsWeb) {
+                      Utils.buildWebAlertDialog(context, "login", "");
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const LoginSocial();
+                        },
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  width: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
+                  height: kIsWeb ? Dimens.featureWebSize : Dimens.featureSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: primaryLight),
+                    borderRadius: BorderRadius.circular(
+                        (kIsWeb ? Dimens.featureWebSize : Dimens.featureSize) /
+                            2),
+                  ),
+                  child: MyImage(
+                    width: kIsWeb
+                        ? Dimens.featureIconWebSize
+                        : Dimens.featureIconSize,
+                    height: kIsWeb
+                        ? Dimens.featureIconWebSize
+                        : Dimens.featureIconSize,
+                    color: lightGray,
+                    imagePath: "ic_store.png",
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              MyText(
+                color: white,
+                multilanguage: false,
+                text:
+                    "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+                fontsizeNormal: 10,
+                fontweight: FontWeight.w600,
                 fontsizeWeb: 14,
                 maxline: 2,
                 overflow: TextOverflow.ellipsis,
@@ -3359,7 +3121,6 @@ class MovieDetailsState extends State<MovieDetails> {
   }
 
   /* ========= Download ========= */
-
   Widget _buildDownloadWithSubCheck() {
     if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
       if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
@@ -3468,10 +3229,10 @@ class MovieDetailsState extends State<MovieDetails> {
                     ? "complete"
                     : "download",
                 multilanguage: true,
-                fontsizeNormal: 12,
-                fontweight: FontWeight.w500,
-                fontsizeWeb: 13,
-                maxline: 1,
+                fontsizeNormal: 10,
+                fontweight: FontWeight.w600,
+                fontsizeWeb: 14,
+                maxline: 2,
                 overflow: TextOverflow.ellipsis,
                 textalign: TextAlign.center,
                 fontstyle: FontStyle.normal,
@@ -4064,6 +3825,16 @@ class MovieDetailsState extends State<MovieDetails> {
   /* ========= Open Player ========= */
   void openPlayer(String playType) async {
     if (!kIsWeb) Utils.deleteCacheDir();
+
+    /* CHECK SUBSCRIPTION */
+    if (playType != "Trailer") {
+      bool? isPrimiumUser = await _checkSubsRentLogin();
+      log("isPrimiumUser =============> $isPrimiumUser");
+      if (!isPrimiumUser) return;
+    }
+    /* CHECK SUBSCRIPTION */
+    log("ID :===> ${(videoDetailsProvider.sectionDetailModel.result?.id ?? 0)}");
+
     int? vID = (videoDetailsProvider.sectionDetailModel.result?.id ?? 0);
     int? vType =
         (videoDetailsProvider.sectionDetailModel.result?.videoType ?? 0);
@@ -4094,6 +3865,7 @@ class MovieDetailsState extends State<MovieDetails> {
     }
 
     if (kIsWeb) {
+      if (!mounted) return;
       await Navigator.push(
         context,
         MaterialPageRoute(
@@ -4115,7 +3887,8 @@ class MovieDetailsState extends State<MovieDetails> {
 
     log("===>vUploadType $vUploadType");
     if (vUploadType == "youtube") {
-      Navigator.push(
+      if (!mounted) return;
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
@@ -4126,7 +3899,8 @@ class MovieDetailsState extends State<MovieDetails> {
         ),
       );
     } else if (vUploadType == "vimeo") {
-      Navigator.push(
+      if (!mounted) return;
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
@@ -4137,6 +3911,7 @@ class MovieDetailsState extends State<MovieDetails> {
         ),
       );
     } else {
+      if (!mounted) return;
       var isContinue = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -4150,6 +3925,110 @@ class MovieDetailsState extends State<MovieDetails> {
       if (isContinue != null && isContinue == true) {
         _getData();
       }
+    }
+  }
+  /* ========= Open Player ========= */
+
+  Future<bool> _checkSubsRentLogin() async {
+    if (Constant.userID != null) {
+      if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) ==
+              1 &&
+          (videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) == 1) {
+        if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          _getData();
+          return false;
+        }
+      } else if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ??
+              0) ==
+          1) {
+        if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          _getData();
+          return false;
+        }
+      } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ??
+              0) ==
+          1) {
+        if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isRented = await Utils.paymentForRent(
+            context: context,
+            videoId:
+                videoDetailsProvider.sectionDetailModel.result?.id.toString() ??
+                    '',
+            rentPrice: videoDetailsProvider.sectionDetailModel.result?.rentPrice
+                    .toString() ??
+                '',
+            vTitle: videoDetailsProvider.sectionDetailModel.result?.name
+                    .toString() ??
+                '',
+            typeId: videoDetailsProvider.sectionDetailModel.result?.typeId
+                    .toString() ??
+                '',
+            vType: videoDetailsProvider.sectionDetailModel.result?.videoType
+                    .toString() ??
+                '',
+          );
+          if (isRented != null && isRented == true) {
+            _getData();
+          }
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      if (kIsWeb) {
+        Utils.buildWebAlertDialog(context, "login", "");
+        return false;
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginSocial();
+          },
+        ),
+      );
+      return false;
     }
   }
 }

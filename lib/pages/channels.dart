@@ -125,23 +125,20 @@ class ChannelsState extends State<Channels> {
         else
           ShimmerUtils.channelBannerMobile(context),
 
-        /* Continue Watching */
-        if (Constant.userID != null) ShimmerUtils.continueWatching(context),
-
         /* Remaining Sections */
         ListView.builder(
-          itemCount: 5, // itemCount must be greater than 5
+          itemCount: 10, // itemCount must be greater than 5
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             if (index == 1) {
-              return ShimmerUtils.setSectionByType(context, "potrait");
+              return ShimmerUtils.setChannelSections(context, "potrait");
             } else if (index == 2) {
-              return ShimmerUtils.setSectionByType(context, "square");
+              return ShimmerUtils.setChannelSections(context, "square");
             } else if (index == 3) {
-              return ShimmerUtils.setSectionByType(context, "langGen");
+              return ShimmerUtils.setChannelSections(context, "potrait");
             } else {
-              return ShimmerUtils.setSectionByType(context, "landscape");
+              return ShimmerUtils.setChannelSections(context, "landscape");
             }
           },
         ),
@@ -485,7 +482,7 @@ class ChannelsState extends State<Channels> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: MyText(
                   color: otherColor,
                   text: sectionList?[index].channelName.toString() ?? "",
@@ -499,27 +496,23 @@ class ChannelsState extends State<Channels> {
                   fontstyle: FontStyle.normal,
                 ),
               ),
-              const SizedBox(
-                height: 2,
-              ),
+              const SizedBox(height: 2),
               Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: MyText(
                   color: white,
                   text: sectionList?[index].title.toString() ?? "",
                   textalign: TextAlign.center,
-                  fontsizeNormal: 16,
+                  fontsizeNormal: 15,
                   fontsizeWeb: 18,
                   multilanguage: false,
                   maxline: 1,
-                  fontweight: FontWeight.bold,
+                  fontweight: FontWeight.w700,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
               ),
-              const SizedBox(
-                height: 12,
-              ),
+              const SizedBox(height: 12),
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(

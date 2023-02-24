@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dtlive/model/subscriptionmodel.dart';
 import 'package:dtlive/pages/allpayment.dart';
 import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
@@ -67,7 +68,7 @@ class SubscriptionState extends State<Subscription> {
     final subscriptionProvider =
         Provider.of<SubscriptionProvider>(context, listen: false);
     if (subscriptionProvider.loading) {
-      return Utils.pageLoader();
+      return ShimmerUtils.buildSubscribeShimmer(context);
     } else {
       if (subscriptionProvider.subscriptionModel.status == 200) {
         return Column(
@@ -91,9 +92,7 @@ class SubscriptionState extends State<Subscription> {
                 fontstyle: FontStyle.normal,
               ),
             ),
-            const SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 12),
             /* Remaining Data */
             (subscriptionProvider.subscriptionModel.result != null)
                 ? Flexible(
@@ -101,9 +100,7 @@ class SubscriptionState extends State<Subscription> {
                         subscriptionProvider.subscriptionModel.result),
                   )
                 : const SizedBox.shrink(),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
           ],
         );
       } else {
@@ -291,9 +288,7 @@ class SubscriptionState extends State<Subscription> {
                             ),
                           )
                         : const SizedBox.shrink(),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
 
                     /* Choose Plan */
                     Align(
@@ -376,9 +371,7 @@ class SubscriptionState extends State<Subscription> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),

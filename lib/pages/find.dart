@@ -5,6 +5,7 @@ import 'package:dtlive/pages/search.dart';
 import 'package:dtlive/pages/sectionbytype.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/findprovider.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -131,31 +132,27 @@ class FindState extends State<Find> {
           child: SafeArea(
             child: Column(
               children: [
-                const SizedBox(
-                  height: 25,
-                ),
+                const SizedBox(height: 25),
 
                 /* Search Box */
                 searchBox(),
-                const SizedBox(
-                  height: 22,
-                ),
+                const SizedBox(height: 22),
 
-                /* Browse by */
+                /* Genres */
                 Consumer<FindProvider>(
                   builder: (context, findProvider, child) {
-                    log("Browseby loading  ===>  ${findProvider.loading}");
+                    log("setGenresSize  ===>  ${findProvider.setGenresSize}");
+                    log("genresModel Size  ===>  ${(findProvider.genresModel.result?.length ?? 0)}");
                     if (findProvider.loading) {
-                      return Utils.pageLoader();
+                      return ShimmerUtils.buildFindShimmer(context);
                     } else {
-                      if (findProvider.sectionTypeModel.status == 200) {
-                        if (findProvider.sectionTypeModel.result != null &&
-                            (findProvider.sectionTypeModel.result?.length ??
-                                    0) >
+                      if (findProvider.genresModel.status == 200) {
+                        if (findProvider.genresModel.result != null &&
+                            (findProvider.genresModel.result?.length ?? 0) >
                                 0) {
-                          log("sectionTypeModel Size  ===>  ${(findProvider.sectionTypeModel.result?.length ?? 0)}");
                           return Column(
                             children: [
+                              /* Browse by START */
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 padding:
@@ -166,16 +163,15 @@ class FindState extends State<Find> {
                                   text: "browsby",
                                   multilanguage: true,
                                   textalign: TextAlign.center,
-                                  fontsizeNormal: 16,
+                                  fontsizeNormal: 15,
+                                  fontsizeWeb: 16,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  fontweight: FontWeight.bold,
+                                  fontweight: FontWeight.w600,
                                   fontstyle: FontStyle.normal,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 10),
                               AlignedGridView.count(
                                 shrinkWrap: true,
                                 crossAxisCount: 2,
@@ -224,7 +220,8 @@ class FindState extends State<Find> {
                                         fontstyle: FontStyle.normal,
                                         multilanguage: false,
                                         fontsizeNormal: 14,
-                                        fontweight: FontWeight.w800,
+                                        fontsizeWeb: 14,
+                                        fontweight: FontWeight.w600,
                                         maxline: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -232,35 +229,10 @@ class FindState extends State<Find> {
                                   );
                                 },
                               ),
-                            ],
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: 22,
-                ),
+                              /* Browse by END */
+                              const SizedBox(height: 22),
 
-                /* Genres */
-                Consumer<FindProvider>(
-                  builder: (context, findProvider, child) {
-                    log("setGenresSize  ===>  ${findProvider.setGenresSize}");
-                    log("genresModel Size  ===>  ${(findProvider.genresModel.result?.length ?? 0)}");
-                    if (findProvider.loading) {
-                      return Utils.pageLoader();
-                    } else {
-                      if (findProvider.genresModel.status == 200) {
-                        if (findProvider.genresModel.result != null &&
-                            (findProvider.genresModel.result?.length ?? 0) >
-                                0) {
-                          return Column(
-                            children: [
+                              /* Genres START */
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 padding:
@@ -270,17 +242,16 @@ class FindState extends State<Find> {
                                   color: white,
                                   text: "genres",
                                   textalign: TextAlign.center,
-                                  fontsizeNormal: 16,
+                                  fontsizeNormal: 15,
+                                  fontsizeWeb: 16,
+                                  fontweight: FontWeight.w600,
                                   multilanguage: true,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  fontweight: FontWeight.bold,
                                   fontstyle: FontStyle.normal,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
+                              const SizedBox(height: 15),
                               AlignedGridView.count(
                                 shrinkWrap: true,
                                 crossAxisCount: 1,
@@ -348,7 +319,8 @@ class FindState extends State<Find> {
                                                         .name ??
                                                     "",
                                                 textalign: TextAlign.center,
-                                                fontsizeNormal: 14,
+                                                fontsizeNormal: 13,
+                                                fontsizeWeb: 14,
                                                 multilanguage: false,
                                                 maxline: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -356,8 +328,8 @@ class FindState extends State<Find> {
                                                 fontstyle: FontStyle.normal,
                                               ),
                                               MyImage(
-                                                width: 15,
-                                                height: 15,
+                                                width: 13,
+                                                height: 13,
                                                 color: otherColor,
                                                 imagePath: "ic_right.png",
                                               ),
@@ -400,35 +372,10 @@ class FindState extends State<Find> {
                                   ),
                                 ),
                               ),
-                            ],
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
+                              /* Genres END */
+                              const SizedBox(height: 30),
 
-                /* Language */
-                Consumer<FindProvider>(
-                  builder: (context, findProvider, child) {
-                    log("setLanguageSize  ===>  ${findProvider.setLanguageSize}");
-                    log("langaugeModel Size  ===>  ${(findProvider.langaugeModel.result?.length ?? 0)}");
-                    if (findProvider.loading) {
-                      return Utils.pageLoader();
-                    } else {
-                      if (findProvider.langaugeModel.status == 200) {
-                        if (findProvider.langaugeModel.result != null &&
-                            (findProvider.langaugeModel.result?.length ?? 0) >
-                                0) {
-                          return Column(
-                            children: [
+                              /* Language START */
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 padding:
@@ -439,16 +386,15 @@ class FindState extends State<Find> {
                                   multilanguage: true,
                                   text: "language_",
                                   textalign: TextAlign.center,
-                                  fontsizeNormal: 16,
+                                  fontsizeNormal: 15,
+                                  fontsizeWeb: 16,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  fontweight: FontWeight.bold,
+                                  fontweight: FontWeight.w600,
                                   fontstyle: FontStyle.normal,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
+                              const SizedBox(height: 15),
                               AlignedGridView.count(
                                 shrinkWrap: true,
                                 crossAxisCount: 1,
@@ -516,7 +462,8 @@ class FindState extends State<Find> {
                                                         .name ??
                                                     "",
                                                 textalign: TextAlign.center,
-                                                fontsizeNormal: 14,
+                                                fontsizeNormal: 13,
+                                                fontsizeWeb: 14,
                                                 multilanguage: false,
                                                 maxline: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -524,8 +471,8 @@ class FindState extends State<Find> {
                                                 fontstyle: FontStyle.normal,
                                               ),
                                               MyImage(
-                                                width: 15,
-                                                height: 15,
+                                                width: 13,
+                                                height: 13,
                                                 color: otherColor,
                                                 imagePath: "ic_right.png",
                                               ),
@@ -569,6 +516,7 @@ class FindState extends State<Find> {
                                   ),
                                 ),
                               ),
+                              /* Language END */
                             ],
                           );
                         } else {
@@ -580,9 +528,7 @@ class FindState extends State<Find> {
                     }
                   },
                 ),
-                const SizedBox(
-                  height: 22,
-                ),
+                const SizedBox(height: 22),
               ],
             ),
           ),

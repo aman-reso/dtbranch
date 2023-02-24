@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class VideosByID extends StatefulWidget {
   final String appBarTitle, layoutType;
@@ -29,8 +31,11 @@ class VideosByID extends StatefulWidget {
 }
 
 class VideosByIDState extends State<VideosByID> {
+  HomeState? homeStateObject;
+
   @override
   void initState() {
+    homeStateObject = context.findAncestorStateOfType<HomeState>();
     super.initState();
     _getData();
   }
@@ -57,121 +62,162 @@ class VideosByIDState extends State<VideosByID> {
         Provider.of<VideoByIDProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        backgroundColor: appBgColor,
-        centerTitle: true,
-        title: MyText(
-          color: primaryColor,
-          text: widget.appBarTitle,
-          multilanguage: false,
-          fontsizeNormal: 17,
-          maxline: 1,
-          overflow: TextOverflow.ellipsis,
-          fontweight: FontWeight.bold,
-          textalign: TextAlign.center,
-          fontstyle: FontStyle.normal,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: Dimens.homeTabHeight,
+              alignment: Alignment.center,
+              child: MyText(
+                color: primaryColor,
+                text: widget.appBarTitle,
+                multilanguage: false,
+                fontsizeNormal: 17,
+                fontsizeWeb: 16,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                fontweight: FontWeight.bold,
+                textalign: TextAlign.center,
+                fontstyle: FontStyle.normal,
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: videoByIDProvider.loading
+                    ? ShimmerUtils.responsiveGrid(context, Dimens.heightLand,
+                        Dimens.widthLand, 2, kIsWeb ? 40 : 20)
+                    : (videoByIDProvider.videoByIdModel.status == 200 &&
+                            videoByIDProvider.videoByIdModel.result != null)
+                        ? (videoByIDProvider.videoByIdModel.result?.length ??
+                                    0) >
+                                0
+                            ? _buildVideoItem()
+                            : const NoData(
+                                title: '',
+                                subTitle: '',
+                              )
+                        : const NoData(
+                            title: '',
+                            subTitle: '',
+                          ),
+              ),
+            ),
+          ],
         ),
       ),
-      //  Utils.myAppBar(context, widget.appBarTitle),
-      body: videoByIDProvider.loading
-          ? Utils.pageLoader()
-          : (videoByIDProvider.videoByIdModel.status == 200 &&
-                  videoByIDProvider.videoByIdModel.result != null)
-              ? (videoByIDProvider.videoByIdModel.result?.length ?? 0) > 0
-                  ? SafeArea(
-                      child: AlignedGridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                        itemCount:
-                            (videoByIDProvider.videoByIdModel.result?.length ??
-                                0),
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemBuilder: (BuildContext context, int position) {
-                          return InkWell(
-                            borderRadius: BorderRadius.circular(4),
-                            onTap: () {
-                              log("Clicked on position ==> $position");
-                              if ((videoByIDProvider.videoByIdModel
-                                          .result?[position].videoType ??
-                                      0) ==
-                                  1) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return MovieDetails(
-                                        videoByIDProvider.videoByIdModel
-                                                .result?[position].id ??
-                                            0,
-                                        videoByIDProvider.videoByIdModel
-                                                .result?[position].videoType ??
-                                            0,
-                                        videoByIDProvider.videoByIdModel
-                                                .result?[position].typeId ??
-                                            0,
-                                      );
-                                    },
-                                  ),
-                                );
-                              } else if ((videoByIDProvider.videoByIdModel
-                                          .result?[position].videoType ??
-                                      0) ==
-                                  2) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return TvShowDetails(
-                                        videoByIDProvider.videoByIdModel
-                                                .result?[position].id ??
-                                            0,
-                                        videoByIDProvider.videoByIdModel
-                                                .result?[position].videoType ??
-                                            0,
-                                        videoByIDProvider.videoByIdModel
-                                                .result?[position].typeId ??
-                                            0,
-                                      );
-                                    },
-                                  ),
-                                );
-                              }
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: Dimens.heightLand,
-                              alignment: Alignment.center,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                child: MyNetworkImage(
-                                  imageUrl: videoByIDProvider.videoByIdModel
-                                          .result?[position].landscape
-                                          .toString() ??
-                                      "",
-                                  fit: BoxFit.cover,
-                                  imgHeight: MediaQuery.of(context).size.height,
-                                  imgWidth: MediaQuery.of(context).size.width,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  : const NoData(
-                      title: '',
-                      subTitle: '',
-                    )
-              : const NoData(
-                  title: '',
-                  subTitle: '',
+    );
+  }
+
+  Widget _buildVideoItem() {
+    final videoByIDProvider =
+        Provider.of<VideoByIDProvider>(context, listen: false);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+      child: ResponsiveGridList(
+        minItemWidth: Dimens.widthLand,
+        verticalGridSpacing: 8,
+        horizontalGridSpacing: 8,
+        minItemsPerRow: 2,
+        maxItemsPerRow: 8,
+        listViewBuilderOptions: ListViewBuilderOptions(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+        ),
+        children: List.generate(
+          (videoByIDProvider.videoByIdModel.result?.length ?? 0),
+          (position) {
+            return InkWell(
+              borderRadius: BorderRadius.circular(4),
+              onTap: () {
+                log("Clicked on position ==> $position");
+                if (kIsWeb) {
+                  homeStateObject?.openDetailPage(
+                    (videoByIDProvider.videoByIdModel.result?[position]
+                                    .videoType ??
+                                0) ==
+                            2
+                        ? "showdetail"
+                        : "videodetail",
+                    videoByIDProvider.videoByIdModel.result?[position].id ?? 0,
+                    videoByIDProvider
+                            .videoByIdModel.result?[position].videoType ??
+                        0,
+                    videoByIDProvider.videoByIdModel.result?[position].typeId ??
+                        0,
+                  );
+                  return;
+                }
+                if ((videoByIDProvider
+                            .videoByIdModel.result?[position].videoType ??
+                        0) ==
+                    1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return MovieDetails(
+                          videoByIDProvider
+                                  .videoByIdModel.result?[position].id ??
+                              0,
+                          videoByIDProvider
+                                  .videoByIdModel.result?[position].videoType ??
+                              0,
+                          videoByIDProvider
+                                  .videoByIdModel.result?[position].typeId ??
+                              0,
+                        );
+                      },
+                    ),
+                  );
+                } else if ((videoByIDProvider
+                            .videoByIdModel.result?[position].videoType ??
+                        0) ==
+                    2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return TvShowDetails(
+                          videoByIDProvider
+                                  .videoByIdModel.result?[position].id ??
+                              0,
+                          videoByIDProvider
+                                  .videoByIdModel.result?[position].videoType ??
+                              0,
+                          videoByIDProvider
+                                  .videoByIdModel.result?[position].typeId ??
+                              0,
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                width: Dimens.widthLand,
+                height: Dimens.heightLand,
+                alignment: Alignment.center,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: MyNetworkImage(
+                    imageUrl: videoByIDProvider
+                            .videoByIdModel.result?[position].landscape
+                            .toString() ??
+                        "",
+                    fit: BoxFit.cover,
+                    imgHeight: MediaQuery.of(context).size.height,
+                    imgWidth: MediaQuery.of(context).size.width,
+                  ),
                 ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

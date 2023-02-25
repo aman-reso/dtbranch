@@ -78,7 +78,7 @@ class SplashState extends State<Splash> {
       log('seen ==> $seen');
       log('Constant userID ==> ${Constant.userID}');
       if (!mounted) return;
-      if (kIsWeb) {
+      if (kIsWeb || Constant.isTV) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

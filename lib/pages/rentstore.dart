@@ -5,6 +5,7 @@ import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/provider/rentstoreprovider.dart';
@@ -51,14 +52,14 @@ class RentStoreState extends State<RentStore> {
   }
 
   _openDetailPage(int? videoId, int? videoType, int? typeId) {
-    if (kIsWeb) {
-      homeStateObject?.openDetailPage(
-        (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
-        videoId ?? 0,
-        videoType ?? 0,
-        typeId ?? 0,
-      );
-    }
+    // if (kIsWeb) {
+    //   homeStateObject?.openDetailPage(
+    //     (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
+    //     videoId ?? 0,
+    //     videoType ?? 0,
+    //     typeId ?? 0,
+    //   );
+    // }
     if (videoType == 1) {
       Navigator.push(
         context,
@@ -90,16 +91,26 @@ class RentStoreState extends State<RentStore> {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
+    if (kIsWeb || Constant.isTV) {
       return Scaffold(
         backgroundColor: appBgColor,
-        body: _buildRentStore(),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              _buildRentStore(),
+              /* Common AppBar */
+              if (kIsWeb || Constant.isTV) const CommonAppBar(),
+            ],
+          ),
+        ),
       );
     } else {
       return Scaffold(
         backgroundColor: appBgColor,
         appBar: Utils.myAppBar(context, "stor"),
-        body: _buildRentStore(),
+        body: SafeArea(
+          child: _buildRentStore(),
+        ),
       );
     }
   }
@@ -107,7 +118,9 @@ class RentStoreState extends State<RentStore> {
   Widget _buildRentStore() {
     final rentStoreProvider =
         Provider.of<RentStoreProvider>(context, listen: false);
-    return SafeArea(
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      constraints: const BoxConstraints.expand(),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: (rentStoreProvider.loading)
@@ -116,7 +129,8 @@ class RentStoreState extends State<RentStore> {
             : ((rentStoreProvider.rentModel.status == 200)
                 ? Column(
                     children: [
-                      if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+                      if (kIsWeb || Constant.isTV)
+                        SizedBox(height: Dimens.homeTabHeight),
                       const SizedBox(height: 8),
                       _buildRentVideos(),
                       const SizedBox(height: 22),

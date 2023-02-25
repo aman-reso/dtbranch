@@ -7,6 +7,7 @@ class HomeProvider extends ChangeNotifier {
 
   bool loading = false;
   int selectedIndex = 0;
+  String currentPage = "";
 
   Future<void> getSectionType() async {
     loading = true;
@@ -19,6 +20,11 @@ class HomeProvider extends ChangeNotifier {
 
   setSelectedTab(index) {
     selectedIndex = index;
+    notifyListeners();
+  }
+
+  setCurrentPage(String pageName) {
+    currentPage = pageName;
     notifyListeners();
   }
 

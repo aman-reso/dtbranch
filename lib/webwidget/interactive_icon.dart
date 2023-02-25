@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class InteractiveIcon extends StatefulWidget {
   final String imagePath;
-  dynamic height, width, iconColor, iconColorHover, bgColor, bgHoverColor;
-  final double? bgRadius;
+  dynamic iconColor, iconColorHover, bgColor, bgHoverColor;
+  final double? bgRadius, height, width;
   final bool? withBG;
 
   InteractiveIcon({

@@ -121,6 +121,7 @@ class _CastCrewState extends State<CastCrew> {
             (position) {
               return InkWell(
                 borderRadius: BorderRadius.circular(8),
+                focusColor: white,
                 onTap: () {
                   log("Item Clicked! => $position");
                   if (kIsWeb) return;
@@ -132,54 +133,60 @@ class _CastCrewState extends State<CastCrew> {
                     ),
                   );
                 },
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  clipBehavior: Clip.antiAlias,
-                  children: <Widget>[
-                    SizedBox(
-                      height: kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
-                      width: MediaQuery.of(context).size.width,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(Dimens.cardRadius),
-                        child: MyNetworkImage(
-                          imageUrl: widget.castList?[position].image ??
-                              Constant.userPlaceholder,
-                          fit: BoxFit.cover,
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    clipBehavior: Clip.antiAlias,
+                    children: <Widget>[
+                      SizedBox(
+                        height:
+                            kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                        width: MediaQuery.of(context).size.width,
+                        child: ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(Dimens.cardRadius),
+                          child: MyNetworkImage(
+                            imageUrl: widget.castList?[position].image ??
+                                Constant.userPlaceholder,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(0),
-                      width: MediaQuery.of(context).size.width,
-                      height: kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.center,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            transparentColor,
-                            blackTransparent,
-                            black,
-                          ],
+                      Container(
+                        padding: const EdgeInsets.all(0),
+                        width: MediaQuery.of(context).size.width,
+                        height:
+                            kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.center,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              transparentColor,
+                              blackTransparent,
+                              black,
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: MyText(
-                        multilanguage: false,
-                        text: widget.castList?[position].name ?? "",
-                        fontstyle: FontStyle.normal,
-                        fontsizeNormal: 12,
-                        fontweight: FontWeight.w500,
-                        fontsizeWeb: 14,
-                        maxline: 3,
-                        overflow: TextOverflow.ellipsis,
-                        textalign: TextAlign.center,
-                        color: white,
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: MyText(
+                          multilanguage: false,
+                          text: widget.castList?[position].name ?? "",
+                          fontstyle: FontStyle.normal,
+                          fontsizeNormal: 12,
+                          fontweight: FontWeight.w500,
+                          fontsizeWeb: 14,
+                          maxline: 3,
+                          overflow: TextOverflow.ellipsis,
+                          textalign: TextAlign.center,
+                          color: white,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

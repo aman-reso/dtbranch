@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dtlive/firebase_options.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/splash.dart';
@@ -99,6 +100,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    _getDeviceInfo();
     OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
     super.initState();
   }
@@ -147,12 +149,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return LocaleBuilder(
-      builder: (locale) => Shortcuts(
-        shortcuts: <LogicalKeySet, Intent>{
-          LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
-        },
-        child: MaterialApp(
+    return Shortcuts(
+      shortcuts: <LogicalKeySet, Intent>{
+        LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+      },
+      child: LocaleBuilder(
+        builder: (locale) => MaterialApp(
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -187,7 +189,7 @@ class _MyAppState extends State<MyApp> {
                 const ResponsiveBreakpoint.resize(360, name: MOBILE),
                 const ResponsiveBreakpoint.autoScale(800, name: TABLET),
                 const ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
-                const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+                const ResponsiveBreakpoint.autoScale(1200, name: "4K"),
               ],
               background: Container(
                 color: appBgColor,
@@ -207,5 +209,13 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  _getDeviceInfo() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    Constant.isTV =
+        androidInfo.systemFeatures.contains('android.software.leanback');
+    log("isTV =======================> ${Constant.isTV}");
   }
 }

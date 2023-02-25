@@ -5,6 +5,9 @@ class Constant {
   static String? appName = "DTLive";
   static String? appPackageName = "com.divinetechs.primevideoapp";
 
+  /* Constant for TV check */
+  static bool isTV = false;
+
   /* OneSignal App ID */
   static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
 

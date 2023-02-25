@@ -8,7 +8,6 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RelatedVideoShow extends StatefulWidget {
@@ -84,19 +83,20 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
       itemBuilder: (BuildContext context, int index) {
         return InkWell(
           borderRadius: BorderRadius.circular(4),
+          focusColor: white,
           onTap: () {
             log("Clicked on index ==> $index");
-            if (kIsWeb) {
-              homeStateObject?.openDetailPage(
-                (relatedDataList?[index].videoType ?? 0) == 2
-                    ? "showdetail"
-                    : "videodetail",
-                relatedDataList?[index].id ?? 0,
-                relatedDataList?[index].videoType ?? 0,
-                relatedDataList?[index].typeId ?? 0,
-              );
-              return;
-            }
+            // if (kIsWeb) {
+            //   homeStateObject?.openDetailPage(
+            //     (relatedDataList?[index].videoType ?? 0) == 2
+            //         ? "showdetail"
+            //         : "videodetail",
+            //     relatedDataList?[index].id ?? 0,
+            //     relatedDataList?[index].videoType ?? 0,
+            //     relatedDataList?[index].typeId ?? 0,
+            //   );
+            //   return;
+            // }
             if ((relatedDataList?[index].videoType ?? 0) == 1) {
               Navigator.pushReplacement(
                 context,
@@ -129,6 +129,7 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
             width: Dimens.widthLand,
             height: Dimens.heightLand,
             alignment: Alignment.center,
+            padding: const EdgeInsets.all(2.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               clipBehavior: Clip.antiAliasWithSaveLayer,

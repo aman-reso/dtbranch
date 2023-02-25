@@ -1,5 +1,6 @@
 import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/shimmer/shimmerwidget.dart';
 import 'package:flutter/foundation.dart';
@@ -318,7 +319,7 @@ class ShimmerUtils {
   static Widget buildRentShimmer(context, double itemHeight, double itemWidth) {
     return Column(
       children: [
-        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+        if (kIsWeb || Constant.isTV) SizedBox(height: Dimens.homeTabHeight),
         const SizedBox(height: 8),
         Container(
           width: MediaQuery.of(context).size.width,

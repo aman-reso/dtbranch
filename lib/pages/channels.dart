@@ -15,6 +15,7 @@ import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player_better.dart';
@@ -61,14 +62,14 @@ class ChannelsState extends State<Channels> {
   }
 
   _openDetailPage(int? videoId, int? videoType, int? typeId) {
-    if (kIsWeb) {
-      homeStateObject?.openDetailPage(
-        (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
-        videoId ?? 0,
-        videoType ?? 0,
-        typeId ?? 0,
-      );
-    }
+    // if (kIsWeb) {
+    //   homeStateObject?.openDetailPage(
+    //     (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
+    //     videoId ?? 0,
+    //     videoType ?? 0,
+    //     typeId ?? 0,
+    //   );
+    // }
     if (videoType == 1) {
       Navigator.push(
         context,
@@ -102,7 +103,13 @@ class ChannelsState extends State<Channels> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      body: _buildChannelPage(),
+      body: Stack(
+        children: [
+          _buildChannelPage(),
+          /* Common AppBar */
+          if (kIsWeb || Constant.isTV) const CommonAppBar(),
+        ],
+      ),
     );
   }
 
@@ -110,40 +117,38 @@ class ChannelsState extends State<Channels> {
     final channelSectionProvider =
         Provider.of<ChannelSectionProvider>(context, listen: false);
     if (channelSectionProvider.loading) {
-      return SafeArea(
-        child: SingleChildScrollView(
-          child: channelShimmer(),
-        ),
+      return SingleChildScrollView(
+        child: channelShimmer(),
       );
     } else {
       if (channelSectionProvider.channelSectionModel.status == 200) {
-        return SafeArea(
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
-                /* Banner */
-                (channelSectionProvider.channelSectionModel.liveUrl != null)
-                    ? ((kIsWeb && MediaQuery.of(context).size.width > 720)
-                        ? _webChannelBanner(
-                            channelSectionProvider.channelSectionModel.liveUrl)
-                        : _mobileChannelBanner(
-                            channelSectionProvider.channelSectionModel.liveUrl))
-                    : const SizedBox.shrink(),
-                const SizedBox(height: 20),
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              if (kIsWeb || Constant.isTV)
+                SizedBox(height: Dimens.homeTabHeight),
+              /* Banner */
+              (channelSectionProvider.channelSectionModel.liveUrl != null)
+                  ? (((kIsWeb || Constant.isTV) &&
+                          MediaQuery.of(context).size.width > 720)
+                      ? _webChannelBanner(
+                          channelSectionProvider.channelSectionModel.liveUrl)
+                      : _mobileChannelBanner(
+                          channelSectionProvider.channelSectionModel.liveUrl))
+                  : const SizedBox.shrink(),
+              const SizedBox(height: 20),
 
-                /* Remaining Data */
-                (channelSectionProvider.channelSectionModel.result != null)
-                    ? setSectionByType(
-                        channelSectionProvider.channelSectionModel.result)
-                    : const SizedBox.shrink(),
-                const SizedBox(height: 20),
+              /* Remaining Data */
+              (channelSectionProvider.channelSectionModel.result != null)
+                  ? setSectionByType(
+                      channelSectionProvider.channelSectionModel.result)
+                  : const SizedBox.shrink(),
+              const SizedBox(height: 20),
 
-                /* Web Footer */
-                kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
-              ],
-            ),
+              /* Web Footer */
+              kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
+            ],
           ),
         );
       } else {
@@ -159,10 +164,11 @@ class ChannelsState extends State<Channels> {
   Widget channelShimmer() {
     return Column(
       children: [
-        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+        if (kIsWeb || Constant.isTV) SizedBox(height: Dimens.homeTabHeight),
 
         /* Banner */
-        if (kIsWeb && MediaQuery.of(context).size.width > 720)
+        if ((kIsWeb || Constant.isTV) &&
+            MediaQuery.of(context).size.width > 720)
           ShimmerUtils.channelBannerWeb(context)
         else
           ShimmerUtils.channelBannerMobile(context),

@@ -1,5 +1,7 @@
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,18 +56,26 @@ class _SearchWebState extends State<SearchWeb> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           color: appBgColor,
-          child: Column(
+          child: Stack(
             children: [
-              if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
-              /* Searched Data */
-              Expanded(
-                child: Consumer<SearchProvider>(
-                  builder: (context, searchProvider, child) {
-                    return _buildSearchPage();
-                  },
-                ),
+              Column(
+                children: [
+                  if (kIsWeb || Constant.isTV)
+                    SizedBox(height: Dimens.homeTabHeight),
+                  /* Searched Data */
+                  Expanded(
+                    child: Consumer<SearchProvider>(
+                      builder: (context, searchProvider, child) {
+                        return _buildSearchPage();
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                ],
               ),
-              const SizedBox(height: 22),
+
+              /* Common AppBar */
+              if (kIsWeb || Constant.isTV) const CommonAppBar(),
             ],
           ),
         ),
@@ -79,7 +89,7 @@ class _SearchWebState extends State<SearchWeb> {
         Container(
           constraints: BoxConstraints(
             minWidth: 0,
-            maxWidth: kIsWeb
+            maxWidth: (kIsWeb || Constant.isTV)
                 ? (MediaQuery.of(context).size.width * 0.5)
                 : MediaQuery.of(context).size.width,
           ),
@@ -323,8 +333,8 @@ class _SearchWebState extends State<SearchWeb> {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
-        child: ShimmerUtils.responsiveGrid(
-            context, Dimens.heightLand, Dimens.widthLand, 2, kIsWeb ? 40 : 20),
+        child: ShimmerUtils.responsiveGrid(context, Dimens.heightLand,
+            Dimens.widthLand, 2, (kIsWeb || Constant.isTV) ? 40 : 20),
       ),
     );
   }

@@ -774,6 +774,8 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 uploadType: watchlistProvider.watchlistModel
                                         .result?[position].videoUploadType ??
                                     "",
+                                videoThumb:
+                                    watchlistProvider.watchlistModel.result?[position].landscape ?? "",
                                 vSubtitle: "",
                                 vStopTime: 0);
                           },
@@ -1369,6 +1371,8 @@ class _MyWatchlistState extends State<MyWatchlist> {
         uploadType: watchlistProvider
                 .watchlistModel.result?[position].videoUploadType ??
             "",
+        videoThumb:
+            watchlistProvider.watchlistModel.result?[position].landscape ?? "",
         vSubtitle:
             watchlistProvider.watchlistModel.result?[position].subtitle ?? "",
         vStopTime:

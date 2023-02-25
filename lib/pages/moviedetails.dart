@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dtlive/provider/downloadprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
-import 'package:dtlive/webwidget/playerweb.dart';
+import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/widget/castcrew.dart';
 import 'package:dtlive/widget/moredetails.dart';
 import 'package:dtlive/widget/relatedvideoshow.dart';
@@ -16,9 +16,6 @@ import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/player.dart';
-import 'package:dtlive/pages/vimeoplayer.dart';
-import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -497,7 +494,7 @@ class MovieDetailsState extends State<MovieDetails> {
 
               /* Continue Watching Button */
               /* Watch Now button */
-              if (!kIsWeb) _buildPlayWithSubsCheck(),
+              _buildWatchNow(),
 
               /* Included Features buttons */
               Align(
@@ -1600,197 +1597,7 @@ class MovieDetailsState extends State<MovieDetails> {
 
                             /* Continue Watching Button */
                             /* Watch Now button */
-                            if ((videoDetailsProvider.sectionDetailModel.result
-                                            ?.stopTime ??
-                                        0) >
-                                    0 &&
-                                videoDetailsProvider.sectionDetailModel.result
-                                        ?.videoDuration !=
-                                    null)
-                              Container(
-                                margin:
-                                    const EdgeInsets.fromLTRB(20, 18, 20, 0),
-                                alignment: Alignment.centerLeft,
-                                child: InkWell(
-                                  onTap: () async {
-                                    openPlayer("Video");
-                                  },
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Container(
-                                    height: 35,
-                                    constraints:
-                                        const BoxConstraints(minWidth: 170),
-                                    decoration: BoxDecoration(
-                                      color: primaryDark,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              const SizedBox(width: 20),
-                                              MyImage(
-                                                width: 18,
-                                                height: 18,
-                                                imagePath: "ic_play.png",
-                                              ),
-                                              const SizedBox(width: 12),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  MyText(
-                                                    color: white,
-                                                    text: "continuewatching",
-                                                    multilanguage: true,
-                                                    textalign: TextAlign.start,
-                                                    fontsizeNormal: 14,
-                                                    fontweight: FontWeight.w600,
-                                                    fontsizeWeb: 13,
-                                                    maxline: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    fontstyle: FontStyle.normal,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      MyText(
-                                                        color: white,
-                                                        text: Utils.remainTimeInMin(((videoDetailsProvider
-                                                                        .sectionDetailModel
-                                                                        .result
-                                                                        ?.videoDuration ??
-                                                                    0) -
-                                                                (videoDetailsProvider
-                                                                        .sectionDetailModel
-                                                                        .result
-                                                                        ?.stopTime ??
-                                                                    0))
-                                                            .abs()),
-                                                        textalign:
-                                                            TextAlign.start,
-                                                        fontsizeNormal: 10,
-                                                        fontsizeWeb: 11,
-                                                        multilanguage: false,
-                                                        fontweight:
-                                                            FontWeight.w500,
-                                                        maxline: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontstyle:
-                                                            FontStyle.normal,
-                                                      ),
-                                                      const SizedBox(width: 5),
-                                                      MyText(
-                                                        color: white,
-                                                        text: "left",
-                                                        textalign:
-                                                            TextAlign.start,
-                                                        fontsizeNormal: 10,
-                                                        fontsizeWeb: 11,
-                                                        fontweight:
-                                                            FontWeight.w600,
-                                                        multilanguage: true,
-                                                        maxline: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontstyle:
-                                                            FontStyle.normal,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 20),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          height: 4,
-                                          constraints:
-                                              const BoxConstraints(minWidth: 0),
-                                          margin: const EdgeInsets.all(3),
-                                          child: LinearPercentIndicator(
-                                            padding: const EdgeInsets.all(0),
-                                            barRadius: const Radius.circular(2),
-                                            lineHeight: 4,
-                                            percent: Utils.getPercentage(
-                                                videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration ??
-                                                    0,
-                                                videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.stopTime ??
-                                                    0),
-                                            backgroundColor: secProgressColor,
-                                            progressColor: primaryColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            else
-                              Container(
-                                margin:
-                                    const EdgeInsets.fromLTRB(20, 18, 20, 0),
-                                alignment: Alignment.centerLeft,
-                                child: InkWell(
-                                  onTap: () {
-                                    openPlayer("Video");
-                                  },
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Container(
-                                    height: 35,
-                                    constraints:
-                                        const BoxConstraints(maxWidth: 150),
-                                    padding:
-                                        const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                    decoration: BoxDecoration(
-                                      color: primaryDark,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        MyImage(
-                                          width: 18,
-                                          height: 18,
-                                          imagePath: "ic_play.png",
-                                        ),
-                                        const SizedBox(width: 12),
-                                        MyText(
-                                          color: white,
-                                          text: "watch_now",
-                                          multilanguage: true,
-                                          textalign: TextAlign.start,
-                                          fontsizeNormal: 14,
-                                          fontweight: FontWeight.w600,
-                                          fontsizeWeb: 13,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontstyle: FontStyle.normal,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            _buildWatchNow(),
 
                             /* Included Features buttons */
                             Container(
@@ -2130,222 +1937,42 @@ class MovieDetailsState extends State<MovieDetails> {
     }
   }
 
-  Widget _buildPlayWithSubsCheck() {
-    if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
-      if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
-          videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
-              null) {
-        return Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          child: InkWell(
-            onTap: () async {
-              openPlayer("Video");
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: kIsWeb ? 40 : 55,
-              constraints: BoxConstraints(
-                maxWidth: kIsWeb
-                    ? (MediaQuery.of(context).size.width * 0.4)
-                    : MediaQuery.of(context).size.width,
-              ),
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(width: 20),
-                        MyImage(
-                          width: 20,
-                          height: 20,
-                          imagePath: "ic_play.png",
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              MyText(
-                                color: white,
-                                text: "continuewatching",
-                                multilanguage: true,
-                                textalign: TextAlign.start,
-                                fontsizeNormal: 13,
-                                fontsizeWeb: 15,
-                                fontweight: FontWeight.w600,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              Row(
-                                children: [
-                                  MyText(
-                                    color: white,
-                                    text: Utils.remainTimeInMin(
-                                        ((videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration ??
-                                                    0) -
-                                                (videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.stopTime ??
-                                                    0))
-                                            .abs()),
-                                    textalign: TextAlign.start,
-                                    fontsizeNormal: 10,
-                                    fontweight: FontWeight.w500,
-                                    fontsizeWeb: 12,
-                                    multilanguage: false,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  MyText(
-                                    color: white,
-                                    text: "left",
-                                    textalign: TextAlign.start,
-                                    fontsizeNormal: 10,
-                                    fontweight: FontWeight.w500,
-                                    fontsizeWeb: 12,
-                                    multilanguage: true,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 4,
-                    constraints: const BoxConstraints(minWidth: 0),
-                    margin: const EdgeInsets.all(3),
-                    child: LinearPercentIndicator(
-                      padding: const EdgeInsets.all(0),
-                      barRadius: const Radius.circular(2),
-                      lineHeight: 4,
-                      percent: Utils.getPercentage(
-                          videoDetailsProvider
-                                  .sectionDetailModel.result?.videoDuration ??
-                              0,
-                          videoDetailsProvider
-                                  .sectionDetailModel.result?.stopTime ??
-                              0),
-                      backgroundColor: secProgressColor,
-                      progressColor: primaryColor,
-                    ),
-                  ),
-                ],
-              ),
+  Widget _buildWatchNow() {
+    if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
+        videoDetailsProvider.sectionDetailModel.result?.videoDuration != null) {
+      return Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+        child: InkWell(
+          onTap: () async {
+            openPlayer("Video");
+          },
+          borderRadius: BorderRadius.circular(5),
+          child: Container(
+            height: kIsWeb ? 40 : 55,
+            constraints: BoxConstraints(
+              maxWidth: kIsWeb ? 170 : MediaQuery.of(context).size.width,
             ),
-          ),
-        );
-      } else {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          child: InkWell(
-            onTap: () {
-              openPlayer("Video");
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: 50,
-              constraints: BoxConstraints(
-                maxWidth: kIsWeb
-                    ? (MediaQuery.of(context).size.width * 0.4)
-                    : MediaQuery.of(context).size.width,
-              ),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  MyImage(
-                    width: 20,
-                    height: 20,
-                    imagePath: "ic_play.png",
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
-                      textalign: TextAlign.start,
-                      fontsizeNormal: 15,
-                      fontweight: FontWeight.w600,
-                      fontsizeWeb: 16,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ),
-                ],
-              ),
+            decoration: BoxDecoration(
+              color: primaryDark,
+              borderRadius: BorderRadius.circular(5),
             ),
-          ),
-        );
-      }
-    } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
-        1) {
-      if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
-          videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
-              null) {
-        return Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          child: InkWell(
-            onTap: () async {
-              openPlayer("Video");
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: 55,
-              constraints: BoxConstraints(
-                maxWidth: kIsWeb
-                    ? (MediaQuery.of(context).size.width * 0.4)
-                    : MediaQuery.of(context).size.width,
-              ),
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        MyImage(
-                            width: 20, height: 20, imagePath: "ic_play.png"),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Column(
+            child: Column(
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 20),
+                      MyImage(
+                        width: 18,
+                        height: 18,
+                        imagePath: "ic_play.png",
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -2354,9 +1981,9 @@ class MovieDetailsState extends State<MovieDetails> {
                               text: "continuewatching",
                               multilanguage: true,
                               textalign: TextAlign.start,
-                              fontsizeNormal: 15,
+                              fontsizeNormal: 13,
+                              fontsizeWeb: 15,
                               fontweight: FontWeight.w600,
-                              fontsizeWeb: 16,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontstyle: FontStyle.normal,
@@ -2377,8 +2004,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                           .abs()),
                                   textalign: TextAlign.start,
                                   fontsizeNormal: 10,
-                                  multilanguage: false,
                                   fontweight: FontWeight.w500,
+                                  fontsizeWeb: 12,
+                                  multilanguage: false,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
                                   fontstyle: FontStyle.normal,
@@ -2389,8 +2017,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                   text: "left",
                                   textalign: TextAlign.start,
                                   fontsizeNormal: 10,
-                                  fontweight: FontWeight.w600,
-                                  fontsizeWeb: 11,
+                                  fontweight: FontWeight.w500,
+                                  fontsizeWeb: 12,
                                   multilanguage: true,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -2400,260 +2028,82 @@ class MovieDetailsState extends State<MovieDetails> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 20),
+                    ],
                   ),
-                  Container(
-                    height: 4,
-                    constraints: const BoxConstraints(minWidth: 0),
-                    margin: const EdgeInsets.all(3),
-                    child: LinearPercentIndicator(
-                      padding: const EdgeInsets.all(0),
-                      barRadius: const Radius.circular(2),
-                      lineHeight: 4,
-                      percent: Utils.getPercentage(
-                          videoDetailsProvider
-                                  .sectionDetailModel.result?.videoDuration ??
-                              0,
-                          videoDetailsProvider
-                                  .sectionDetailModel.result?.stopTime ??
-                              0),
-                      backgroundColor: secProgressColor,
-                      progressColor: primaryColor,
-                    ),
+                ),
+                Container(
+                  height: 4,
+                  constraints: const BoxConstraints(minWidth: 0),
+                  margin: const EdgeInsets.all(3),
+                  child: LinearPercentIndicator(
+                    padding: const EdgeInsets.all(0),
+                    barRadius: const Radius.circular(2),
+                    lineHeight: 4,
+                    percent: Utils.getPercentage(
+                        videoDetailsProvider
+                                .sectionDetailModel.result?.videoDuration ??
+                            0,
+                        videoDetailsProvider
+                                .sectionDetailModel.result?.stopTime ??
+                            0),
+                    backgroundColor: secProgressColor,
+                    progressColor: primaryColor,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        );
-      } else {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          child: InkWell(
-            onTap: () {
-              openPlayer("Video");
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: 50,
-              constraints: BoxConstraints(
-                maxWidth: kIsWeb
-                    ? (MediaQuery.of(context).size.width * 0.4)
-                    : MediaQuery.of(context).size.width,
-              ),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  MyImage(
-                    width: 20,
-                    height: 20,
-                    imagePath: "ic_play.png",
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
-                      textalign: TextAlign.start,
-                      fontsizeNormal: 15,
-                      fontweight: FontWeight.w600,
-                      fontsizeWeb: 16,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
+        ),
+      );
     } else {
-      if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
-          videoDetailsProvider.sectionDetailModel.result?.videoDuration !=
-              null) {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          alignment: Alignment.center,
-          child: InkWell(
-            onTap: () {
-              openPlayer("Video");
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: 55,
-              constraints: BoxConstraints(
-                maxWidth: kIsWeb
-                    ? (MediaQuery.of(context).size.width * 0.4)
-                    : MediaQuery.of(context).size.width,
-              ),
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        MyImage(
-                            width: 20, height: 20, imagePath: "ic_play.png"),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            MyText(
-                              color: white,
-                              text: "continuewatching",
-                              multilanguage: true,
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 15,
-                              fontweight: FontWeight.w600,
-                              fontsizeWeb: 16,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                            Row(
-                              children: [
-                                MyText(
-                                  color: white,
-                                  text: Utils.remainTimeInMin(
-                                      ((videoDetailsProvider.sectionDetailModel
-                                                      .result?.videoDuration ??
-                                                  0) -
-                                              (videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.stopTime ??
-                                                  0))
-                                          .abs()),
-                                  textalign: TextAlign.start,
-                                  fontsizeNormal: 10,
-                                  fontweight: FontWeight.w500,
-                                  fontsizeWeb: 11,
-                                  multilanguage: false,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                                const SizedBox(width: 5),
-                                MyText(
-                                  color: white,
-                                  text: "left",
-                                  textalign: TextAlign.start,
-                                  fontsizeNormal: 10,
-                                  fontweight: FontWeight.w500,
-                                  fontsizeWeb: 11,
-                                  multilanguage: true,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                      ],
-                    ),
+      return Container(
+        margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+        child: InkWell(
+          onTap: () {
+            openPlayer("Video");
+          },
+          borderRadius: BorderRadius.circular(5),
+          child: Container(
+            height: kIsWeb ? 40 : 55,
+            constraints: BoxConstraints(
+              maxWidth: kIsWeb ? 150 : MediaQuery.of(context).size.width,
+            ),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            decoration: BoxDecoration(
+              color: primaryDark,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MyImage(
+                  width: 18,
+                  height: 18,
+                  imagePath: "ic_play.png",
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: MyText(
+                    color: white,
+                    text: "watch_now",
+                    multilanguage: true,
+                    textalign: TextAlign.start,
+                    fontsizeNormal: 15,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 16,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
                   ),
-                  Container(
-                    height: 4,
-                    constraints: const BoxConstraints(minWidth: 0),
-                    margin: const EdgeInsets.all(3),
-                    child: LinearPercentIndicator(
-                      padding: const EdgeInsets.all(0),
-                      barRadius: const Radius.circular(2),
-                      lineHeight: 4,
-                      percent: Utils.getPercentage(
-                          videoDetailsProvider
-                                  .sectionDetailModel.result?.videoDuration ??
-                              0,
-                          videoDetailsProvider
-                                  .sectionDetailModel.result?.stopTime ??
-                              0),
-                      backgroundColor: secProgressColor,
-                      progressColor: primaryColor,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        );
-      } else {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-          child: InkWell(
-            onTap: () {
-              openPlayer("Video");
-            },
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              height: 50,
-              constraints: BoxConstraints(
-                maxWidth: kIsWeb
-                    ? (MediaQuery.of(context).size.width * 0.4)
-                    : MediaQuery.of(context).size.width,
-              ),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              decoration: BoxDecoration(
-                color: primaryDark,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  MyImage(
-                    width: 20,
-                    height: 20,
-                    imagePath: "ic_play.png",
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
-                      textalign: TextAlign.start,
-                      fontsizeNormal: 15,
-                      fontweight: FontWeight.w600,
-                      fontsizeWeb: 16,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
+        ),
+      );
     }
   }
 
@@ -3848,6 +3298,9 @@ class MovieDetailsState extends State<MovieDetails> {
           (videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0);
     }
 
+    String? videoThumb =
+        (videoDetailsProvider.sectionDetailModel.result?.landscape ?? "");
+
     String? vUrl, vSubtitle, vUploadType;
     if (playType == "Trailer") {
       vUploadType =
@@ -3864,68 +3317,79 @@ class MovieDetailsState extends State<MovieDetails> {
               "");
     }
 
-    if (kIsWeb) {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerWeb(
-                playType == "Trailer" ? "Trailer" : "Video",
-                vID,
-                vType,
-                vTypeID,
-                vUrl ?? "",
-                vSubtitle ?? "",
-                stopTime,
-                vUploadType);
-          },
-        ),
-      );
-      return;
+    log("vUploadType ===> $vUploadType");
+    log("stopTime ===> $stopTime");
+    if (!mounted) return;
+    var isContinue = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PlayerPod(
+            playType == "Trailer" ? "Trailer" : "Video",
+            vID,
+            vType,
+            vTypeID,
+            vUrl ?? "",
+            vSubtitle ?? "",
+            stopTime,
+            vUploadType,
+            videoThumb,
+          );
+        },
+      ),
+    );
+    log("isContinue ===> $isContinue");
+    if (isContinue != null && isContinue == true) {
+      _getData();
     }
 
-    log("===>vUploadType $vUploadType");
-    if (vUploadType == "youtube") {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return YoutubeVideo(
-              videoUrl: vUrl,
-            );
-          },
-        ),
-      );
-    } else if (vUploadType == "vimeo") {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return VimeoPlayerPage(
-              url: vUrl,
-            );
-          },
-        ),
-      );
-    } else {
-      if (!mounted) return;
-      var isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerPage(playType == "Trailer" ? "Trailer" : "Video", vID,
-                vType, vTypeID, vUrl ?? "", vSubtitle ?? "", stopTime);
-          },
-        ),
-      );
-      log("isContinue ===> $isContinue");
-      if (isContinue != null && isContinue == true) {
-        _getData();
-      }
-    }
+    // if (vUploadType == "youtube") {
+    //   if (!mounted) return;
+    //   await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return PlayerYoutube(
+    //           videoUrl: vUrl,
+    //         );
+    //       },
+    //     ),
+    //   );
+    // } else if (vUploadType == "vimeo") {
+    //   if (!mounted) return;
+    //   await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return PlayerVimeo(
+    //           url: vUrl,
+    //         );
+    //       },
+    //     ),
+    //   );
+    // } else {
+    //   if (!mounted) return;
+    //   var isContinue = await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return PlayerPod(
+    //             playType == "Trailer" ? "Trailer" : "Video",
+    //             vID,
+    //             vType,
+    //             vTypeID,
+    //             vUrl ?? "",
+    //             vSubtitle ?? "",
+    //             stopTime,
+    //             vUploadType);
+    //       },
+    //     ),
+    //   );
+    //   log("isContinue ===> $isContinue");
+    //   if (isContinue != null && isContinue == true) {
+    //     _getData();
+    //   }
+    // }
   }
   /* ========= Open Player ========= */
 
@@ -3943,7 +3407,7 @@ class MovieDetailsState extends State<MovieDetails> {
             Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
             return false;
           }
-          await Navigator.push(
+          dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
@@ -3951,7 +3415,9 @@ class MovieDetailsState extends State<MovieDetails> {
               },
             ),
           );
-          _getData();
+          if (isSubscribed != null && isSubscribed == true) {
+            _getData();
+          }
           return false;
         }
       } else if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ??
@@ -3966,7 +3432,7 @@ class MovieDetailsState extends State<MovieDetails> {
             Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
             return false;
           }
-          await Navigator.push(
+          dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
@@ -3974,7 +3440,9 @@ class MovieDetailsState extends State<MovieDetails> {
               },
             ),
           );
-          _getData();
+          if (isSubscribed != null && isSubscribed == true) {
+            _getData();
+          }
           return false;
         }
       } else if ((videoDetailsProvider.sectionDetailModel.result?.isRent ??

@@ -4,15 +4,15 @@ import 'package:dtlive/utils/color.dart';
 import 'package:flutter/material.dart';
 // import 'package:vimeo_video_player/vimeo_video_player.dart';
 
-class VimeoPlayerPage extends StatefulWidget {
+class PlayerVimeo extends StatefulWidget {
   final String? url;
-  const VimeoPlayerPage({Key? key, required this.url}) : super(key: key);
+  const PlayerVimeo({Key? key, required this.url}) : super(key: key);
 
   @override
-  State<VimeoPlayerPage> createState() => VimeoPlayerPageState();
+  State<PlayerVimeo> createState() => PlayerVimeoState();
 }
 
-class VimeoPlayerPageState extends State<VimeoPlayerPage> {
+class PlayerVimeoState extends State<PlayerVimeo> {
   @override
   Widget build(BuildContext context) {
     log("===> URL ${widget.url.toString()}");

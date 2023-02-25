@@ -50,7 +50,11 @@ class ShowDetailsProvider extends ChangeNotifier {
         }
       }
     }
-    log("getLastWatchedEpisode mCurrentEpiPos ========> $mCurrentEpiPos");
+    if ((episodeBySeasonModel.result?.length ?? 0) > 0 &&
+        mCurrentEpiPos == -1) {
+      mCurrentEpiPos = 0;
+    }
+    log("mCurrentEpiPos ========> $mCurrentEpiPos");
   }
 
   Future<void> setBookMark(

@@ -18,8 +18,8 @@ class Dimens {
 
   static double widthContiPort = 115;
   static double heightContiPort = 155;
-  static double widthContiLand = 172;
-  static double heightContiLand = 104;
+  static double widthContiLand = 150;
+  static double heightContiLand = 100;
   static double widthContiSquare = 172;
   static double heightContiSquare = 172;
 

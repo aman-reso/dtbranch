@@ -2,11 +2,8 @@ import 'dart:developer';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/player.dart';
 import 'package:dtlive/pages/subscription.dart';
-import 'package:dtlive/pages/vimeoplayer.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
-import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -14,7 +11,7 @@ import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
-import 'package:dtlive/webwidget/playerweb.dart';
+import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -322,6 +319,10 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               getAllEpisode();
             }
           } else {
+            if (kIsWeb) {
+              Utils.buildWebAlertDialog(context, "login", "");
+              return false;
+            }
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -332,6 +333,35 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
             );
           }
         }
+      } else if ((showDetailsProvider.sectionDetailModel.result?.isPremium ??
+              0) ==
+          1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isSubscribed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          if (isSubscribed != null && isSubscribed == true) {
+            await showDetailsProvider.getSectionDetails(
+                widget.typeId,
+                showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
+                widget.videoId);
+            getAllEpisode();
+          }
+          return false;
+        }
       } else if ((showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
           1) {
         if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
@@ -341,6 +371,11 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               "Show", index, episodeProvider.episodeBySeasonModel.result);
         } else {
           if (Constant.userID != null) {
+            if (kIsWeb) {
+              Utils.showSnackbar(
+                  context, "info", webPaymentNotAvailable, false);
+              return;
+            }
             dynamic isRented = await Utils.paymentForRent(
                 context: context,
                 videoId: widget.videoId.toString(),
@@ -360,6 +395,10 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               getAllEpisode();
             }
           } else {
+            if (kIsWeb) {
+              Utils.buildWebAlertDialog(context, "login", "");
+              return false;
+            }
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -374,6 +413,10 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         openPlayer("Show", index, episodeProvider.episodeBySeasonModel.result);
       }
     } else {
+      if (kIsWeb) {
+        Utils.buildWebAlertDialog(context, "login", "");
+        return false;
+      }
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -396,6 +439,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       int? vTypeID = widget.typeId;
       int? stopTime = (episodeList?[epiPos].stopTime ?? 0);
       String? vUploadType = (episodeList?[epiPos].videoUploadType ?? "");
+      String? videoThumb = (episodeList?[epiPos].landscape ?? "");
       String? epiUrl = (episodeList?[epiPos].video320 ?? "");
       String? vSubtitle = (episodeList?[epiPos].subtitle ?? "");
       log("epiID ========> $epiID");
@@ -403,59 +447,83 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       log("vTypeID ======> $vTypeID");
       log("stopTime =====> $stopTime");
       log("vUploadType ==> $vUploadType");
+      log("videoThumb ==> $videoThumb");
       log("epiUrl =======> $epiUrl");
       log("vSubtitle ====> $vSubtitle");
 
-      if (kIsWeb) {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return PlayerWeb("Show", epiID, vType, vTypeID, epiUrl, vSubtitle,
-                  stopTime, vUploadType);
-            },
-          ),
-        );
-        return;
+      if (!mounted) return;
+      var isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerPod(
+              "Show",
+              epiID,
+              vType,
+              vTypeID,
+              epiUrl,
+              vSubtitle,
+              stopTime,
+              vUploadType,
+              videoThumb,
+            );
+          },
+        ),
+      );
+      log("isContinue ===> $isContinue");
+      if (isContinue != null && isContinue == true) {
+        getAllEpisode();
       }
 
-      if (episodeList?[epiPos].videoUploadType == "youtube") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return YoutubeVideo(
-                videoUrl: episodeList?[epiPos].videoUrl,
-              );
-            },
-          ),
-        );
-      } else if (episodeList?[epiPos].videoUploadType == "vimeo") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return VimeoPlayerPage(
-                url: episodeList?[epiPos].videoUrl,
-              );
-            },
-          ),
-        );
-      } else {
-        var isContinue = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return PlayerPage(
-                  playType, epiID, vType, vTypeID, epiUrl, vSubtitle, stopTime);
-            },
-          ),
-        );
-        log("isContinue ===> $isContinue");
-        if (isContinue != null && isContinue == true) {
-          getAllEpisode();
-        }
-      }
+      // if (episodeList?[epiPos].videoUploadType == "youtube") {
+      //   if (!mounted) return;
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) {
+      //         return PlayerYoutube(
+      //           videoUrl: episodeList?[epiPos].videoUrl,
+      //         );
+      //       },
+      //     ),
+      //   );
+      // } else if (episodeList?[epiPos].videoUploadType == "vimeo") {
+      //   if (!mounted) return;
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) {
+      //         return PlayerVimeo(
+      //           url: episodeList?[epiPos].videoUrl,
+      //         );
+      //       },
+      //     ),
+      //   );
+      // } else {
+      //   if (!mounted) return;
+      //   var isContinue = await Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) {
+      //         return PlayerPod(
+      //           playType,
+      //           epiID,
+      //           vType,
+      //           vTypeID,
+      //           epiUrl,
+      //           vSubtitle,
+      //           stopTime,
+      //           vUploadType,
+      //           videoThumb,
+      //         );
+      //       },
+      //     ),
+      //   );
+      //   log("isContinue ===> $isContinue");
+      //   if (isContinue != null && isContinue == true) {
+      //     getAllEpisode();
+      //   }
+      // }
     }
   }
 }

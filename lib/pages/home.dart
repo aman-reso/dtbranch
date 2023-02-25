@@ -1287,29 +1287,39 @@ class HomeState extends State<Home> {
                               debugPrint(
                                   "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
                               var isContinues = await Utils.openPlayer(
-                                  context: context,
-                                  playType: "Video",
-                                  videoId: continueWatchingList?[index].id ?? 0,
-                                  videoType:
-                                      continueWatchingList?[index].videoType ??
-                                          0,
-                                  typeId:
-                                      continueWatchingList?[index].typeId ?? 0,
-                                  videoUrl:
-                                      continueWatchingList?[index].video320 ??
-                                          "",
-                                  trailerUrl:
-                                      continueWatchingList?[index].trailerUrl ??
-                                          "",
-                                  uploadType: continueWatchingList?[index]
-                                          .videoUploadType ??
-                                      "",
-                                  vSubtitle:
-                                      continueWatchingList?[index].subtitle ??
-                                          "",
-                                  vStopTime:
-                                      continueWatchingList?[index].stopTime ??
-                                          0);
+                                context: context,
+                                playType:
+                                    (continueWatchingList?[index].videoType ??
+                                                0) ==
+                                            2
+                                        ? "Show"
+                                        : "Video",
+                                videoId: (continueWatchingList?[index]
+                                                .videoType ??
+                                            0) ==
+                                        2
+                                    ? (continueWatchingList?[index].showId ?? 0)
+                                    : (continueWatchingList?[index].id ?? 0),
+                                videoType:
+                                    continueWatchingList?[index].videoType ?? 0,
+                                typeId:
+                                    continueWatchingList?[index].typeId ?? 0,
+                                videoUrl:
+                                    continueWatchingList?[index].video320 ?? "",
+                                trailerUrl:
+                                    continueWatchingList?[index].trailerUrl ??
+                                        "",
+                                uploadType: continueWatchingList?[index]
+                                        .videoUploadType ??
+                                    "",
+                                videoThumb:
+                                    continueWatchingList?[index].landscape ??
+                                        "",
+                                vSubtitle:
+                                    continueWatchingList?[index].subtitle ?? "",
+                                vStopTime:
+                                    continueWatchingList?[index].stopTime ?? 0,
+                              );
                               if (isContinues != null && isContinues == true) {
                                 await sectionDataProvider.getSectionBanner(
                                     "0", "1");

@@ -9,13 +9,10 @@ import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
-import 'package:dtlive/webwidget/playerweb.dart';
+import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/widget/castcrew.dart';
 import 'package:dtlive/widget/moredetails.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/player.dart';
-import 'package:dtlive/pages/vimeoplayer.dart';
-import 'package:dtlive/pages/youtubevideo.dart';
 import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -199,7 +196,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
             InkWell(
               borderRadius: BorderRadius.circular(30),
               onTap: () {
-                openPlayer("Trailer");
+                openPlayer("Show");
               },
               child: MyImage(
                 fit: BoxFit.fill,
@@ -515,7 +512,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
               /* Play Video button */
               /* Continue Watching Button */
               /* Subscription Button */
-              if (!kIsWeb) _buildPlayWithSubsCheck(),
+              _buildWatchNow(),
 
               /* Included Features buttons */
               Align(
@@ -1582,284 +1579,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
                             /* Continue Watching Button */
                             /* Watch Now button */
-                            if ((showDetailsProvider.sectionDetailModel.result
-                                            ?.stopTime ??
-                                        0) >
-                                    0 &&
-                                showDetailsProvider.sectionDetailModel.result
-                                        ?.videoDuration !=
-                                    null)
-                              Container(
-                                margin:
-                                    const EdgeInsets.fromLTRB(20, 18, 20, 0),
-                                alignment: Alignment.centerLeft,
-                                child: InkWell(
-                                  onTap: () async {
-                                    if (Constant.userID != null) {
-                                      if ((showDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.isBuy ??
-                                                  0) ==
-                                              1 ||
-                                          (showDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.rentBuy ??
-                                                  0) ==
-                                              1) {
-                                        openPlayer("Video");
-                                      } else {
-                                        if (kIsWeb) {
-                                          Utils.showSnackbar(context, "info",
-                                              webPaymentNotAvailable, false);
-                                          return;
-                                        }
-                                        dynamic isRented =
-                                            await Utils.paymentForRent(
-                                          context: context,
-                                          videoId: showDetailsProvider
-                                                  .sectionDetailModel.result?.id
-                                                  .toString() ??
-                                              '',
-                                          rentPrice: showDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.rentPrice
-                                                  .toString() ??
-                                              '',
-                                          vTitle: showDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.name
-                                                  .toString() ??
-                                              '',
-                                          typeId: showDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.typeId
-                                                  .toString() ??
-                                              '',
-                                          vType: showDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.videoType
-                                                  .toString() ??
-                                              '',
-                                        );
-                                        if (isRented != null &&
-                                            isRented == true) {
-                                          _getData();
-                                        }
-                                      }
-                                    } else {
-                                      if (kIsWeb) {
-                                        Utils.buildWebAlertDialog(
-                                            context, "login", "");
-                                        return;
-                                      }
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return const LoginSocial();
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Container(
-                                    height: 35,
-                                    constraints:
-                                        const BoxConstraints(minWidth: 170),
-                                    decoration: BoxDecoration(
-                                      color: primaryDark,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              const SizedBox(width: 20),
-                                              MyImage(
-                                                width: 18,
-                                                height: 18,
-                                                imagePath: "ic_play.png",
-                                              ),
-                                              const SizedBox(width: 12),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  MyText(
-                                                    color: white,
-                                                    text: "continuewatching",
-                                                    multilanguage: true,
-                                                    textalign: TextAlign.start,
-                                                    fontsizeNormal: 14,
-                                                    fontweight: FontWeight.w600,
-                                                    fontsizeWeb: 13,
-                                                    maxline: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    fontstyle: FontStyle.normal,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      MyText(
-                                                        color: white,
-                                                        text: Utils.remainTimeInMin(((showDetailsProvider
-                                                                        .sectionDetailModel
-                                                                        .result
-                                                                        ?.videoDuration ??
-                                                                    0) -
-                                                                (showDetailsProvider
-                                                                        .sectionDetailModel
-                                                                        .result
-                                                                        ?.stopTime ??
-                                                                    0))
-                                                            .abs()),
-                                                        textalign:
-                                                            TextAlign.start,
-                                                        fontsizeNormal: 10,
-                                                        fontsizeWeb: 11,
-                                                        multilanguage: false,
-                                                        fontweight:
-                                                            FontWeight.w500,
-                                                        maxline: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontstyle:
-                                                            FontStyle.normal,
-                                                      ),
-                                                      const SizedBox(width: 5),
-                                                      MyText(
-                                                        color: white,
-                                                        text: "left",
-                                                        textalign:
-                                                            TextAlign.start,
-                                                        fontsizeNormal: 10,
-                                                        fontsizeWeb: 11,
-                                                        fontweight:
-                                                            FontWeight.w600,
-                                                        multilanguage: true,
-                                                        maxline: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        fontstyle:
-                                                            FontStyle.normal,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 20),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          height: 4,
-                                          constraints:
-                                              const BoxConstraints(minWidth: 0),
-                                          margin: const EdgeInsets.all(3),
-                                          child: LinearPercentIndicator(
-                                            padding: const EdgeInsets.all(0),
-                                            barRadius: const Radius.circular(2),
-                                            lineHeight: 4,
-                                            percent: Utils.getPercentage(
-                                                showDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration ??
-                                                    0,
-                                                showDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.stopTime ??
-                                                    0),
-                                            backgroundColor: secProgressColor,
-                                            progressColor: primaryColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            else
-                              Container(
-                                margin:
-                                    const EdgeInsets.fromLTRB(20, 18, 20, 0),
-                                alignment: Alignment.centerLeft,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (Constant.userID != null) {
-                                      openPlayer("Video");
-                                    } else {
-                                      if (kIsWeb) {
-                                        Utils.buildWebAlertDialog(
-                                            context, "login", "");
-                                        return;
-                                      }
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return const LoginSocial();
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Container(
-                                    height: 35,
-                                    constraints:
-                                        const BoxConstraints(maxWidth: 150),
-                                    padding:
-                                        const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                    decoration: BoxDecoration(
-                                      color: primaryDark,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        MyImage(
-                                          width: 18,
-                                          height: 18,
-                                          imagePath: "ic_play.png",
-                                        ),
-                                        const SizedBox(width: 12),
-                                        MyText(
-                                          color: white,
-                                          text: "watch_now",
-                                          multilanguage: true,
-                                          textalign: TextAlign.start,
-                                          fontsizeNormal: 14,
-                                          fontweight: FontWeight.w600,
-                                          fontsizeWeb: 13,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontstyle: FontStyle.normal,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            _buildWatchNow(),
 
                             /* Included Features buttons */
                             Container(
@@ -2183,95 +1903,6 @@ class TvShowDetailsState extends State<TvShowDetails> {
     }).toList();
   }
 
-  Widget _buildPlayWithSubsCheck() {
-    if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
-      if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-          (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
-        return _buildWatchNow();
-      } else {
-        return InkWell(
-          borderRadius: BorderRadius.circular(5),
-          onTap: () async {
-            if (Constant.userID != null) {
-              if (kIsWeb) {
-                Utils.showSnackbar(
-                    context, "info", webPaymentNotAvailable, false);
-                return;
-              }
-              dynamic isRented = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const Subscription();
-                  },
-                ),
-              );
-              if (isRented != null && isRented == true) {
-                _getData();
-              }
-            } else {
-              if (kIsWeb) {
-                Utils.buildWebAlertDialog(context, "login", "");
-                return;
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const LoginSocial();
-                  },
-                ),
-              );
-            }
-          },
-          child: Container(
-            height: kIsWeb ? 35 : 55,
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(
-                  color: black,
-                  text: "watch_with",
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 15,
-                  fontsizeWeb: 15,
-                  multilanguage: true,
-                  fontweight: FontWeight.w700,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: black,
-                  text: "appname",
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 15,
-                  fontsizeWeb: 15,
-                  fontweight: FontWeight.w700,
-                  multilanguage: true,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    } else {
-      return _buildWatchNow();
-    }
-  }
-
   Widget _buildRentBtn() {
     if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1 &&
         (showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) == 1) {
@@ -2495,26 +2126,14 @@ class TvShowDetailsState extends State<TvShowDetails> {
             margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
             child: InkWell(
               onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Show");
-                } else {
-                  if (kIsWeb) {
-                    Utils.buildWebAlertDialog(context, "login", "");
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
+                openPlayer("Show");
               },
               borderRadius: BorderRadius.circular(5),
               child: Container(
                 height: kIsWeb ? 40 : 55,
+                constraints: BoxConstraints(
+                  maxWidth: kIsWeb ? 170 : MediaQuery.of(context).size.width,
+                ),
                 decoration: BoxDecoration(
                   color: primaryDark,
                   borderRadius: BorderRadius.circular(5),
@@ -2528,8 +2147,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                         children: [
                           const SizedBox(width: 20),
                           MyImage(
-                            width: 20,
-                            height: 20,
+                            width: 18,
+                            height: 18,
                             imagePath: "ic_play.png",
                           ),
                           const SizedBox(width: 15),
@@ -2634,26 +2253,14 @@ class TvShowDetailsState extends State<TvShowDetails> {
             margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
             child: InkWell(
               onTap: () {
-                if (Constant.userID != null) {
-                  openPlayer("Show");
-                } else {
-                  if (kIsWeb) {
-                    Utils.buildWebAlertDialog(context, "login", "");
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
+                openPlayer("Show");
               },
               borderRadius: BorderRadius.circular(5),
               child: Container(
-                height: kIsWeb ? 35 : 55,
+                height: kIsWeb ? 40 : 55,
+                constraints: BoxConstraints(
+                  maxWidth: kIsWeb ? 150 : MediaQuery.of(context).size.width,
+                ),
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 decoration: BoxDecoration(
                   color: primaryDark,
@@ -2664,8 +2271,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     MyImage(
-                      width: 20,
-                      height: 20,
+                      width: 18,
+                      height: 18,
                       imagePath: "ic_play.png",
                     ),
                     const SizedBox(width: 15),
@@ -3395,8 +3002,15 @@ class TvShowDetailsState extends State<TvShowDetails> {
   void openPlayer(String playType) async {
     if (!kIsWeb) Utils.deleteCacheDir();
     log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
-    if (showDetailsProvider.mCurrentEpiPos != -1 &&
-        (episodeProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
+    if ((episodeProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
+      /* CHECK SUBSCRIPTION */
+      if (playType != "Trailer") {
+        bool? isPrimiumUser = await _checkSubsRentLogin();
+        log("isPrimiumUser =============> $isPrimiumUser");
+        if (!isPrimiumUser) return;
+      }
+      /* CHECK SUBSCRIPTION */
+
       int? epiID = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].id ??
           0);
@@ -3410,6 +3024,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
                 .result?[showDetailsProvider.mCurrentEpiPos].stopTime ??
             0);
       }
+      String? videoThumb = (episodeProvider.episodeBySeasonModel
+              .result?[showDetailsProvider.mCurrentEpiPos].landscape ??
+          "");
       String? vUploadType = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].videoUploadType ??
           "");
@@ -3424,61 +3041,193 @@ class TvShowDetailsState extends State<TvShowDetails> {
       log("vTypeID ======> $vTypeID");
       log("stopTime =====> $stopTime");
       log("vUploadType ==> $vUploadType");
+      log("videoThumb ===> $videoThumb");
       log("epiUrl =======> $epiUrl");
       log("vSubtitle ====> $vSubtitle");
 
-      if (kIsWeb) {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return PlayerWeb("Show", epiID, vType, vTypeID, epiUrl, vSubtitle,
-                  stopTime, vUploadType);
-            },
-          ),
-        );
-        return;
+      if (!mounted) return;
+      var isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerPod(
+              playType == "Trailer" ? "Trailer" : "Show",
+              epiID,
+              vType,
+              vTypeID,
+              epiUrl,
+              vSubtitle,
+              stopTime,
+              vUploadType,
+              videoThumb,
+            );
+          },
+        ),
+      );
+      log("isContinue ===> $isContinue");
+      if (isContinue != null && isContinue == true) {
+        await _getData();
+        await getAllEpisode(showDetailsProvider.seasonPos,
+            showDetailsProvider.sectionDetailModel.session);
       }
 
-      if (vUploadType == "youtube") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return YoutubeVideo(
-                videoUrl: epiUrl,
-              );
-            },
-          ),
-        );
-      } else if (vUploadType == "vimeo") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return VimeoPlayerPage(
-                url: epiUrl,
-              );
-            },
-          ),
-        );
-      } else {
-        var isContinue = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return PlayerPage(
-                  "Show", epiID, vType, vTypeID, epiUrl, vSubtitle, stopTime);
-            },
-          ),
-        );
-        log("isContinue ===> $isContinue");
-        if (isContinue != null && isContinue == true) {
-          await _getData();
-          await getAllEpisode(showDetailsProvider.seasonPos,
-              showDetailsProvider.sectionDetailModel.session);
+      // if (vUploadType == "youtube") {
+      //   if (!mounted) return;
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) {
+      //         return PlayerYoutube(
+      //           videoUrl: epiUrl,
+      //         );
+      //       },
+      //     ),
+      //   );
+      // } else if (vUploadType == "vimeo") {
+      //   if (!mounted) return;
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) {
+      //         return PlayerVimeo(
+      //           url: epiUrl,
+      //         );
+      //       },
+      //     ),
+      //   );
+      // } else {
+      // if (!mounted) return;
+      // var isContinue = await Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return PlayerPod(
+      //         "Show",
+      //         epiID,
+      //         vType,
+      //         vTypeID,
+      //         epiUrl,
+      //         vSubtitle,
+      //         stopTime,
+      //         vUploadType,
+      //         videoThumb,
+      //       );
+      //     },
+      //   ),
+      // );
+      // log("isContinue ===> $isContinue");
+      // if (isContinue != null && isContinue == true) {
+      //   await _getData();
+      //   await getAllEpisode(showDetailsProvider.seasonPos,
+      //       showDetailsProvider.sectionDetailModel.session);
+      // }
+      // }
+    }
+  }
+
+  Future<bool> _checkSubsRentLogin() async {
+    if (Constant.userID != null) {
+      if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) ==
+              1 &&
+          (showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) == 1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isSubscribed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          if (isSubscribed != null && isSubscribed == true) {
+            _getData();
+          }
+          return false;
         }
+      } else if ((showDetailsProvider.sectionDetailModel.result?.isPremium ??
+              0) ==
+          1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isSubscribed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          if (isSubscribed != null && isSubscribed == true) {
+            _getData();
+          }
+          return false;
+        }
+      } else if ((showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+          1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
+            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isRented = await Utils.paymentForRent(
+            context: context,
+            videoId:
+                showDetailsProvider.sectionDetailModel.result?.id.toString() ??
+                    '',
+            rentPrice: showDetailsProvider.sectionDetailModel.result?.rentPrice
+                    .toString() ??
+                '',
+            vTitle: showDetailsProvider.sectionDetailModel.result?.name
+                    .toString() ??
+                '',
+            typeId: showDetailsProvider.sectionDetailModel.result?.typeId
+                    .toString() ??
+                '',
+            vType: showDetailsProvider.sectionDetailModel.result?.videoType
+                    .toString() ??
+                '',
+          );
+          if (isRented != null && isRented == true) {
+            _getData();
+          }
+          return false;
+        }
+      } else {
+        return true;
       }
+    } else {
+      if (kIsWeb) {
+        Utils.buildWebAlertDialog(context, "login", "");
+        return false;
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginSocial();
+          },
+        ),
+      );
+      return false;
     }
   }
 }

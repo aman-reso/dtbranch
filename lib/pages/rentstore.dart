@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/home.dart';
+import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
@@ -46,6 +48,44 @@ class RentStoreState extends State<RentStore> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _openDetailPage(int? videoId, int? videoType, int? typeId) {
+    if (kIsWeb) {
+      homeStateObject?.openDetailPage(
+        (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
+        videoId ?? 0,
+        videoType ?? 0,
+        typeId ?? 0,
+      );
+    }
+    if (videoType == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return MovieDetails(
+              videoId ?? 0,
+              videoType ?? 0,
+              typeId ?? 0,
+            );
+          },
+        ),
+      );
+    } else if (videoType == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return TvShowDetails(
+              videoId ?? 0,
+              videoType ?? 0,
+              typeId ?? 0,
+            );
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -100,30 +140,33 @@ class RentStoreState extends State<RentStore> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 30,
             padding: const EdgeInsets.only(left: 20, right: 20),
+            constraints: const BoxConstraints(minHeight: 30),
             alignment: Alignment.centerLeft,
             child: Row(
               children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: complimentryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: MyText(
-                    color: white,
-                    text: Constant.currencySymbol,
-                    textalign: TextAlign.center,
-                    fontsizeNormal: 11,
-                    fontsizeWeb: 12,
-                    multilanguage: false,
-                    maxline: 1,
-                    fontweight: FontWeight.bold,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
+                FittedBox(
+                  child: Container(
+                    constraints:
+                        const BoxConstraints(minHeight: 20, minWidth: 20),
+                    padding: const EdgeInsets.all(3),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: complimentryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: MyText(
+                      color: white,
+                      text: Constant.currencySymbol,
+                      textalign: TextAlign.center,
+                      fontsizeNormal: 11,
+                      fontsizeWeb: 12,
+                      multilanguage: false,
+                      maxline: 1,
+                      fontweight: FontWeight.bold,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -132,7 +175,7 @@ class RentStoreState extends State<RentStore> {
                   text: "rentvideo",
                   multilanguage: true,
                   textalign: TextAlign.center,
-                  fontsizeNormal: 16,
+                  fontsizeNormal: 14,
                   fontsizeWeb: 16,
                   maxline: 1,
                   fontweight: FontWeight.bold,
@@ -204,12 +247,7 @@ class RentStoreState extends State<RentStore> {
                   borderRadius: BorderRadius.circular(4),
                   onTap: () {
                     log("Clicked on position ==> $position");
-                    homeStateObject?.openDetailPage(
-                      (rentStoreProvider.rentModel.video?[position].videoType ??
-                                  0) ==
-                              2
-                          ? "showdetail"
-                          : "videodetail",
+                    _openDetailPage(
                       rentStoreProvider.rentModel.video?[position].id ?? 0,
                       rentStoreProvider.rentModel.video?[position].videoType ??
                           0,
@@ -236,34 +274,35 @@ class RentStoreState extends State<RentStore> {
                           ),
                         ),
                       ),
-                      Container(
-                        constraints: const BoxConstraints(
-                          minHeight: 15,
-                          minWidth: 30,
-                        ),
-                        height: 22,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(3),
-                              topRight: Radius.circular(4),
-                              bottomLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(3)),
-                        ),
-                        child: MyText(
-                          color: black,
-                          text:
-                              "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?[position].rentPrice.toString() ?? "0"}",
-                          textalign: TextAlign.center,
-                          fontsizeNormal: 12,
-                          fontsizeWeb: 12,
-                          fontweight: FontWeight.w800,
-                          maxline: 1,
-                          multilanguage: false,
-                          overflow: TextOverflow.ellipsis,
-                          fontstyle: FontStyle.normal,
+                      FittedBox(
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            minHeight: 15,
+                            minWidth: 30,
+                          ),
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(3),
+                                topRight: Radius.circular(4),
+                                bottomLeft: Radius.circular(8),
+                                bottomRight: Radius.circular(3)),
+                          ),
+                          child: MyText(
+                            color: black,
+                            text:
+                                "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?[position].rentPrice.toString() ?? "0"}",
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 10,
+                            fontsizeWeb: 12,
+                            fontweight: FontWeight.w700,
+                            maxline: 1,
+                            multilanguage: false,
+                            overflow: TextOverflow.ellipsis,
+                            fontstyle: FontStyle.normal,
+                          ),
                         ),
                       ),
                     ],
@@ -287,30 +326,33 @@ class RentStoreState extends State<RentStore> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 30,
+            constraints: const BoxConstraints(minHeight: 30),
             padding: const EdgeInsets.only(left: 20, right: 20),
             alignment: Alignment.centerLeft,
             child: Row(
               children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: complimentryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: MyText(
-                    color: white,
-                    text: Constant.currencySymbol,
-                    textalign: TextAlign.center,
-                    multilanguage: false,
-                    fontsizeNormal: 11,
-                    fontsizeWeb: 12,
-                    maxline: 1,
-                    fontweight: FontWeight.bold,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
+                FittedBox(
+                  child: Container(
+                    constraints:
+                        const BoxConstraints(minHeight: 20, minWidth: 20),
+                    padding: const EdgeInsets.all(3),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: complimentryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: MyText(
+                      color: white,
+                      text: Constant.currencySymbol,
+                      textalign: TextAlign.center,
+                      multilanguage: false,
+                      fontsizeNormal: 11,
+                      fontsizeWeb: 12,
+                      maxline: 1,
+                      fontweight: FontWeight.bold,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -319,7 +361,7 @@ class RentStoreState extends State<RentStore> {
                   text: "rentshow",
                   textalign: TextAlign.center,
                   multilanguage: true,
-                  fontsizeNormal: 16,
+                  fontsizeNormal: 14,
                   fontsizeWeb: 16,
                   maxline: 1,
                   fontweight: FontWeight.bold,
@@ -428,34 +470,35 @@ class RentStoreState extends State<RentStore> {
                         ),
                       ),
                     ),
-                    Container(
-                      constraints: const BoxConstraints(
-                        minHeight: 15,
-                        minWidth: 30,
-                      ),
-                      height: 22,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(3),
-                            topRight: Radius.circular(4),
-                            bottomLeft: Radius.circular(8),
-                            bottomRight: Radius.circular(3)),
-                      ),
-                      child: MyText(
-                        color: black,
-                        text:
-                            "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?[position].rentPrice.toString() ?? "0"}",
-                        textalign: TextAlign.center,
-                        fontsizeNormal: 12,
-                        fontsizeWeb: 12,
-                        multilanguage: false,
-                        fontweight: FontWeight.w800,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontstyle: FontStyle.normal,
+                    FittedBox(
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minHeight: 15,
+                          minWidth: 30,
+                        ),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(5),
+                        decoration: const BoxDecoration(
+                          color: primaryColor,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(3),
+                              topRight: Radius.circular(4),
+                              bottomLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(3)),
+                        ),
+                        child: MyText(
+                          color: black,
+                          text:
+                              "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?[position].rentPrice.toString() ?? "0"}",
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 10,
+                          fontsizeWeb: 12,
+                          multilanguage: false,
+                          fontweight: FontWeight.w700,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        ),
                       ),
                     ),
                   ],

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class YoutubeVideo extends StatefulWidget {
+class PlayerYoutube extends StatefulWidget {
   final String? videoUrl;
-  const YoutubeVideo({Key? key, this.videoUrl}) : super(key: key);
+  const PlayerYoutube({Key? key, this.videoUrl}) : super(key: key);
 
   @override
-  State<YoutubeVideo> createState() => YoutubeVideoState();
+  State<PlayerYoutube> createState() => PlayerYoutubeState();
 }
 
-class YoutubeVideoState extends State<YoutubeVideo> {
+class PlayerYoutubeState extends State<PlayerYoutube> {
   late YoutubePlayerController controller;
   bool fullScreen = false;
 

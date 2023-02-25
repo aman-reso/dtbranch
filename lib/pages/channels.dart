@@ -6,8 +6,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
+import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -15,10 +17,10 @@ import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/player.dart';
+import 'package:dtlive/pages/player_better.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
-import 'package:dtlive/pages/vimeoplayer.dart';
-import 'package:dtlive/pages/youtubevideo.dart';
+import 'package:dtlive/pages/player_vimeo.dart';
+import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -37,9 +39,11 @@ class Channels extends StatefulWidget {
 
 class ChannelsState extends State<Channels> {
   CarouselController pageController = CarouselController();
+  HomeState? homeStateObject;
 
   @override
   void initState() {
+    homeStateObject = context.findAncestorStateOfType<HomeState>();
     super.initState();
     _getData();
   }
@@ -54,6 +58,44 @@ class ChannelsState extends State<Channels> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _openDetailPage(int? videoId, int? videoType, int? typeId) {
+    if (kIsWeb) {
+      homeStateObject?.openDetailPage(
+        (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
+        videoId ?? 0,
+        videoType ?? 0,
+        typeId ?? 0,
+      );
+    }
+    if (videoType == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return MovieDetails(
+              videoId ?? 0,
+              videoType ?? 0,
+              typeId ?? 0,
+            );
+          },
+        ),
+      );
+    } else if (videoType == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return TvShowDetails(
+              videoId ?? 0,
+              videoType ?? 0,
+              typeId ?? 0,
+            );
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -180,60 +222,7 @@ class ChannelsState extends State<Channels> {
                 return InkWell(
                   onTap: () async {
                     log("Clicked on index ==> $index");
-                    if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
-                      if (Constant.userID != null) {
-                        if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                if ((sectionBannerList?[index].link ?? "")
-                                    .contains("youtube")) {
-                                  return YoutubeVideo(
-                                    videoUrl: sectionBannerList?[index].link,
-                                  );
-                                } else if ((sectionBannerList?[index].link ??
-                                        "")
-                                    .contains("vimeo")) {
-                                  return VimeoPlayerPage(
-                                    url: sectionBannerList?[index].link,
-                                  );
-                                } else {
-                                  return PlayerPage(
-                                    "Channel",
-                                    0,
-                                    0,
-                                    0,
-                                    sectionBannerList?[index].link ?? "",
-                                    sectionBannerList?[index].name ?? "",
-                                    0,
-                                  );
-                                }
-                              },
-                            ),
-                          );
-                        } else {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const Subscription();
-                              },
-                            ),
-                          );
-                          _getData();
-                        }
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const LoginSocial();
-                            },
-                          ),
-                        );
-                      }
-                    }
+                    openPlayer(sectionBannerList, index);
                   },
                   child: Stack(
                     alignment: AlignmentDirectional.bottomCenter,
@@ -331,16 +320,16 @@ class ChannelsState extends State<Channels> {
                           builder: (context) {
                             if ((sectionBannerList?[index].link ?? "")
                                 .contains("youtube")) {
-                              return YoutubeVideo(
+                              return PlayerYoutube(
                                 videoUrl: sectionBannerList?[index].link,
                               );
                             } else if ((sectionBannerList?[index].link ?? "")
                                 .contains("vimeo")) {
-                              return VimeoPlayerPage(
+                              return PlayerVimeo(
                                 url: sectionBannerList?[index].link,
                               );
                             } else {
-                              return PlayerPage(
+                              return PlayerBetter(
                                 "Channel",
                                 0,
                                 0,
@@ -617,40 +606,16 @@ class ChannelsState extends State<Channels> {
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TvShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              _openDetailPage(
+                sectionDataList?[index].id ?? 0,
+                sectionDataList?[index].videoType ?? 0,
+                sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthLand,
@@ -686,40 +651,16 @@ class ChannelsState extends State<Channels> {
         padding: const EdgeInsets.only(left: 20, right: 20),
         scrollDirection: Axis.horizontal,
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TvShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              _openDetailPage(
+                sectionDataList?[index].id ?? 0,
+                sectionDataList?[index].videoType ?? 0,
+                sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthPort,
@@ -754,40 +695,16 @@ class ChannelsState extends State<Channels> {
         scrollDirection: Axis.horizontal,
         physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, right: 20),
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 5,
-        ),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return TvShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              _openDetailPage(
+                sectionDataList?[index].id ?? 0,
+                sectionDataList?[index].videoType ?? 0,
+                sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthSquare,
@@ -810,5 +727,89 @@ class ChannelsState extends State<Channels> {
         },
       ),
     );
+  }
+
+  openPlayer(List<banner.LiveUrl>? sectionBannerList, int index) async {
+    if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
+      if (Constant.userID != null) {
+        if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return PlayerPod(
+                  "Channel",
+                  0,
+                  0,
+                  0,
+                  sectionBannerList?[index].link ?? "",
+                  "",
+                  0,
+                  "",
+                  sectionBannerList?[index].image ?? "",
+                );
+              },
+            ),
+          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) {
+          //       if ((sectionBannerList?[index].link ?? "")
+          //           .contains("youtube")) {
+          //         return PlayerYoutube(
+          //           videoUrl: sectionBannerList?[index].link,
+          //         );
+          //       } else if ((sectionBannerList?[index].link ?? "")
+          //           .contains("vimeo")) {
+          //         return PlayerVimeo(
+          //           url: sectionBannerList?[index].link,
+          //         );
+          //       } else {
+          //         return PlayerBetter(
+          //           "Channel",
+          //           0,
+          //           0,
+          //           0,
+          //           sectionBannerList?[index].link ?? "",
+          //           sectionBannerList?[index].name ?? "",
+          //           0,
+          //         );
+          //       }
+          //     },
+          //   ),
+          // );
+        } else {
+          if (kIsWeb) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return;
+          }
+          dynamic isSubscribed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          if (isSubscribed != null && isSubscribed == true) {
+            _getData();
+          }
+        }
+      } else {
+        if (kIsWeb) {
+          Utils.buildWebAlertDialog(context, "login", "");
+          return;
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const LoginSocial();
+            },
+          ),
+        );
+      }
+    }
   }
 }

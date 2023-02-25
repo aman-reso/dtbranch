@@ -3,9 +3,7 @@ import 'dart:io';
 import 'dart:math' as number;
 
 import 'package:dtlive/pages/allpayment.dart';
-import 'package:dtlive/pages/player.dart';
-import 'package:dtlive/pages/vimeoplayer.dart';
-import 'package:dtlive/pages/youtubevideo.dart';
+import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/webwidget/loginsocialweb.dart';
@@ -120,6 +118,7 @@ class Utils {
       required String? videoUrl,
       required String? trailerUrl,
       required String? uploadType,
+      required String? videoThumb,
       required String? vSubtitle,
       required int? vStopTime}) async {
     deleteCacheDir();
@@ -137,48 +136,69 @@ class Utils {
 
     String? vUrl, vSubtitle, vUploadType;
     if (playType == "Trailer") {
-      vUploadType = "Trailer";
       vUrl = (trailerUrl ?? "");
       vSubtitle = "";
     } else {
       vUrl = (videoUrl ?? "");
       vSubtitle = (vSubtitle ?? "");
-      vUploadType = (uploadType ?? "");
     }
+    vUploadType = (uploadType ?? "");
+    log("stopTime ===> $stopTime");
     log("===>vUploadType $vUploadType");
-    if (vUploadType == "youtube") {
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return YoutubeVideo(
-              videoUrl: vUrl,
-            );
-          },
-        ),
-      );
-    } else if (vUploadType == "vimeo") {
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return VimeoPlayerPage(
-              url: vUrl,
-            );
-          },
-        ),
-      );
-    } else {
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerPage("Video", vID, vType, vTypeID, vUrl ?? "",
-                vSubtitle ?? "", stopTime);
-          },
-        ),
-      );
-    }
+    if (!context.mounted) return;
+    isContinue = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PlayerPod(
+            playType == "Trailer"
+                ? "Trailer"
+                : (videoType == 2 ? "Show" : "Video"),
+            vID,
+            vType,
+            vTypeID,
+            vUrl ?? "",
+            vSubtitle ?? "",
+            stopTime,
+            vUploadType,
+            videoThumb,
+          );
+        },
+      ),
+    );
+    // if (vUploadType == "youtube") {
+    //   isContinue = await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return PlayerYoutube(
+    //           videoUrl: vUrl,
+    //         );
+    //       },
+    //     ),
+    //   );
+    // } else if (vUploadType == "vimeo") {
+    //   isContinue = await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return PlayerVimeo(
+    //           url: vUrl,
+    //         );
+    //       },
+    //     ),
+    //   );
+    // } else {
+    //   isContinue = await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         return PlayerBetter(playType, vID, vType, vTypeID, vUrl ?? "",
+    //             vSubtitle ?? "", stopTime);
+    //       },
+    //     ),
+    //   );
+    // }
     log("isContinue ===> $isContinue");
     return isContinue;
   }

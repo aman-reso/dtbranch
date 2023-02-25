@@ -2,7 +2,9 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:dtlive/firebase_options.dart';
+import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/splash.dart';
+import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/avatarprovider.dart';
 import 'package:dtlive/provider/castdetailsprovider.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
@@ -29,6 +31,7 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
@@ -102,79 +105,105 @@ class _MyAppState extends State<MyApp> {
 
   // What to do when the user opens/taps on a notification
   void _handleNotificationOpened(OSNotificationOpenedResult result) {
-    log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData?['type']}");
+    /* video_id, video_type, type_id */
 
-    int? notiType = result.notification.additionalData?['type'] ?? 0;
-    log("notiType =====> $notiType");
+    log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");
+    log("setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['video_id']}");
+    log("setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
+    log("setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
 
-    switch (notiType) {
-      case 1:
-        // navigatorKey.currentState?.push(
-        //   MaterialPageRoute(
-        //     builder: (context) => const MyAppointments(
-        //       pageType: 'all',
-        //     ),
-        //   ),
-        // );
-        break;
-      default:
+    if (result.notification.additionalData?['video_id'] != null) {
+      String? videoID =
+          result.notification.additionalData?['video_id'].toString() ?? "";
+      String? videoType =
+          result.notification.additionalData?['video_type'].toString() ?? "";
+      String? typeID =
+          result.notification.additionalData?['type_id'].toString() ?? "";
+      log("videoID =====> $videoID");
+      log("videoType =====> $videoType");
+      log("typeID =====> $typeID");
+
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) {
+            if (videoType == "2") {
+              return TvShowDetails(
+                int.parse(videoID),
+                int.parse(videoType),
+                int.parse(typeID),
+              );
+            } else {
+              return MovieDetails(
+                int.parse(videoID),
+                int.parse(videoType),
+                int.parse(typeID),
+              );
+            }
+          },
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return LocaleBuilder(
-      builder: (locale) => MaterialApp(
-        navigatorKey: navigatorKey,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: primaryColor,
-          primaryColorDark: primaryDarkColor,
-          primaryColorLight: primaryLight,
-          scaffoldBackgroundColor: appBgColor,
-        ).copyWith(
-          scrollbarTheme: const ScrollbarThemeData().copyWith(
-            thumbColor: MaterialStateProperty.all(white),
-            trackVisibility: MaterialStateProperty.all(true),
-            trackColor: MaterialStateProperty.all(whiteTransparent),
+      builder: (locale) => Shortcuts(
+        shortcuts: <LogicalKeySet, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+        },
+        child: MaterialApp(
+          navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: primaryColor,
+            primaryColorDark: primaryDarkColor,
+            primaryColorLight: primaryLight,
+            scaffoldBackgroundColor: appBgColor,
+          ).copyWith(
+            scrollbarTheme: const ScrollbarThemeData().copyWith(
+              thumbColor: MaterialStateProperty.all(white),
+              trackVisibility: MaterialStateProperty.all(true),
+              trackColor: MaterialStateProperty.all(whiteTransparent),
+            ),
           ),
-        ),
-        title: Constant.appName ?? "DTLive",
-        localizationsDelegates: Locales.delegates,
-        supportedLocales: Locales.supportedLocales,
-        locale: locale,
-        localeResolutionCallback:
-            (Locale? locale, Iterable<Locale> supportedLocales) {
-          return locale;
-        },
-        builder: (context, child) {
-          return ResponsiveWrapper.builder(
-            BouncingScrollWrapper.builder(
-              context,
-              child!,
-            ),
-            minWidth: 360,
-            defaultScale: true,
-            breakpoints: [
-              const ResponsiveBreakpoint.resize(360, name: MOBILE),
-              const ResponsiveBreakpoint.autoScale(800, name: TABLET),
-              const ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
-              const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
-            ],
-            background: Container(
-              color: appBgColor,
-            ),
-          );
-        },
-        home: const Splash(),
-        scrollBehavior: const MaterialScrollBehavior().copyWith(
-          dragDevices: {
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.touch,
-            PointerDeviceKind.stylus,
-            PointerDeviceKind.unknown,
-            PointerDeviceKind.trackpad
+          title: Constant.appName ?? "DTLive",
+          localizationsDelegates: Locales.delegates,
+          supportedLocales: Locales.supportedLocales,
+          locale: locale,
+          localeResolutionCallback:
+              (Locale? locale, Iterable<Locale> supportedLocales) {
+            return locale;
           },
+          builder: (context, child) {
+            return ResponsiveWrapper.builder(
+              BouncingScrollWrapper.builder(
+                context,
+                child!,
+              ),
+              minWidth: 360,
+              defaultScale: true,
+              breakpoints: [
+                const ResponsiveBreakpoint.resize(360, name: MOBILE),
+                const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                const ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
+                const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+              ],
+              background: Container(
+                color: appBgColor,
+              ),
+            );
+          },
+          home: const Splash(),
+          scrollBehavior: const MaterialScrollBehavior().copyWith(
+            dragDevices: {
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.stylus,
+              PointerDeviceKind.unknown,
+              PointerDeviceKind.trackpad
+            },
+          ),
         ),
       ),
     );

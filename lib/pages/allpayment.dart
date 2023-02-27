@@ -85,7 +85,7 @@ class AllPaymentState extends State<AllPayment> {
       onWillPop: onBackPressed,
       child: Scaffold(
         backgroundColor: appBgColor,
-        appBar: Utils.myAppBarWithBack(context, "payment_details"),
+        appBar: Utils.myAppBarWithBack(context, "payment_details", true),
         body: SafeArea(
           child: SizedBox(
             width: MediaQuery.of(context).size.width,

@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:dtlive/provider/castdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -105,6 +107,12 @@ class _CastDetailsState extends State<CastDetails> {
                             ),
                           ),
                         ),
+                        if (Platform.isAndroid || Platform.isIOS)
+                          Positioned(
+                            top: 15,
+                            left: 15,
+                            child: Utils.buildBackBtn(context),
+                          ),
                       ],
                     ),
                   ),

@@ -43,7 +43,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
       onWillPop: onBackPressed,
       child: Scaffold(
         backgroundColor: appBgColor,
-        appBar: Utils.myAppBar(context, "changeprofileimage"),
+        appBar: Utils.myAppBarWithBack(context, "changeprofileimage", true),
         body: SafeArea(
           child: SizedBox(
             width: MediaQuery.of(context).size.width,

@@ -121,6 +121,7 @@
     </application>
     <!-- Nest within the manifest element, not the application element-->
     <queries>
+        <package android:name="com.facebook.katana" />
         <intent>
             <action android:name="android.speech.RecognitionService" />
         </intent>

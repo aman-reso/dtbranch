@@ -5,6 +5,7 @@ import 'package:dtlive/pages/setting.dart';
 import 'package:dtlive/pages/rentstore.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +19,7 @@ class Bottombar extends StatefulWidget {
 
 class BottombarState extends State<Bottombar> {
   int selectedIndex = 0;
+  DateTime? currentBackPressTime;
 
   static List<Widget> widgetOptions = <Widget>[
     const Home(pageName: ""),
@@ -202,6 +204,13 @@ class BottombarState extends State<Bottombar> {
 
   Future<bool> onBackPressed() async {
     if (selectedIndex == 0) {
+      DateTime now = DateTime.now();
+      if (currentBackPressTime == null ||
+          now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+        currentBackPressTime = now;
+        Utils.showSnackbar(context, "", "exit_warning", true);
+        return Future.value(false);
+      }
       SystemNavigator.pop();
       return Future.value(true);
     } else {

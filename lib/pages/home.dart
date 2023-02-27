@@ -147,19 +147,12 @@ class HomeState extends State<Home> {
     debugPrint("videoId ==========> $videoId");
     debugPrint("videoType ==========> $videoType");
     debugPrint("typeId ==========> $typeId");
-    // if (kIsWeb) {
-    //   this.videoId = videoId;
-    //   this.videoType = videoType;
-    //   this.typeId = typeId;
-    //   _onItemTapped(pageName);
-    //   return;
-    // }
-    if (pageName != "") {
+    if (pageName != "" && (kIsWeb || Constant.isTV)) {
       await setSelectedTab(-1);
     }
     if (videoType == 1) {
       if (!mounted) return;
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
@@ -173,7 +166,7 @@ class HomeState extends State<Home> {
       );
     } else if (videoType == 2) {
       if (!mounted) return;
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
@@ -474,6 +467,7 @@ class HomeState extends State<Home> {
                   (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
                   focusColor: white,
+                  borderRadius: BorderRadius.circular(0),
                   onTap: () {
                     log("Clicked on index ==> $index");
                     openDetailPage(
@@ -485,35 +479,38 @@ class HomeState extends State<Home> {
                       sectionBannerList?[index].typeId ?? 0,
                     );
                   },
-                  child: Stack(
-                    alignment: AlignmentDirectional.bottomCenter,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: Dimens.homeBanner,
-                        child: MyNetworkImage(
-                          imageUrl: sectionBannerList?[index].landscape ?? "",
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(0),
-                        width: MediaQuery.of(context).size.width,
-                        height: Dimens.homeBanner,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.center,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              transparentColor,
-                              transparentColor,
-                              appBgColor,
-                            ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeBanner,
+                          child: MyNetworkImage(
+                            imageUrl: sectionBannerList?[index].landscape ?? "",
+                            fit: BoxFit.fill,
                           ),
                         ),
-                      ),
-                    ],
+                        Container(
+                          padding: const EdgeInsets.all(0),
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeBanner,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.center,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                transparentColor,
+                                transparentColor,
+                                appBgColor,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -1081,7 +1078,7 @@ class HomeState extends State<Home> {
               width: Dimens.widthLand,
               height: Dimens.heightLand,
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(2),
+              padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -1128,7 +1125,7 @@ class HomeState extends State<Home> {
             child: Container(
               width: Dimens.widthPort,
               height: Dimens.heightPort,
-              padding: const EdgeInsets.all(2),
+              padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
               alignment: Alignment.center,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -1177,7 +1174,7 @@ class HomeState extends State<Home> {
               width: Dimens.widthSquare,
               height: Dimens.heightSquare,
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(2),
+              padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -1215,12 +1212,12 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  if (kIsWeb) {
-                    videoId = sectionDataList?[index].id ?? 0;
-                    langCatName = sectionDataList?[index].name ?? "";
-                    _onItemTapped("bylanguage");
-                    return;
-                  }
+                  // if (kIsWeb) {
+                  //   videoId = sectionDataList?[index].id ?? 0;
+                  //   langCatName = sectionDataList?[index].name ?? "";
+                  //   _onItemTapped("bylanguage");
+                  //   return;
+                  // }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -1238,7 +1235,7 @@ class HomeState extends State<Home> {
                   width: Dimens.widthLangGen,
                   height: Dimens.heightLangGen,
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(2),
+                  padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
                   child: Stack(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     children: [
@@ -1281,8 +1278,8 @@ class HomeState extends State<Home> {
                   text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsizeNormal: 14,
-                  fontweight: FontWeight.w500,
-                  fontsizeWeb: 16,
+                  fontweight: FontWeight.w600,
+                  fontsizeWeb: 15,
                   multilanguage: false,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
@@ -1316,12 +1313,12 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  if (kIsWeb) {
-                    videoId = sectionDataList?[index].id ?? 0;
-                    langCatName = sectionDataList?[index].name ?? "";
-                    _onItemTapped("bycategory");
-                    return;
-                  }
+                  // if (kIsWeb) {
+                  //   videoId = sectionDataList?[index].id ?? 0;
+                  //   langCatName = sectionDataList?[index].name ?? "";
+                  //   _onItemTapped("bycategory");
+                  //   return;
+                  // }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -1339,7 +1336,7 @@ class HomeState extends State<Home> {
                   width: Dimens.widthLangGen,
                   height: Dimens.heightLangGen,
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(2),
+                  padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
                   child: Stack(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     children: [
@@ -1382,8 +1379,8 @@ class HomeState extends State<Home> {
                   text: sectionDataList?[index].name.toString() ?? "",
                   textalign: TextAlign.center,
                   fontsizeNormal: 14,
-                  fontweight: FontWeight.w500,
-                  fontsizeWeb: 16,
+                  fontweight: FontWeight.w600,
+                  fontsizeWeb: 15,
                   multilanguage: false,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,

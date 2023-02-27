@@ -43,7 +43,7 @@ class _MyDownloadsState extends State<MyDownloads> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, "downloads"),
+      appBar: Utils.myAppBarWithBack(context, "downloads", true),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

@@ -107,7 +107,9 @@ class _CastCrewState extends State<CastCrew> {
       return Container(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15),
         child: ResponsiveGridList(
-          minItemWidth: kIsWeb ? Dimens.widthCastWeb : Dimens.widthCast,
+          minItemWidth: (kIsWeb || Constant.isTV)
+              ? Dimens.widthCastWeb
+              : Dimens.widthCast,
           verticalGridSpacing: 8,
           horizontalGridSpacing: 6,
           minItemsPerRow: 3,
@@ -124,7 +126,7 @@ class _CastCrewState extends State<CastCrew> {
                 focusColor: white,
                 onTap: () {
                   log("Item Clicked! => $position");
-                  if (kIsWeb) return;
+                  if (kIsWeb || Constant.isTV) return;
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => CastDetails(
@@ -140,8 +142,9 @@ class _CastCrewState extends State<CastCrew> {
                     clipBehavior: Clip.antiAlias,
                     children: <Widget>[
                       SizedBox(
-                        height:
-                            kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                        height: (kIsWeb || Constant.isTV)
+                            ? Dimens.heightCastWeb
+                            : Dimens.heightCast,
                         width: MediaQuery.of(context).size.width,
                         child: ClipRRect(
                           borderRadius:
@@ -156,8 +159,9 @@ class _CastCrewState extends State<CastCrew> {
                       Container(
                         padding: const EdgeInsets.all(0),
                         width: MediaQuery.of(context).size.width,
-                        height:
-                            kIsWeb ? Dimens.heightCastWeb : Dimens.heightCast,
+                        height: (kIsWeb || Constant.isTV)
+                            ? Dimens.heightCastWeb
+                            : Dimens.heightCast,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.center,

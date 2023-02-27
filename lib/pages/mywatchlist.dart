@@ -51,7 +51,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, "watchlist"),
+      appBar: Utils.myAppBarWithBack(context, "watchlist", true),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

@@ -107,7 +107,7 @@ class RentStoreState extends State<RentStore> {
     } else {
       return Scaffold(
         backgroundColor: appBgColor,
-        appBar: Utils.myAppBar(context, "stor"),
+        appBar: Utils.myAppBar(context, "stor", true),
         body: SafeArea(
           child: _buildRentStore(),
         ),

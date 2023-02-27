@@ -98,6 +98,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                         children: [
                           InkWell(
                             borderRadius: BorderRadius.circular(16),
+                            focusColor: gray.withOpacity(0.5),
                             onTap: () async {
                               debugPrint("===> index $index");
                               _onTapEpisodePlay(index);
@@ -106,6 +107,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                               width: 32,
                               height: 32,
                               alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.all(2.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
                               ),

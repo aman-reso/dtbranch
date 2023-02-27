@@ -331,7 +331,28 @@ class Utils {
     );
   }
 
-  static AppBar myAppBar(BuildContext context, String appBarTitle) {
+  static Widget buildBackBtn(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(30),
+      focusColor: gray.withOpacity(0.5),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: MyImage(
+          height: 17,
+          width: 17,
+          imagePath: "back.png",
+          fit: BoxFit.contain,
+          color: white,
+        ),
+      ),
+    );
+  }
+
+  static AppBar myAppBar(
+      BuildContext context, String appBarTitle, bool multilanguage) {
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,
@@ -340,7 +361,7 @@ class Utils {
       title: MyText(
         color: primaryColor,
         text: appBarTitle,
-        multilanguage: true,
+        multilanguage: multilanguage,
         fontsizeNormal: 16,
         fontsizeWeb: 18,
         maxline: 1,
@@ -352,7 +373,8 @@ class Utils {
     );
   }
 
-  static AppBar myAppBarWithBack(BuildContext context, String appBarTitle) {
+  static AppBar myAppBarWithBack(
+      BuildContext context, String appBarTitle, bool multilanguage) {
     return AppBar(
       elevation: 5,
       backgroundColor: appBgColor,
@@ -371,10 +393,11 @@ class Utils {
       ),
       title: MyText(
         text: appBarTitle,
-        multilanguage: true,
-        fontsizeNormal: 18,
+        multilanguage: multilanguage,
+        fontsizeNormal: 16,
+        fontsizeWeb: 18,
         fontstyle: FontStyle.normal,
-        fontweight: FontWeight.w600,
+        fontweight: FontWeight.bold,
         textalign: TextAlign.center,
         color: primaryColor,
       ),
@@ -403,7 +426,7 @@ class Utils {
                 ? infoBG
                 : showFor == "success"
                     ? successBG
-                    : infoBG,
+                    : complimentryColor,
         content: MyText(
           text: message,
           fontsizeNormal: 14,

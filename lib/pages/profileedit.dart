@@ -75,7 +75,7 @@ class ProfileEditState extends State<ProfileEdit> {
     }
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, "setting"),
+      appBar: Utils.myAppBarWithBack(context, "editprofile", true),
       body: SafeArea(
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -114,9 +114,7 @@ class ProfileEditState extends State<ProfileEdit> {
                   );
                 },
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
               /* Change Button */
               InkWell(
                 borderRadius: BorderRadius.circular(5),
@@ -143,9 +141,7 @@ class ProfileEditState extends State<ProfileEdit> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 18,
-              ),
+              const SizedBox(height: 18),
               /* Name */
               Container(
                 height: Dimens.textFieldHeight,

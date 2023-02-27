@@ -4,6 +4,8 @@ class Constant {
 
   static String? appName = "DTLive";
   static String? appPackageName = "com.divinetechs.primevideoapp";
+  static String? appVersion = "1";
+  static String? appBuildNumber = "1.0";
 
   /* Constant for TV check */
   static bool isTV = false;

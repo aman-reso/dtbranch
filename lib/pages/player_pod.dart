@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pod_player/pod_player.dart';
 import 'package:provider/provider.dart';
 
@@ -107,6 +108,9 @@ class _PlayerPodState extends State<PlayerPod> {
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");
 
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     if (widget.playType == "Video" || widget.playType == "Show") {
       if ((playerCPosition ?? 0) > 0 &&
           (playerCPosition == videoDuration ||

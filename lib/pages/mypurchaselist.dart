@@ -46,7 +46,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, "purchases"),
+      appBar: Utils.myAppBarWithBack(context, "purchases", true),
       body: SafeArea(
         child: Consumer<PurchaselistProvider>(
           builder: (context, purchaselistProvider, child) {

@@ -6,7 +6,6 @@ import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';

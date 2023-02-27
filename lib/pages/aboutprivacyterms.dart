@@ -59,7 +59,7 @@ class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
       return Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: appBgColor,
-        appBar: Utils.myAppBar(context, widget.appBarTitle),
+        appBar: Utils.myAppBarWithBack(context, widget.appBarTitle, true),
         body: Container(
           constraints: BoxConstraints(
             minHeight: MediaQuery.of(context).size.height,

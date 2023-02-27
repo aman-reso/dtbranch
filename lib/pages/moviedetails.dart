@@ -257,6 +257,12 @@ class MovieDetailsState extends State<MovieDetails> {
                     ),
                   ),
                 ),
+                if (Platform.isAndroid || Platform.isIOS)
+                  Positioned(
+                    top: 15,
+                    left: 15,
+                    child: Utils.buildBackBtn(context),
+                  ),
               ],
             ),
 
@@ -527,7 +533,10 @@ class MovieDetailsState extends State<MovieDetails> {
 
                   /* Continue Watching Button */
                   /* Watch Now button */
-                  _buildWatchNow(),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+                    child: _buildWatchNow(),
+                  ),
 
                   /* Included Features buttons */
                   Align(
@@ -537,7 +546,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           ? (MediaQuery.of(context).size.width / 2)
                           : MediaQuery.of(context).size.width,
                       constraints: const BoxConstraints(minHeight: 0),
-                      margin: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                      margin: const EdgeInsets.fromLTRB(20, 25, 20, 0),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -557,123 +566,35 @@ class MovieDetailsState extends State<MovieDetails> {
                                             .result?.videoDuration !=
                                         null) {
                                   /* Start Over */
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      InkWell(
-                                        borderRadius: BorderRadius.circular(
-                                            ((kIsWeb || Constant.isTV)
-                                                    ? Dimens.featureWebSize
-                                                    : Dimens.featureSize) /
-                                                2),
-                                        focusColor: white,
-                                        onTap: () async {
-                                          openPlayer("startOver");
-                                        },
-                                        child: Container(
-                                          width: (kIsWeb || Constant.isTV)
-                                              ? Dimens.featureWebSize
-                                              : Dimens.featureSize,
-                                          height: (kIsWeb || Constant.isTV)
-                                              ? Dimens.featureWebSize
-                                              : Dimens.featureSize,
-                                          alignment: Alignment.center,
-                                          padding: const EdgeInsets.all(2.0),
-                                          decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: primaryLight),
-                                            borderRadius: BorderRadius.circular(
-                                                ((kIsWeb || Constant.isTV)
-                                                        ? Dimens.featureWebSize
-                                                        : Dimens.featureSize) /
-                                                    2),
-                                          ),
-                                          child: MyImage(
-                                            width: (kIsWeb || Constant.isTV)
-                                                ? Dimens.featureIconWebSize
-                                                : Dimens.featureIconSize,
-                                            height: (kIsWeb || Constant.isTV)
-                                                ? Dimens.featureIconWebSize
-                                                : Dimens.featureIconSize,
-                                            color: lightGray,
-                                            imagePath: "ic_restart.png",
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      MyText(
-                                        color: white,
-                                        text: "startover",
-                                        multilanguage: true,
-                                        fontsizeNormal: 10,
-                                        fontsizeWeb: 14,
-                                        fontweight: FontWeight.w600,
-                                        maxline: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        textalign: TextAlign.center,
-                                        fontstyle: FontStyle.normal,
-                                      ),
-                                    ],
+                                  return InkWell(
+                                    borderRadius: BorderRadius.circular(5),
+                                    focusColor: gray.withOpacity(0.5),
+                                    onTap: () async {
+                                      openPlayer("startOver");
+                                    },
+                                    child: _buildFeatureBtn(
+                                      icon: 'ic_restart.png',
+                                      title: 'startover',
+                                      multilanguage: true,
+                                    ),
                                   );
                                 } else {
                                   /* Trailer */
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      InkWell(
-                                        borderRadius: BorderRadius.circular(
-                                            ((kIsWeb || Constant.isTV)
-                                                    ? Dimens.featureWebSize
-                                                    : Dimens.featureSize) /
-                                                2),
-                                        focusColor: white,
-                                        onTap: () {
-                                          openPlayer("Trailer");
-                                        },
-                                        child: Container(
-                                          width: (kIsWeb || Constant.isTV)
-                                              ? Dimens.featureWebSize
-                                              : Dimens.featureSize,
-                                          height: (kIsWeb || Constant.isTV)
-                                              ? Dimens.featureWebSize
-                                              : Dimens.featureSize,
-                                          alignment: Alignment.center,
-                                          padding: const EdgeInsets.all(2.0),
-                                          decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: primaryLight),
-                                            borderRadius: BorderRadius.circular(
-                                                ((kIsWeb || Constant.isTV)
-                                                        ? Dimens.featureWebSize
-                                                        : Dimens.featureSize) /
-                                                    2),
-                                          ),
-                                          child: MyImage(
-                                            width: (kIsWeb || Constant.isTV)
-                                                ? Dimens.featureIconWebSize
-                                                : Dimens.featureIconSize,
-                                            height: (kIsWeb || Constant.isTV)
-                                                ? Dimens.featureIconWebSize
-                                                : Dimens.featureIconSize,
-                                            color: lightGray,
-                                            imagePath: "ic_borderplay.png",
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      MyText(
-                                        color: white,
-                                        text: "trailer",
-                                        fontsizeNormal: 10,
-                                        fontsizeWeb: 14,
-                                        fontweight: FontWeight.w600,
-                                        multilanguage: true,
-                                        maxline: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        textalign: TextAlign.center,
-                                        fontstyle: FontStyle.normal,
-                                      ),
-                                    ],
+                                  return InkWell(
+                                    borderRadius: BorderRadius.circular(
+                                        ((kIsWeb || Constant.isTV)
+                                                ? Dimens.featureWebSize
+                                                : Dimens.featureSize) /
+                                            2),
+                                    focusColor: gray.withOpacity(0.5),
+                                    onTap: () {
+                                      openPlayer("Trailer");
+                                    },
+                                    child: _buildFeatureBtn(
+                                      icon: 'ic_borderplay.png',
+                                      title: 'trailer',
+                                      multilanguage: true,
+                                    ),
                                   );
                                 }
                               },
@@ -686,159 +607,76 @@ class MovieDetailsState extends State<MovieDetails> {
 
                           /* Watchlist */
                           Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  focusColor: white,
-                                  onTap: () async {
-                                    log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                                    if (Constant.userID != null) {
-                                      await videoDetailsProvider.setBookMark(
-                                        context,
-                                        widget.typeId,
-                                        widget.videoType,
-                                        widget.videoId,
-                                      );
-                                    } else {
-                                      if ((kIsWeb || Constant.isTV)) {
-                                        Utils.buildWebAlertDialog(
-                                            context, "login", "");
-                                        return;
-                                      }
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return const LoginSocial();
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(
-                                      ((kIsWeb || Constant.isTV)
-                                              ? Dimens.featureWebSize
-                                              : Dimens.featureSize) /
-                                          2),
-                                  child: Container(
-                                    width: (kIsWeb || Constant.isTV)
-                                        ? Dimens.featureWebSize
-                                        : Dimens.featureSize,
-                                    height: (kIsWeb || Constant.isTV)
-                                        ? Dimens.featureWebSize
-                                        : Dimens.featureSize,
-                                    padding: const EdgeInsets.all(2.0),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: primaryLight),
-                                      borderRadius: BorderRadius.circular(
-                                          ((kIsWeb || Constant.isTV)
-                                                  ? Dimens.featureWebSize
-                                                  : Dimens.featureSize) /
-                                              2),
-                                    ),
-                                    child: Consumer<VideoDetailsProvider>(
-                                      builder: (context, videoDetailsProvider,
-                                          child) {
-                                        return MyImage(
-                                          width: (kIsWeb || Constant.isTV)
-                                              ? Dimens.featureIconWebSize
-                                              : Dimens.featureIconSize,
-                                          height: (kIsWeb || Constant.isTV)
-                                              ? Dimens.featureIconWebSize
-                                              : Dimens.featureIconSize,
-                                          color: lightGray,
-                                          imagePath: (videoDetailsProvider
-                                                          .sectionDetailModel
-                                                          .result
-                                                          ?.isBookmark ??
-                                                      0) ==
-                                                  1
-                                              ? "watchlist_remove.png"
-                                              : "ic_plus.png",
-                                        );
+                            child: InkWell(
+                              focusColor: gray.withOpacity(0.5),
+                              onTap: () async {
+                                log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                                if (Constant.userID != null) {
+                                  await videoDetailsProvider.setBookMark(
+                                    context,
+                                    widget.typeId,
+                                    widget.videoType,
+                                    widget.videoId,
+                                  );
+                                } else {
+                                  if ((kIsWeb || Constant.isTV)) {
+                                    Utils.buildWebAlertDialog(
+                                        context, "login", "");
+                                    return;
+                                  }
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const LoginSocial();
                                       },
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                MyText(
-                                  color: white,
-                                  text: "watchlist",
-                                  fontsizeNormal: 10,
-                                  fontsizeWeb: 14,
-                                  fontweight: FontWeight.w600,
-                                  multilanguage: true,
-                                  maxline: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  textalign: TextAlign.center,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ],
+                                  );
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(5),
+                              child: Consumer<VideoDetailsProvider>(
+                                builder:
+                                    (context, videoDetailsProvider, child) {
+                                  if ((videoDetailsProvider.sectionDetailModel
+                                              .result?.isBookmark ??
+                                          0) ==
+                                      1) {
+                                    return _buildFeatureBtn(
+                                      icon: 'watchlist_remove.png',
+                                      title: 'watchlist',
+                                      multilanguage: true,
+                                    );
+                                  } else {
+                                    return _buildFeatureBtn(
+                                      icon: 'ic_plus.png',
+                                      title: 'watchlist',
+                                      multilanguage: true,
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                           ),
 
                           /* More */
                           if (!(kIsWeb || Constant.isTV))
                             Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  InkWell(
-                                    focusColor: white,
-                                    borderRadius: BorderRadius.circular(
-                                        Dimens.featureSize / 2),
-                                    onTap: () {
-                                      buildMoreDialog(videoDetailsProvider
-                                              .sectionDetailModel
-                                              .result
-                                              ?.stopTime ??
-                                          0);
-                                    },
-                                    child: Container(
-                                      width: (kIsWeb || Constant.isTV)
-                                          ? Dimens.featureWebSize
-                                          : Dimens.featureSize,
-                                      height: (kIsWeb || Constant.isTV)
-                                          ? Dimens.featureWebSize
-                                          : Dimens.featureSize,
-                                      padding: const EdgeInsets.all(2.0),
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: primaryLight),
-                                        borderRadius: BorderRadius.circular(
-                                            ((kIsWeb || Constant.isTV)
-                                                    ? Dimens.featureWebSize
-                                                    : Dimens.featureSize) /
-                                                2),
-                                      ),
-                                      child: MyImage(
-                                        width: (kIsWeb || Constant.isTV)
-                                            ? Dimens.featureIconWebSize
-                                            : Dimens.featureIconSize,
-                                        height: (kIsWeb || Constant.isTV)
-                                            ? Dimens.featureIconWebSize
-                                            : Dimens.featureIconSize,
-                                        color: lightGray,
-                                        imagePath: "ic_more.png",
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  MyText(
-                                    color: white,
-                                    multilanguage: true,
-                                    text: "more",
-                                    fontsizeNormal: 10,
-                                    fontsizeWeb: 14,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.center,
-                                    fontstyle: FontStyle.normal,
-                                  ),
-                                ],
+                              child: InkWell(
+                                focusColor: gray.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(5),
+                                onTap: () {
+                                  buildMoreDialog(videoDetailsProvider
+                                          .sectionDetailModel
+                                          .result
+                                          ?.stopTime ??
+                                      0);
+                                },
+                                child: _buildFeatureBtn(
+                                  icon: 'ic_more.png',
+                                  title: 'more',
+                                  multilanguage: true,
+                                ),
                               ),
                             ),
                         ],
@@ -1058,10 +896,15 @@ class MovieDetailsState extends State<MovieDetails> {
                   ),
 
                   /* Related ~ More Details */
-                  Consumer<VideoDetailsProvider>(
-                    builder: (context, videoDetailsProvider, child) {
-                      return _buildTabs();
-                    },
+                  Container(
+                    margin: (kIsWeb || Constant.isTV)
+                        ? const EdgeInsets.fromLTRB(20, 0, 20, 0)
+                        : const EdgeInsets.all(0),
+                    child: Consumer<VideoDetailsProvider>(
+                      builder: (context, videoDetailsProvider, child) {
+                        return _buildTabs();
+                      },
+                    ),
                   ),
                   const SizedBox(height: 20),
 
@@ -1081,7 +924,6 @@ class MovieDetailsState extends State<MovieDetails> {
       width: MediaQuery.of(context).size.width,
       constraints: const BoxConstraints.expand(),
       child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             if ((kIsWeb || Constant.isTV))
@@ -1183,7 +1025,7 @@ class MovieDetailsState extends State<MovieDetails> {
                   /* Details */
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: Dimens.detailWebPoster + 30,
+                    height: Dimens.detailWebPoster,
                     alignment: Alignment.centerLeft,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1204,8 +1046,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                     width: MediaQuery.of(context).size.width,
                                     constraints:
                                         const BoxConstraints(minHeight: 0),
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 0, 20, 8),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 8),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -1261,8 +1103,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                           FontWeight.w600,
                                                       multilanguage: false,
                                                       maxline: 1,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1299,8 +1141,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                           FontWeight.w500,
                                                       multilanguage: false,
                                                       maxline: 1,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1340,8 +1182,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       fontweight:
                                                           FontWeight.w500,
                                                       maxline: 1,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1371,10 +1213,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                                         width: .7,
                                                       ),
                                                       borderRadius:
-                                                          BorderRadius
-                                                              .circular(4),
-                                                      shape:
-                                                          BoxShape.rectangle,
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      shape: BoxShape.rectangle,
                                                     ),
                                                     child: MyText(
                                                       color: otherColor,
@@ -1391,8 +1232,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                           FontWeight.w500,
                                                       multilanguage: false,
                                                       maxline: 1,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1438,8 +1279,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 fontsizeWeb: 13,
                                                 maxline: 1,
                                                 multilanguage: true,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 fontstyle: FontStyle.normal,
                                               ),
                                               const SizedBox(width: 5),
@@ -1452,8 +1292,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 fontsizeWeb: 13,
                                                 maxline: 1,
                                                 multilanguage: false,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 fontstyle: FontStyle.normal,
                                               ),
                                               const SizedBox(width: 5),
@@ -1476,10 +1315,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ),
                                         ),
                                         /* Subtitle */
-                                        (videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.subtitle ??
+                                        (videoDetailsProvider.sectionDetailModel
+                                                        .result?.subtitle ??
                                                     "")
                                                 .isNotEmpty
                                             ? Container(
@@ -1501,8 +1338,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       fontsizeWeb: 13,
                                                       maxline: 1,
                                                       multilanguage: true,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1518,8 +1355,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       fontsizeWeb: 13,
                                                       maxline: 1,
                                                       multilanguage: false,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1535,8 +1372,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       fontsizeWeb: 13,
                                                       maxline: 1,
                                                       multilanguage: false,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1546,10 +1383,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                             : const SizedBox.shrink(),
 
                                         /* Prime TAG */
-                                        (videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.isPremium ??
+                                        (videoDetailsProvider.sectionDetailModel
+                                                        .result?.isPremium ??
                                                     0) ==
                                                 1
                                             ? Container(
@@ -1560,8 +1395,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                                     .width,
                                                 child: Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
+                                                      CrossAxisAlignment.start,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   mainAxisSize:
@@ -1578,8 +1412,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                           FontWeight.w700,
                                                       multilanguage: true,
                                                       maxline: 1,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1595,8 +1429,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       fontweight:
                                                           FontWeight.w400,
                                                       maxline: 1,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       fontstyle:
                                                           FontStyle.normal,
                                                     ),
@@ -1606,10 +1440,8 @@ class MovieDetailsState extends State<MovieDetails> {
                                             : const SizedBox.shrink(),
 
                                         /* Rent TAG */
-                                        (videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.isRent ??
+                                        (videoDetailsProvider.sectionDetailModel
+                                                        .result?.isRent ??
                                                     0) ==
                                                 1
                                             ? Container(
@@ -1625,15 +1457,14 @@ class MovieDetailsState extends State<MovieDetails> {
                                                     Container(
                                                       width: 18,
                                                       height: 18,
-                                                      decoration:
-                                                          BoxDecoration(
+                                                      decoration: BoxDecoration(
                                                         color:
                                                             complimentryColor,
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10),
-                                                        shape: BoxShape
-                                                            .rectangle,
+                                                        shape:
+                                                            BoxShape.rectangle,
                                                       ),
                                                       alignment:
                                                           Alignment.center,
@@ -1656,8 +1487,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                                       ),
                                                     ),
                                                     Container(
-                                                      margin: const EdgeInsets
-                                                          .only(left: 5),
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 5),
                                                       child: MyText(
                                                         color: white,
                                                         text: "renttag",
@@ -1703,10 +1535,10 @@ class MovieDetailsState extends State<MovieDetails> {
                                                 maxLines: 10,
                                                 linkColor: primaryColor,
                                                 style: TextStyle(
-                                                  fontSize: (kIsWeb ||
-                                                          Constant.isTV)
-                                                      ? 12
-                                                      : 13,
+                                                  fontSize:
+                                                      (kIsWeb || Constant.isTV)
+                                                          ? 12
+                                                          : 13,
                                                   fontStyle: FontStyle.normal,
                                                   color: white,
                                                   fontWeight: FontWeight.w500,
@@ -1720,360 +1552,347 @@ class MovieDetailsState extends State<MovieDetails> {
                                   ),
                                 ),
 
-                                /* Continue Watching Button */
-                                /* Watch Now button */
-                                _buildWatchNow(),
-
-                                /* Included Features buttons */
-                                Container(
-                                  width: (kIsWeb || Constant.isTV)
-                                      ? (MediaQuery.of(context).size.width /
-                                          2)
-                                      : MediaQuery.of(context).size.width,
-                                  constraints:
-                                      const BoxConstraints(minHeight: 0),
-                                  margin:
-                                      const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                                  alignment: Alignment.center,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    children: [
-                                      /* Rent Button */
-                                      Container(
-                                        constraints:
-                                            const BoxConstraints(minWidth: 0),
-                                        child: _buildRentBtn(),
-                                      ),
-                                      const SizedBox(width: 10),
-
-                                      /* Trailer & StartOver Button */
-                                      Container(
-                                        constraints: const BoxConstraints(
-                                            minWidth: 50),
-                                        child: Consumer<VideoDetailsProvider>(
-                                          builder: (context,
-                                              videoDetailsProvider, child) {
-                                            if ((videoDetailsProvider
-                                                            .sectionDetailModel
-                                                            .result
-                                                            ?.stopTime ??
-                                                        0) >
-                                                    0 &&
-                                                videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.videoDuration !=
-                                                    null) {
-                                              /* Start Over */
-                                              return Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  InkWell(
-                                                    focusColor: white,
-                                                    borderRadius: BorderRadius
-                                                        .circular(((kIsWeb ||
-                                                                Constant
-                                                                    .isTV))
-                                                            ? Dimens
-                                                                .featureWebSize
-                                                            : Dimens.featureSize /
-                                                                2),
-                                                    onTap: () async {
-                                                      openPlayer("startOver");
-                                                    },
-                                                    child: Container(
-                                                      width: ((kIsWeb ||
-                                                              Constant.isTV))
-                                                          ? Dimens
-                                                              .featureWebSize
-                                                          : Dimens
-                                                              .featureSize,
-                                                      height: ((kIsWeb ||
-                                                              Constant.isTV))
-                                                          ? Dimens
-                                                              .featureWebSize
-                                                          : Dimens
-                                                              .featureSize,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      padding:
-                                                          const EdgeInsets
-                                                              .all(2.0),
-                                                      decoration:
-                                                          BoxDecoration(
-                                                        border: Border.all(
-                                                          color: primaryLight,
-                                                        ),
-                                                        borderRadius: BorderRadius
-                                                            .circular((((kIsWeb ||
-                                                                        Constant
-                                                                            .isTV))
-                                                                    ? Dimens
-                                                                        .featureWebSize
-                                                                    : Dimens
-                                                                        .featureSize) /
-                                                                2),
-                                                      ),
-                                                      child: MyImage(
-                                                        width: ((kIsWeb ||
-                                                                Constant
-                                                                    .isTV))
-                                                            ? Dimens
-                                                                .featureIconWebSize
-                                                            : Dimens
-                                                                .featureIconSize,
-                                                        height: ((kIsWeb ||
-                                                                Constant
-                                                                    .isTV))
-                                                            ? Dimens
-                                                                .featureIconWebSize
-                                                            : Dimens
-                                                                .featureIconSize,
-                                                        color: lightGray,
-                                                        imagePath:
-                                                            "ic_restart.png",
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 5),
-                                                  MyText(
-                                                    color: white,
-                                                    text: "startover",
-                                                    multilanguage: true,
-                                                    fontsizeNormal: 12,
-                                                    fontsizeWeb: 12,
-                                                    fontweight:
-                                                        FontWeight.w500,
-                                                    maxline: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textalign:
-                                                        TextAlign.center,
-                                                    fontstyle:
-                                                        FontStyle.normal,
-                                                  ),
-                                                ],
-                                              );
-                                            } else {
-                                              /* Trailer */
-                                              return Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  InkWell(
-                                                    focusColor: white,
-                                                    borderRadius: BorderRadius
-                                                        .circular((((kIsWeb ||
-                                                                    Constant
-                                                                        .isTV))
-                                                                ? Dimens
-                                                                    .featureWebSize
-                                                                : Dimens
-                                                                    .featureSize) /
-                                                            2),
-                                                    onTap: () {
-                                                      openPlayer("Trailer");
-                                                    },
-                                                    child: Container(
-                                                      width: ((kIsWeb ||
-                                                              Constant.isTV))
-                                                          ? Dimens
-                                                              .featureWebSize
-                                                          : Dimens
-                                                              .featureSize,
-                                                      height: ((kIsWeb ||
-                                                              Constant.isTV))
-                                                          ? Dimens
-                                                              .featureWebSize
-                                                          : Dimens
-                                                              .featureSize,
-                                                      alignment:
-                                                          Alignment.center,
-                                                      padding:
-                                                          const EdgeInsets
-                                                              .all(2.0),
-                                                      decoration:
-                                                          BoxDecoration(
-                                                        border: Border.all(
-                                                          color: primaryLight,
-                                                        ),
-                                                        borderRadius: BorderRadius
-                                                            .circular(Dimens
-                                                                    .featureSize /
-                                                                2),
-                                                      ),
-                                                      child: MyImage(
-                                                        width: ((kIsWeb ||
-                                                                Constant
-                                                                    .isTV))
-                                                            ? Dimens
-                                                                .featureIconWebSize
-                                                            : Dimens
-                                                                .featureIconSize,
-                                                        height: ((kIsWeb ||
-                                                                Constant
-                                                                    .isTV))
-                                                            ? Dimens
-                                                                .featureIconWebSize
-                                                            : Dimens
-                                                                .featureIconSize,
-                                                        color: lightGray,
-                                                        imagePath:
-                                                            "ic_borderplay.png",
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 5),
-                                                  MyText(
-                                                    color: white,
-                                                    text: "trailer",
-                                                    fontsizeNormal: 12,
-                                                    fontsizeWeb: 12,
-                                                    fontweight:
-                                                        FontWeight.w500,
-                                                    multilanguage: true,
-                                                    maxline: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textalign:
-                                                        TextAlign.center,
-                                                    fontstyle:
-                                                        FontStyle.normal,
-                                                  ),
-                                                ],
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-
-                                      /* Watchlist */
-                                      Container(
-                                        constraints: const BoxConstraints(
-                                            minWidth: 50),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            InkWell(
-                                              focusColor: white,
-                                              onTap: () async {
-                                                log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                                                if (Constant.userID != null) {
-                                                  await videoDetailsProvider
-                                                      .setBookMark(
-                                                    context,
-                                                    widget.typeId,
-                                                    widget.videoType,
-                                                    widget.videoId,
-                                                  );
-                                                } else {
-                                                  if ((kIsWeb ||
-                                                      Constant.isTV)) {
-                                                    Utils.buildWebAlertDialog(
-                                                        context, "login", "");
-                                                    return;
-                                                  }
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return const LoginSocial();
-                                                      },
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                              borderRadius: BorderRadius
-                                                  .circular(((kIsWeb ||
-                                                              Constant.isTV)
-                                                          ? Dimens
-                                                              .featureWebSize
-                                                          : Dimens
-                                                              .featureSize) /
-                                                      2),
-                                              child: Container(
-                                                width: (kIsWeb ||
-                                                        Constant.isTV)
-                                                    ? Dimens.featureWebSize
-                                                    : Dimens.featureSize,
-                                                height: (kIsWeb ||
-                                                        Constant.isTV)
-                                                    ? Dimens.featureWebSize
-                                                    : Dimens.featureSize,
-                                                padding:
-                                                    const EdgeInsets.all(2.0),
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: primaryLight,
-                                                  ),
-                                                  borderRadius: BorderRadius
-                                                      .circular((((kIsWeb ||
-                                                                  Constant
-                                                                      .isTV))
-                                                              ? Dimens
-                                                                  .featureWebSize
-                                                              : Dimens
-                                                                  .featureSize) /
-                                                          2),
-                                                ),
-                                                child: Consumer<
-                                                    VideoDetailsProvider>(
-                                                  builder: (context,
-                                                      videoDetailsProvider,
-                                                      child) {
-                                                    return MyImage(
-                                                      width: ((kIsWeb ||
-                                                              Constant.isTV))
-                                                          ? Dimens
-                                                              .featureIconWebSize
-                                                          : Dimens
-                                                              .featureIconSize,
-                                                      height: ((kIsWeb ||
-                                                              Constant.isTV))
-                                                          ? Dimens
-                                                              .featureIconWebSize
-                                                          : Dimens
-                                                              .featureIconSize,
-                                                      color: lightGray,
-                                                      imagePath: (videoDetailsProvider
-                                                                      .sectionDetailModel
-                                                                      .result
-                                                                      ?.isBookmark ??
-                                                                  0) ==
-                                                              1
-                                                          ? "watchlist_remove.png"
-                                                          : "ic_plus.png",
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                            MyText(
-                                              color: white,
-                                              text: "watchlist",
-                                              fontsizeNormal: 12,
-                                              fontsizeWeb: 12,
-                                              fontweight: FontWeight.w500,
-                                              multilanguage: true,
-                                              maxline: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              textalign: TextAlign.center,
-                                              fontstyle: FontStyle.normal,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                // /* Continue Watching Button */
+                                // /* Watch Now button */
+                                // _buildWatchNow(),
+                                // /* Included Features buttons */
+                                // Container(
+                                //   width: (kIsWeb || Constant.isTV)
+                                //       ? (MediaQuery.of(context).size.width / 2)
+                                //       : MediaQuery.of(context).size.width,
+                                //   constraints:
+                                //       const BoxConstraints(minHeight: 0),
+                                //   margin:
+                                //       const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                //   alignment: Alignment.center,
+                                //   child: Row(
+                                //     crossAxisAlignment:
+                                //         CrossAxisAlignment.start,
+                                //     mainAxisAlignment: MainAxisAlignment.start,
+                                //     children: [
+                                //       /* Rent Button */
+                                //       Container(
+                                //         constraints:
+                                //             const BoxConstraints(minWidth: 0),
+                                //         child: _buildRentBtn(),
+                                //       ),
+                                //       const SizedBox(width: 10),
+                                //       /* Trailer & StartOver Button */
+                                //       Container(
+                                //         constraints:
+                                //             const BoxConstraints(minWidth: 50),
+                                //         child: Consumer<VideoDetailsProvider>(
+                                //           builder: (context,
+                                //               videoDetailsProvider, child) {
+                                //             if ((videoDetailsProvider
+                                //                             .sectionDetailModel
+                                //                             .result
+                                //                             ?.stopTime ??
+                                //                         0) >
+                                //                     0 &&
+                                //                 videoDetailsProvider
+                                //                         .sectionDetailModel
+                                //                         .result
+                                //                         ?.videoDuration !=
+                                //                     null) {
+                                //               /* Start Over */
+                                //               return Column(
+                                //                 mainAxisAlignment:
+                                //                     MainAxisAlignment.center,
+                                //                 children: [
+                                //                   InkWell(
+                                //                     focusColor: white,
+                                //                     borderRadius: BorderRadius
+                                //                         .circular(((kIsWeb ||
+                                //                                 Constant.isTV))
+                                //                             ? Dimens
+                                //                                 .featureWebSize
+                                //                             : Dimens.featureSize /
+                                //                                 2),
+                                //                     onTap: () async {
+                                //                       openPlayer("startOver");
+                                //                     },
+                                //                     child: Container(
+                                //                       width: ((kIsWeb ||
+                                //                               Constant.isTV))
+                                //                           ? Dimens
+                                //                               .featureWebSize
+                                //                           : Dimens.featureSize,
+                                //                       height: ((kIsWeb ||
+                                //                               Constant.isTV))
+                                //                           ? Dimens
+                                //                               .featureWebSize
+                                //                           : Dimens.featureSize,
+                                //                       alignment:
+                                //                           Alignment.center,
+                                //                       padding:
+                                //                           const EdgeInsets.all(
+                                //                               2.0),
+                                //                       decoration: BoxDecoration(
+                                //                         border: Border.all(
+                                //                           color: primaryLight,
+                                //                         ),
+                                //                         borderRadius: BorderRadius
+                                //                             .circular((((kIsWeb ||
+                                //                                         Constant
+                                //                                             .isTV))
+                                //                                     ? Dimens
+                                //                                         .featureWebSize
+                                //                                     : Dimens
+                                //                                         .featureSize) /
+                                //                                 2),
+                                //                       ),
+                                //                       child: MyImage(
+                                //                         width: ((kIsWeb ||
+                                //                                 Constant.isTV))
+                                //                             ? Dimens
+                                //                                 .featureIconWebSize
+                                //                             : Dimens
+                                //                                 .featureIconSize,
+                                //                         height: ((kIsWeb ||
+                                //                                 Constant.isTV))
+                                //                             ? Dimens
+                                //                                 .featureIconWebSize
+                                //                             : Dimens
+                                //                                 .featureIconSize,
+                                //                         color: lightGray,
+                                //                         imagePath:
+                                //                             "ic_restart.png",
+                                //                       ),
+                                //                     ),
+                                //                   ),
+                                //                   const SizedBox(height: 5),
+                                //                   MyText(
+                                //                     color: white,
+                                //                     text: "startover",
+                                //                     multilanguage: true,
+                                //                     fontsizeNormal: 12,
+                                //                     fontsizeWeb: 12,
+                                //                     fontweight: FontWeight.w500,
+                                //                     maxline: 1,
+                                //                     overflow:
+                                //                         TextOverflow.ellipsis,
+                                //                     textalign: TextAlign.center,
+                                //                     fontstyle: FontStyle.normal,
+                                //                   ),
+                                //                 ],
+                                //               );
+                                //             } else {
+                                //               /* Trailer */
+                                //               return Column(
+                                //                 mainAxisAlignment:
+                                //                     MainAxisAlignment.center,
+                                //                 children: [
+                                //                   InkWell(
+                                //                     focusColor: white,
+                                //                     borderRadius: BorderRadius
+                                //                         .circular((((kIsWeb ||
+                                //                                     Constant
+                                //                                         .isTV))
+                                //                                 ? Dimens
+                                //                                     .featureWebSize
+                                //                                 : Dimens
+                                //                                     .featureSize) /
+                                //                             2),
+                                //                     onTap: () {
+                                //                       openPlayer("Trailer");
+                                //                     },
+                                //                     child: Padding(
+                                //                       padding:
+                                //                           const EdgeInsets.all(
+                                //                               2.0),
+                                //                       child: Container(
+                                //                         width: ((kIsWeb ||
+                                //                                 Constant.isTV))
+                                //                             ? Dimens
+                                //                                 .featureWebSize
+                                //                             : Dimens
+                                //                                 .featureSize,
+                                //                         height: ((kIsWeb ||
+                                //                                 Constant.isTV))
+                                //                             ? Dimens
+                                //                                 .featureWebSize
+                                //                             : Dimens
+                                //                                 .featureSize,
+                                //                         alignment:
+                                //                             Alignment.center,
+                                //                         decoration:
+                                //                             BoxDecoration(
+                                //                           border: Border.all(
+                                //                             color: primaryLight,
+                                //                           ),
+                                //                           borderRadius: BorderRadius
+                                //                               .circular(Dimens
+                                //                                       .featureSize /
+                                //                                   2),
+                                //                         ),
+                                //                         child: MyImage(
+                                //                           width: ((kIsWeb ||
+                                //                                   Constant
+                                //                                       .isTV))
+                                //                               ? Dimens
+                                //                                   .featureIconWebSize
+                                //                               : Dimens
+                                //                                   .featureIconSize,
+                                //                           height: ((kIsWeb ||
+                                //                                   Constant
+                                //                                       .isTV))
+                                //                               ? Dimens
+                                //                                   .featureIconWebSize
+                                //                               : Dimens
+                                //                                   .featureIconSize,
+                                //                           color: lightGray,
+                                //                           imagePath:
+                                //                               "ic_borderplay.png",
+                                //                         ),
+                                //                       ),
+                                //                     ),
+                                //                   ),
+                                //                   const SizedBox(height: 5),
+                                //                   MyText(
+                                //                     color: white,
+                                //                     text: "trailer",
+                                //                     fontsizeNormal: 12,
+                                //                     fontsizeWeb: 12,
+                                //                     fontweight: FontWeight.w500,
+                                //                     multilanguage: true,
+                                //                     maxline: 1,
+                                //                     overflow:
+                                //                         TextOverflow.ellipsis,
+                                //                     textalign: TextAlign.center,
+                                //                     fontstyle: FontStyle.normal,
+                                //                   ),
+                                //                 ],
+                                //               );
+                                //             }
+                                //           },
+                                //         ),
+                                //       ),
+                                //       const SizedBox(width: 10),
+                                //       /* Watchlist */
+                                //       Container(
+                                //         constraints:
+                                //             const BoxConstraints(minWidth: 50),
+                                //         child: Column(
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.center,
+                                //           children: [
+                                //             InkWell(
+                                //               focusColor: white,
+                                //               onTap: () async {
+                                //                 log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                                //                 if (Constant.userID != null) {
+                                //                   await videoDetailsProvider
+                                //                       .setBookMark(
+                                //                     context,
+                                //                     widget.typeId,
+                                //                     widget.videoType,
+                                //                     widget.videoId,
+                                //                   );
+                                //                 } else {
+                                //                   if ((kIsWeb ||
+                                //                       Constant.isTV)) {
+                                //                     Utils.buildWebAlertDialog(
+                                //                         context, "login", "");
+                                //                     return;
+                                //                   }
+                                //                   Navigator.push(
+                                //                     context,
+                                //                     MaterialPageRoute(
+                                //                       builder: (context) {
+                                //                         return const LoginSocial();
+                                //                       },
+                                //                     ),
+                                //                   );
+                                //                 }
+                                //               },
+                                //               borderRadius: BorderRadius
+                                //                   .circular(((kIsWeb ||
+                                //                               Constant.isTV)
+                                //                           ? Dimens
+                                //                               .featureWebSize
+                                //                           : Dimens
+                                //                               .featureSize) /
+                                //                       2),
+                                //               child: Padding(
+                                //                 padding:
+                                //                     const EdgeInsets.all(2.0),
+                                //                 child: Container(
+                                //                   width: (kIsWeb ||
+                                //                           Constant.isTV)
+                                //                       ? Dimens.featureWebSize
+                                //                       : Dimens.featureSize,
+                                //                   height: (kIsWeb ||
+                                //                           Constant.isTV)
+                                //                       ? Dimens.featureWebSize
+                                //                       : Dimens.featureSize,
+                                //                   alignment: Alignment.center,
+                                //                   decoration: BoxDecoration(
+                                //                     border: Border.all(
+                                //                       color: primaryLight,
+                                //                     ),
+                                //                     borderRadius: BorderRadius
+                                //                         .circular((((kIsWeb ||
+                                //                                     Constant
+                                //                                         .isTV))
+                                //                                 ? Dimens
+                                //                                     .featureWebSize
+                                //                                 : Dimens
+                                //                                     .featureSize) /
+                                //                             2),
+                                //                   ),
+                                //                   child: Consumer<
+                                //                       VideoDetailsProvider>(
+                                //                     builder: (context,
+                                //                         videoDetailsProvider,
+                                //                         child) {
+                                //                       return MyImage(
+                                //                         width: ((kIsWeb ||
+                                //                                 Constant.isTV))
+                                //                             ? Dimens
+                                //                                 .featureIconWebSize
+                                //                             : Dimens
+                                //                                 .featureIconSize,
+                                //                         height: ((kIsWeb ||
+                                //                                 Constant.isTV))
+                                //                             ? Dimens
+                                //                                 .featureIconWebSize
+                                //                             : Dimens
+                                //                                 .featureIconSize,
+                                //                         color: lightGray,
+                                //                         imagePath: (videoDetailsProvider
+                                //                                         .sectionDetailModel
+                                //                                         .result
+                                //                                         ?.isBookmark ??
+                                //                                     0) ==
+                                //                                 1
+                                //                             ? "watchlist_remove.png"
+                                //                             : "ic_plus.png",
+                                //                       );
+                                //                     },
+                                //                   ),
+                                //                 ),
+                                //               ),
+                                //             ),
+                                //             const SizedBox(height: 5),
+                                //             MyText(
+                                //               color: white,
+                                //               text: "watchlist",
+                                //               fontsizeNormal: 12,
+                                //               fontsizeWeb: 12,
+                                //               fontweight: FontWeight.w500,
+                                //               multilanguage: true,
+                                //               maxline: 1,
+                                //               overflow: TextOverflow.ellipsis,
+                                //               textalign: TextAlign.center,
+                                //               fontstyle: FontStyle.normal,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -2090,19 +1909,143 @@ class MovieDetailsState extends State<MovieDetails> {
             ),
             const SizedBox(height: 10),
 
+            /* WatchNow & Feature buttons */
+            Container(
+              alignment: Alignment.centerLeft,
+              constraints: const BoxConstraints(minHeight: 0, minWidth: 0),
+              margin: const EdgeInsets.fromLTRB(30, 10, 0, 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  /* WatchNow & ContinueWatching */
+                  _buildWatchNow(),
+                  const SizedBox(width: 10),
+
+                  /* Rent Button */
+                  Container(
+                    constraints: const BoxConstraints(minWidth: 0),
+                    child: _buildRentBtn(),
+                  ),
+                  const SizedBox(width: 10),
+
+                  /* Trailer & StartOver Button */
+                  Container(
+                    constraints: const BoxConstraints(minWidth: 50),
+                    child: Consumer<VideoDetailsProvider>(
+                      builder: (context, videoDetailsProvider, child) {
+                        if ((videoDetailsProvider
+                                        .sectionDetailModel.result?.stopTime ??
+                                    0) >
+                                0 &&
+                            videoDetailsProvider
+                                    .sectionDetailModel.result?.videoDuration !=
+                                null) {
+                          /* Start Over */
+                          return InkWell(
+                            focusColor: gray.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () async {
+                              openPlayer("startOver");
+                            },
+                            child: _buildFeatureBtn(
+                              icon: 'ic_restart.png',
+                              title: 'startover',
+                              multilanguage: true,
+                            ),
+                          );
+                        } else {
+                          /* Trailer */
+                          return InkWell(
+                            focusColor: gray.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              openPlayer("Trailer");
+                            },
+                            child: _buildFeatureBtn(
+                              icon: 'ic_borderplay.png',
+                              title: 'trailer',
+                              multilanguage: true,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+
+                  /* Watchlist */
+                  Container(
+                    constraints: const BoxConstraints(minWidth: 50),
+                    child: InkWell(
+                      focusColor: gray.withOpacity(0.5),
+                      onTap: () async {
+                        log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                        if (Constant.userID != null) {
+                          await videoDetailsProvider.setBookMark(
+                            context,
+                            widget.typeId,
+                            widget.videoType,
+                            widget.videoId,
+                          );
+                        } else {
+                          if ((kIsWeb || Constant.isTV)) {
+                            Utils.buildWebAlertDialog(context, "login", "");
+                            return;
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const LoginSocial();
+                              },
+                            ),
+                          );
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(5),
+                      child: Consumer<VideoDetailsProvider>(
+                        builder: (context, videoDetailsProvider, child) {
+                          if ((videoDetailsProvider
+                                      .sectionDetailModel.result?.isBookmark ??
+                                  0) ==
+                              1) {
+                            return _buildFeatureBtn(
+                              icon: 'watchlist_remove.png',
+                              title: 'watchlist',
+                              multilanguage: true,
+                            );
+                          } else {
+                            return _buildFeatureBtn(
+                              icon: 'ic_plus.png',
+                              title: 'watchlist',
+                              multilanguage: true,
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             /* Other Details */
             /* Related ~ More Details */
-            Consumer<VideoDetailsProvider>(
-              builder: (context, videoDetailsProvider, child) {
-                return _buildTabs();
-              },
+            Container(
+              margin: (kIsWeb || Constant.isTV)
+                  ? const EdgeInsets.fromLTRB(10, 10, 20, 0)
+                  : const EdgeInsets.all(0),
+              child: Consumer<VideoDetailsProvider>(
+                builder: (context, videoDetailsProvider, child) {
+                  return _buildTabs();
+                },
+              ),
             ),
             const SizedBox(height: 20),
 
             /* Web Footer */
-            (kIsWeb || Constant.isTV)
-                ? const FooterWeb()
-                : const SizedBox.shrink(),
+            (kIsWeb) ? const FooterWeb() : const SizedBox.shrink(),
           ],
         ),
       ),
@@ -2139,172 +2082,178 @@ class MovieDetailsState extends State<MovieDetails> {
     if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
         videoDetailsProvider.sectionDetailModel.result?.videoDuration != null) {
       return Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+        alignment: Alignment.centerLeft,
         child: InkWell(
           onTap: () async {
             openPlayer("Video");
           },
           focusColor: white,
           borderRadius: BorderRadius.circular(5),
-          child: Container(
-            height: (kIsWeb || Constant.isTV) ? 40 : 55,
-            padding: const EdgeInsets.all(2),
-            constraints: BoxConstraints(
-              maxWidth: (kIsWeb || Constant.isTV)
-                  ? 190
-                  : MediaQuery.of(context).size.width,
-            ),
-            decoration: BoxDecoration(
-              color: primaryDark,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 20),
-                      MyImage(
-                        width: 18,
-                        height: 18,
-                        imagePath: "ic_play.png",
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            MyText(
-                              color: white,
-                              text: "continuewatching",
-                              multilanguage: true,
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 13,
-                              fontsizeWeb: 15,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                            Row(
-                              children: [
-                                MyText(
-                                  color: white,
-                                  text: Utils.remainTimeInMin(
-                                      ((videoDetailsProvider.sectionDetailModel
-                                                      .result?.videoDuration ??
-                                                  0) -
-                                              (videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.stopTime ??
-                                                  0))
-                                          .abs()),
-                                  textalign: TextAlign.start,
-                                  fontsizeNormal: 10,
-                                  fontweight: FontWeight.w500,
-                                  fontsizeWeb: 12,
-                                  multilanguage: false,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                                const SizedBox(width: 5),
-                                MyText(
-                                  color: white,
-                                  text: "left",
-                                  textalign: TextAlign.start,
-                                  fontsizeNormal: 10,
-                                  fontweight: FontWeight.w500,
-                                  fontsizeWeb: 12,
-                                  multilanguage: true,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ],
-                            ),
-                          ],
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Container(
+              height: (kIsWeb || Constant.isTV) ? 40 : 55,
+              constraints: BoxConstraints(
+                maxWidth: (kIsWeb || Constant.isTV)
+                    ? 190
+                    : MediaQuery.of(context).size.width,
+              ),
+              decoration: BoxDecoration(
+                color: primaryDark,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(width: 20),
+                        MyImage(
+                          width: 18,
+                          height: 18,
+                          imagePath: "ic_play.png",
                         ),
-                      ),
-                      const SizedBox(width: 20),
-                    ],
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              MyText(
+                                color: white,
+                                text: "continuewatching",
+                                multilanguage: true,
+                                textalign: TextAlign.start,
+                                fontsizeNormal: 13,
+                                fontsizeWeb: 15,
+                                fontweight: FontWeight.w600,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
+                              Row(
+                                children: [
+                                  MyText(
+                                    color: white,
+                                    text: Utils.remainTimeInMin(
+                                        ((videoDetailsProvider
+                                                        .sectionDetailModel
+                                                        .result
+                                                        ?.videoDuration ??
+                                                    0) -
+                                                (videoDetailsProvider
+                                                        .sectionDetailModel
+                                                        .result
+                                                        ?.stopTime ??
+                                                    0))
+                                            .abs()),
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 10,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 12,
+                                    multilanguage: false,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  MyText(
+                                    color: white,
+                                    text: "left",
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 10,
+                                    fontweight: FontWeight.w500,
+                                    fontsizeWeb: 12,
+                                    multilanguage: true,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  height: 4,
-                  constraints: const BoxConstraints(minWidth: 0),
-                  margin: const EdgeInsets.all(3),
-                  child: LinearPercentIndicator(
-                    padding: const EdgeInsets.all(0),
-                    barRadius: const Radius.circular(2),
-                    lineHeight: 4,
-                    percent: Utils.getPercentage(
-                        videoDetailsProvider
-                                .sectionDetailModel.result?.videoDuration ??
-                            0,
-                        videoDetailsProvider
-                                .sectionDetailModel.result?.stopTime ??
-                            0),
-                    backgroundColor: secProgressColor,
-                    progressColor: primaryColor,
+                  Container(
+                    height: 4,
+                    constraints: const BoxConstraints(minWidth: 0),
+                    margin: const EdgeInsets.all(3),
+                    child: LinearPercentIndicator(
+                      padding: const EdgeInsets.all(0),
+                      barRadius: const Radius.circular(2),
+                      lineHeight: 4,
+                      percent: Utils.getPercentage(
+                          videoDetailsProvider
+                                  .sectionDetailModel.result?.videoDuration ??
+                              0,
+                          videoDetailsProvider
+                                  .sectionDetailModel.result?.stopTime ??
+                              0),
+                      backgroundColor: secProgressColor,
+                      progressColor: primaryColor,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       );
     } else {
       return Container(
-        margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+        alignment: Alignment.centerLeft,
         child: InkWell(
           onTap: () {
             openPlayer("Video");
           },
           focusColor: white,
           borderRadius: BorderRadius.circular(5),
-          child: Container(
-            height: (kIsWeb || Constant.isTV) ? 40 : 55,
-            constraints: BoxConstraints(
-              maxWidth: (kIsWeb || Constant.isTV)
-                  ? 180
-                  : MediaQuery.of(context).size.width,
-            ),
-            padding: const EdgeInsets.fromLTRB(20, 2, 20, 2),
-            decoration: BoxDecoration(
-              color: primaryDark,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                MyImage(
-                  width: 18,
-                  height: 18,
-                  imagePath: "ic_play.png",
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: MyText(
-                    color: white,
-                    text: "watch_now",
-                    multilanguage: true,
-                    textalign: TextAlign.start,
-                    fontsizeNormal: 15,
-                    fontweight: FontWeight.w600,
-                    fontsizeWeb: 16,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Container(
+              height: (kIsWeb || Constant.isTV) ? 40 : 55,
+              constraints: BoxConstraints(
+                maxWidth: (kIsWeb || Constant.isTV)
+                    ? 180
+                    : MediaQuery.of(context).size.width,
+              ),
+              padding: const EdgeInsets.fromLTRB(20, 2, 20, 2),
+              decoration: BoxDecoration(
+                color: primaryDark,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MyImage(
+                    width: 18,
+                    height: 18,
+                    imagePath: "ic_play.png",
                   ),
-                ),
-              ],
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: MyText(
+                      color: white,
+                      text: "watch_now",
+                      multilanguage: true,
+                      textalign: TextAlign.start,
+                      fontsizeNormal: 15,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 16,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -2320,107 +2269,60 @@ class MovieDetailsState extends State<MovieDetails> {
         return const SizedBox.shrink();
       } else {
         return Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                focusColor: white,
-                borderRadius: BorderRadius.circular(((kIsWeb || Constant.isTV)
-                        ? Dimens.featureWebSize
-                        : Dimens.featureSize) /
-                    2),
-                onTap: () async {
-                  if (Constant.userID != null) {
-                    if ((kIsWeb || Constant.isTV)) {
-                      Utils.showSnackbar(
-                          context, "info", webPaymentNotAvailable, false);
-                      return;
-                    }
-                    dynamic isRented = await Utils.paymentForRent(
-                      context: context,
-                      videoId: videoDetailsProvider
-                              .sectionDetailModel.result?.id
-                              .toString() ??
-                          '',
-                      rentPrice: videoDetailsProvider
-                              .sectionDetailModel.result?.rentPrice
-                              .toString() ??
-                          '',
-                      vTitle: videoDetailsProvider
-                              .sectionDetailModel.result?.name
-                              .toString() ??
-                          '',
-                      typeId: videoDetailsProvider
-                              .sectionDetailModel.result?.typeId
-                              .toString() ??
-                          '',
-                      vType: videoDetailsProvider
-                              .sectionDetailModel.result?.videoType
-                              .toString() ??
-                          '',
-                    );
-                    if (isRented != null && isRented == true) {
-                      _getData();
-                    }
-                  } else {
-                    if ((kIsWeb || Constant.isTV)) {
-                      Utils.buildWebAlertDialog(context, "login", "");
-                      return;
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const LoginSocial();
-                        },
-                      ),
-                    );
-                  }
-                },
-                child: Container(
-                  width: (kIsWeb || Constant.isTV)
-                      ? Dimens.featureWebSize
-                      : Dimens.featureSize,
-                  height: (kIsWeb || Constant.isTV)
-                      ? Dimens.featureWebSize
-                      : Dimens.featureSize,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryLight),
-                    borderRadius: BorderRadius.circular(
-                        ((kIsWeb || Constant.isTV)
-                                ? Dimens.featureWebSize
-                                : Dimens.featureSize) /
-                            2),
+          child: InkWell(
+            focusColor: white,
+            borderRadius: BorderRadius.circular(5),
+            onTap: () async {
+              if (Constant.userID != null) {
+                if ((kIsWeb || Constant.isTV)) {
+                  Utils.showSnackbar(
+                      context, "info", webPaymentNotAvailable, false);
+                  return;
+                }
+                dynamic isRented = await Utils.paymentForRent(
+                  context: context,
+                  videoId: videoDetailsProvider.sectionDetailModel.result?.id
+                          .toString() ??
+                      '',
+                  rentPrice: videoDetailsProvider
+                          .sectionDetailModel.result?.rentPrice
+                          .toString() ??
+                      '',
+                  vTitle: videoDetailsProvider.sectionDetailModel.result?.name
+                          .toString() ??
+                      '',
+                  typeId: videoDetailsProvider.sectionDetailModel.result?.typeId
+                          .toString() ??
+                      '',
+                  vType: videoDetailsProvider
+                          .sectionDetailModel.result?.videoType
+                          .toString() ??
+                      '',
+                );
+                if (isRented != null && isRented == true) {
+                  _getData();
+                }
+              } else {
+                if ((kIsWeb || Constant.isTV)) {
+                  Utils.buildWebAlertDialog(context, "login", "");
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginSocial();
+                    },
                   ),
-                  child: MyImage(
-                    width: (kIsWeb || Constant.isTV)
-                        ? Dimens.featureIconWebSize
-                        : Dimens.featureIconSize,
-                    height: (kIsWeb || Constant.isTV)
-                        ? Dimens.featureIconWebSize
-                        : Dimens.featureIconSize,
-                    color: lightGray,
-                    imagePath: "ic_store.png",
-                  ),
-                ),
-              ),
-              const SizedBox(height: 5),
-              MyText(
-                color: white,
-                multilanguage: false,
-                text:
-                    "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                fontsizeNormal: 10,
-                fontweight: FontWeight.w700,
-                fontsizeWeb: 14,
-                maxline: 2,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
-              ),
-            ],
+                );
+              }
+            },
+            child: _buildFeatureBtn(
+              icon: 'ic_store.png',
+              title:
+                  "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+              multilanguage: false,
+            ),
           ),
         );
       }
@@ -2431,107 +2333,60 @@ class MovieDetailsState extends State<MovieDetails> {
         return const SizedBox.shrink();
       } else {
         return Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                focusColor: white,
-                borderRadius: BorderRadius.circular(((kIsWeb || Constant.isTV)
-                        ? Dimens.featureWebSize
-                        : Dimens.featureSize) /
-                    2),
-                onTap: () async {
-                  if (Constant.userID != null) {
-                    if ((kIsWeb || Constant.isTV)) {
-                      Utils.showSnackbar(
-                          context, "info", webPaymentNotAvailable, false);
-                      return;
-                    }
-                    dynamic isRented = await Utils.paymentForRent(
-                      context: context,
-                      videoId: videoDetailsProvider
-                              .sectionDetailModel.result?.id
-                              .toString() ??
-                          '',
-                      rentPrice: videoDetailsProvider
-                              .sectionDetailModel.result?.rentPrice
-                              .toString() ??
-                          '',
-                      vTitle: videoDetailsProvider
-                              .sectionDetailModel.result?.name
-                              .toString() ??
-                          '',
-                      typeId: videoDetailsProvider
-                              .sectionDetailModel.result?.typeId
-                              .toString() ??
-                          '',
-                      vType: videoDetailsProvider
-                              .sectionDetailModel.result?.videoType
-                              .toString() ??
-                          '',
-                    );
-                    if (isRented != null && isRented == true) {
-                      _getData();
-                    }
-                  } else {
-                    if ((kIsWeb || Constant.isTV)) {
-                      Utils.buildWebAlertDialog(context, "login", "");
-                      return;
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const LoginSocial();
-                        },
-                      ),
-                    );
-                  }
-                },
-                child: Container(
-                  width: (kIsWeb || Constant.isTV)
-                      ? Dimens.featureWebSize
-                      : Dimens.featureSize,
-                  height: (kIsWeb || Constant.isTV)
-                      ? Dimens.featureWebSize
-                      : Dimens.featureSize,
-                  padding: const EdgeInsets.all(2),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryLight),
-                    borderRadius: BorderRadius.circular(
-                        ((kIsWeb || Constant.isTV)
-                                ? Dimens.featureWebSize
-                                : Dimens.featureSize) /
-                            2),
+          child: InkWell(
+            focusColor: white,
+            borderRadius: BorderRadius.circular(5),
+            onTap: () async {
+              if (Constant.userID != null) {
+                if ((kIsWeb || Constant.isTV)) {
+                  Utils.showSnackbar(
+                      context, "info", webPaymentNotAvailable, false);
+                  return;
+                }
+                dynamic isRented = await Utils.paymentForRent(
+                  context: context,
+                  videoId: videoDetailsProvider.sectionDetailModel.result?.id
+                          .toString() ??
+                      '',
+                  rentPrice: videoDetailsProvider
+                          .sectionDetailModel.result?.rentPrice
+                          .toString() ??
+                      '',
+                  vTitle: videoDetailsProvider.sectionDetailModel.result?.name
+                          .toString() ??
+                      '',
+                  typeId: videoDetailsProvider.sectionDetailModel.result?.typeId
+                          .toString() ??
+                      '',
+                  vType: videoDetailsProvider
+                          .sectionDetailModel.result?.videoType
+                          .toString() ??
+                      '',
+                );
+                if (isRented != null && isRented == true) {
+                  _getData();
+                }
+              } else {
+                if ((kIsWeb || Constant.isTV)) {
+                  Utils.buildWebAlertDialog(context, "login", "");
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginSocial();
+                    },
                   ),
-                  child: MyImage(
-                    width: (kIsWeb || Constant.isTV)
-                        ? Dimens.featureIconWebSize
-                        : Dimens.featureIconSize,
-                    height: (kIsWeb || Constant.isTV)
-                        ? Dimens.featureIconWebSize
-                        : Dimens.featureIconSize,
-                    color: lightGray,
-                    imagePath: "ic_store.png",
-                  ),
-                ),
-              ),
-              const SizedBox(height: 5),
-              MyText(
-                color: white,
-                multilanguage: false,
-                text:
-                    "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-                fontsizeNormal: 10,
-                fontweight: FontWeight.w600,
-                fontsizeWeb: 14,
-                maxline: 2,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
-              ),
-            ],
+                );
+              }
+            },
+            child: _buildFeatureBtn(
+              icon: 'ic_store.png',
+              title:
+                  "Rent at just\n${Constant.currencySymbol}${videoDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+              multilanguage: false,
+            ),
           ),
         );
       }
@@ -2541,149 +2396,147 @@ class MovieDetailsState extends State<MovieDetails> {
   }
 
   Widget _buildTabs() {
-    return Container(
-      margin: (kIsWeb || Constant.isTV)
-          ? const EdgeInsets.fromLTRB(20, 0, 20, 0)
-          : const EdgeInsets.all(0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            constraints: BoxConstraints(
-              maxWidth: (kIsWeb || Constant.isTV)
-                  ? (MediaQuery.of(context).size.width * 0.5)
-                  : MediaQuery.of(context).size.width,
-            ),
-            height: (kIsWeb || Constant.isTV) ? 35 : Dimens.detailTabs,
-            child: Row(
-              children: [
-                /* Related */
-                Expanded(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    focusColor: white,
-                    onTap: () async {
-                      await videoDetailsProvider.setTabClick("related");
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: MyText(
-                                color: videoDetailsProvider.tabClickedOn !=
-                                        "related"
-                                    ? otherColor
-                                    : white,
-                                text: "related",
-                                multilanguage: true,
-                                textalign: TextAlign.center,
-                                fontsizeNormal: 16,
-                                fontweight: FontWeight.w600,
-                                fontsizeWeb: 16,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
+    return Column(
+      children: [
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: (kIsWeb || Constant.isTV)
+                ? (MediaQuery.of(context).size.width * 0.5)
+                : MediaQuery.of(context).size.width,
+          ),
+          height: (kIsWeb || Constant.isTV) ? 35 : Dimens.detailTabs,
+          child: Row(
+            children: [
+              /* Related */
+              Expanded(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  focusColor: Colors.grey.withOpacity(0.5),
+                  onTap: () async {
+                    await videoDetailsProvider.setTabClick("related");
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: MyText(
+                              color:
+                                  videoDetailsProvider.tabClickedOn != "related"
+                                      ? otherColor
+                                      : white,
+                              text: "related",
+                              multilanguage: true,
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              fontweight: FontWeight.w600,
+                              fontsizeWeb: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
                             ),
                           ),
-                          Visibility(
-                            visible:
-                                videoDetailsProvider.tabClickedOn == "related",
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 2,
-                              color: white,
-                            ),
+                        ),
+                        Visibility(
+                          visible:
+                              videoDetailsProvider.tabClickedOn == "related",
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 2,
+                            color: white,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                /* More Details */
-                Expanded(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    focusColor: white,
-                    onTap: () async {
-                      await videoDetailsProvider.setTabClick("moredetails");
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: MyText(
-                                color: videoDetailsProvider.tabClickedOn !=
-                                        "moredetails"
-                                    ? otherColor
-                                    : white,
-                                text: "moredetails",
-                                textalign: TextAlign.center,
-                                fontsizeNormal: 16,
-                                fontweight: FontWeight.w600,
-                                fontsizeWeb: 16,
-                                multilanguage: true,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
+              ),
+              /* More Details */
+              Expanded(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  focusColor: Colors.grey.withOpacity(0.5),
+                  onTap: () async {
+                    await videoDetailsProvider.setTabClick("moredetails");
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: MyText(
+                              color: videoDetailsProvider.tabClickedOn !=
+                                      "moredetails"
+                                  ? otherColor
+                                  : white,
+                              text: "moredetails",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              fontweight: FontWeight.w600,
+                              fontsizeWeb: 16,
+                              multilanguage: true,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
                             ),
                           ),
-                          Visibility(
-                            visible: videoDetailsProvider.tabClickedOn ==
-                                "moredetails",
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 2,
-                              color: white,
-                            ),
+                        ),
+                        Visibility(
+                          visible: videoDetailsProvider.tabClickedOn ==
+                              "moredetails",
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 2,
+                            color: white,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Container(
-            height: 0.5,
-            color: otherColor,
-            constraints: BoxConstraints(
-              maxWidth: (kIsWeb || Constant.isTV)
-                  ? (MediaQuery.of(context).size.width * 0.5)
-                  : MediaQuery.of(context).size.width,
-            ),
+        ),
+        Container(
+          height: 0.5,
+          color: otherColor,
+          constraints: BoxConstraints(
+            maxWidth: (kIsWeb || Constant.isTV)
+                ? (MediaQuery.of(context).size.width * 0.5)
+                : MediaQuery.of(context).size.width,
           ),
-          /* Data */
-          (videoDetailsProvider.tabClickedOn == "related")
-              ? Column(
-                  children: [
-                    /* Customers also watched */
-                    RelatedVideoShow(
-                      relatedDataList: videoDetailsProvider
-                          .sectionDetailModel.getRelatedVideo,
-                    ),
-
-                    /* Cast & Crew */
-                    CastCrew(
-                        castList: videoDetailsProvider.sectionDetailModel.cast),
-
-                    /* Director */
-                    _buildDirector(),
-                  ],
-                )
-              : MoreDetails(
-                  moreDetailList:
-                      videoDetailsProvider.sectionDetailModel.moreDetails)
-        ],
-      ),
+        ),
+        /* Data */
+        if (videoDetailsProvider.tabClickedOn == "related")
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /* Customers also watched */
+              RelatedVideoShow(
+                relatedDataList:
+                    videoDetailsProvider.sectionDetailModel.getRelatedVideo,
+              ),
+              /* Cast & Crew */
+              CastCrew(castList: videoDetailsProvider.sectionDetailModel.cast),
+              /* Director */
+              _buildDirector(),
+            ],
+          )
+        else
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: MoreDetails(
+                moreDetailList:
+                    videoDetailsProvider.sectionDetailModel.moreDetails),
+          )
+      ],
     );
   }
 
@@ -2722,7 +2575,9 @@ class MovieDetailsState extends State<MovieDetails> {
                       height: (kIsWeb || Constant.isTV)
                           ? Dimens.heightCastWeb
                           : Dimens.heightCast,
-                      width: Dimens.widthLand,
+                      width: (kIsWeb || Constant.isTV)
+                          ? Dimens.widthCastWeb
+                          : Dimens.widthCast,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(Dimens.cardRadius),
                         child: MyNetworkImage(
@@ -2782,22 +2637,20 @@ class MovieDetailsState extends State<MovieDetails> {
                     text: "directors",
                     multilanguage: true,
                     textalign: TextAlign.start,
-                    fontsizeNormal: 14,
+                    fontsizeNormal: 13,
                     fontweight: FontWeight.w600,
                     fontsizeWeb: 15,
                     maxline: 1,
                     overflow: TextOverflow.ellipsis,
                     fontstyle: FontStyle.normal,
                   ),
-                  const SizedBox(
-                    height: 6,
-                  ),
+                  const SizedBox(height: 6),
                   MyText(
                     color: otherColor,
                     text: directorList?[0].personalInfo ?? "",
                     textalign: TextAlign.start,
                     multilanguage: false,
-                    fontsizeNormal: 13,
+                    fontsizeNormal: 12,
                     fontweight: FontWeight.w500,
                     fontsizeWeb: 14,
                     maxline: 7,
@@ -2813,6 +2666,62 @@ class MovieDetailsState extends State<MovieDetails> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildFeatureBtn({
+    required String title,
+    required String icon,
+    required bool multilanguage,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: ((kIsWeb || Constant.isTV))
+                ? Dimens.featureWebSize
+                : Dimens.featureSize,
+            height: ((kIsWeb || Constant.isTV))
+                ? Dimens.featureWebSize
+                : Dimens.featureSize,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: primaryLight,
+              ),
+              borderRadius: BorderRadius.circular((((kIsWeb || Constant.isTV))
+                      ? Dimens.featureWebSize
+                      : Dimens.featureSize) /
+                  2),
+            ),
+            child: MyImage(
+              width: ((kIsWeb || Constant.isTV))
+                  ? Dimens.featureIconWebSize
+                  : Dimens.featureIconSize,
+              height: ((kIsWeb || Constant.isTV))
+                  ? Dimens.featureIconWebSize
+                  : Dimens.featureIconSize,
+              color: lightGray,
+              imagePath: icon,
+            ),
+          ),
+          const SizedBox(height: 5),
+          MyText(
+            color: white,
+            text: title,
+            multilanguage: multilanguage,
+            fontsizeNormal: 10,
+            fontsizeWeb: 14,
+            fontweight: FontWeight.w600,
+            maxline: 1,
+            overflow: TextOverflow.ellipsis,
+            textalign: TextAlign.center,
+            fontstyle: FontStyle.normal,
+          ),
+        ],
+      ),
+    );
   }
 
   /* ========= Download ========= */
@@ -2841,100 +2750,102 @@ class MovieDetailsState extends State<MovieDetails> {
     if (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ==
         "server_video") {
       return Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            InkWell(
-              borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
-              focusColor: white,
-              onTap: () {
-                if (Constant.userID != null) {
-                  if (downloadProvider.currentProgress(
-                          videoDetailsProvider.sectionDetailModel.result?.id ??
-                              0) ==
-                      0) {
-                    _checkAndDownload();
-                  } else {
-                    Utils.showSnackbar(context, "info", "please_wait", true);
-                  }
-                } else {
-                  if ((kIsWeb || Constant.isTV)) {
-                    Utils.buildWebAlertDialog(context, "login", "");
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginSocial();
-                      },
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                width: Dimens.featureSize,
-                height: Dimens.featureSize,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: primaryLight,
-                  ),
-                  borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
-                ),
-                child: Consumer<DownloadProvider>(
-                  builder: (context, downloadProvider, child) {
-                    if (downloadProvider.currentProgress(videoDetailsProvider
-                                .sectionDetailModel.result?.id ??
-                            0) >
-                        0) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: downloadProvider.currentProgress(
-                              videoDetailsProvider
-                                      .sectionDetailModel.result?.id ??
-                                  0),
-                        ),
-                      );
-                    } else {
-                      return MyImage(
-                        width: Dimens.featureIconSize,
-                        height: Dimens.featureIconSize,
-                        color: lightGray,
-                        imagePath: (videoDetailsProvider
-                                    .sectionDetailModel.result?.isDownloaded ==
-                                1)
-                            ? "ic_download_done.png"
-                            : "ic_download.png",
-                      );
-                    }
+        child: InkWell(
+          borderRadius: BorderRadius.circular(5),
+          focusColor: gray.withOpacity(0.5),
+          onTap: () {
+            if (Constant.userID != null) {
+              if (downloadProvider.currentProgress(
+                      videoDetailsProvider.sectionDetailModel.result?.id ??
+                          0) ==
+                  0) {
+                _checkAndDownload();
+              } else {
+                Utils.showSnackbar(context, "info", "please_wait", true);
+              }
+            } else {
+              if ((kIsWeb || Constant.isTV)) {
+                Utils.buildWebAlertDialog(context, "login", "");
+                return;
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginSocial();
                   },
                 ),
-              ),
+              );
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: Dimens.featureSize,
+                  height: Dimens.featureSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: primaryLight,
+                    ),
+                    borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
+                  ),
+                  child: Consumer<DownloadProvider>(
+                    builder: (context, downloadProvider, child) {
+                      if (downloadProvider.currentProgress(videoDetailsProvider
+                                  .sectionDetailModel.result?.id ??
+                              0) >
+                          0) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: downloadProvider.currentProgress(
+                                videoDetailsProvider
+                                        .sectionDetailModel.result?.id ??
+                                    0),
+                          ),
+                        );
+                      } else {
+                        return MyImage(
+                          width: Dimens.featureIconSize,
+                          height: Dimens.featureIconSize,
+                          color: lightGray,
+                          imagePath: (videoDetailsProvider.sectionDetailModel
+                                      .result?.isDownloaded ==
+                                  1)
+                              ? "ic_download_done.png"
+                              : "ic_download.png",
+                        );
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Consumer<DownloadProvider>(
+                  builder: (context, downloadProvider, child) {
+                    return MyText(
+                      color: white,
+                      text: (videoDetailsProvider
+                                  .sectionDetailModel.result?.isDownloaded ==
+                              1)
+                          ? "complete"
+                          : "download",
+                      multilanguage: true,
+                      fontsizeNormal: 10,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 14,
+                      maxline: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    );
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 5),
-            Consumer<DownloadProvider>(
-              builder: (context, downloadProvider, child) {
-                return MyText(
-                  color: white,
-                  text: (videoDetailsProvider
-                              .sectionDetailModel.result?.isDownloaded ==
-                          1)
-                      ? "complete"
-                      : "download",
-                  multilanguage: true,
-                  fontsizeNormal: 10,
-                  fontweight: FontWeight.w600,
-                  fontsizeWeb: 14,
-                  maxline: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textalign: TextAlign.center,
-                  fontstyle: FontStyle.normal,
-                );
-              },
-            ),
-          ],
+          ),
         ),
       );
     } else {
@@ -3172,9 +3083,7 @@ class MovieDetailsState extends State<MovieDetails> {
                             fit: BoxFit.fill,
                             color: lightGray,
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: MyText(
                               text: "share",
@@ -3217,9 +3126,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                   fit: BoxFit.fill,
                                   color: lightGray,
                                 ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
+                                const SizedBox(width: 20),
                                 Expanded(
                                   child: MyText(
                                     text: "trailer",
@@ -3539,7 +3446,7 @@ class MovieDetailsState extends State<MovieDetails> {
     int? vTypeID = widget.typeId;
 
     int? stopTime;
-    if (playType == "startOver") {
+    if (playType == "startOver" || playType == "Trailer") {
       stopTime = 0;
     } else {
       stopTime =

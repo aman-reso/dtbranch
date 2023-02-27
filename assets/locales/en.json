@@ -15,6 +15,7 @@
     "bottomview4" : "Store",
     "bottomview5" : "My Stuff",
 
+    "exit_warning":"Press again to exit the app.",
     "language_" : "Language",
     "category" : "Category",
     "accountdetails":"Account details",

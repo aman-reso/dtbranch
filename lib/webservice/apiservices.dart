@@ -58,21 +58,29 @@ class ApiService {
 
   /* type => 1-Facebook, 2-Google */
   // login API
-  Future<LoginRegisterModel> loginWithSocial(email, name, type) async {
+  Future<LoginRegisterModel> loginWithSocial(
+      email, name, type, File? profileImg) async {
     log("email :==> $email");
     log("name :==> $name");
     log("type :==> $type");
+    log("profileImg :==> $profileImg");
 
     LoginRegisterModel loginModel;
     String gmailLogin = "login";
     Response response = await dio.post(
       '$baseUrl$gmailLogin',
       options: optHeaders,
-      data: {
+      data: FormData.fromMap({
         'type': type,
         'email': email,
         'name': name,
-      },
+        'image': (profileImg?.path ?? "").isNotEmpty
+            ? await MultipartFile.fromFile(
+                profileImg?.path ?? "",
+                filename: (profileImg?.path ?? "").split('/').last,
+              )
+            : "",
+      }),
     );
 
     loginModel = LoginRegisterModel.fromJson(response.data);
@@ -181,7 +189,7 @@ class ApiService {
       '$baseUrl$uploadImage',
       data: FormData.fromMap({
         'id': Constant.userID,
-        "image": profileImg.path.isNotEmpty ? multipartFile : "",
+        'image': profileImg.path.isNotEmpty ? multipartFile : "",
       }),
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );

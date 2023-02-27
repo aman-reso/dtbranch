@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
@@ -27,7 +28,9 @@ class LoginSocialWeb extends StatefulWidget {
 class _LoginSocialWebState extends State<LoginSocialWeb> {
   SharedPre sharedPref = SharedPre();
   final numberController = TextEditingController();
-  String? mobileNumber;
+  String? mobileNumber, email, userName, strType;
+  File? mProfileImg;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -302,71 +305,57 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
     debugPrint('GoogleSignIn ===> displayName : ${user.displayName}');
     debugPrint('GoogleSignIn ===> photoUrl : ${user.photoUrl}');
 
-    googleSignInUser(user.email, user.displayName ?? "", "2");
-  }
-
-  googleSignInUser(String mail, String displayName, String strType) async {
-    debugPrint("Email : $mail, Name : $displayName, Type : $strType");
+    UserCredential userCredential;
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: mail, password: '123456');
+      GoogleSignInAuthentication googleSignInAuthentication =
+          await user.authentication;
+      AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      userCredential = await _auth.signInWithCredential(credential);
+      assert(await userCredential.user?.getIdToken() != null);
+      debugPrint("User Name: ${userCredential.user?.displayName}");
+      debugPrint("User Email ${userCredential.user?.email}");
+      debugPrint("User photoUrl ${userCredential.user?.photoURL}");
       debugPrint("uid ===> ${userCredential.user?.uid}");
       String firebasedid = userCredential.user?.uid ?? "";
       debugPrint('firebasedid :===> $firebasedid');
 
-      checkAndNavigate(mail, displayName, strType);
+      /* Save PhotoUrl in File */
+      mProfileImg =
+          await Utils.saveImageInStorage(userCredential.user?.photoURL ?? "");
+      debugPrint('mProfileImg :===> $mProfileImg');
+
+      checkAndNavigate(user.email, user.displayName ?? "", "2");
     } on FirebaseAuthException catch (e) {
       debugPrint('===>Exp${e.code.toString()}');
       debugPrint('===>Exp${e.message.toString()}');
       if (e.code.toString() == "user-not-found") {
-        registerFirebaseUser(mail, displayName, strType);
+        // registerFirebaseUser(user.email, user.displayName ?? "", "2");
       } else if (e.code == 'wrong-password') {
-        // Hide Progress Dialog
         debugPrint('Wrong password provided.');
         Utils().showToast('Wrong password provided.');
-      } else {
-        // Hide Progress Dialog
-      }
+      } else {}
     }
   }
 
-  registerFirebaseUser(String mail, String displayName, String strType) async {
-    debugPrint("Email : $mail and Name : $displayName");
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: mail, password: '123456')
-          .whenComplete(() {});
-      debugPrint(
-          'RegisterUser mail : ${userCredential.user?.email.toString()}');
-      debugPrint("mail ===> $mail");
-
-      debugPrint("uid ===> ${userCredential.user?.uid}");
-      String firebasedid = userCredential.user?.uid ?? "";
-      debugPrint('firebasedid :===> $firebasedid');
-
-      googleSignInUser(mail, displayName, strType);
-    } on FirebaseAuthException catch (e) {
-      // Hide Progress Dialog
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-        Utils().showToast('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {}
-    } catch (e) {
-      // Hide Progress Dialog
-      debugPrint(e.toString());
-    }
-  }
-
-  void checkAndNavigate(email, userName, strType) async {
+  void checkAndNavigate(String mail, String displayName, String type) async {
+    email = mail;
+    userName = displayName;
+    strType = type;
     log('checkAndNavigate email ==>> $email');
     log('checkAndNavigate userName ==>> $userName');
     log('checkAndNavigate strType ==>> $strType');
+    log('checkAndNavigate mProfileImg :===> $mProfileImg');
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     final generalProvider =
         Provider.of<GeneralProvider>(context, listen: false);
-    await generalProvider.loginWithSocial(email, userName, strType);
+    await generalProvider.loginWithSocial(
+        email, userName, strType, mProfileImg);
     log('checkAndNavigate loading ==>> ${generalProvider.loading}');
 
     if (!generalProvider.loading) {

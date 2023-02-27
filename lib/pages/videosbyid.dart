@@ -6,12 +6,14 @@ import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/utils/utils.dart';
+import 'package:dtlive/webwidget/commonappbar.dart';
+import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
-import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -64,48 +66,64 @@ class VideosByIDState extends State<VideosByID> {
     return Scaffold(
       backgroundColor: appBgColor,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: Dimens.homeTabHeight,
-              alignment: Alignment.center,
-              child: MyText(
-                color: primaryColor,
-                text: widget.appBarTitle,
-                multilanguage: false,
-                fontsizeNormal: 17,
-                fontsizeWeb: 16,
-                maxline: 1,
-                overflow: TextOverflow.ellipsis,
-                fontweight: FontWeight.bold,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (kIsWeb || Constant.isTV)
+                  SizedBox(height: Dimens.homeTabHeight),
+                if (kIsWeb || Constant.isTV)
+                  Utils.myAppBar(context, widget.appBarTitle, false)
+                else
+                  Utils.myAppBarWithBack(context, widget.appBarTitle, false),
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: const BoxConstraints.expand(),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          videoByIDProvider.loading
+                              ? ShimmerUtils.responsiveGrid(
+                                  context,
+                                  Dimens.heightLand,
+                                  Dimens.widthLand,
+                                  2,
+                                  kIsWeb ? 40 : 20)
+                              : (videoByIDProvider.videoByIdModel.status ==
+                                          200 &&
+                                      videoByIDProvider.videoByIdModel.result !=
+                                          null)
+                                  ? (videoByIDProvider.videoByIdModel.result
+                                                  ?.length ??
+                                              0) >
+                                          0
+                                      ? _buildVideoItem()
+                                      : const NoData(
+                                          title: '',
+                                          subTitle: '',
+                                        )
+                                  : const NoData(
+                                      title: '',
+                                      subTitle: '',
+                                    ),
+                          const SizedBox(height: 20),
+
+                          /* Web Footer */
+                          (kIsWeb)
+                              ? const FooterWeb()
+                              : const SizedBox.shrink(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: videoByIDProvider.loading
-                    ? ShimmerUtils.responsiveGrid(context, Dimens.heightLand,
-                        Dimens.widthLand, 2, kIsWeb ? 40 : 20)
-                    : (videoByIDProvider.videoByIdModel.status == 200 &&
-                            videoByIDProvider.videoByIdModel.result != null)
-                        ? (videoByIDProvider.videoByIdModel.result?.length ??
-                                    0) >
-                                0
-                            ? _buildVideoItem()
-                            : const NoData(
-                                title: '',
-                                subTitle: '',
-                              )
-                        : const NoData(
-                            title: '',
-                            subTitle: '',
-                          ),
-              ),
-            ),
+
+            /* Common AppBar */
+            if (kIsWeb || Constant.isTV) const CommonAppBar(),
           ],
         ),
       ),
@@ -134,23 +152,6 @@ class VideosByIDState extends State<VideosByID> {
               borderRadius: BorderRadius.circular(4),
               onTap: () {
                 log("Clicked on position ==> $position");
-                if (kIsWeb) {
-                  homeStateObject?.openDetailPage(
-                    (videoByIDProvider.videoByIdModel.result?[position]
-                                    .videoType ??
-                                0) ==
-                            2
-                        ? "showdetail"
-                        : "videodetail",
-                    videoByIDProvider.videoByIdModel.result?[position].id ?? 0,
-                    videoByIDProvider
-                            .videoByIdModel.result?[position].videoType ??
-                        0,
-                    videoByIDProvider.videoByIdModel.result?[position].typeId ??
-                        0,
-                  );
-                  return;
-                }
                 if ((videoByIDProvider
                             .videoByIdModel.result?[position].videoType ??
                         0) ==

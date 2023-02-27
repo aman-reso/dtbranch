@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dtlive/model/generalsettingmodel.dart';
 import 'package:dtlive/model/loginregistermodel.dart';
 import 'package:dtlive/utils/sharedpre.dart';
@@ -21,13 +23,15 @@ class GeneralProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loginWithSocial(email, name, type) async {
+  Future<void> loginWithSocial(email, name, type, File? profileImg) async {
     debugPrint("loginWithSocial email :==> $email");
     debugPrint("loginWithSocial name :==> $name");
     debugPrint("loginWithSocial type :==> $type");
+    debugPrint("loginWithSocial profileImg :==> ${profileImg?.path}");
 
     loading = true;
-    loginGmailModel = await ApiService().loginWithSocial(email, name, type);
+    loginGmailModel =
+        await ApiService().loginWithSocial(email, name, type, profileImg);
     debugPrint("login status :==> ${loginGmailModel.status}");
     debugPrint("login message :==> ${loginGmailModel.message}");
     loading = false;

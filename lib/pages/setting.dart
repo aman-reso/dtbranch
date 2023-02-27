@@ -42,7 +42,7 @@ class SettingState extends State<Setting> {
       termsConditionUrl,
       refundPolicyUrl;
   SharedPre sharedPref = SharedPre();
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -88,7 +88,7 @@ class SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBar(context, "setting"),
+      appBar: Utils.myAppBar(context, "setting", true),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -114,50 +114,14 @@ class SettingState extends State<Setting> {
                       );
                     }
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "accountdetails",
-                          fontsizeNormal: 14,
-                          maxline: 1,
-                          multilanguage: true,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        MyText(
-                          color: otherColor,
-                          text: "manageprofile",
-                          multilanguage: true,
-                          fontsizeNormal: 12,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'accountdetails',
+                    subTitle: 'manageprofile',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* Watchlist */
                 InkWell(
@@ -177,48 +141,14 @@ class SettingState extends State<Setting> {
                       );
                     }
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "watchlist",
-                          fontsizeNormal: 14,
-                          maxline: 1,
-                          multilanguage: true,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(height: 5),
-                        MyText(
-                          color: otherColor,
-                          text: "view_your_watchlist",
-                          multilanguage: true,
-                          fontsizeNormal: 12,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'watchlist',
+                    subTitle: 'view_your_watchlist',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* Purchases */
                 InkWell(
@@ -238,50 +168,14 @@ class SettingState extends State<Setting> {
                       );
                     }
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "purchases",
-                          fontsizeNormal: 14,
-                          maxline: 1,
-                          multilanguage: true,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        MyText(
-                          color: otherColor,
-                          text: "view_your_purchases",
-                          multilanguage: true,
-                          fontsizeNormal: 12,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'purchases',
+                    subTitle: 'view_your_purchases',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* Downloads */
                 InkWell(
@@ -301,48 +195,14 @@ class SettingState extends State<Setting> {
                       );
                     }
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "downloads",
-                          fontsizeNormal: 14,
-                          maxline: 1,
-                          multilanguage: true,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(height: 5),
-                        MyText(
-                          color: otherColor,
-                          text: "view_your_downloads",
-                          multilanguage: true,
-                          fontsizeNormal: 12,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'downloads',
+                    subTitle: 'view_your_downloads',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* Subscription */
                 InkWell(
@@ -362,48 +222,14 @@ class SettingState extends State<Setting> {
                       );
                     }
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "subsciption",
-                          fontsizeNormal: 14,
-                          multilanguage: true,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.left,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(height: 5),
-                        MyText(
-                          color: otherColor,
-                          text: "subsciptionnotes",
-                          fontsizeNormal: 12,
-                          multilanguage: true,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.left,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'subsciption',
+                    subTitle: 'subsciptionnotes',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 8),
-                  color: white,
-                ),
+                _buildLine(16.0, 8.0),
 
                 /* MaltiLanguage */
                 InkWell(
@@ -411,31 +237,14 @@ class SettingState extends State<Setting> {
                   onTap: () {
                     _languageChangeDialog();
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      color: white,
-                      text: "language_",
-                      multilanguage: true,
-                      fontsizeNormal: 14,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontweight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
-                    ),
+                  child: _buildSettingButton(
+                    title: 'language_',
+                    subTitle: '',
+                    titleMultilang: true,
+                    subTitleMultilang: false,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 8, bottom: 8),
-                  color: white,
-                ),
+                _buildLine(8.0, 8.0),
 
                 /* Push Notification enable/disable */
                 Container(
@@ -487,12 +296,7 @@ class SettingState extends State<Setting> {
                     ],
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* Clear Cache */
                 InkWell(
@@ -552,12 +356,7 @@ class SettingState extends State<Setting> {
                     ),
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* SignIn / SignOut */
                 InkWell(
@@ -574,55 +373,18 @@ class SettingState extends State<Setting> {
                       setState(() {});
                     }
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: Constant.userID == null
-                              ? youAreNotSignIn
-                              : (userType == "3" && (userName ?? "").isEmpty)
-                                  ? ("$signedInAs ${userMobileNo ?? ""}")
-                                  : ("$signedInAs ${userName ?? ""}"),
-                          fontsizeNormal: 14,
-                          maxline: 1,
-                          multilanguage: false,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        MyText(
-                          color: otherColor,
-                          text:
-                              Constant.userID == null ? "sign_in" : "sign_out",
-                          fontsizeNormal: 12,
-                          multilanguage: true,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: Constant.userID == null
+                        ? youAreNotSignIn
+                        : (userType == "3" && (userName ?? "").isEmpty)
+                            ? ("$signedInAs ${userMobileNo ?? ""}")
+                            : ("$signedInAs ${userName ?? ""}"),
+                    subTitle: Constant.userID == null ? "sign_in" : "sign_out",
+                    titleMultilang: false,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* Rate App */
                 InkWell(
@@ -638,50 +400,14 @@ class SettingState extends State<Setting> {
                           "http://play.google.com/store/apps/details?id=${Constant.appPackageName}");
                     }
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "rateus",
-                          fontsizeNormal: 14,
-                          multilanguage: true,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        MyText(
-                          color: otherColor,
-                          text: "rateourapp",
-                          multilanguage: true,
-                          fontsizeNormal: 12,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'rateus',
+                    subTitle: 'rateourapp',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* Share App */
                 InkWell(
@@ -691,48 +417,14 @@ class SettingState extends State<Setting> {
                         ? Constant.iosAppShareUrlDesc
                         : Constant.androidAppShareUrlDesc);
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "shareapp",
-                          fontsizeNormal: 14,
-                          maxline: 1,
-                          multilanguage: true,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(height: 5),
-                        MyText(
-                          color: otherColor,
-                          text: "sharewithfriends",
-                          fontsizeNormal: 12,
-                          maxline: 1,
-                          multilanguage: true,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'shareapp',
+                    subTitle: 'sharewithfriends',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: white,
-                ),
+                _buildLine(16.0, 16.0),
 
                 /* About Us */
                 InkWell(
@@ -747,48 +439,14 @@ class SettingState extends State<Setting> {
                       ),
                     );
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyText(
-                          color: white,
-                          text: "aboutus",
-                          fontsizeNormal: 14,
-                          maxline: 1,
-                          multilanguage: true,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(height: 5),
-                        MyText(
-                          color: otherColor,
-                          text: "version",
-                          fontsizeNormal: 12,
-                          multilanguage: true,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontweight: FontWeight.w500,
-                          textalign: TextAlign.center,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ],
-                    ),
+                  child: _buildSettingButton(
+                    title: 'aboutus',
+                    subTitle: 'Version ${Constant.appVersion}',
+                    titleMultilang: true,
+                    subTitleMultilang: false,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(top: 16, bottom: 8),
-                  height: 0.5,
-                  color: white,
-                ),
+                _buildLine(16.0, 8.0),
 
                 /* Privacy Policy */
                 InkWell(
@@ -803,31 +461,14 @@ class SettingState extends State<Setting> {
                       ),
                     );
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      color: white,
-                      text: "privacypolicy",
-                      fontsizeNormal: 14,
-                      multilanguage: true,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontweight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
-                    ),
+                  child: _buildSettingButton(
+                    title: 'privacypolicy',
+                    subTitle: '',
+                    titleMultilang: true,
+                    subTitleMultilang: false,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 8, bottom: 8),
-                  color: white,
-                ),
+                _buildLine(8.0, 8.0),
 
                 /* Terms & Conditions */
                 InkWell(
@@ -842,23 +483,11 @@ class SettingState extends State<Setting> {
                       ),
                     );
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      color: white,
-                      text: "termcondition",
-                      fontsizeNormal: 14,
-                      multilanguage: true,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontweight: FontWeight.w500,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
-                    ),
+                  child: _buildSettingButton(
+                    title: 'termcondition',
+                    subTitle: '',
+                    titleMultilang: true,
+                    subTitleMultilang: false,
                   ),
                 ),
                 Container(
@@ -881,31 +510,14 @@ class SettingState extends State<Setting> {
                       ),
                     );
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      color: white,
-                      text: "refundpolicy",
-                      fontsizeNormal: 14,
-                      multilanguage: true,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      fontweight: FontWeight.w500,
-                      textalign: TextAlign.start,
-                      fontstyle: FontStyle.normal,
-                    ),
+                  child: _buildSettingButton(
+                    title: 'refundpolicy',
+                    subTitle: '',
+                    titleMultilang: true,
+                    subTitleMultilang: false,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 8, bottom: 8),
-                  color: white,
-                ),
+                _buildLine(8.0, 8.0),
 
                 /* Delete Account */
                 if (Constant.userID != null)
@@ -923,37 +535,76 @@ class SettingState extends State<Setting> {
                         setState(() {});
                       }
                     },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      constraints: BoxConstraints(
-                        minHeight: Dimens.minHeightSettings,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: MyText(
-                        color: white,
-                        text: "delete_account",
-                        fontsizeNormal: 14,
-                        multilanguage: true,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontweight: FontWeight.w500,
-                        textalign: TextAlign.center,
-                        fontstyle: FontStyle.normal,
-                      ),
+                    child: _buildSettingButton(
+                      title: 'delete_account',
+                      subTitle: '',
+                      titleMultilang: true,
+                      subTitleMultilang: false,
                     ),
                   ),
-                if (Constant.userID != null)
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 0.5,
-                    margin: const EdgeInsets.only(top: 8, bottom: 8),
-                    color: white,
-                  ),
+                if (Constant.userID != null) _buildLine(8.0, 8.0),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSettingButton({
+    required String title,
+    required String subTitle,
+    required bool titleMultilang,
+    required bool subTitleMultilang,
+  }) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      constraints: BoxConstraints(
+        minHeight: Dimens.minHeightSettings,
+      ),
+      alignment: Alignment.centerLeft,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MyText(
+            color: white,
+            text: title,
+            fontsizeNormal: 14,
+            fontsizeWeb: 15,
+            maxline: 1,
+            multilanguage: titleMultilang,
+            overflow: TextOverflow.ellipsis,
+            fontweight: FontWeight.w500,
+            textalign: TextAlign.center,
+            fontstyle: FontStyle.normal,
+          ),
+          SizedBox(height: subTitle.isEmpty ? 0 : 5),
+          subTitle.isEmpty
+              ? const SizedBox.shrink()
+              : MyText(
+                  color: otherColor,
+                  text: subTitle,
+                  fontsizeNormal: 12,
+                  fontsizeWeb: 14,
+                  multilanguage: subTitleMultilang,
+                  maxline: 1,
+                  overflow: TextOverflow.ellipsis,
+                  fontweight: FontWeight.w500,
+                  textalign: TextAlign.center,
+                  fontstyle: FontStyle.normal,
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLine(double topMargin, double bottomMargin) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 0.5,
+      margin: const EdgeInsets.only(top: 8, bottom: 8),
+      color: otherColor,
     );
   }
 
@@ -1212,9 +863,7 @@ class SettingState extends State<Setting> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   Container(
                     alignment: Alignment.centerRight,
                     child: Row(
@@ -1252,9 +901,7 @@ class SettingState extends State<Setting> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
+                        const SizedBox(width: 20),
                         InkWell(
                           onTap: () async {
                             final homeProvider = Provider.of<HomeProvider>(
@@ -1266,7 +913,7 @@ class SettingState extends State<Setting> {
                             await homeProvider.setSelectedTab(0);
                             await sectionDataProvider.clearProvider();
                             // Firebase Signout
-                            await auth.signOut();
+                            await _auth.signOut();
                             await GoogleSignIn().signOut();
                             await Utils.setUserId(null);
                             sectionDataProvider.getSectionBanner("0", "1");
@@ -1371,9 +1018,7 @@ class SettingState extends State<Setting> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   Container(
                     alignment: Alignment.centerRight,
                     child: Row(
@@ -1411,9 +1056,7 @@ class SettingState extends State<Setting> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
+                        const SizedBox(width: 20),
                         InkWell(
                           onTap: () async {
                             final homeProvider = Provider.of<HomeProvider>(
@@ -1425,7 +1068,7 @@ class SettingState extends State<Setting> {
                             await homeProvider.setSelectedTab(0);
                             await sectionDataProvider.clearProvider();
                             // Firebase Signout
-                            await auth.signOut();
+                            await _auth.signOut();
                             await GoogleSignIn().signOut();
                             await Utils.setUserId(null);
                             sectionDataProvider.getSectionBanner("0", "1");

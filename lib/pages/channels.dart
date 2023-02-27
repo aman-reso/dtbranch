@@ -103,12 +103,14 @@ class ChannelsState extends State<Channels> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      body: Stack(
-        children: [
-          _buildChannelPage(),
-          /* Common AppBar */
-          if (kIsWeb || Constant.isTV) const CommonAppBar(),
-        ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            _buildChannelPage(),
+            /* Common AppBar */
+            if (kIsWeb || Constant.isTV) const CommonAppBar(),
+          ],
+        ),
       ),
     );
   }
@@ -152,10 +154,7 @@ class ChannelsState extends State<Channels> {
           ),
         );
       } else {
-        return const NoData(
-          title: '',
-          subTitle: '',
-        );
+        return const NoData(title: '', subTitle: '');
       }
     }
   }
@@ -226,39 +225,44 @@ class ChannelsState extends State<Channels> {
               itemBuilder:
                   (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
+                  focusColor: white,
+                  borderRadius: BorderRadius.circular(0),
                   onTap: () async {
                     log("Clicked on index ==> $index");
                     openPlayer(sectionBannerList, index);
                   },
-                  child: Stack(
-                    alignment: AlignmentDirectional.bottomCenter,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: Dimens.channelBanner,
-                        child: MyNetworkImage(
-                          imageUrl: sectionBannerList?[index].image ?? "",
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(0),
-                        width: MediaQuery.of(context).size.width,
-                        height: Dimens.channelBanner,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.center,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              transparentColor,
-                              transparentColor,
-                              appBgColor,
-                            ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.channelBanner,
+                          child: MyNetworkImage(
+                            imageUrl: sectionBannerList?[index].image ?? "",
+                            fit: BoxFit.fill,
                           ),
                         ),
-                      ),
-                    ],
+                        Container(
+                          padding: const EdgeInsets.all(0),
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.channelBanner,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.center,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                transparentColor,
+                                transparentColor,
+                                appBgColor,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -315,6 +319,8 @@ class ChannelsState extends State<Channels> {
           ),
           itemBuilder: (BuildContext context, int index, int pageViewIndex) {
             return InkWell(
+              focusColor: white,
+              borderRadius: BorderRadius.circular(4),
               onTap: () async {
                 log("Clicked on index ==> $index");
                 if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
@@ -623,9 +629,12 @@ class ChannelsState extends State<Channels> {
                 sectionDataList?[index].typeId ?? 0,
               );
             },
+            focusColor: white,
+            borderRadius: BorderRadius.circular(4),
             child: Container(
               width: Dimens.widthLand,
               height: Dimens.heightLand,
+              padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
@@ -668,9 +677,12 @@ class ChannelsState extends State<Channels> {
                 sectionDataList?[index].typeId ?? 0,
               );
             },
+            focusColor: white,
+            borderRadius: BorderRadius.circular(4),
             child: Container(
               width: Dimens.widthPort,
               height: Dimens.heightPort,
+              padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
               ),
@@ -712,9 +724,12 @@ class ChannelsState extends State<Channels> {
                 sectionDataList?[index].typeId ?? 0,
               );
             },
+            focusColor: white,
+            borderRadius: BorderRadius.circular(4),
             child: Container(
               width: Dimens.widthSquare,
               height: Dimens.heightSquare,
+              padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
               ),

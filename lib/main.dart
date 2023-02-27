@@ -35,6 +35,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -101,22 +102,23 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     _getDeviceInfo();
+    _getPackage();
     OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
     super.initState();
   }
 
   // What to do when the user opens/taps on a notification
   void _handleNotificationOpened(OSNotificationOpenedResult result) {
-    /* video_id, video_type, type_id */
+    /* id, video_type, type_id */
 
     log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");
-    log("setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['video_id']}");
+    log("setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['id']}");
     log("setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
     log("setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
 
-    if (result.notification.additionalData?['video_id'] != null) {
+    if (result.notification.additionalData?['id'] != null) {
       String? videoID =
-          result.notification.additionalData?['video_id'].toString() ?? "";
+          result.notification.additionalData?['id'].toString() ?? "";
       String? videoType =
           result.notification.additionalData?['video_type'].toString() ?? "";
       String? typeID =
@@ -152,6 +154,7 @@ class _MyAppState extends State<MyApp> {
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
+        LogicalKeySet(LogicalKeyboardKey.enter): const ActivateIntent(),
       },
       child: LocaleBuilder(
         builder: (locale) => MaterialApp(
@@ -217,5 +220,19 @@ class _MyAppState extends State<MyApp> {
     Constant.isTV =
         androidInfo.systemFeatures.contains('android.software.leanback');
     log("isTV =======================> ${Constant.isTV}");
+  }
+
+  _getPackage() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String appVersion = packageInfo.version;
+    String appBuildNumber = packageInfo.buildNumber;
+
+    Constant.appName = appName;
+    Constant.appPackageName = packageName;
+    Constant.appVersion = appVersion;
+    Constant.appBuildNumber = appBuildNumber;
+    log("App Name : $appName, App Package Name : $packageName, App Version : $appVersion, App build Number : $appBuildNumber");
   }
 }

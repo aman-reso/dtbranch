@@ -63,23 +63,9 @@ class SectionByTypeState extends State<SectionByType> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        backgroundColor: appBgColor,
-        centerTitle: true,
-        title: MyText(
-          color: primaryColor,
-          text: widget.appBarTitle,
-          multilanguage: false,
-          fontsizeNormal: 17,
-          maxline: 1,
-          overflow: TextOverflow.ellipsis,
-          fontweight: FontWeight.bold,
-          textalign: TextAlign.center,
-          fontstyle: FontStyle.normal,
-        ),
-      ),
+      appBar: (kIsWeb || Constant.isTV)
+          ? Utils.myAppBar(context, widget.appBarTitle, false)
+          : Utils.myAppBarWithBack(context, widget.appBarTitle, false),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

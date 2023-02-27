@@ -329,6 +329,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  flick_video_player:
+    dependency: transitive
+    description:
+      name: flick_video_player
+      sha256: edd39b56b74a11a627fa560507797896af951d4b1439f4c403edbcfe10af2047
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -726,7 +734,7 @@ packages:
     source: hosted
     version: "3.5.0"
   package_info_plus:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: package_info_plus
       sha256: f62d7253edc197fe3c88d7c2ddab82d68f555e778d55390ccc3537eca8e8d637
@@ -1425,6 +1433,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.14"
+  vimeo_video_player:
+    dependency: "direct main"
+    description:
+      name: vimeo_video_player
+      sha256: b9fe2f12536944c8f98d640002a89d54562f22576d4a7f879435a75752d88d95
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   wakelock:
     dependency: transitive
     description:

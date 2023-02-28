@@ -10,8 +10,8 @@ import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/player_pod.dart';
-import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
@@ -472,9 +472,7 @@ class ChannelsState extends State<Channels> {
       itemCount: sectionList?.length ?? 0,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      separatorBuilder: (context, index) => const SizedBox(
-        height: 20,
-      ),
+      separatorBuilder: (context, index) => const SizedBox(height: 20),
       itemBuilder: (BuildContext context, int index) {
         if (sectionList?[index].data != null &&
             (sectionList?[index].data?.length ?? 0) > 0) {

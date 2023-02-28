@@ -63,7 +63,7 @@ dependencies:
   onesignal_flutter: ^3.5.0
   intl_phone_field: ^3.1.0
   http: ^0.13.5
-  pinput: ^2.2.21
+  pinput: ^2.2.31
   flutter_html: ^3.0.0-alpha.6
   url_launcher: ^6.1.6
   flutter_locales: ^2.0.2
@@ -96,6 +96,9 @@ dependencies:
   shimmer_animation: ^2.1.0+1
   device_info_plus: ^8.1.0
   package_info_plus: ^1.4.3+1
+  in_app_purchase: ^3.1.5
+  in_app_purchase_storekit: ^0.3.6+1
+  in_app_purchase_android: ^0.2.4+2
 
 
 dev_dependencies:

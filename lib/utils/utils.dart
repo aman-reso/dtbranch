@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as number;
 
-import 'package:dtlive/pages/allpayment.dart';
 import 'package:dtlive/pages/player_pod.dart';
+import 'package:dtlive/subscription/allpayment.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/webwidget/loginsocialweb.dart';
@@ -26,7 +26,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
-  showToast(String msg) {
+  static showToast(String msg) {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: Toast.LENGTH_SHORT,

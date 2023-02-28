@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -27,11 +26,8 @@ class RentStore extends StatefulWidget {
 }
 
 class RentStoreState extends State<RentStore> {
-  HomeState? homeStateObject;
-
   @override
   void initState() {
-    homeStateObject = context.findAncestorStateOfType<HomeState>();
     super.initState();
     _getData();
   }
@@ -450,13 +446,7 @@ class RentStoreState extends State<RentStore> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on position ==> $position");
-                        homeStateObject?.openDetailPage(
-                          (rentStoreProvider.rentModel.tvshow?[position]
-                                          .videoType ??
-                                      0) ==
-                                  2
-                              ? "showdetail"
-                              : "videodetail",
+                        _openDetailPage(
                           rentStoreProvider.rentModel.tvshow?[position].id ?? 0,
                           rentStoreProvider
                                   .rentModel.tvshow?[position].videoType ??

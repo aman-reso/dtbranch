@@ -161,6 +161,7 @@
     "resume": "शुरुआत से करें",
     
     "payment_details" : "भुगतान विवरण",
+    "apply":"अप्लाई करें",
     "please_select_any_payment_method":"कृपया, कोई भी भुगतान विधि चुनें",
     "payment_methods":"भुगतान की विधि",
     "choose_a_payment_methods_to_pay":"के लिए एक भुगतान विधि चुनें",
@@ -194,6 +195,7 @@
     "cacheclearmsg" : "कैश डेटा साफ़ कर दिया गया है।",
     "subscriptiondesc" : "अपनी सदस्यता से अधिक प्राप्त करने के लिए अपग्रेड करें",
     "chooseplan" : "योजना चुनें",
+    "current" : "मौजूदा",
     "signed_in_as" : "के रूप में हस्ताक्षर किए"
     
 }

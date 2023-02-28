@@ -336,7 +336,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
         // registerFirebaseUser(user.email, user.displayName ?? "", "2");
       } else if (e.code == 'wrong-password') {
         debugPrint('Wrong password provided.');
-        Utils().showToast('Wrong password provided.');
+        Utils.showToast('Wrong password provided.');
       } else {}
     }
   }

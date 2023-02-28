@@ -6,10 +6,10 @@ import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/pages/profileedit.dart';
 import 'package:dtlive/pages/mypurchaselist.dart';
-import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/pages/mywatchlist.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
+import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
@@ -575,7 +575,7 @@ class SettingState extends State<Setting> {
             maxline: 1,
             multilanguage: titleMultilang,
             overflow: TextOverflow.ellipsis,
-            fontweight: FontWeight.w500,
+            fontweight: FontWeight.w600,
             textalign: TextAlign.center,
             fontstyle: FontStyle.normal,
           ),

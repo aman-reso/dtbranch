@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
 import 'package:dtlive/model/avatarmodel.dart';
 import 'package:dtlive/model/castdetailmodel.dart';
+import 'package:dtlive/model/couponmodel.dart';
 import 'package:dtlive/model/paymentoptionmodel.dart';
 import 'package:dtlive/model/paytmmodel.dart';
 import 'package:dtlive/model/subscriptionmodel.dart';
@@ -41,7 +42,7 @@ class ApiService {
 
   ApiService() {
     dio = Dio();
-    // dio.interceptors.add(dioLoggerInterceptor);
+    dio.interceptors.add(dioLoggerInterceptor);
   }
 
   // general_setting API
@@ -558,6 +559,50 @@ class ApiService {
     return paymentOptionModel;
   }
 
+  // apply_coupon API
+  Future<CouponModel> applyPackageCoupon(couponCode, packageId) async {
+    CouponModel couponModel;
+    String applyCoupon = "apply_coupon";
+    log("applyPackageCoupon API :==> $baseUrl$applyCoupon");
+    Response response = await dio.post(
+      '$baseUrl$applyCoupon',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'apply_coupon_type': "1",
+        'unique_id': couponCode,
+        'package_id': packageId,
+      },
+    );
+
+    couponModel = CouponModel.fromJson(response.data);
+    return couponModel;
+  }
+
+  // apply_coupon API
+  Future<CouponModel> applyRentCoupon(
+      couponCode, videoId, typeId, videoType, price) async {
+    CouponModel couponModel;
+    String applyCoupon = "apply_coupon";
+    log("applyRentCoupon API :==> $baseUrl$applyCoupon");
+    Response response = await dio.post(
+      '$baseUrl$applyCoupon',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'apply_coupon_type': "2",
+        'unique_id': couponCode,
+        'video_id': videoId,
+        'type_id': typeId,
+        'video_type': videoType,
+        'price': price,
+      },
+    );
+
+    couponModel = CouponModel.fromJson(response.data);
+    return couponModel;
+  }
+
   // get_payment_token API
   Future<PayTmModel> getPaytmToken(merchantID, orderId, custmoreID, channelID,
       txnAmount, website, callbackURL, industryTypeID) async {
@@ -584,14 +629,15 @@ class ApiService {
   }
 
   // add_transaction API
-  Future<SuccessModel> addTransaction(
-      packageId, description, amount, paymentId, currencyCode) async {
+  Future<SuccessModel> addTransaction(packageId, description, amount, paymentId,
+      currencyCode, couponCode) async {
     log('addTransaction userID ==>>> ${Constant.userID}');
     log('addTransaction packageId ==>>> $packageId');
     log('addTransaction description ==>>> $description');
     log('addTransaction amount ==>>> $amount');
     log('addTransaction paymentId ==>>> $paymentId');
     log('addTransaction currencyCode ==>>> $currencyCode');
+    log('addTransaction couponCode ==>>> $couponCode');
     SuccessModel successModel;
     String transaction = "add_transaction";
     Response response = await dio.post(
@@ -604,6 +650,7 @@ class ApiService {
         'amount': amount,
         'payment_id': paymentId,
         'currency_code': currencyCode,
+        'unique_id': couponCode,
       },
     );
     successModel = SuccessModel.fromJson(response.data);
@@ -612,12 +659,13 @@ class ApiService {
 
   // add_rent_transaction API
   Future<SuccessModel> addRentTransaction(
-      videoId, price, typeId, videoType) async {
+      videoId, price, typeId, videoType, couponCode) async {
     log('addRentTransaction userID ==>>> ${Constant.userID}');
     log('addRentTransaction video_id ==>>> $videoId');
     log('addRentTransaction price ==>>> $price');
     log('addRentTransaction typeId ==>>> $typeId');
     log('addRentTransaction videoType ==>>> $videoType');
+    log('addTransaction couponCode ==>>> $couponCode');
     SuccessModel successModel;
     String rentTransaction = "add_rent_transaction";
     Response response = await dio.post(
@@ -629,6 +677,7 @@ class ApiService {
         'price': price,
         'type_id': typeId,
         'video_type': videoType,
+        'unique_id': couponCode,
       },
     );
     successModel = SuccessModel.fromJson(response.data);

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/subscriptionmodel.dart';
-import 'package:dtlive/pages/allpayment.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/subscription/allpayment.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
@@ -48,6 +48,46 @@ class SubscriptionState extends State<Subscription> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _checkAndPay(List<Result>? packageList, int index) async {
+    if (Constant.userID != null) {
+      for (var i = 0; i < (packageList?.length ?? 0); i++) {
+        if (packageList?[i].isBuy == 1) {
+          debugPrint("<============= Purchaged =============>");
+          Utils.showSnackbar(context, "info", "already_purchased", true);
+          return;
+        }
+      }
+      if (packageList?[index].isBuy == 0) {
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return AllPayment(
+                payType: 'Package',
+                itemId: packageList?[index].id.toString() ?? '',
+                price: packageList?[index].price.toString() ?? '',
+                itemTitle: packageList?[index].name.toString() ?? '',
+                typeId: '',
+                videoType: '',
+                productPackage: '',
+                currency: '',
+              );
+            },
+          ),
+        );
+      }
+    } else {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginSocial();
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -106,10 +146,7 @@ class SubscriptionState extends State<Subscription> {
           ],
         );
       } else {
-        return const NoData(
-          title: '',
-          subTitle: '',
-        );
+        return const NoData(title: '', subTitle: '');
       }
     }
   }
@@ -126,9 +163,6 @@ class SubscriptionState extends State<Subscription> {
         autoPlay: false,
         autoPlayCurve: Curves.easeInOutQuart,
         enableInfiniteScroll: true,
-        autoPlayInterval: Duration(milliseconds: Constant.bannerDuration),
-        autoPlayAnimationDuration:
-            Duration(milliseconds: Constant.animationDuration),
         viewportFraction: 0.8,
       ),
       itemBuilder: (BuildContext context, int index, int pageViewIndex) {
@@ -299,50 +333,7 @@ class SubscriptionState extends State<Subscription> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(5),
                       onTap: () async {
-                        if (Constant.userID != null) {
-                          for (var i = 0; i < (packageList?.length ?? 0); i++) {
-                            if (packageList?[i].isBuy == 1) {
-                              debugPrint(
-                                  "<============= Purchaged =============>");
-                              Utils.showSnackbar(
-                                  context, "info", "already_purchased", true);
-                              return;
-                            }
-                          }
-                          if (packageList?[index].isBuy == 0) {
-                            await Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return AllPayment(
-                                    payType: 'Package',
-                                    itemId:
-                                        packageList?[index].id.toString() ?? '',
-                                    price:
-                                        packageList?[index].price.toString() ??
-                                            '',
-                                    itemTitle:
-                                        packageList?[index].name.toString() ??
-                                            '',
-                                    typeId: '',
-                                    videoType: '',
-                                    productPackage: '',
-                                    currency: '',
-                                  );
-                                },
-                              ),
-                            );
-                          }
-                        } else {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const LoginSocial();
-                              },
-                            ),
-                          );
-                        }
+                        _checkAndPay(packageList, index);
                       },
                       child: Container(
                         height: 45,
@@ -355,17 +346,23 @@ class SubscriptionState extends State<Subscription> {
                           borderRadius: BorderRadius.circular(5),
                         ),
                         alignment: Alignment.center,
-                        child: MyText(
-                          color: black,
-                          text: "chooseplan",
-                          textalign: TextAlign.center,
-                          fontsizeNormal: 16,
-                          fontsizeWeb: 20,
-                          fontweight: FontWeight.w700,
-                          multilanguage: true,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontstyle: FontStyle.normal,
+                        child: Consumer<SubscriptionProvider>(
+                          builder: (context, subscriptionProvider, child) {
+                            return MyText(
+                              color: black,
+                              text: (packageList?[index].isBuy == 1)
+                                  ? "current"
+                                  : "chooseplan",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              fontsizeWeb: 20,
+                              fontweight: FontWeight.w700,
+                              multilanguage: true,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            );
+                          },
                         ),
                       ),
                     ),

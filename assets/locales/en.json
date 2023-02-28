@@ -162,6 +162,7 @@
     "resume": "Resume",
     
     "payment_details" : "Payment Details",
+    "apply":"Apply",
     "please_select_any_payment_method":"Please, select any Payment method",
     "payment_methods":"Payment Methods",
     "choose_a_payment_methods_to_pay":"Choose a payment method To",
@@ -195,5 +196,6 @@
     "cacheclearmsg" : "Cache data has been cleared.",
     "subscriptiondesc" : "UPGRADE TO GET MORE OUT OF YOUR SUBSCRIPTION",
     "chooseplan" : "Choose Plan",
+    "current" : "Current",
     "signed_in_as" : "Signed in as"
 }

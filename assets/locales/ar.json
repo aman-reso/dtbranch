@@ -161,6 +161,7 @@
     "resume": "بدء من لا شيء",
     
     "payment_details" : "بيانات الدفع",
+    "apply":"يتقدم",
     "please_select_any_payment_method":"من فضلك ، حدد أي طريقة دفع",
     "payment_methods":"طرق الدفع",
     "choose_a_payment_methods_to_pay":"اختر طريقة الدفع إلى",
@@ -194,6 +195,7 @@
     "cacheclearmsg" : "تم مسح بيانات ذاكرة التخزين المؤقت.",
     "subscriptiondesc" : "قم بالترقية للاستفادة بشكل أكبر من اشتراكك",
     "chooseplan" : "اختر خطة",
+    "current" : "حاضِر",
     "signed_in_as" : "وقعت باسم"
 
 }

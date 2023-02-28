@@ -363,7 +363,7 @@ class LoginSocialState extends State<LoginSocial> {
           // Hide Progress Dialog
           await prDialog.hide();
           debugPrint('Wrong password provided.');
-          Utils().showToast('Wrong password provided.');
+          Utils.showToast('Wrong password provided.');
         } else {
           // Hide Progress Dialog
           await prDialog.hide();
@@ -420,7 +420,7 @@ class LoginSocialState extends State<LoginSocial> {
         // Hide Progress Dialog
         await prDialog.hide();
         debugPrint('Wrong password provided.');
-        Utils().showToast('Wrong password provided.');
+        Utils.showToast('Wrong password provided.');
       } else {
         // Hide Progress Dialog
         await prDialog.hide();
@@ -453,7 +453,7 @@ class LoginSocialState extends State<LoginSocial> {
       await prDialog.hide();
       if (e.code == 'weak-password') {
         debugPrint('The password provided is too weak.');
-        Utils().showToast('The password provided is too weak.');
+        Utils.showToast('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {}
     } catch (e) {
       // Hide Progress Dialog

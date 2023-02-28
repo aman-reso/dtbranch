@@ -15,7 +15,7 @@ import 'package:path/path.dart' as path;
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';

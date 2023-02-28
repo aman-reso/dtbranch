@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dtlive/subscription/subscription.dart';
 import 'package:path/path.dart' as path;
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/subscription.dart';
 import 'package:dtlive/provider/downloadprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
@@ -150,8 +150,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
             ? SingleChildScrollView(
                 child: ((kIsWeb || Constant.isTV) &&
                         MediaQuery.of(context).size.width > 720)
-                    ? ShimmerUtils.buildDetailWebShimmer(context, "video")
-                    : ShimmerUtils.buildDetailMobileShimmer(context, "video"),
+                    ? ShimmerUtils.buildDetailWebShimmer(context, "show")
+                    : ShimmerUtils.buildDetailMobileShimmer(context, "show"),
               )
             : (showDetailsProvider.sectionDetailModel.status == 200 &&
                     showDetailsProvider.sectionDetailModel.result != null)
@@ -159,10 +159,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                         MediaQuery.of(context).size.width > 720)
                     ? _buildWebData()
                     : _buildMobileData())
-                : const NoData(
-                    title: '',
-                    subTitle: '',
-                  ),
+                : const NoData(title: '', subTitle: ''),
         /* Common AppBar */
         if ((kIsWeb || Constant.isTV)) const CommonAppBar(),
       ],

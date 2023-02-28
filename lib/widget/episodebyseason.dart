@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/subscription.dart';
+import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
 import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';

@@ -32,14 +32,12 @@ class NoData extends StatelessWidget {
               fit: BoxFit.contain,
               imagePath: "nodata.png",
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             (title ?? "") != ""
                 ? MyText(
                     color: white,
                     text: title ?? "",
-                    fontsizeNormal: 17,
+                    fontsizeNormal: 16,
                     maxline: 2,
                     multilanguage: true,
                     overflow: TextOverflow.ellipsis,
@@ -48,9 +46,7 @@ class NoData extends StatelessWidget {
                     fontstyle: FontStyle.normal,
                   )
                 : const SizedBox.shrink(),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             (subTitle ?? "") != ""
                 ? MyText(
                     color: otherColor,

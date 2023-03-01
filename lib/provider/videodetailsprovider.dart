@@ -5,6 +5,7 @@ import 'package:dtlive/model/successmodel.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 class VideoDetailsProvider extends ChangeNotifier {
   SuccessModel successModel = SuccessModel();
@@ -58,6 +59,32 @@ class VideoDetailsProvider extends ChangeNotifier {
     successModel =
         await ApiService().removeContinueWatching(videoId, videoType);
     debugPrint("removeFromContinue message :==> ${successModel.message}");
+  }
+
+  setDownloadComplete(BuildContext context, videoId, videoType, typeId) {
+    if ((sectionDetailModel.result?.isDownloaded ?? 0) == 0) {
+      sectionDetailModel.result?.isDownloaded = 1;
+      Utils.showSnackbar(context, "success", "download_success", true);
+    } else {
+      sectionDetailModel.result?.isDownloaded = 0;
+      Utils.showSnackbar(context, "success", "download_remove_success", true);
+    }
+    notifyListeners();
+    addToDownload(videoId, videoType, typeId);
+  }
+
+  Future<void> addToDownload(videoId, videoType, typeId) async {
+    debugPrint("addRemoveDownload typeId :==> $typeId");
+    debugPrint("addRemoveDownload videoType :==> $videoType");
+    debugPrint("addRemoveDownload videoId :==> $videoId");
+    await FlutterDownloader.remove(
+      taskId: videoId.toString(),
+      shouldDeleteContent: true,
+    );
+    successModel =
+        await ApiService().addRemoveDownload(videoId, videoType, typeId, "0");
+    debugPrint("addRemoveDownload status :==> ${successModel.status}");
+    debugPrint("addRemoveDownload message :==> ${successModel.message}");
   }
 
   updateRentPurchase() {

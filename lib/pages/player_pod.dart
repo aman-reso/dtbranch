@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -48,6 +49,8 @@ class _PlayerPodState extends State<PlayerPod> {
       playVideoFrom = PlayVideoFrom.youtube(widget.videoUrl ?? "");
     } else if (widget.vUploadType == "vimeo") {
       playVideoFrom = PlayVideoFrom.vimeo(widget.videoUrl ?? "");
+    } else if (widget.playType == "Download") {
+      playVideoFrom = PlayVideoFrom.file(File(widget.videoUrl ?? ""));
     } else {
       playVideoFrom = PlayVideoFrom.network(widget.videoUrl ?? "");
     }

@@ -53,7 +53,7 @@ class Dimens {
   static double minHeightSettings = 45;
 
   static double minHtDialogContent = 42;
-  static double dialogIconSize = 22;
+  static double dialogIconSize = 20;
   static double dialogButtonHeight = 48;
   // Dimentions END
 }

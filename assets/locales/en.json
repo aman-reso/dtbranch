@@ -75,6 +75,11 @@
 
     "addwatchlistmessage" : "Successfully added to Watchlist",
     "removewatchlistmessage" : "Successfully removed from Watchlist",
+    "download_success" : "File downloaded successfully.",
+    "download_remove_success" : "Successfully removed from Downloads.",
+    "take_me_to_the_downloads_page" : "Take me to the downloads page",
+    "download_options" : "Download options",
+    "download_options_note" : "Your video was downloaded successfully. Go to Downloads to watch and other options",
     "somethingwentwronge" : "Something went wrong...",
     "avalablelanguage" : "Available languages",
     "audios" : "Audio",

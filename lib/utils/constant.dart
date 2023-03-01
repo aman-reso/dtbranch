@@ -40,6 +40,16 @@ class Constant {
 
   static Map<String, String> resolutionsUrls = <String, String>{};
 
+  /* Download config */
+  static String videoDownloadPort = 'video_downloader_send_port';
+  static String showDownloadPort = 'show_downloader_send_port';
+  static String hawkVIDEOList = "myVideoList_";
+  static String hawkKIDSVIDEOList = "myKidsVideoList_";
+  static String hawkSHOWList = "myShowList_";
+  static String hawkSEASONList = "mySeasonList_";
+  static String hawkEPISODEList = "myEpisodeList_";
+  /* Download config */
+
   static int fixFourDigit = 1317;
   static int fixSixDigit = 161613;
   static int bannerDuration = 10000; // in milliseconds

@@ -225,9 +225,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                           fontweight: FontWeight.w600,
                           fontstyle: FontStyle.normal,
                         ),
-                        const SizedBox(
-                          height: 3,
-                        ),
+                        const SizedBox(height: 3),
                         /* Release Year & Video Duration */
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -296,9 +294,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 : const SizedBox.shrink(),
                           ],
                         ),
-                        const SizedBox(
-                          height: 6,
-                        ),
+                        const SizedBox(height: 6),
                         /* Prime TAG  & Rent TAG */
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,9 +316,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                     fontstyle: FontStyle.normal,
                                   )
                                 : const SizedBox.shrink(),
-                            const SizedBox(
-                              height: 3,
-                            ),
+                            const SizedBox(height: 3),
                             /* Rent TAG */
                             (watchlistProvider.watchlistModel.result?[position]
                                             .isRent ??
@@ -461,9 +455,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -489,9 +481,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   /* Release year, Video duration & Comment Icon */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -558,9 +548,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8),
                   /* Prime TAG  & Rent TAG */
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,9 +570,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                               fontstyle: FontStyle.normal,
                             )
                           : const SizedBox.shrink(),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       /* Rent TAG */
                       (watchlistProvider.watchlistModel.result?[position]
                                       .isRent ??
@@ -632,9 +618,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                           : const SizedBox.shrink(),
                     ],
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                  const SizedBox(height: 12),
 
                   /* Watch Now / Resume */
                   ((watchlistProvider
@@ -666,9 +650,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                   fit: BoxFit.contain,
                                   color: otherColor,
                                 ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
+                                const SizedBox(width: 20),
                                 Expanded(
                                   child: MyText(
                                     text: (watchlistProvider
@@ -680,10 +662,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                         ? "resume"
                                         : "watch_now",
                                     multilanguage: true,
-                                    fontsizeNormal: 16,
+                                    fontsizeNormal: 14,
                                     color: white,
                                     fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w500,
+                                    fontweight: FontWeight.w600,
                                     maxline: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textalign: TextAlign.start,
@@ -731,10 +713,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                   child: MyText(
                                     text: "startover",
                                     multilanguage: true,
-                                    fontsizeNormal: 16,
+                                    fontsizeNormal: 14,
                                     color: white,
                                     fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w500,
+                                    fontweight: FontWeight.w600,
                                     maxline: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textalign: TextAlign.start,
@@ -793,17 +775,15 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                   fit: BoxFit.contain,
                                   color: otherColor,
                                 ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
+                                const SizedBox(width: 20),
                                 Expanded(
                                   child: MyText(
                                     text: "watch_trailer",
                                     multilanguage: true,
-                                    fontsizeNormal: 16,
+                                    fontsizeNormal: 14,
                                     color: white,
                                     fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w500,
+                                    fontweight: FontWeight.w600,
                                     maxline: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textalign: TextAlign.start,
@@ -877,10 +857,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                   ? "remove_from_watchlist"
                                   : "add_to_watchlist",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -922,10 +902,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                   child: MyText(
                                     text: "download",
                                     multilanguage: true,
-                                    fontsizeNormal: 16,
+                                    fontsizeNormal: 14,
                                     color: white,
                                     fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w500,
+                                    fontweight: FontWeight.w600,
                                     maxline: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textalign: TextAlign.start,
@@ -965,10 +945,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             child: MyText(
                               text: "share",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1052,10 +1032,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             child: MyText(
                               text: "view_details",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1080,9 +1060,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -1185,10 +1163,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             child: MyText(
                               text: "sms",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1229,10 +1207,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             child: MyText(
                               text: "instagram_stories",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1279,10 +1257,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             child: MyText(
                               text: "copy_link",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1323,10 +1301,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             child: MyText(
                               text: "more",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,

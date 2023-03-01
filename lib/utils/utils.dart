@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as number;
 
+import 'package:android_path_provider/android_path_provider.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/subscription/allpayment.dart';
 import 'package:dtlive/utils/color.dart';
@@ -36,23 +38,6 @@ class Utils {
       textColor: black,
       fontSize: 16,
     );
-  }
-
-  static Future<bool> checkPermission() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.status;
-      if (status != PermissionStatus.granted) {
-        final result = await Permission.storage.request();
-        if (result == PermissionStatus.granted) {
-          return true;
-        }
-      } else {
-        return true;
-      }
-    } else {
-      return true;
-    }
-    return false;
   }
 
   static Future<dynamic> paymentForRent({
@@ -153,7 +138,9 @@ class Utils {
           return PlayerPod(
             playType == "Trailer"
                 ? "Trailer"
-                : (videoType == 2 ? "Show" : "Video"),
+                : playType == "Download"
+                    ? "Download"
+                    : (videoType == 2 ? "Show" : "Video"),
             vID,
             vType,
             vTypeID,
@@ -761,4 +748,56 @@ class Utils {
     return finalOID;
   }
   /* ***************** generate Unique OrderID END ***************** */
+
+  /* ***************** Download ***************** */
+  static Future<bool> checkPermission() async {
+    if (Platform.isIOS) {
+      return true;
+    }
+
+    if (Platform.isAndroid) {
+      final info = await DeviceInfoPlugin().androidInfo;
+      if (info.version.sdkInt > 28) {
+        return true;
+      }
+
+      final status = await Permission.storage.status;
+      if (status == PermissionStatus.granted) {
+        return true;
+      }
+
+      final result = await Permission.storage.request();
+      return result == PermissionStatus.granted;
+    }
+
+    throw StateError('unknown platform');
+  }
+
+  static Future<String> prepareSaveDir() async {
+    String localPath = (await _getSavedDir())!;
+    final savedDir = Directory(localPath);
+    if (!savedDir.existsSync()) {
+      await savedDir.create();
+    }
+    return localPath;
+  }
+
+  static Future<String?> _getSavedDir() async {
+    String? externalStorageDirPath;
+
+    if (Platform.isAndroid) {
+      try {
+        externalStorageDirPath = await AndroidPathProvider.downloadsPath;
+      } catch (err, st) {
+        log('failed to get downloads path: $err, $st');
+        final directory = await getExternalStorageDirectory();
+        externalStorageDirPath = directory?.path;
+      }
+    } else if (Platform.isIOS) {
+      externalStorageDirPath =
+          (await getApplicationDocumentsDirectory()).absolute.path;
+    }
+    return externalStorageDirPath;
+  }
+  /* ***************** Download ***************** */
 }

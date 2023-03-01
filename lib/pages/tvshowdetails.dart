@@ -1,13 +1,15 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/subscription/subscription.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path/path.dart' as path;
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/provider/downloadprovider.dart';
+import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
@@ -31,7 +33,6 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
@@ -48,7 +49,7 @@ class TvShowDetails extends StatefulWidget {
 class TvShowDetailsState extends State<TvShowDetails> {
   /* Download init */
   late bool _permissionReady;
-  late DownloadProvider downloadProvider;
+  late VideoDownloadProvider downloadProvider;
 
   String? audioLanguages;
   List<Cast>? directorList;
@@ -60,7 +61,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
     showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
     episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
-    downloadProvider = Provider.of<DownloadProvider>(context, listen: false);
+    downloadProvider =
+        Provider.of<VideoDownloadProvider>(context, listen: false);
     super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");
@@ -576,7 +578,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
                           /* Download */
                           if (!(kIsWeb || Constant.isTV))
-                            _buildDownloadWithSubCheck(),
+                            (showDetailsProvider.sectionDetailModel.result
+                                            ?.isDownloaded ??
+                                        0) ==
+                                    1
+                                ? _buildDownloadWithSubCheck()
+                                : const SizedBox.shrink(),
 
                           /* Watchlist */
                           Expanded(
@@ -2476,12 +2483,15 @@ class TvShowDetailsState extends State<TvShowDetails> {
           focusColor: white,
           onTap: () {
             if (Constant.userID != null) {
-              if (downloadProvider.currentProgress(
-                      showDetailsProvider.sectionDetailModel.result?.id ?? 0) ==
+              if (showDetailsProvider.sectionDetailModel.result?.isDownloaded ==
                   0) {
-                _checkAndDownload();
+                if (downloadProvider.dProgress == 0) {
+                  _checkAndDownload();
+                } else {
+                  Utils.showSnackbar(context, "info", "please_wait", true);
+                }
               } else {
-                Utils.showSnackbar(context, "info", "please_wait", true);
+                // buildDownloadCompleteDialog();
               }
             } else {
               if ((kIsWeb || Constant.isTV)) {
@@ -2513,37 +2523,23 @@ class TvShowDetailsState extends State<TvShowDetails> {
                     ),
                     borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
                   ),
-                  child: Consumer<DownloadProvider>(
+                  child: Consumer<VideoDownloadProvider>(
                     builder: (context, downloadProvider, child) {
-                      if (downloadProvider.currentProgress(showDetailsProvider
-                                  .sectionDetailModel.result?.id ??
-                              0) >
-                          0) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            value: downloadProvider.currentProgress(
-                                showDetailsProvider
-                                        .sectionDetailModel.result?.id ??
-                                    0),
-                          ),
-                        );
-                      } else {
-                        return MyImage(
-                          width: Dimens.featureIconSize,
-                          height: Dimens.featureIconSize,
-                          color: lightGray,
-                          imagePath: (showDetailsProvider.sectionDetailModel
-                                      .result?.isDownloaded ==
-                                  1)
-                              ? "ic_download_done.png"
-                              : "ic_download.png",
-                        );
-                      }
+                      return MyImage(
+                        width: Dimens.featureIconSize,
+                        height: Dimens.featureIconSize,
+                        color: lightGray,
+                        imagePath: (showDetailsProvider
+                                    .sectionDetailModel.result?.isDownloaded ==
+                                1)
+                            ? "ic_download_done.png"
+                            : "ic_download.png",
+                      );
                     },
                   ),
                 ),
                 const SizedBox(height: 5),
-                Consumer<DownloadProvider>(
+                Consumer<VideoDownloadProvider>(
                   builder: (context, downloadProvider, child) {
                     return MyText(
                       color: white,
@@ -2580,23 +2576,13 @@ class TvShowDetailsState extends State<TvShowDetails> {
         if ((showDetailsProvider.sectionDetailModel.result?.video320 ?? "")
             .isNotEmpty) {
           File? mTargetFile;
+          String? localPath;
           String? mFileName =
-              '${(showDetailsProvider.sectionDetailModel.result?.name ?? "").replaceAll(RegExp(r'[^\w\s]+'), '_').replaceAll(RegExp(" "), "")}'
+              '${(showDetailsProvider.sectionDetailModel.result?.name ?? "")}'
               '${(showDetailsProvider.sectionDetailModel.result?.id ?? 0)}${(Constant.userID)}';
           try {
-            Directory? directory;
-            if (Platform.isAndroid) {
-              directory = await getExternalStorageDirectory();
-            } else {
-              directory = await getApplicationDocumentsDirectory();
-            }
-            String localPath = directory?.absolute.path ?? "";
-            final savedDir = Directory(localPath);
-            bool hasExisted = await savedDir.exists();
-            if (!hasExisted) {
-              savedDir.create();
-            }
-            log("savedDir ====> ${savedDir.absolute.path}");
+            localPath = await Utils.prepareSaveDir();
+            log("localPath ====> $localPath");
             mTargetFile = File(path.join(localPath,
                 '$mFileName.${(showDetailsProvider.sectionDetailModel.result?.videoExtension ?? ".mp4")}'));
             // This is a sync operation on a real
@@ -2608,11 +2594,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
           log("mTargetFile ========> ${mTargetFile?.absolute.path ?? ""}");
           if (mTargetFile != null) {
             try {
-              downloadProvider.downloadVideo(
-                mTargetFile.absolute.path,
-                showDetailsProvider.sectionDetailModel.result?.video320 ?? "",
-                showDetailsProvider.sectionDetailModel.result?.id ?? 0,
-              );
+              downloadProvider.prepareDownload(
+                  showDetailsProvider.sectionDetailModel.result,
+                  localPath,
+                  mFileName);
               log("mTargetFile length ========> ${mTargetFile.length()}");
             } catch (e) {
               log("Downloading... Exception ======> $e");
@@ -2624,6 +2609,157 @@ class TvShowDetailsState extends State<TvShowDetails> {
         }
       }
     }
+  }
+
+  buildDownloadCompleteDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MyText(
+                    text: "download_options",
+                    multilanguage: true,
+                    fontsizeNormal: 16,
+                    color: white,
+                    fontstyle: FontStyle.normal,
+                    fontweight: FontWeight.w700,
+                    maxline: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 5),
+                  MyText(
+                    text: "download_options_note",
+                    multilanguage: true,
+                    fontsizeNormal: 10,
+                    color: otherColor,
+                    fontstyle: FontStyle.normal,
+                    fontweight: FontWeight.w500,
+                    maxline: 5,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 12),
+
+                  /* To Download */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: white,
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (Constant.userID != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const MyDownloads(),
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginSocial(),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      height: Dimens.minHtDialogContent,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
+                            imagePath: "ic_setting.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: MyText(
+                              text: "take_me_to_the_downloads_page",
+                              multilanguage: true,
+                              fontsizeNormal: 14,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /* Delete */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: white,
+                    onTap: () async {
+                      Navigator.pop(context);
+                      // await showDetailsProvider.setDownloadComplete(
+                      //     context,
+                      //     showDetailsProvider.sectionDetailModel.result?.id,
+                      //     showDetailsProvider
+                      //         .sectionDetailModel.result?.videoType,
+                      //     showDetailsProvider
+                      //         .sectionDetailModel.result?.typeId);
+                    },
+                    child: Container(
+                      height: Dimens.minHtDialogContent,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
+                            imagePath: "ic_delete.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: MyText(
+                              text: "delete_download",
+                              multilanguage: true,
+                              fontsizeNormal: 14,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
   /* ========= Download ========= */
 

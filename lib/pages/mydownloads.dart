@@ -1,7 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dtlive/provider/downloadprovider.dart';
+import 'package:dtlive/model/taskinfomodel.dart';
+import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/provider/videodownloadprovider.dart';
+import 'package:dtlive/provider/videodetailsprovider.dart';
+import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
@@ -9,6 +14,7 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
+import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -22,16 +28,25 @@ class MyDownloads extends StatefulWidget {
 }
 
 class _MyDownloadsState extends State<MyDownloads> {
-  late DownloadProvider downloadProvider;
+  late VideoDownloadProvider downloadProvider;
+  List<TaskInfo>? myDownloadsList;
 
   @override
   void initState() {
-    downloadProvider = Provider.of<DownloadProvider>(context, listen: false);
+    downloadProvider =
+        Provider.of<VideoDownloadProvider>(context, listen: false);
     _getData();
     super.initState();
   }
 
-  _getData() async {}
+  _getData() async {
+    myDownloadsList = await downloadProvider.getDownloadsByType("video");
+    log("myDownloadsList =================> ${myDownloadsList?.length}");
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
+  }
 
   @override
   void dispose() {
@@ -49,40 +64,33 @@ class _MyDownloadsState extends State<MyDownloads> {
           child: Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.only(top: 12, bottom: 8),
-            child: Consumer<DownloadProvider>(
+            child: Consumer<VideoDownloadProvider>(
               builder: (context, downloadProvider, child) {
                 if (downloadProvider.loading) {
-                  return Utils.pageLoader();
-                } else {
-                  /* if (downloadProvider.watchlistModel.status == 200 &&
-                      downloadProvider.watchlistModel.result != null) {
-                    if ((downloadProvider.watchlistModel.result?.length ?? 0) >
-                        0) { */
                   return Expanded(
-                    child: AlignedGridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 1,
-                      crossAxisSpacing: 0,
-                      mainAxisSpacing: 8,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, int position) {
-                        return _buildDownloadItem(position);
-                      },
-                    ),
-                  );
-                  /* } else {
-                      return const NoData(
-                        title: 'browse_now_watch_later',
-                        subTitle: 'watchlist_note',
+                      child: ShimmerUtils.buildDownloadShimmer(context, 10));
+                } else {
+                  if (myDownloadsList != null) {
+                    if ((myDownloadsList?.length ?? 0) > 0) {
+                      return Expanded(
+                        child: AlignedGridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 1,
+                          crossAxisSpacing: 0,
+                          mainAxisSpacing: 8,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: myDownloadsList?.length ?? 0,
+                          itemBuilder: (BuildContext context, int position) {
+                            return _buildDownloadItem(position);
+                          },
+                        ),
                       );
-                    } */
-                  /* } else {
-                    return const NoData(
-                      title: 'browse_now_watch_later',
-                      subTitle: 'watchlist_note',
-                    );
-                  } */
+                    } else {
+                      return const NoData(title: 'no_downloads', subTitle: '');
+                    }
+                  } else {
+                    return const NoData(title: 'no_downloads', subTitle: '');
+                  }
                 }
               },
             ),
@@ -118,54 +126,37 @@ class _MyDownloadsState extends State<MyDownloads> {
                     borderRadius: BorderRadius.circular(0),
                     onTap: () {
                       log("Clicked on position ==> $position");
-                      // if ((downloadProvider
-                      //             .watchlistModel.result?[position].videoType ??
-                      //         0) ==
-                      //     1) {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) {
-                      //         return MovieDetails(
-                      //           downloadProvider
-                      //                   .watchlistModel.result?[position].id ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].videoType ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].typeId ??
-                      //               0,
-                      //         );
-                      //       },
-                      //     ),
-                      //   );
-                      // } else if ((downloadProvider
-                      //             .watchlistModel.result?[position].videoType ??
-                      //         0) ==
-                      //     2) {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) {
-                      //         return TvShowDetails(
-                      //           downloadProvider
-                      //                   .watchlistModel.result?[position].id ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].videoType ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].typeId ??
-                      //               0,
-                      //         );
-                      //       },
-                      //     ),
-                      //   );
-                      // }
+                      if ((myDownloadsList?[position].videoType ?? 0) == 1) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return MovieDetails(
+                                myDownloadsList?[position].id ?? 0,
+                                myDownloadsList?[position].videoType ?? 0,
+                                myDownloadsList?[position].typeId ?? 0,
+                              );
+                            },
+                          ),
+                        );
+                      } else if ((myDownloadsList?[position].videoType ?? 0) ==
+                          2) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return TvShowDetails(
+                                myDownloadsList?[position].id ?? 0,
+                                myDownloadsList?[position].videoType ?? 0,
+                                myDownloadsList?[position].typeId ?? 0,
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
                     child: MyNetworkImage(
-                      imageUrl: "",
+                      imageUrl: myDownloadsList?[position].landscapeImg ?? "",
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -191,7 +182,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                         /* Title */
                         MyText(
                           color: white,
-                          text: "",
+                          text: myDownloadsList?[position].name ?? "",
                           textalign: TextAlign.start,
                           maxline: 2,
                           overflow: TextOverflow.ellipsis,
@@ -199,126 +190,94 @@ class _MyDownloadsState extends State<MyDownloads> {
                           fontweight: FontWeight.w600,
                           fontstyle: FontStyle.normal,
                         ),
-                        const SizedBox(
-                          height: 3,
-                        ),
+                        const SizedBox(height: 3),
                         /* Release Year & Video Duration */
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            /* (downloadProvider.watchlistModel.result?[position]
-                                            .releaseYear !=
-                                        null &&
-                                    (downloadProvider
-                                                .watchlistModel
-                                                .result?[position]
-                                                .releaseYear ??
+                            (myDownloadsList?[position].releaseYear != null &&
+                                    (myDownloadsList?[position].releaseYear ??
                                             "") !=
                                         "")
-                                ?  */
-                            Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              child: MyText(
-                                color: otherColor,
-                                text: /* downloadProvider.watchlistModel
-                                              .result?[position].releaseYear ?? */
-                                    "",
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textalign: TextAlign.start,
-                                fontsizeNormal: 12,
-                                fontweight: FontWeight.w500,
-                                fontstyle: FontStyle.normal,
-                              ),
-                            ) /* : const SizedBox.shrink() */,
-                            /* (downloadProvider.watchlistModel.result?[position]
-                                            .videoType ??
-                                        0) !=
-                                    2
-                                ? (downloadProvider
-                                                .watchlistModel
-                                                .result?[position]
-                                                .videoDuration !=
+                                ? Container(
+                                    margin: const EdgeInsets.only(right: 8),
+                                    child: MyText(
+                                      color: otherColor,
+                                      text: myDownloadsList?[position]
+                                              .releaseYear ??
+                                          "",
+                                      maxline: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textalign: TextAlign.start,
+                                      fontsizeNormal: 12,
+                                      fontweight: FontWeight.w500,
+                                      fontstyle: FontStyle.normal,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                            (myDownloadsList?[position].videoType ?? 0) != 2
+                                ? (myDownloadsList?[position].videoDuration !=
                                             null &&
-                                        (downloadProvider
-                                                    .watchlistModel
-                                                    .result?[position]
+                                        (myDownloadsList?[position]
                                                     .videoDuration ??
                                                 0) >
                                             0)
-                                    ?  */
-                            Container(
-                              margin: const EdgeInsets.only(right: 20),
-                              child: MyText(
-                                color: otherColor,
-                                text: Utils.convertInMin(
-                                    /* downloadProvider
-                                                      .watchlistModel
-                                                      .result?[position]
-                                                      .videoDuration ?? */
-                                    0),
-                                textalign: TextAlign.start,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontsizeNormal: 12,
-                                fontweight: FontWeight.w500,
-                                fontstyle: FontStyle.normal,
-                              ),
-                            ) /* 
+                                    ? Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 20),
+                                        child: MyText(
+                                          color: otherColor,
+                                          text: Utils.convertInMin(
+                                              myDownloadsList?[position]
+                                                      .videoDuration ??
+                                                  0),
+                                          textalign: TextAlign.start,
+                                          maxline: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontsizeNormal: 12,
+                                          fontweight: FontWeight.w500,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                      )
                                     : const SizedBox.shrink()
-                                : const SizedBox.shrink() */
-                            ,
+                                : const SizedBox.shrink(),
                           ],
                         ),
-                        const SizedBox(
-                          height: 6,
-                        ),
+                        const SizedBox(height: 6),
                         /* Prime TAG  & Rent TAG */
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             /* Prime TAG */
-                            /* (downloadProvider.watchlistModel.result?[position]
-                                            .isPremium ??
-                                        0) ==
-                                    1
-                                ?  */
-                            MyText(
-                              color: primaryColor,
-                              text: "primetag",
-                              multilanguage: true,
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 10,
-                              fontweight: FontWeight.w800,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ) /* 
-                                : const SizedBox.shrink() */
-                            ,
-                            const SizedBox(
-                              height: 3,
-                            ),
+                            (myDownloadsList?[position].isPremium ?? 0) == 1
+                                ? MyText(
+                                    color: primaryColor,
+                                    text: "primetag",
+                                    multilanguage: true,
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 10,
+                                    fontweight: FontWeight.w800,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  )
+                                : const SizedBox.shrink(),
+                            const SizedBox(height: 3),
                             /* Rent TAG */
-                            /* (downloadProvider.watchlistModel.result?[position]
-                                            .isRent ??
-                                        0) ==
-                                    1
-                                ?  */
-                            MyText(
-                              color: white,
-                              text: "renttag",
-                              multilanguage: true,
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 11,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ) /* 
-                                : const SizedBox.shrink() */
-                            ,
+                            (myDownloadsList?[position].isRent ?? 0) == 1
+                                ? MyText(
+                                    color: white,
+                                    text: "renttag",
+                                    multilanguage: true,
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 11,
+                                    fontweight: FontWeight.w500,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  )
+                                : const SizedBox.shrink(),
                           ],
                         ),
                       ],
@@ -359,9 +318,7 @@ class _MyDownloadsState extends State<MyDownloads> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -375,7 +332,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                 children: <Widget>[
                   /* Title */
                   MyText(
-                    text: "",
+                    text: myDownloadsList?[position].name ?? "",
                     multilanguage: false,
                     fontsizeNormal: 18,
                     color: white,
@@ -385,40 +342,51 @@ class _MyDownloadsState extends State<MyDownloads> {
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   /* Release year, Video duration & Comment Icon */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        child: MyText(
-                          color: otherColor,
-                          text: "",
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textalign: TextAlign.center,
-                          fontsizeNormal: 12,
-                          fontweight: FontWeight.w500,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        child: MyText(
-                          color: otherColor,
-                          text: "",
-                          textalign: TextAlign.center,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontsizeNormal: 12,
-                          fontweight: FontWeight.w500,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ),
+                      (myDownloadsList?[position].releaseYear ?? "").isNotEmpty
+                          ? Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              child: MyText(
+                                color: otherColor,
+                                text: myDownloadsList?[position].releaseYear ??
+                                    "",
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 12,
+                                fontweight: FontWeight.w500,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      (myDownloadsList?[position].videoType ?? 0) != 2
+                          ? (myDownloadsList?[position].videoDuration != null &&
+                                  (myDownloadsList?[position].videoDuration ??
+                                          0) >
+                                      0)
+                              ? Container(
+                                  margin: const EdgeInsets.only(right: 8),
+                                  child: MyText(
+                                    color: otherColor,
+                                    text: Utils.convertInMin(
+                                        myDownloadsList?[position]
+                                                .videoDuration ??
+                                            0),
+                                    textalign: TextAlign.center,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontsizeNormal: 12,
+                                    fontweight: FontWeight.w500,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                )
+                              : const SizedBox.shrink()
+                          : const SizedBox.shrink(),
                       MyImage(
                         width: 18,
                         height: 18,
@@ -428,242 +396,238 @@ class _MyDownloadsState extends State<MyDownloads> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8),
                   /* Prime TAG  & Rent TAG */
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /* Prime TAG */
-                      MyText(
-                        color: primaryColor,
-                        text: "primetag",
-                        multilanguage: true,
-                        textalign: TextAlign.start,
-                        fontsizeNormal: 12,
-                        fontweight: FontWeight.w800,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontstyle: FontStyle.normal,
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      /* Rent TAG */
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 18,
-                            height: 18,
-                            decoration: BoxDecoration(
-                              color: complimentryColor,
-                              borderRadius: BorderRadius.circular(10),
-                              shape: BoxShape.rectangle,
-                            ),
-                            margin: const EdgeInsets.only(right: 5),
-                            alignment: Alignment.center,
-                            child: MyText(
-                              color: white,
-                              text: Constant.currencySymbol,
-                              textalign: TextAlign.center,
-                              fontsizeNormal: 10,
-                              multilanguage: false,
+                      (myDownloadsList?[position].isPremium ?? 0) == 1
+                          ? MyText(
+                              color: primaryColor,
+                              text: "primetag",
+                              multilanguage: true,
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 12,
                               fontweight: FontWeight.w800,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               fontstyle: FontStyle.normal,
-                            ),
-                          ),
-                          MyText(
-                            color: white,
-                            text: "renttag",
-                            multilanguage: true,
-                            textalign: TextAlign.start,
-                            fontsizeNormal: 12,
-                            fontweight: FontWeight.w500,
-                            maxline: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontstyle: FontStyle.normal,
-                          ),
-                        ],
-                      ),
+                            )
+                          : const SizedBox.shrink(),
+                      const SizedBox(height: 5),
+                      /* Rent TAG */
+                      (myDownloadsList?[position].isRent ?? 0) == 1
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 18,
+                                  height: 18,
+                                  decoration: BoxDecoration(
+                                    color: complimentryColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    shape: BoxShape.rectangle,
+                                  ),
+                                  margin: const EdgeInsets.only(right: 5),
+                                  alignment: Alignment.center,
+                                  child: MyText(
+                                    color: white,
+                                    text: Constant.currencySymbol,
+                                    textalign: TextAlign.center,
+                                    fontsizeNormal: 10,
+                                    multilanguage: false,
+                                    fontweight: FontWeight.w800,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ),
+                                MyText(
+                                  color: white,
+                                  text: "renttag",
+                                  multilanguage: true,
+                                  textalign: TextAlign.start,
+                                  fontsizeNormal: 12,
+                                  fontweight: FontWeight.w500,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              ],
+                            )
+                          : const SizedBox.shrink(),
                     ],
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                  const SizedBox(height: 12),
 
                   /* Watch Now / Resume */
-                  /* ((downloadProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0) !=
-                          2)
-                      ? */
-                  InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      openPlayer("Video", position);
-                    },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_play.png",
-                            fit: BoxFit.contain,
-                            color: otherColor,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "watch_now",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
+                  ((myDownloadsList?[position].videoType ?? 0) != 2)
+                      ? InkWell(
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () async {
+                            Navigator.pop(context);
+                            openPlayer(position);
+                          },
+                          child: Container(
+                            height: Dimens.minHtDialogContent,
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                MyImage(
+                                  width: Dimens.dialogIconSize,
+                                  height: Dimens.dialogIconSize,
+                                  imagePath: "ic_play.png",
+                                  fit: BoxFit.contain,
+                                  color: otherColor,
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: MyText(
+                                    text: "watch_now",
+                                    multilanguage: true,
+                                    fontsizeNormal: 14,
+                                    color: white,
+                                    fontstyle: FontStyle.normal,
+                                    fontweight: FontWeight.w600,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textalign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ) /* : const SizedBox.shrink() */,
+                        )
+                      : const SizedBox.shrink(),
 
-                  /* Add to Watchlist / Remove from Watchlist */
-                  // InkWell(
-                  //   borderRadius: BorderRadius.circular(5),
-                  //   onTap: () async {
-                  //     Navigator.pop(context);
-                  //     log("isBookmark ====> ${downloadProvider.watchlistModel.result?[position].isBookmark ?? 0}");
-                  //     if (Constant.userID != null) {
-                  //       await downloadProvider.setBookMark(
-                  //         context,
-                  //         position,
-                  //         downloadProvider
-                  //                 .watchlistModel.result?[position].typeId ??
-                  //             0,
-                  //         downloadProvider
-                  //                 .watchlistModel.result?[position].videoType ??
-                  //             0,
-                  //         downloadProvider
-                  //                 .watchlistModel.result?[position].id ??
-                  //             0,
-                  //       );
-                  //     } else {
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //           builder: (context) {
-                  //             return const LoginSocial();
-                  //           },
-                  //         ),
-                  //       );
-                  //     }
-                  //   },
-                  //   child: Container(
-                  //     height: Dimens.minHtDialogContent,
-                  //     padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                  //     child: Row(
-                  //       crossAxisAlignment: CrossAxisAlignment.center,
-                  //       mainAxisAlignment: MainAxisAlignment.start,
-                  //       children: [
-                  //         MyImage(
-                  //           width: Dimens.dialogIconSize,
-                  //           height: Dimens.dialogIconSize,
-                  //           imagePath: ((downloadProvider.watchlistModel
-                  //                           .result?[position].isBookmark ??
-                  //                       0) ==
-                  //                   1)
-                  //               ? "watchlist_remove.png"
-                  //               : "ic_plus.png",
-                  //           fit: BoxFit.contain,
-                  //           color: otherColor,
-                  //         ),
-                  //         const SizedBox(
-                  //           width: 20,
-                  //         ),
-                  //         Expanded(
-                  //           child: MyText(
-                  //             text: ((downloadProvider.watchlistModel
-                  //                             .result?[position].isBookmark ??
-                  //                         0) ==
-                  //                     1)
-                  //                 ? "remove_from_watchlist"
-                  //                 : "add_to_watchlist",
-                  //             multilanguage: true,
-                  //             fontsizeNormal: 16,
-                  //             color: white,
-                  //             fontstyle: FontStyle.normal,
-                  //             fontweight: FontWeight.w500,
-                  //             maxline: 1,
-                  //             overflow: TextOverflow.ellipsis,
-                  //             textalign: TextAlign.start,
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
+                  /* Watch Trailer */
+                  ((myDownloadsList?[position].videoType ?? 0) != 2)
+                      ? InkWell(
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () async {
+                            Navigator.pop(context);
+                            await Utils.openPlayer(
+                                context: context,
+                                playType: "Trailer",
+                                videoId: myDownloadsList?[position].id ?? 0,
+                                videoType:
+                                    myDownloadsList?[position].videoType ?? 0,
+                                typeId: myDownloadsList?[position].typeId ?? 0,
+                                videoUrl: "",
+                                trailerUrl:
+                                    myDownloadsList?[position].trailerUrl ?? "",
+                                uploadType: myDownloadsList?[position]
+                                        .videoUploadType ??
+                                    "",
+                                videoThumb:
+                                    myDownloadsList?[position].landscapeImg ??
+                                        "",
+                                vSubtitle: "",
+                                vStopTime: 0);
+                          },
+                          child: Container(
+                            height: Dimens.minHtDialogContent,
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                MyImage(
+                                  width: Dimens.dialogIconSize,
+                                  height: Dimens.dialogIconSize,
+                                  imagePath: "ic_borderplay.png",
+                                  fit: BoxFit.contain,
+                                  color: otherColor,
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: MyText(
+                                    text: "watch_trailer",
+                                    multilanguage: true,
+                                    fontsizeNormal: 14,
+                                    color: white,
+                                    fontstyle: FontStyle.normal,
+                                    fontweight: FontWeight.w600,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textalign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
 
                   /* Download Add/Delete */
-                  /* ((downloadProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0) !=
-                          2)
-                      ?  */
-                  InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    onTap: () async {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_download.png",
-                            fit: BoxFit.contain,
-                            color: otherColor,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "download",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
+                  ((myDownloadsList?[position].videoType ?? 0) != 2)
+                      ? InkWell(
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () async {
+                            if (myDownloadsList?[position].isDownload == 1) {
+                              List<TaskInfo>? dummyDownloadsList =
+                                  myDownloadsList;
+                              final videoDetailsProvider =
+                                  Provider.of<VideoDetailsProvider>(context,
+                                      listen: false);
+                              myDownloadsList?.removeAt(position);
+                              setState(() {});
+                              Navigator.pop(context);
+                              await videoDetailsProvider.setDownloadComplete(
+                                  context,
+                                  dummyDownloadsList?[position].id,
+                                  dummyDownloadsList?[position].videoType,
+                                  dummyDownloadsList?[position].typeId);
+                              await downloadProvider.checkVideoInSecure(
+                                  dummyDownloadsList,
+                                  dummyDownloadsList?[position].id.toString() ??
+                                      "");
+                            }
+                          },
+                          child: Container(
+                            height: Dimens.minHtDialogContent,
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                MyImage(
+                                  width: Dimens.dialogIconSize,
+                                  height: Dimens.dialogIconSize,
+                                  imagePath:
+                                      myDownloadsList?[position].isDownload == 1
+                                          ? "ic_delete.png"
+                                          : "ic_download.png",
+                                  fit: BoxFit.contain,
+                                  color: otherColor,
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: MyText(
+                                    text:
+                                        myDownloadsList?[position].isDownload ==
+                                                1
+                                            ? "delete_download"
+                                            : "download",
+                                    multilanguage: true,
+                                    fontsizeNormal: 14,
+                                    color: white,
+                                    fontstyle: FontStyle.normal,
+                                    fontweight: FontWeight.w600,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textalign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ) /* : const SizedBox.shrink() */,
+                        )
+                      : const SizedBox.shrink(),
 
                   /* Video Share */
                   InkWell(
@@ -693,10 +657,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             child: MyText(
                               text: "share",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -713,51 +677,34 @@ class _MyDownloadsState extends State<MyDownloads> {
                     onTap: () async {
                       Navigator.pop(context);
                       log("Clicked on position :==> $position");
-                      // if ((downloadProvider
-                      //             .watchlistModel.result?[position].videoType ??
-                      //         0) ==
-                      //     1) {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) {
-                      //         return MovieDetails(
-                      //           downloadProvider
-                      //                   .watchlistModel.result?[position].id ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].videoType ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].typeId ??
-                      //               0,
-                      //         );
-                      //       },
-                      //     ),
-                      //   );
-                      // } else if ((downloadProvider
-                      //             .watchlistModel.result?[position].videoType ??
-                      //         0) ==
-                      //     2) {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) {
-                      //         return TvShowDetails(
-                      //           downloadProvider
-                      //                   .watchlistModel.result?[position].id ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].videoType ??
-                      //               0,
-                      //           downloadProvider.watchlistModel
-                      //                   .result?[position].typeId ??
-                      //               0,
-                      //         );
-                      //       },
-                      //     ),
-                      //   );
-                      // }
+                      if ((myDownloadsList?[position].videoType ?? 0) == 1) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return MovieDetails(
+                                myDownloadsList?[position].id ?? 0,
+                                myDownloadsList?[position].videoType ?? 0,
+                                myDownloadsList?[position].typeId ?? 0,
+                              );
+                            },
+                          ),
+                        );
+                      } else if ((myDownloadsList?[position].videoType ?? 0) ==
+                          2) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return TvShowDetails(
+                                myDownloadsList?[position].id ?? 0,
+                                myDownloadsList?[position].videoType ?? 0,
+                                myDownloadsList?[position].typeId ?? 0,
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
                     child: Container(
                       height: Dimens.minHtDialogContent,
@@ -773,17 +720,15 @@ class _MyDownloadsState extends State<MyDownloads> {
                             fit: BoxFit.contain,
                             color: otherColor,
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: MyText(
                               text: "view_details",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -1064,36 +1009,19 @@ class _MyDownloadsState extends State<MyDownloads> {
     );
   }
 
-  openPlayer(playType, position) async {
-    // Map<String, String> qualityUrlList = <String, String>{
-    //   '320p': downloadProvider.watchlistModel.result?[position].video320 ?? '',
-    //   '480p': downloadProvider.watchlistModel.result?[position].video480 ?? '',
-    //   '720p': downloadProvider.watchlistModel.result?[position].video720 ?? '',
-    //   '1080p':
-    //       downloadProvider.watchlistModel.result?[position].video1080 ?? '',
-    // };
-    // debugPrint("qualityUrlList ==========> ${qualityUrlList.length}");
-    // Constant.resolutionsUrls = qualityUrlList;
-    // debugPrint(
-    //     "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
-    // Utils.openPlayer(
-    //   context: context,
-    //   playType: playType ?? "",
-    //   videoId: downloadProvider.watchlistModel.result?[position].id ?? 0,
-    //   videoType:
-    //       downloadProvider.watchlistModel.result?[position].videoType ?? 0,
-    //   typeId: downloadProvider.watchlistModel.result?[position].typeId ?? 0,
-    //   videoUrl:
-    //       downloadProvider.watchlistModel.result?[position].video320 ?? "",
-    //   trailerUrl:
-    //       downloadProvider.watchlistModel.result?[position].trailerUrl ?? "",
-    //   uploadType:
-    //       downloadProvider.watchlistModel.result?[position].videoUploadType ??
-    //           "",
-    //   vSubtitle:
-    //       downloadProvider.watchlistModel.result?[position].subtitle ?? "",
-    //   vStopTime:
-    //       downloadProvider.watchlistModel.result?[position].stopTime ?? 0,
-    // );
+  openPlayer(position) async {
+    Utils.openPlayer(
+      context: context,
+      playType: "Download",
+      videoId: myDownloadsList?[position].id ?? 0,
+      videoType: myDownloadsList?[position].videoType ?? 0,
+      typeId: myDownloadsList?[position].typeId ?? 0,
+      videoUrl: myDownloadsList?[position].savedFile ?? "",
+      trailerUrl: myDownloadsList?[position].trailerUrl ?? "",
+      uploadType: myDownloadsList?[position].videoUploadType ?? "",
+      videoThumb: myDownloadsList?[position].landscapeImg ?? "",
+      vSubtitle: "",
+      vStopTime: 0,
+    );
   }
 }

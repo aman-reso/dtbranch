@@ -82,6 +82,30 @@ class ShowDetailsProvider extends ChangeNotifier {
     debugPrint("add_remove_bookmark message :==> ${successModel.message}");
   }
 
+  setDownloadComplete(
+      BuildContext context, typeId, videoType, videoId, otherId) {
+    if ((sectionDetailModel.result?.isDownloaded ?? 0) == 0) {
+      sectionDetailModel.result?.isDownloaded = 1;
+      Utils.showSnackbar(context, "success", "download_success", true);
+    } else {
+      sectionDetailModel.result?.isDownloaded = 0;
+      Utils.showSnackbar(context, "success", "download_remove_success", true);
+    }
+    notifyListeners();
+    addToDownload(typeId, videoType, videoId, otherId);
+  }
+
+  Future<void> addToDownload(typeId, videoType, videoId, otherId) async {
+    debugPrint("addRemoveDownload typeId :==> $typeId");
+    debugPrint("addRemoveDownload videoType :==> $videoType");
+    debugPrint("addRemoveDownload videoId :==> $videoId");
+    debugPrint("addRemoveDownload otherId :==> $otherId");
+    successModel = await ApiService()
+        .addRemoveDownload(typeId, videoType, videoId, otherId);
+    debugPrint("addRemoveDownload status :==> ${successModel.status}");
+    debugPrint("addRemoveDownload message :==> ${successModel.message}");
+  }
+
   setSeasonPosition(int position) {
     log("setSeasonPosition ===> $position");
     seasonPos = position;

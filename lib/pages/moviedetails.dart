@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:dtlive/provider/downloadprovider.dart';
+import 'dart:isolate';
+import 'dart:ui';
+import 'package:dtlive/pages/mydownloads.dart';
+import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
@@ -10,6 +13,7 @@ import 'package:dtlive/widget/castcrew.dart';
 import 'package:dtlive/widget/moredetails.dart';
 import 'package:dtlive/widget/relatedvideoshow.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
@@ -28,8 +32,7 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 
@@ -44,8 +47,9 @@ class MovieDetails extends StatefulWidget {
 
 class MovieDetailsState extends State<MovieDetails> {
   /* Download init */
+  late VideoDownloadProvider downloadProvider;
   late bool _permissionReady;
-  late DownloadProvider downloadProvider;
+  final ReceivePort _port = ReceivePort();
 
   String? audioLanguages;
   List<Cast>? directorList;
@@ -55,10 +59,16 @@ class MovieDetailsState extends State<MovieDetails> {
 
   @override
   void initState() {
+    /* Download init ****/
+    _bindBackgroundIsolate();
+    FlutterDownloader.registerCallback(downloadCallback, step: 1);
+    /* ****/
+
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     videoDetailsProvider =
         Provider.of<VideoDetailsProvider>(context, listen: false);
-    downloadProvider = Provider.of<DownloadProvider>(context, listen: false);
+    downloadProvider =
+        Provider.of<VideoDownloadProvider>(context, listen: false);
     super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");
@@ -94,6 +104,66 @@ class MovieDetailsState extends State<MovieDetails> {
       if (!mounted) return;
       setState(() {});
     });
+  }
+
+  void _bindBackgroundIsolate() {
+    final isSuccess = IsolateNameServer.registerPortWithName(
+      _port.sendPort,
+      Constant.videoDownloadPort,
+    );
+    log('_bindBackgroundIsolate isSuccess ============> $isSuccess');
+    if (!isSuccess) {
+      _unbindBackgroundIsolate();
+      _bindBackgroundIsolate();
+      return;
+    }
+    _port.listen((dynamic data) {
+      final taskId = (data as List<dynamic>)[0] as String;
+      final status = DownloadTaskStatus(data[1] as int);
+      final progress = data[2] as int;
+
+      log(
+        'Callback on UI isolate: '
+        'task ($taskId) is in status ($status) and process ($progress)',
+      );
+
+      if (downloadProvider.currentTasks != null &&
+          downloadProvider.currentTasks!.isNotEmpty) {
+        log('currentTask ============> ${downloadProvider.currentTasks?.length}');
+        final task = downloadProvider.currentTasks!
+            .firstWhere((task) => task.taskId == taskId);
+        log('task status ============> ${task.status}');
+        downloadProvider.setDownloadProgress(progress);
+        if (status == DownloadTaskStatus.complete) {
+          videoDetailsProvider.setDownloadComplete(
+              context,
+              videoDetailsProvider.sectionDetailModel.result?.id,
+              videoDetailsProvider.sectionDetailModel.result?.videoType,
+              videoDetailsProvider.sectionDetailModel.result?.typeId);
+          downloadProvider.setDownloadProgress(0);
+        }
+      }
+    });
+  }
+
+  void _unbindBackgroundIsolate() {
+    log('_unbindBackgroundIsolate');
+    IsolateNameServer.removePortNameMapping(Constant.videoDownloadPort);
+  }
+
+  @pragma('vm:entry-point')
+  static void downloadCallback(
+    String id,
+    DownloadTaskStatus status,
+    int progress,
+  ) {
+    log(
+      'Callback on background isolate: '
+      'task ($id) is in status ($status) and process ($progress)',
+    );
+
+    IsolateNameServer.lookupPortByName(Constant.videoDownloadPort)
+        ?.send([id, status.value, progress]);
   }
 
   @override
@@ -581,11 +651,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                 } else {
                                   /* Trailer */
                                   return InkWell(
-                                    borderRadius: BorderRadius.circular(
-                                        ((kIsWeb || Constant.isTV)
-                                                ? Dimens.featureWebSize
-                                                : Dimens.featureSize) /
-                                            2),
+                                    borderRadius: BorderRadius.circular(5),
                                     focusColor: gray.withOpacity(0.5),
                                     onTap: () {
                                       openPlayer("Trailer");
@@ -603,7 +669,12 @@ class MovieDetailsState extends State<MovieDetails> {
 
                           /* Download */
                           if (!(kIsWeb || Constant.isTV))
-                            _buildDownloadWithSubCheck(),
+                            (videoDetailsProvider.sectionDetailModel.result
+                                            ?.isDownloaded ??
+                                        0) ==
+                                    1
+                                ? _buildDownloadWithSubCheck()
+                                : const SizedBox.shrink(),
 
                           /* Watchlist */
                           Expanded(
@@ -2755,13 +2826,16 @@ class MovieDetailsState extends State<MovieDetails> {
           focusColor: gray.withOpacity(0.5),
           onTap: () {
             if (Constant.userID != null) {
-              if (downloadProvider.currentProgress(
-                      videoDetailsProvider.sectionDetailModel.result?.id ??
-                          0) ==
+              if (videoDetailsProvider
+                      .sectionDetailModel.result?.isDownloaded ==
                   0) {
-                _checkAndDownload();
+                if (downloadProvider.dProgress == 0) {
+                  _checkAndDownload();
+                } else {
+                  Utils.showSnackbar(context, "info", "please_wait", true);
+                }
               } else {
-                Utils.showSnackbar(context, "info", "please_wait", true);
+                buildDownloadCompleteDialog();
               }
             } else {
               if ((kIsWeb || Constant.isTV)) {
@@ -2783,32 +2857,44 @@ class MovieDetailsState extends State<MovieDetails> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: Dimens.featureSize,
-                  height: Dimens.featureSize,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: primaryLight,
-                    ),
-                    borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
-                  ),
-                  child: Consumer<DownloadProvider>(
-                    builder: (context, downloadProvider, child) {
-                      if (downloadProvider.currentProgress(videoDetailsProvider
-                                  .sectionDetailModel.result?.id ??
-                              0) >
-                          0) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            value: downloadProvider.currentProgress(
-                                videoDetailsProvider
-                                        .sectionDetailModel.result?.id ??
-                                    0),
-                          ),
-                        );
-                      } else {
-                        return MyImage(
+                Consumer2<VideoDetailsProvider, VideoDownloadProvider>(
+                  builder:
+                      (context, videoDetailsProvider, downloadProvider, child) {
+                    if (downloadProvider.currentTasks != null &&
+                        downloadProvider.currentTasks?[0].id ==
+                            videoDetailsProvider
+                                .sectionDetailModel.result?.id &&
+                        downloadProvider.dProgress != 0 &&
+                        downloadProvider.dProgress > 0) {
+                      return CircularPercentIndicator(
+                        radius: (Dimens.featureSize / 2),
+                        lineWidth: 2.0,
+                        percent: (downloadProvider.dProgress / 100).toDouble(),
+                        center: MyText(
+                          color: white,
+                          text: "${downloadProvider.dProgress}%",
+                          multilanguage: false,
+                          fontsizeNormal: 10,
+                          fontweight: FontWeight.w600,
+                          fontsizeWeb: 14,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        progressColor: primaryColor,
+                      );
+                    } else {
+                      return Container(
+                        width: Dimens.featureSize,
+                        height: Dimens.featureSize,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: primaryLight),
+                          borderRadius:
+                              BorderRadius.circular(Dimens.featureSize / 2),
+                        ),
+                        child: MyImage(
                           width: Dimens.featureIconSize,
                           height: Dimens.featureIconSize,
                           color: lightGray,
@@ -2817,14 +2903,14 @@ class MovieDetailsState extends State<MovieDetails> {
                                   1)
                               ? "ic_download_done.png"
                               : "ic_download.png",
-                        );
-                      }
-                    },
-                  ),
+                        ),
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(height: 5),
-                Consumer<DownloadProvider>(
-                  builder: (context, downloadProvider, child) {
+                Consumer<VideoDetailsProvider>(
+                  builder: (context, videoDetailsProvider, child) {
                     return MyText(
                       color: white,
                       text: (videoDetailsProvider
@@ -2860,23 +2946,13 @@ class MovieDetailsState extends State<MovieDetails> {
         if ((videoDetailsProvider.sectionDetailModel.result?.video320 ?? "")
             .isNotEmpty) {
           File? mTargetFile;
+          String? localPath;
           String? mFileName =
-              '${(videoDetailsProvider.sectionDetailModel.result?.name ?? "").replaceAll(RegExp(r'[^\w\s]+'), '_').replaceAll(RegExp(" "), "")}'
+              '${(videoDetailsProvider.sectionDetailModel.result?.name ?? "")}'
               '${(videoDetailsProvider.sectionDetailModel.result?.id ?? 0)}${(Constant.userID)}';
           try {
-            Directory? directory;
-            if (Platform.isAndroid) {
-              directory = await getExternalStorageDirectory();
-            } else {
-              directory = await getApplicationDocumentsDirectory();
-            }
-            String localPath = directory?.absolute.path ?? "";
-            final savedDir = Directory(localPath);
-            bool hasExisted = await savedDir.exists();
-            if (!hasExisted) {
-              savedDir.create();
-            }
-            log("savedDir ====> ${savedDir.absolute.path}");
+            localPath = await Utils.prepareSaveDir();
+            log("localPath ====> $localPath");
             mTargetFile = File(path.join(localPath,
                 '$mFileName.${(videoDetailsProvider.sectionDetailModel.result?.videoExtension ?? ".mp4")}'));
             // This is a sync operation on a real
@@ -2888,11 +2964,10 @@ class MovieDetailsState extends State<MovieDetails> {
           log("mTargetFile ========> ${mTargetFile?.absolute.path ?? ""}");
           if (mTargetFile != null) {
             try {
-              downloadProvider.downloadVideo(
-                mTargetFile.absolute.path,
-                videoDetailsProvider.sectionDetailModel.result?.video320 ?? "",
-                videoDetailsProvider.sectionDetailModel.result?.id ?? 0,
-              );
+              downloadProvider.prepareDownload(
+                  videoDetailsProvider.sectionDetailModel.result,
+                  localPath,
+                  mFileName);
               log("mTargetFile length ========> ${mTargetFile.length()}");
             } catch (e) {
               log("Downloading... Exception ======> $e");
@@ -2905,6 +2980,7 @@ class MovieDetailsState extends State<MovieDetails> {
       }
     }
   }
+
   /* ========= Download ========= */
 
   /* ========= Dialogs ========= */
@@ -2951,9 +3027,7 @@ class MovieDetailsState extends State<MovieDetails> {
                     textalign: TextAlign.start,
                     color: white,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   MyText(
                     text: "languagechangenote",
                     fontsizeNormal: 13,
@@ -2966,9 +3040,7 @@ class MovieDetailsState extends State<MovieDetails> {
                     textalign: TextAlign.start,
                     color: otherColor,
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   MyText(
                     text: "audios",
                     fontsizeNormal: 17,
@@ -2981,9 +3053,7 @@ class MovieDetailsState extends State<MovieDetails> {
                     textalign: TextAlign.start,
                     color: white,
                   ),
-                  const SizedBox(
-                    height: 2,
-                  ),
+                  const SizedBox(height: 2),
                   MyText(
                     text: audioLanguages ?? "-",
                     fontsizeNormal: 13,
@@ -3013,9 +3083,7 @@ class MovieDetailsState extends State<MovieDetails> {
                     textalign: TextAlign.start,
                     color: white,
                   ),
-                  const SizedBox(
-                    height: 2,
-                  ),
+                  const SizedBox(height: 2),
                   MyText(
                     text: (videoDetailsProvider
                                     .sectionDetailModel.result?.subtitle ??
@@ -3047,9 +3115,7 @@ class MovieDetailsState extends State<MovieDetails> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -3070,15 +3136,15 @@ class MovieDetailsState extends State<MovieDetails> {
                       buildShareWithDialog();
                     },
                     child: Container(
-                      height: 45,
+                      height: Dimens.minHtDialogContent,
                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           MyImage(
-                            width: 22,
-                            height: 22,
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
                             imagePath: "ic_share.png",
                             fit: BoxFit.fill,
                             color: lightGray,
@@ -3088,9 +3154,9 @@ class MovieDetailsState extends State<MovieDetails> {
                             child: MyText(
                               text: "share",
                               multilanguage: true,
-                              fontsizeNormal: 16,
-                              fontweight: FontWeight.w500,
-                              fontsizeWeb: 17,
+                              fontsizeNormal: 14,
+                              fontweight: FontWeight.w600,
+                              fontsizeWeb: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
                               maxline: 1,
@@ -3113,15 +3179,15 @@ class MovieDetailsState extends State<MovieDetails> {
                             openPlayer("Trailer");
                           },
                           child: Container(
-                            height: 45,
+                            height: Dimens.minHtDialogContent,
                             padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 MyImage(
-                                  width: 22,
-                                  height: 22,
+                                  width: Dimens.dialogIconSize,
+                                  height: Dimens.dialogIconSize,
                                   imagePath: "ic_borderplay.png",
                                   fit: BoxFit.fill,
                                   color: lightGray,
@@ -3131,9 +3197,9 @@ class MovieDetailsState extends State<MovieDetails> {
                                   child: MyText(
                                     text: "trailer",
                                     multilanguage: true,
-                                    fontsizeNormal: 16,
-                                    fontweight: FontWeight.w500,
-                                    fontsizeWeb: 17,
+                                    fontsizeNormal: 14,
+                                    fontweight: FontWeight.w600,
+                                    fontsizeWeb: 16,
                                     color: white,
                                     fontstyle: FontStyle.normal,
                                     maxline: 1,
@@ -3161,9 +3227,7 @@ class MovieDetailsState extends State<MovieDetails> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -3243,30 +3307,29 @@ class MovieDetailsState extends State<MovieDetails> {
                       }
                     },
                     child: Container(
-                      height: 45,
+                      height: Dimens.minHtDialogContent,
                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           MyImage(
-                            width: 22,
-                            height: 22,
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
                             imagePath: "ic_sms.png",
                             fit: BoxFit.fill,
                             color: lightGray,
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: MyText(
                               text: "sms",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
+                              fontsizeWeb: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -3288,30 +3351,29 @@ class MovieDetailsState extends State<MovieDetails> {
                           : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
                     child: Container(
-                      height: 45,
+                      height: Dimens.minHtDialogContent,
                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           MyImage(
-                            width: 22,
-                            height: 22,
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
                             imagePath: "ic_insta.png",
                             fit: BoxFit.fill,
                             color: lightGray,
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: MyText(
                               text: "instagram_stories",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
+                              fontsizeWeb: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -3339,30 +3401,29 @@ class MovieDetailsState extends State<MovieDetails> {
                       });
                     },
                     child: Container(
-                      height: 45,
+                      height: Dimens.minHtDialogContent,
                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           MyImage(
-                            width: 22,
-                            height: 22,
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
                             imagePath: "ic_link.png",
                             fit: BoxFit.fill,
                             color: lightGray,
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: MyText(
                               text: "copy_link",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
+                              fontsizeWeb: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,
@@ -3384,30 +3445,180 @@ class MovieDetailsState extends State<MovieDetails> {
                           : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
                     child: Container(
-                      height: 45,
+                      height: Dimens.minHtDialogContent,
                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           MyImage(
-                            width: 22,
-                            height: 22,
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
                             imagePath: "ic_dots_h.png",
                             fit: BoxFit.fill,
                             color: lightGray,
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
+                          const SizedBox(width: 20),
                           Expanded(
                             child: MyText(
                               text: "more",
                               multilanguage: true,
-                              fontsizeNormal: 16,
+                              fontsizeNormal: 14,
+                              fontsizeWeb: 16,
                               color: white,
                               fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  buildDownloadCompleteDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MyText(
+                    text: "download_options",
+                    multilanguage: true,
+                    fontsizeNormal: 16,
+                    color: white,
+                    fontstyle: FontStyle.normal,
+                    fontweight: FontWeight.w700,
+                    maxline: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 5),
+                  MyText(
+                    text: "download_options_note",
+                    multilanguage: true,
+                    fontsizeNormal: 10,
+                    color: otherColor,
+                    fontstyle: FontStyle.normal,
+                    fontweight: FontWeight.w500,
+                    maxline: 5,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 12),
+
+                  /* To Download */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: white,
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (Constant.userID != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const MyDownloads(),
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginSocial(),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      height: Dimens.minHtDialogContent,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
+                            imagePath: "ic_setting.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: MyText(
+                              text: "take_me_to_the_downloads_page",
+                              multilanguage: true,
+                              fontsizeNormal: 14,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /* Delete */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: white,
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await videoDetailsProvider.setDownloadComplete(
+                          context,
+                          videoDetailsProvider.sectionDetailModel.result?.id,
+                          videoDetailsProvider
+                              .sectionDetailModel.result?.videoType,
+                          videoDetailsProvider
+                              .sectionDetailModel.result?.typeId);
+                    },
+                    child: Container(
+                      height: Dimens.minHtDialogContent,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
+                            imagePath: "ic_delete.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: MyText(
+                              text: "delete_download",
+                              multilanguage: true,
+                              fontsizeNormal: 14,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontweight: FontWeight.w600,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
                               textalign: TextAlign.start,

@@ -36,7 +36,9 @@ class MyNetworkImage extends StatelessWidget {
           return MyImage(
             width: imgWidth,
             height: imgHeight,
-            imagePath: "no_image_port.png",
+            imagePath: imageUrl.contains('land_')
+                ? "no_image_land.png"
+                : "no_image_port.png",
             fit: BoxFit.cover,
           );
         },
@@ -44,7 +46,9 @@ class MyNetworkImage extends StatelessWidget {
           return MyImage(
             width: imgWidth,
             height: imgHeight,
-            imagePath: "no_image_port.png",
+            imagePath: imageUrl.contains('land_')
+                ? "no_image_land.png"
+                : "no_image_port.png",
             fit: BoxFit.cover,
           );
         },

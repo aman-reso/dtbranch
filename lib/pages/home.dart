@@ -410,7 +410,8 @@ class HomeState extends State<Home> {
     return Column(
       children: [
         /* Continue Watching */
-        if (Constant.userID != null) ShimmerUtils.continueWatching(context),
+        if (Constant.userID != null && homeProvider.selectedIndex == 0)
+          ShimmerUtils.continueWatching(context),
 
         /* Remaining Sections */
         ListView.builder(

@@ -1746,6 +1746,181 @@ class ShimmerUtils {
     );
   }
 
+  static Widget buildDownloadShimmer(context, int itemCount) {
+    return AlignedGridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 1,
+      crossAxisSpacing: 0,
+      mainAxisSpacing: 8,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: kIsWeb ? (itemCount + 10) : itemCount,
+      itemBuilder: (BuildContext context, int position) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          constraints: BoxConstraints(minHeight: Dimens.heightWatchlist),
+          color: shimmerBgColor,
+          child: Row(
+            children: [
+              Container(
+                constraints: BoxConstraints(
+                  minHeight: Dimens.heightWatchlist,
+                  maxWidth: MediaQuery.of(context).size.width * 0.44,
+                ),
+                child: Stack(
+                  alignment: AlignmentDirectional.bottomStart,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.44,
+                      height: Dimens.heightWatchlist,
+                      alignment: Alignment.center,
+                      child: ShimmerWidget.roundcorner(
+                        width: MediaQuery.of(context).size.width,
+                        height: Dimens.heightWatchlist,
+                        shimmerBgColor: shimmerBgColor,
+                        shapeBorder: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(0))),
+                      ),
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Padding(
+                          padding: EdgeInsets.only(left: 10, bottom: 8),
+                          child: ShimmerWidget.circular(
+                            width: 30,
+                            height: 30,
+                            shimmerBgColor: black,
+                          ),
+                        ),
+                        Container(
+                          width: Dimens.widthContiLand,
+                          constraints: const BoxConstraints(minWidth: 0),
+                          padding: const EdgeInsets.all(3),
+                          child: ShimmerWidget.roundcorner(
+                            width: Dimens.widthContiLand,
+                            height: 4,
+                            shimmerBgColor: black,
+                            shapeBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(2))),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  constraints: BoxConstraints(
+                    minHeight: Dimens.heightWatchlist,
+                    maxWidth: MediaQuery.of(context).size.width * 0.66,
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            /* Title */
+                            const ShimmerWidget.roundrectborder(
+                              height: 18,
+                              width: 100,
+                              shimmerBgColor: black,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                            ),
+                            const SizedBox(height: 3),
+                            /* Release Year & Video Duration */
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 8),
+                                  child: const ShimmerWidget.roundrectborder(
+                                    height: 15,
+                                    width: 60,
+                                    shimmerBgColor: black,
+                                    shapeBorder: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5))),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(right: 20),
+                                  child: const ShimmerWidget.roundrectborder(
+                                    height: 15,
+                                    width: 80,
+                                    shimmerBgColor: black,
+                                    shapeBorder: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5))),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            /* Prime TAG  & Rent TAG */
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                /* Prime TAG */
+                                ShimmerWidget.roundrectborder(
+                                  height: 13,
+                                  width: 80,
+                                  shimmerBgColor: black,
+                                  shapeBorder: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5))),
+                                ),
+                                SizedBox(height: 3),
+                                /* Rent TAG */
+                                ShimmerWidget.roundrectborder(
+                                  height: 13,
+                                  width: 80,
+                                  shimmerBgColor: black,
+                                  shapeBorder: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5))),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 10,
+                        right: 10,
+                        child: Container(
+                          width: 25,
+                          height: 25,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(6),
+                          child: const ShimmerWidget.circular(
+                            height: 18,
+                            width: 18,
+                            shimmerBgColor: black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   static Widget buildSubscribeShimmer(context) {
     return Column(
       children: [

@@ -580,8 +580,9 @@ class Utils {
     try {
       if (remainWatch > 0) {
         int minutes = ((remainWatch / (1000 * 60)) % 60).round();
+        int seconds = ((remainWatch / 1000) % 60).round();
         if (minutes == 0) {
-          convTime = "00 min";
+          convTime = "$seconds sec";
         } else if (minutes < 10) {
           convTime = "0$minutes min";
         } else {
@@ -756,18 +757,16 @@ class Utils {
     }
 
     if (Platform.isAndroid) {
-      final info = await DeviceInfoPlugin().androidInfo;
-      if (info.version.sdkInt > 28) {
-        return true;
-      }
-
       final status = await Permission.storage.status;
       if (status == PermissionStatus.granted) {
         return true;
       }
 
-      final result = await Permission.storage.request();
-      return result == PermissionStatus.granted;
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.storage,
+      ].request();
+      // final result = await Permission.storage.request();
+      return (statuses[Permission.storage] == PermissionStatus.granted);
     }
 
     throw StateError('unknown platform');
@@ -777,7 +776,7 @@ class Utils {
     String localPath = (await _getSavedDir())!;
     final savedDir = Directory(localPath);
     if (!savedDir.existsSync()) {
-      await savedDir.create();
+      await savedDir.create(recursive: true);
     }
     return localPath;
   }
@@ -791,11 +790,50 @@ class Utils {
       } catch (err, st) {
         log('failed to get downloads path: $err, $st');
         final directory = await getExternalStorageDirectory();
-        externalStorageDirPath = directory?.path;
+        externalStorageDirPath = "${directory?.path}/downloads/";
       }
     } else if (Platform.isIOS) {
       externalStorageDirPath =
           (await getApplicationDocumentsDirectory()).absolute.path;
+    }
+    return externalStorageDirPath;
+  }
+
+  static Future<String> prepareShowSaveDir(
+      String showName, String seasonName) async {
+    log("showName -------------> $showName");
+    log("seasonName -------------> $seasonName");
+    String localPath = (await _getShowSavedDir(showName, seasonName))!;
+    final savedDir = Directory(localPath);
+    log("savedDir -------------> $savedDir");
+    log("savedDir path --------> ${savedDir.path}");
+    if (!savedDir.existsSync()) {
+      await savedDir.create(recursive: true);
+    }
+    return localPath;
+  }
+
+  static Future<String?> _getShowSavedDir(
+      String showName, String seasonName) async {
+    String? externalStorageDirPath;
+
+    if (Platform.isAndroid) {
+      try {
+        externalStorageDirPath = File(path.join(
+                await AndroidPathProvider.downloadsPath,
+                '${showName.toLowerCase()}/${seasonName.toLowerCase()}'))
+            .path;
+        // externalStorageDirPath =
+        //     "${(await AndroidPathProvider.downloadsPath)}$showName/$seasonName";
+      } catch (err, st) {
+        log('failed to get downloads path: $err, $st');
+        final directory = await getExternalStorageDirectory();
+        externalStorageDirPath =
+            "${directory?.path}/downloads/${showName.toLowerCase()}/${seasonName.toLowerCase()}";
+      }
+    } else if (Platform.isIOS) {
+      externalStorageDirPath =
+          "${(await getApplicationDocumentsDirectory()).absolute.path}/downloads/${showName.toLowerCase()}/${seasonName.toLowerCase()}";
     }
     return externalStorageDirPath;
   }

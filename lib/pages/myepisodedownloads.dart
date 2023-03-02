@@ -3,10 +3,9 @@ import 'dart:io';
 
 import 'package:dtlive/model/downloadvideomodel.dart';
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/myepisodedownloads.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
-import 'package:dtlive/provider/videodownloadprovider.dart';
-import 'package:dtlive/provider/videodetailsprovider.dart';
+import 'package:dtlive/provider/showdetailsprovider.dart';
+import 'package:dtlive/provider/showdownloadprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -21,33 +20,40 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 
-class MyDownloads extends StatefulWidget {
-  const MyDownloads({Key? key}) : super(key: key);
+class MyEpisodeDownloads extends StatefulWidget {
+  final int showId, videoType, typeId;
+  const MyEpisodeDownloads(this.showId, this.videoType, this.typeId, {Key? key})
+      : super(key: key);
 
   @override
-  State<MyDownloads> createState() => _MyDownloadsState();
+  State<MyEpisodeDownloads> createState() => _MyEpisodeDownloadsState();
 }
 
-class _MyDownloadsState extends State<MyDownloads> {
-  late VideoDownloadProvider downloadProvider;
-  List<DownloadVideoModel>? myDownloadsList;
+class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
+  late ShowDownloadProvider downloadProvider;
+  List<SessionItem>? mySeasonList;
+  List<EpisodeItem>? myEpisodeList;
 
   @override
   void initState() {
     downloadProvider =
-        Provider.of<VideoDownloadProvider>(context, listen: false);
+        Provider.of<ShowDownloadProvider>(context, listen: false);
     _getData();
     super.initState();
   }
 
   _getData() async {
-    List<DownloadVideoModel>? myVideoDownloadsList =
-        await downloadProvider.getDownloadsByType("video");
-    List<DownloadVideoModel>? myShowDownloadsList =
-        await downloadProvider.getDownloadsByType("show");
-    myDownloadsList =
-        (myVideoDownloadsList ?? []) + (myShowDownloadsList ?? []);
-    log("myDownloadsList =================> ${myDownloadsList?.length}");
+    mySeasonList =
+        await downloadProvider.getDownloadedSeasons(widget.showId.toString());
+    log("mySeasonList =================> ${mySeasonList?.length}");
+
+    if ((mySeasonList?.length ?? 0) > 0) {
+      await downloadProvider.setSelectedSeason(0);
+
+      myEpisodeList = await downloadProvider.getDownloadedEpisodes(
+          widget.showId.toString(), mySeasonList?[0].id.toString() ?? "");
+      log("myEpisodeList =================> ${myEpisodeList?.length}");
+    }
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {});
@@ -64,46 +70,115 @@ class _MyDownloadsState extends State<MyDownloads> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBgColor,
-      appBar: Utils.myAppBarWithBack(context, "downloads", true),
+      appBar: Utils.myAppBarWithBack(context, "episodes", true),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(top: 12, bottom: 8),
-            child: Consumer<VideoDownloadProvider>(
-              builder: (context, downloadProvider, child) {
-                if (downloadProvider.loading) {
-                  return Expanded(
-                      child: ShimmerUtils.buildDownloadShimmer(context, 10));
-                } else {
-                  if (myDownloadsList != null) {
-                    if ((myDownloadsList?.length ?? 0) > 0) {
-                      return Expanded(
-                        child: AlignedGridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 1,
-                          crossAxisSpacing: 0,
-                          mainAxisSpacing: 8,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: myDownloadsList?.length ?? 0,
-                          itemBuilder: (BuildContext context, int position) {
-                            return _buildDownloadItem(position);
-                          },
-                        ),
-                      );
+        child: Stack(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              constraints: const BoxConstraints.expand(),
+              padding:
+                  EdgeInsets.only(top: (Dimens.homeTabHeight + 5), bottom: 10),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Consumer<ShowDownloadProvider>(
+                  builder: (context, downloadProvider, child) {
+                    if (downloadProvider.loading) {
+                      return ShimmerUtils.buildDownloadShimmer(context, 10);
                     } else {
-                      return const NoData(title: 'no_downloads', subTitle: '');
+                      if (myEpisodeList != null) {
+                        if ((myEpisodeList?.length ?? 0) > 0) {
+                          return AlignedGridView.count(
+                            shrinkWrap: true,
+                            crossAxisCount: 1,
+                            crossAxisSpacing: 0,
+                            mainAxisSpacing: 8,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: myEpisodeList?.length ?? 0,
+                            itemBuilder: (BuildContext context, int position) {
+                              return _buildDownloadItem(position);
+                            },
+                          );
+                        } else {
+                          return const NoData(
+                              title: 'no_downloads', subTitle: '');
+                        }
+                      } else {
+                        return const NoData(
+                            title: 'no_downloads', subTitle: '');
+                      }
                     }
-                  } else {
-                    return const NoData(title: 'no_downloads', subTitle: '');
-                  }
-                }
-              },
+                  },
+                ),
+              ),
             ),
-          ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: Dimens.homeTabHeight,
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              color: black.withOpacity(0.8),
+              child: _buildSeason(mySeasonList),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildSeason(List<SessionItem>? seasonList) {
+    return ListView.separated(
+      itemCount: (seasonList?.length ?? 0),
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
+      padding: const EdgeInsets.fromLTRB(13, 5, 13, 5),
+      separatorBuilder: (context, index) => const SizedBox(width: 5),
+      itemBuilder: (BuildContext context, int index) {
+        return Consumer<ShowDownloadProvider>(
+          builder: (context, showDownloadProvider, child) {
+            return InkWell(
+              borderRadius: BorderRadius.circular(25),
+              onTap: () async {
+                debugPrint("index ===========> $index");
+                myEpisodeList = [];
+                await _getEpisodeBySeason(index, seasonList?[index].id ?? 0);
+              },
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: 32),
+                decoration: Utils.setBackground(
+                  showDownloadProvider.seasonClickIndex == index
+                      ? white
+                      : transparentColor,
+                  20,
+                ),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
+                child: MyText(
+                  color: showDownloadProvider.seasonClickIndex == index
+                      ? black
+                      : white,
+                  multilanguage: false,
+                  text: (seasonList?[index].name.toString() ?? ""),
+                  fontsizeNormal: 12,
+                  fontweight: FontWeight.w700,
+                  fontsizeWeb: 14,
+                  maxline: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textalign: TextAlign.center,
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  _getEpisodeBySeason(int position, int seasonId) async {
+    await downloadProvider.setSelectedSeason(position);
+    myEpisodeList = await downloadProvider.getDownloadedEpisodes(
+        widget.showId.toString(), seasonId.toString());
   }
 
   Widget _buildDownloadItem(position) {
@@ -132,30 +207,15 @@ class _MyDownloadsState extends State<MyDownloads> {
                     borderRadius: BorderRadius.circular(0),
                     onTap: () {
                       log("Clicked on position ==> $position");
-                      if ((myDownloadsList?[position].videoType ?? 0) != 2) {
-                        openPlayer(position);
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MyEpisodeDownloads(
-                                myDownloadsList?[position].id ?? 0,
-                                myDownloadsList?[position].videoType ?? 0,
-                                myDownloadsList?[position].typeId ?? 0,
-                              );
-                            },
-                          ),
-                        );
-                      }
+                      openPlayer(position);
                     },
                     child: MyNetworkImage(
-                      imageUrl: myDownloadsList?[position].landscapeImg ?? "",
+                      imageUrl: myEpisodeList?[position].landscape ?? "",
                       fit: BoxFit.fill,
                     ),
                   ),
                 ),
-                ((myDownloadsList?[position].videoType ?? 0) != 2)
+                ((myEpisodeList?[position].videoType ?? 0) != 2)
                     ? _buildWatchBtn(position)
                     : const SizedBox.shrink(),
               ],
@@ -179,7 +239,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                         /* Title */
                         MyText(
                           color: white,
-                          text: myDownloadsList?[position].name ?? "",
+                          text: myEpisodeList?[position].description ?? "",
                           textalign: TextAlign.start,
                           maxline: 2,
                           overflow: TextOverflow.ellipsis,
@@ -189,65 +249,32 @@ class _MyDownloadsState extends State<MyDownloads> {
                         ),
                         const SizedBox(height: 3),
                         /* Release Year & Video Duration */
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            (myDownloadsList?[position].releaseYear != null &&
-                                    (myDownloadsList?[position].releaseYear ??
-                                            "") !=
-                                        "")
-                                ? Container(
-                                    margin: const EdgeInsets.only(right: 8),
-                                    child: MyText(
-                                      color: otherColor,
-                                      text: myDownloadsList?[position]
-                                              .releaseYear ??
-                                          "",
-                                      maxline: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textalign: TextAlign.start,
-                                      fontsizeNormal: 12,
-                                      fontweight: FontWeight.w500,
-                                      fontstyle: FontStyle.normal,
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                            (myDownloadsList?[position].videoType ?? 0) != 2
-                                ? (myDownloadsList?[position].videoDuration !=
-                                            null &&
-                                        (myDownloadsList?[position]
-                                                    .videoDuration ??
-                                                0) >
-                                            0)
-                                    ? Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 20),
-                                        child: MyText(
-                                          color: otherColor,
-                                          text: Utils.convertInMin(
-                                              myDownloadsList?[position]
-                                                      .videoDuration ??
-                                                  0),
-                                          textalign: TextAlign.start,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontsizeNormal: 12,
-                                          fontweight: FontWeight.w500,
-                                          fontstyle: FontStyle.normal,
-                                        ),
-                                      )
-                                    : const SizedBox.shrink()
-                                : const SizedBox.shrink(),
-                          ],
-                        ),
+                        (myEpisodeList?[position].videoDuration != null &&
+                                (myEpisodeList?[position].videoDuration ?? 0) >
+                                    0)
+                            ? Container(
+                                margin: const EdgeInsets.only(right: 20),
+                                child: MyText(
+                                  color: otherColor,
+                                  text: Utils.convertInMin(
+                                      myEpisodeList?[position].videoDuration ??
+                                          0),
+                                  textalign: TextAlign.start,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontsizeNormal: 12,
+                                  fontweight: FontWeight.w500,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                         const SizedBox(height: 6),
                         /* Prime TAG  & Rent TAG */
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             /* Prime TAG */
-                            (myDownloadsList?[position].isPremium ?? 0) == 1
+                            (myEpisodeList?[position].isPremium ?? 0) == 1
                                 ? MyText(
                                     color: primaryColor,
                                     text: "primetag",
@@ -262,7 +289,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                                 : const SizedBox.shrink(),
                             const SizedBox(height: 3),
                             /* Rent TAG */
-                            (myDownloadsList?[position].isRent ?? 0) == 1
+                            (myEpisodeList?[position].isRent ?? 0) == 1
                                 ? MyText(
                                     color: white,
                                     text: "renttag",
@@ -285,22 +312,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                     right: 10,
                     child: InkWell(
                       onTap: () {
-                        if ((myDownloadsList?[position].videoType ?? 0) != 2) {
-                          _buildVideoMoreDialog(position);
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return MyEpisodeDownloads(
-                                  myDownloadsList?[position].id ?? 0,
-                                  myDownloadsList?[position].videoType ?? 0,
-                                  myDownloadsList?[position].typeId ?? 0,
-                                );
-                              },
-                            ),
-                          );
-                        }
+                        _buildVideoMoreDialog(position);
                       },
                       child: Container(
                         width: 25,
@@ -310,10 +322,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                         child: MyImage(
                           width: 18,
                           height: 18,
-                          imagePath:
-                              ((myDownloadsList?[position].videoType ?? 0) != 2)
-                                  ? "ic_more.png"
-                                  : "ic_right.png",
+                          imagePath: "ic_more.png",
                         ),
                       ),
                     ),
@@ -364,12 +373,12 @@ class _MyDownloadsState extends State<MyDownloads> {
                 children: <Widget>[
                   /* Title */
                   MyText(
-                    text: myDownloadsList?[position].name ?? "",
+                    text: myEpisodeList?[position].description ?? "",
                     multilanguage: false,
-                    fontsizeNormal: 18,
+                    fontsizeNormal: 16,
                     color: white,
                     fontstyle: FontStyle.normal,
-                    fontweight: FontWeight.w700,
+                    fontweight: FontWeight.w600,
                     maxline: 2,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -380,25 +389,9 @@ class _MyDownloadsState extends State<MyDownloads> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      (myDownloadsList?[position].releaseYear ?? "").isNotEmpty
-                          ? Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              child: MyText(
-                                color: otherColor,
-                                text: myDownloadsList?[position].releaseYear ??
-                                    "",
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textalign: TextAlign.center,
-                                fontsizeNormal: 12,
-                                fontweight: FontWeight.w500,
-                                fontstyle: FontStyle.normal,
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                      (myDownloadsList?[position].videoType ?? 0) != 2
-                          ? (myDownloadsList?[position].videoDuration != null &&
-                                  (myDownloadsList?[position].videoDuration ??
+                      (myEpisodeList?[position].videoType ?? 0) != 2
+                          ? (myEpisodeList?[position].videoDuration != null &&
+                                  (myEpisodeList?[position].videoDuration ??
                                           0) >
                                       0)
                               ? Container(
@@ -406,7 +399,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                                   child: MyText(
                                     color: otherColor,
                                     text: Utils.convertInMin(
-                                        myDownloadsList?[position]
+                                        myEpisodeList?[position]
                                                 .videoDuration ??
                                             0),
                                     textalign: TextAlign.center,
@@ -434,7 +427,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /* Prime TAG */
-                      (myDownloadsList?[position].isPremium ?? 0) == 1
+                      (myEpisodeList?[position].isPremium ?? 0) == 1
                           ? MyText(
                               color: primaryColor,
                               text: "primetag",
@@ -449,7 +442,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                           : const SizedBox.shrink(),
                       const SizedBox(height: 5),
                       /* Rent TAG */
-                      (myDownloadsList?[position].isRent ?? 0) == 1
+                      (myEpisodeList?[position].isRent ?? 0) == 1
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -494,8 +487,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                   ),
                   const SizedBox(height: 12),
 
-                  /* Watch Now / Resume */
-                  ((myDownloadsList?[position].videoType ?? 0) != 2)
+                  /* Watch Now */
+                  ((myEpisodeList?[position].videoType ?? 0) != 2)
                       ? InkWell(
                           borderRadius: BorderRadius.circular(5),
                           onTap: () async {
@@ -536,92 +529,39 @@ class _MyDownloadsState extends State<MyDownloads> {
                         )
                       : const SizedBox.shrink(),
 
-                  /* Watch Trailer */
-                  ((myDownloadsList?[position].videoType ?? 0) != 2)
-                      ? InkWell(
-                          borderRadius: BorderRadius.circular(5),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            await Utils.openPlayer(
-                                context: context,
-                                playType: "Trailer",
-                                videoId: myDownloadsList?[position].id ?? 0,
-                                videoType:
-                                    myDownloadsList?[position].videoType ?? 0,
-                                typeId: myDownloadsList?[position].typeId ?? 0,
-                                videoUrl: "",
-                                trailerUrl:
-                                    myDownloadsList?[position].trailerUrl ?? "",
-                                uploadType: myDownloadsList?[position]
-                                        .videoUploadType ??
-                                    "",
-                                videoThumb:
-                                    myDownloadsList?[position].landscapeImg ??
-                                        "",
-                                vSubtitle: "",
-                                vStopTime: 0);
-                          },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: "ic_borderplay.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: MyText(
-                                    text: "watch_trailer",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-
                   /* Download Add/Delete */
-                  ((myDownloadsList?[position].videoType ?? 0) != 2)
+                  ((myEpisodeList?[position].videoType ?? 0) != 2)
                       ? InkWell(
                           borderRadius: BorderRadius.circular(5),
                           onTap: () async {
-                            if (myDownloadsList?[position].isDownload == 1) {
-                              int dummyPosition = position;
-                              List<DownloadVideoModel>? dummyDownloadsList =
-                                  myDownloadsList;
-                              final videoDetailsProvider =
-                                  Provider.of<VideoDetailsProvider>(context,
+                            if (myEpisodeList?[position].isDownloaded == 1) {
+                              List<EpisodeItem>? dummyDownloadsList =
+                                  myEpisodeList;
+                              final showDetailsProvider =
+                                  Provider.of<ShowDetailsProvider>(context,
                                       listen: false);
-                              myDownloadsList?.removeAt(position);
+                              myEpisodeList?.removeAt(position);
                               setState(() {});
                               Navigator.pop(context);
-                              await videoDetailsProvider.setDownloadComplete(
-                                  context,
-                                  dummyDownloadsList?[dummyPosition].id,
-                                  dummyDownloadsList?[dummyPosition].videoType,
-                                  dummyDownloadsList?[dummyPosition].typeId);
-                              await downloadProvider.checkVideoInSecure(
+                              await showDetailsProvider.setDownloadComplete(
+                                context,
+                                dummyDownloadsList?[position].sessionId,
+                                dummyDownloadsList?[position].videoType,
+                                widget.typeId,
+                                dummyDownloadsList?[position].showId,
+                              );
+                              await downloadProvider.deleteEpisodeFromDownload(
                                   dummyDownloadsList,
-                                  dummyDownloadsList?[dummyPosition]
-                                          .id
+                                  dummyDownloadsList?[position].id.toString() ??
+                                      "",
+                                  dummyDownloadsList?[position]
+                                          .showId
+                                          .toString() ??
+                                      "",
+                                  dummyDownloadsList?[position]
+                                          .sessionId
                                           .toString() ??
                                       "");
-                              await _getData();
                             }
                           },
                           child: Container(
@@ -635,7 +575,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                                   width: Dimens.dialogIconSize,
                                   height: Dimens.dialogIconSize,
                                   imagePath:
-                                      myDownloadsList?[position].isDownload == 1
+                                      myEpisodeList?[position].isDownloaded == 1
                                           ? "ic_delete.png"
                                           : "ic_download.png",
                                   fit: BoxFit.contain,
@@ -645,7 +585,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                                 Expanded(
                                   child: MyText(
                                     text:
-                                        myDownloadsList?[position].isDownload ==
+                                        myEpisodeList?[position].isDownloaded ==
                                                 1
                                             ? "delete_download"
                                             : "download",
@@ -713,29 +653,28 @@ class _MyDownloadsState extends State<MyDownloads> {
                     onTap: () async {
                       Navigator.pop(context);
                       log("Clicked on position :==> $position");
-                      if ((myDownloadsList?[position].videoType ?? 0) == 1) {
+                      if (widget.videoType == 1) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
                               return MovieDetails(
-                                myDownloadsList?[position].id ?? 0,
-                                myDownloadsList?[position].videoType ?? 0,
-                                myDownloadsList?[position].typeId ?? 0,
+                                widget.showId,
+                                widget.videoType,
+                                widget.typeId,
                               );
                             },
                           ),
                         );
-                      } else if ((myDownloadsList?[position].videoType ?? 0) ==
-                          2) {
+                      } else if (widget.videoType == 2) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
                               return TvShowDetails(
-                                myDownloadsList?[position].id ?? 0,
-                                myDownloadsList?[position].videoType ?? 0,
-                                myDownloadsList?[position].typeId ?? 0,
+                                widget.showId,
+                                widget.videoType,
+                                widget.typeId,
                               );
                             },
                           ),
@@ -789,9 +728,7 @@ class _MyDownloadsState extends State<MyDownloads> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -804,12 +741,12 @@ class _MyDownloadsState extends State<MyDownloads> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   MyText(
-                    text: myDownloadsList?[position].name ?? "",
+                    text: myEpisodeList?[position].description ?? "",
                     multilanguage: false,
-                    fontsizeNormal: 18,
+                    fontsizeNormal: 16,
                     color: white,
                     fontstyle: FontStyle.normal,
-                    fontweight: FontWeight.w700,
+                    fontweight: FontWeight.w600,
                     maxline: 2,
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
@@ -823,10 +760,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                       Navigator.pop(context);
                       if (Platform.isAndroid) {
                         Utils.redirectToUrl(
-                            'sms:?body=${Uri.encodeComponent("Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n")}');
+                            'sms:?body=${Uri.encodeComponent("Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n")}');
                       } else if (Platform.isIOS) {
                         Utils.redirectToUrl(
-                            'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
+                            'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
                       }
                     },
                     child: Container(
@@ -868,8 +805,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                     onTap: () {
                       Navigator.pop(context);
                       Utils.shareApp(Platform.isIOS
-                          ? "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
-                          : "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
+                          ? "Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
+                          : "Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
                     child: Container(
                       height: 45,
@@ -911,8 +848,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                       Navigator.pop(context);
                       SocialShare.copyToClipboard(
                         text: Platform.isIOS
-                            ? "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
-                            : "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n",
+                            ? "Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
+                            : "Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n",
                       ).then((data) {
                         debugPrint(data);
                         Utils.showSnackbar(
@@ -958,8 +895,8 @@ class _MyDownloadsState extends State<MyDownloads> {
                     onTap: () {
                       Navigator.pop(context);
                       Utils.shareApp(Platform.isIOS
-                          ? "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
-                          : "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
+                          ? "Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
+                          : "Hey! I'm watching ${myEpisodeList?[position].description ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
                     child: Container(
                       height: 45,
@@ -1006,13 +943,13 @@ class _MyDownloadsState extends State<MyDownloads> {
     Utils.openPlayer(
       context: context,
       playType: "Download",
-      videoId: myDownloadsList?[position].id ?? 0,
-      videoType: myDownloadsList?[position].videoType ?? 0,
-      typeId: myDownloadsList?[position].typeId ?? 0,
-      videoUrl: myDownloadsList?[position].savedFile ?? "",
-      trailerUrl: myDownloadsList?[position].trailerUrl ?? "",
-      uploadType: myDownloadsList?[position].videoUploadType ?? "",
-      videoThumb: myDownloadsList?[position].landscapeImg ?? "",
+      videoId: myEpisodeList?[position].id ?? 0,
+      videoType: int.parse(myEpisodeList?[position].videoType.toString() ?? ""),
+      typeId: 4,
+      videoUrl: myEpisodeList?[position].savedFile ?? "",
+      trailerUrl: "",
+      uploadType: myEpisodeList?[position].videoUploadType ?? "",
+      videoThumb: myEpisodeList?[position].landscape ?? "",
       vSubtitle: "",
       vStopTime: 0,
     );

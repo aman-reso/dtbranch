@@ -83,25 +83,25 @@ class ShowDetailsProvider extends ChangeNotifier {
   }
 
   setDownloadComplete(
-      BuildContext context, typeId, videoType, videoId, otherId) {
-    if ((sectionDetailModel.result?.isDownloaded ?? 0) == 0) {
-      sectionDetailModel.result?.isDownloaded = 1;
+      BuildContext context, videoId, videoType, typeId, otherId) {
+    if ((sectionDetailModel.session?[seasonPos].isDownloaded ?? 0) == 0) {
+      sectionDetailModel.session?[seasonPos].isDownloaded = 1;
       Utils.showSnackbar(context, "success", "download_success", true);
     } else {
-      sectionDetailModel.result?.isDownloaded = 0;
+      sectionDetailModel.session?[seasonPos].isDownloaded = 0;
       Utils.showSnackbar(context, "success", "download_remove_success", true);
     }
     notifyListeners();
-    addToDownload(typeId, videoType, videoId, otherId);
+    addToDownload(videoId, videoType, typeId, otherId);
   }
 
-  Future<void> addToDownload(typeId, videoType, videoId, otherId) async {
-    debugPrint("addRemoveDownload typeId :==> $typeId");
-    debugPrint("addRemoveDownload videoType :==> $videoType");
+  Future<void> addToDownload(videoId, videoType, typeId, otherId) async {
     debugPrint("addRemoveDownload videoId :==> $videoId");
+    debugPrint("addRemoveDownload videoType :==> $videoType");
+    debugPrint("addRemoveDownload typeId :==> $typeId");
     debugPrint("addRemoveDownload otherId :==> $otherId");
     successModel = await ApiService()
-        .addRemoveDownload(typeId, videoType, videoId, otherId);
+        .addRemoveDownload(videoId, videoType, typeId, otherId);
     debugPrint("addRemoveDownload status :==> ${successModel.status}");
     debugPrint("addRemoveDownload message :==> ${successModel.message}");
   }

@@ -379,7 +379,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
           child: InkWell(
             borderRadius: BorderRadius.circular(20),
             onTap: () async {
-              Navigator.pop(context);
               openPlayer("Video", position);
             },
             child: MyImage(

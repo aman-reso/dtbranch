@@ -1,20 +1,19 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:dtlive/utils/constant.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as path;
 
-import 'package:dtlive/model/itemholder.dart';
-import 'package:dtlive/model/taskinfomodel.dart';
+import 'package:dtlive/model/downloadvideomodel.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path/path.dart';
 
 class VideoDownloadProvider extends ChangeNotifier {
-  List<TaskInfo>? currentTasks;
-  late List<ItemHolder> items;
-  TaskInfo? downloadTaskInfo;
+  List<DownloadVideoModel>? currentTasks;
+  DownloadVideoModel? downloadTaskInfo;
   int dProgress = 0;
 
   // Create storage
@@ -32,9 +31,8 @@ class VideoDownloadProvider extends ChangeNotifier {
     }
 
     currentTasks = [];
-    items = [];
 
-    TaskInfo taskInfo = TaskInfo(
+    DownloadVideoModel taskInfo = DownloadVideoModel(
       id: sectionDetails?.id,
       taskId: sectionDetails?.id.toString(),
       name: sectionDetails?.name,
@@ -58,11 +56,10 @@ class VideoDownloadProvider extends ChangeNotifier {
     );
     currentTasks?.add(taskInfo);
     log('currentTasks ============> ${currentTasks?.length}');
-    items.add(ItemHolder(name: taskInfo.name, task: taskInfo));
     _requestDownload(taskInfo);
   }
 
-  Future<void> _requestDownload(TaskInfo task) async {
+  Future<void> _requestDownload(DownloadVideoModel task) async {
     log('savedFile ============> ${task.savedFile}');
     log('savedDir ============> ${task.savedDir}');
     log('link ============> ${task.videoUrl!}');
@@ -71,7 +68,7 @@ class VideoDownloadProvider extends ChangeNotifier {
       headers: {'auth': 'test_for_sql_encoding'},
       fileName: basename(task.savedFile ?? ''),
       savedDir: task.savedDir ?? '',
-      saveInPublicStorage: true,
+      saveInPublicStorage: false,
     );
   }
 
@@ -80,10 +77,10 @@ class VideoDownloadProvider extends ChangeNotifier {
             key: "${Constant.hawkVIDEOList}${Constant.userID}") ??
         '';
     log("listString ===> ${listString.toString()}");
-    List<TaskInfo>? myVideoList;
+    List<DownloadVideoModel>? myVideoList;
     if (listString.isNotEmpty) {
-      myVideoList = List<TaskInfo>.from(
-          jsonDecode(listString).map((x) => TaskInfo.fromJson(x)));
+      myVideoList = List<DownloadVideoModel>.from(
+          jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
     }
 
     if ((myVideoList?.length ?? 0) > 0) {
@@ -100,7 +97,8 @@ class VideoDownloadProvider extends ChangeNotifier {
     }
   }
 
-  checkVideoInSecure(List<TaskInfo>? myVideoList, String videoID) async {
+  checkVideoInSecure(
+      List<DownloadVideoModel>? myVideoList, String videoID) async {
     log("checkVideoInSecure UserID ===> ${Constant.userID}");
     log("checkVideoInSecure videoID ===> $videoID");
 
@@ -114,7 +112,11 @@ class VideoDownloadProvider extends ChangeNotifier {
       if ((myVideoList?[i].id.toString()) == (videoID)) {
         log("myVideoList =======================> i = $i");
         myVideoList?.remove(myVideoList[i]);
-
+        if ((myVideoList?.length ?? 0) == 0) {
+          await storage.delete(
+              key: "${Constant.hawkVIDEOList} ${Constant.userID}");
+          return;
+        }
         await storage.write(
             key: "${Constant.hawkVIDEOList} ${Constant.userID}",
             value: jsonEncode(myVideoList));
@@ -123,30 +125,74 @@ class VideoDownloadProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<TaskInfo>?> getDownloadsByType(String dType) async {
-    List<TaskInfo>? myDownloadsList;
+  Future<List<DownloadVideoModel>?> getDownloadsByType(String dType) async {
+    loading = true;
+    List<DownloadVideoModel>? myDownloadsList;
     if (dType == "video") {
       var listString = await storage.read(
               key: "${Constant.hawkVIDEOList}${Constant.userID}") ??
           '';
       log("listString ===> ${listString.toString()}");
       if (listString.isNotEmpty) {
-        myDownloadsList = List<TaskInfo>.from(
-            jsonDecode(listString).map((x) => TaskInfo.fromJson(x)));
+        myDownloadsList = List<DownloadVideoModel>.from(
+            jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
       }
+      loading = false;
+      notifyListeners();
       return myDownloadsList;
     } else if (dType == "show") {
+      loading = true;
+      List<DownloadVideoModel>? myDownloadsList;
       var listString = await storage.read(
-              key: "${Constant.hawkVIDEOList}${Constant.userID}") ??
+              key: "${Constant.hawkSHOWList}${Constant.userID}") ??
           '';
       log("listString ===> ${listString.toString()}");
       if (listString.isNotEmpty) {
-        myDownloadsList = List<TaskInfo>.from(
-            jsonDecode(listString).map((x) => TaskInfo.fromJson(x)));
+        myDownloadsList = List<DownloadVideoModel>.from(
+            jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
       }
+      loading = false;
+      notifyListeners();
       return myDownloadsList;
     } else {
+      loading = false;
+      notifyListeners();
       return myDownloadsList;
+    }
+  }
+
+  Future<void> deleteVideoFromDownload(String videoID) async {
+    log("deleteVideoFromDownload UserID ===> ${Constant.userID}");
+    log("deleteVideoFromDownload videoID ===> $videoID");
+    List<DownloadVideoModel>? myVideoList = [];
+    var listString = await storage.read(
+            key: '${Constant.hawkVIDEOList}${Constant.userID}') ??
+        '';
+    log("listString ===> ${listString.toString()}");
+    if (listString.isNotEmpty) {
+      myVideoList = List<DownloadVideoModel>.from(
+          jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
+    }
+    log("myVideoList ===> ${myVideoList.length}");
+
+    if (myVideoList.isEmpty) {
+      await storage.delete(key: "${Constant.hawkVIDEOList}${Constant.userID}");
+      return;
+    }
+    for (int i = 0; i < myVideoList.length; i++) {
+      log("Secure itemID ==> ${myVideoList[i].id}");
+
+      if ((myVideoList[i].id.toString()) == (videoID)) {
+        log("myVideoList =======================> i = $i");
+        String filePath = myVideoList[i].savedFile ?? "";
+        myVideoList.remove(myVideoList[i]);
+        File file = File(filePath);
+        if (await file.exists()) {
+          file.delete();
+        }
+        await storage.delete(
+            key: "${Constant.hawkVIDEOList}${Constant.userID}");
+      }
     }
   }
 

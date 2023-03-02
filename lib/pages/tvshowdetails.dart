@@ -1,15 +1,16 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:dtlive/pages/mydownloads.dart';
+import 'package:dtlive/provider/showdownloadprovider.dart';
 import 'package:dtlive/subscription/subscription.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:path/path.dart' as path;
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
@@ -33,6 +34,7 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
@@ -49,7 +51,8 @@ class TvShowDetails extends StatefulWidget {
 class TvShowDetailsState extends State<TvShowDetails> {
   /* Download init */
   late bool _permissionReady;
-  late VideoDownloadProvider downloadProvider;
+  late ShowDownloadProvider downloadProvider;
+  final ReceivePort _port = ReceivePort();
 
   String? audioLanguages;
   List<Cast>? directorList;
@@ -58,11 +61,16 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
   @override
   void initState() {
+    /* Download init ****/
+    _bindBackgroundIsolate();
+    FlutterDownloader.registerCallback(downloadCallback, step: 1);
+    /* ****/
+
     showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
     episodeProvider = Provider.of<EpisodeProvider>(context, listen: false);
     downloadProvider =
-        Provider.of<VideoDownloadProvider>(context, listen: false);
+        Provider.of<ShowDownloadProvider>(context, listen: false);
     super.initState();
     log("initState videoId ==> ${widget.videoId}");
     log("initState videoType ==> ${widget.videoType}");
@@ -82,11 +90,59 @@ class TvShowDetailsState extends State<TvShowDetails> {
     });
   }
 
+  void _bindBackgroundIsolate() {
+    final isSuccess = IsolateNameServer.registerPortWithName(
+      _port.sendPort,
+      Constant.showDownloadPort,
+    );
+    log('_bindBackgroundIsolate isSuccess ============> $isSuccess');
+    if (!isSuccess) {
+      _unbindBackgroundIsolate();
+      _bindBackgroundIsolate();
+      return;
+    }
+    _port.listen((dynamic data) {
+      final taskId = (data as List<dynamic>)[0] as String;
+      final status = DownloadTaskStatus(data[1] as int);
+      final progress = data[2] as int;
+
+      log(
+        'Callback on UI isolate: '
+        'task ($taskId) is in status ($status) and process ($progress)',
+      );
+
+      if (progress > 0) {
+        downloadProvider.setDownloadProgress(progress);
+      }
+    });
+  }
+
+  void _unbindBackgroundIsolate() {
+    log('_unbindBackgroundIsolate');
+    IsolateNameServer.removePortNameMapping(Constant.showDownloadPort);
+  }
+
+  @pragma('vm:entry-point')
+  static void downloadCallback(
+    String id,
+    DownloadTaskStatus status,
+    int progress,
+  ) {
+    log(
+      'Callback on background isolate: '
+      'task ($id) is in status ($status) and process ($progress)',
+    );
+
+    IsolateNameServer.lookupPortByName(Constant.showDownloadPort)
+        ?.send([id, status.value, progress]);
+  }
+
   @override
   void dispose() {
     super.dispose();
     showDetailsProvider.clearProvider();
     episodeProvider.clearProvider();
+    downloadProvider.clearProvider();
   }
 
   @override
@@ -458,98 +514,97 @@ class TvShowDetailsState extends State<TvShowDetails> {
                   ),
 
                   /* Prime TAG */
-                  (showDetailsProvider.sectionDetailModel.result?.isPremium ??
-                              0) ==
-                          1
-                      ? Container(
-                          margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              MyText(
-                                color: primaryColor,
-                                text: "primetag",
-                                textalign: TextAlign.start,
-                                fontsizeNormal: 12,
-                                fontsizeWeb: 15,
-                                fontweight: FontWeight.w700,
-                                multilanguage: true,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              const SizedBox(height: 2),
-                              MyText(
-                                color: white,
-                                text: "primetagdesc",
-                                multilanguage: true,
-                                textalign: TextAlign.center,
-                                fontsizeNormal: 12,
-                                fontsizeWeb: 13,
-                                fontweight: FontWeight.w500,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
-                              ),
-                            ],
+                  if ((showDetailsProvider
+                              .sectionDetailModel.result?.isPremium ??
+                          0) ==
+                      1)
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 11, 20, 0),
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          MyText(
+                            color: primaryColor,
+                            text: "primetag",
+                            textalign: TextAlign.start,
+                            fontsizeNormal: 12,
+                            fontsizeWeb: 15,
+                            fontweight: FontWeight.w700,
+                            multilanguage: true,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontstyle: FontStyle.normal,
                           ),
-                        )
-                      : const SizedBox.shrink(),
+                          const SizedBox(height: 2),
+                          MyText(
+                            color: white,
+                            text: "primetagdesc",
+                            multilanguage: true,
+                            textalign: TextAlign.center,
+                            fontsizeNormal: 12,
+                            fontsizeWeb: 13,
+                            fontweight: FontWeight.w500,
+                            maxline: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontstyle: FontStyle.normal,
+                          ),
+                        ],
+                      ),
+                    ),
 
                   /* Rent TAG */
-                  (showDetailsProvider.sectionDetailModel.result?.isRent ??
-                              0) ==
-                          1
-                      ? Container(
-                          margin: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  color: complimentryColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  shape: BoxShape.rectangle,
-                                ),
-                                alignment: Alignment.center,
-                                child: MyText(
-                                  color: white,
-                                  text: Constant.currencySymbol,
-                                  textalign: TextAlign.center,
-                                  fontsizeNormal: 10,
-                                  fontsizeWeb: 12,
-                                  fontweight: FontWeight.w800,
-                                  multilanguage: false,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(left: 5),
-                                child: MyText(
-                                  color: white,
-                                  text: "renttag",
-                                  textalign: TextAlign.center,
-                                  fontsizeNormal: 12,
-                                  fontsizeWeb: 13,
-                                  multilanguage: true,
-                                  fontweight: FontWeight.w500,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ),
-                            ],
+                  if ((showDetailsProvider.sectionDetailModel.result?.isRent ??
+                          0) ==
+                      1)
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: complimentryColor,
+                              borderRadius: BorderRadius.circular(10),
+                              shape: BoxShape.rectangle,
+                            ),
+                            alignment: Alignment.center,
+                            child: MyText(
+                              color: white,
+                              text: Constant.currencySymbol,
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 10,
+                              fontsizeWeb: 12,
+                              fontweight: FontWeight.w800,
+                              multilanguage: false,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
                           ),
-                        )
-                      : const SizedBox.shrink(),
+                          Container(
+                            margin: const EdgeInsets.only(left: 5),
+                            child: MyText(
+                              color: white,
+                              text: "renttag",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 12,
+                              fontsizeWeb: 13,
+                              multilanguage: true,
+                              fontweight: FontWeight.w500,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
                   /* Play Video button */
                   /* Continue Watching Button */
@@ -578,12 +633,18 @@ class TvShowDetailsState extends State<TvShowDetails> {
 
                           /* Download */
                           if (!(kIsWeb || Constant.isTV))
-                            (showDetailsProvider.sectionDetailModel.result
-                                            ?.isDownloaded ??
+                            Consumer<EpisodeProvider>(
+                              builder: (context, episodeProvider, child) {
+                                if ((episodeProvider.episodeBySeasonModel
+                                            .result?[0].download ??
                                         0) ==
-                                    1
-                                ? _buildDownloadWithSubCheck()
-                                : const SizedBox.shrink(),
+                                    1) {
+                                  return _buildDownloadWithSubCheck();
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              },
+                            ),
 
                           /* Watchlist */
                           Expanded(
@@ -1731,8 +1792,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
   }
 
   Widget _buildRentBtn() {
-    if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1 &&
-        (showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) == 1) {
+    if (((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1 &&
+            (showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
+                1) ||
+        (showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
       if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
@@ -2475,134 +2538,141 @@ class TvShowDetailsState extends State<TvShowDetails> {
   }
 
   Widget _buildDownloadBtn() {
-    if (showDetailsProvider.sectionDetailModel.result?.videoUploadType ==
-        "server_video") {
-      return Expanded(
-        child: InkWell(
-          borderRadius: BorderRadius.circular(5),
-          focusColor: white,
-          onTap: () {
-            if (Constant.userID != null) {
-              if (showDetailsProvider.sectionDetailModel.result?.isDownloaded ==
-                  0) {
-                if (downloadProvider.dProgress == 0) {
-                  _checkAndDownload();
-                } else {
-                  Utils.showSnackbar(context, "info", "please_wait", true);
-                }
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(5),
+        focusColor: white,
+        onTap: () {
+          if (Constant.userID != null) {
+            if (showDetailsProvider.sectionDetailModel
+                    .session?[showDetailsProvider.seasonPos].isDownloaded ==
+                0) {
+              if (downloadProvider.dProgress == 0) {
+                _checkAndDownload();
               } else {
-                // buildDownloadCompleteDialog();
+                Utils.showSnackbar(context, "info", "please_wait", true);
               }
             } else {
-              if ((kIsWeb || Constant.isTV)) {
-                Utils.buildWebAlertDialog(context, "login", "");
-                return;
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const LoginSocial();
-                  },
-                ),
-              );
+              buildDownloadCompleteDialog();
             }
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: Dimens.featureSize,
-                  height: Dimens.featureSize,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: primaryLight,
-                    ),
-                    borderRadius: BorderRadius.circular(Dimens.featureSize / 2),
-                  ),
-                  child: Consumer<VideoDownloadProvider>(
-                    builder: (context, downloadProvider, child) {
-                      return MyImage(
+          } else {
+            if ((kIsWeb || Constant.isTV)) {
+              Utils.buildWebAlertDialog(context, "login", "");
+              return;
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const LoginSocial();
+                },
+              ),
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Consumer2<ShowDetailsProvider, ShowDownloadProvider>(
+                builder:
+                    (context, showDetailsProvider, downloadProvider, child) {
+                  if (downloadProvider.sectionDetails?.id ==
+                          showDetailsProvider.sectionDetailModel.result?.id &&
+                      downloadProvider.dProgress != 0 &&
+                      downloadProvider.dProgress > 0) {
+                    return CircularPercentIndicator(
+                      radius: (Dimens.featureSize / 2),
+                      lineWidth: 2.0,
+                      percent: (downloadProvider.dProgress / 100).toDouble(),
+                      center: MyText(
+                        color: white,
+                        text: "${downloadProvider.dProgress}%",
+                        multilanguage: false,
+                        fontsizeNormal: 10,
+                        fontweight: FontWeight.w600,
+                        fontsizeWeb: 14,
+                        maxline: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textalign: TextAlign.center,
+                        fontstyle: FontStyle.normal,
+                      ),
+                      progressColor: primaryColor,
+                    );
+                  } else {
+                    return Container(
+                      width: Dimens.featureSize,
+                      height: Dimens.featureSize,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: primaryLight),
+                        borderRadius:
+                            BorderRadius.circular(Dimens.featureSize / 2),
+                      ),
+                      child: MyImage(
                         width: Dimens.featureIconSize,
                         height: Dimens.featureIconSize,
                         color: lightGray,
                         imagePath: (showDetailsProvider
-                                    .sectionDetailModel.result?.isDownloaded ==
+                                    .sectionDetailModel
+                                    .session?[showDetailsProvider.seasonPos]
+                                    .isDownloaded ==
                                 1)
                             ? "ic_download_done.png"
                             : "ic_download.png",
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Consumer<VideoDownloadProvider>(
-                  builder: (context, downloadProvider, child) {
-                    return MyText(
-                      color: white,
-                      text: (showDetailsProvider
-                                  .sectionDetailModel.result?.isDownloaded ==
-                              1)
-                          ? "complete"
-                          : "download",
-                      multilanguage: true,
-                      fontsizeNormal: 10,
-                      fontweight: FontWeight.w600,
-                      fontsizeWeb: 14,
-                      maxline: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
+                      ),
                     );
-                  },
-                ),
-              ],
-            ),
+                  }
+                },
+              ),
+              const SizedBox(height: 5),
+              Consumer<ShowDetailsProvider>(
+                builder: (context, showDetailsProvider, child) {
+                  return MyText(
+                    color: white,
+                    text: (showDetailsProvider
+                                .sectionDetailModel
+                                .session?[showDetailsProvider.seasonPos]
+                                .isDownloaded ==
+                            1)
+                        ? "Complete\nSeason ${(showDetailsProvider.seasonPos + 1)}"
+                        : "Download\nSeason ${(showDetailsProvider.seasonPos + 1)}",
+                    multilanguage: false,
+                    fontsizeNormal: 10,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 14,
+                    maxline: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  );
+                },
+              ),
+            ],
           ),
         ),
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
+      ),
+    );
   }
 
   _checkAndDownload() async {
     _permissionReady = await Utils.checkPermission();
     if (_permissionReady) {
-      if (showDetailsProvider.sectionDetailModel.result?.isDownloaded == 0) {
-        if ((showDetailsProvider.sectionDetailModel.result?.video320 ?? "")
+      if (showDetailsProvider.sectionDetailModel
+              .session?[showDetailsProvider.seasonPos].isDownloaded ==
+          0) {
+        if ((showDetailsProvider.episodeBySeasonModel.result?[0].video320 ?? "")
             .isNotEmpty) {
-          File? mTargetFile;
-          String? localPath;
-          String? mFileName =
-              '${(showDetailsProvider.sectionDetailModel.result?.name ?? "")}'
-              '${(showDetailsProvider.sectionDetailModel.result?.id ?? 0)}${(Constant.userID)}';
-          try {
-            localPath = await Utils.prepareSaveDir();
-            log("localPath ====> $localPath");
-            mTargetFile = File(path.join(localPath,
-                '$mFileName.${(showDetailsProvider.sectionDetailModel.result?.videoExtension ?? ".mp4")}'));
-            // This is a sync operation on a real
-            // app you'd probably prefer to use writeAsByte and handle its Future
-          } catch (e) {
-            debugPrint("saveVideoStorage Exception ===> $e");
-          }
-          log("mFileName ========> $mFileName");
-          log("mTargetFile ========> ${mTargetFile?.absolute.path ?? ""}");
-          if (mTargetFile != null) {
-            try {
-              downloadProvider.prepareDownload(
-                  showDetailsProvider.sectionDetailModel.result,
-                  localPath,
-                  mFileName);
-              log("mTargetFile length ========> ${mTargetFile.length()}");
-            } catch (e) {
-              log("Downloading... Exception ======> $e");
-            }
-          }
+          log("seasonPos ----------------------> ${showDetailsProvider.seasonPos}");
+          log("episode Length -----------------> ${episodeProvider.episodeBySeasonModel.result?.length}");
+          if (!mounted) return;
+          await downloadProvider.prepareDownload(
+              context,
+              showDetailsProvider.sectionDetailModel.result,
+              showDetailsProvider.sectionDetailModel.session,
+              showDetailsProvider.seasonPos,
+              episodeProvider.episodeBySeasonModel.result);
         } else {
           if (!mounted) return;
           Utils.showSnackbar(context, "fail", "invalid_url", true);
@@ -2713,13 +2783,18 @@ class TvShowDetailsState extends State<TvShowDetails> {
                     focusColor: white,
                     onTap: () async {
                       Navigator.pop(context);
-                      // await showDetailsProvider.setDownloadComplete(
-                      //     context,
-                      //     showDetailsProvider.sectionDetailModel.result?.id,
-                      //     showDetailsProvider
-                      //         .sectionDetailModel.result?.videoType,
-                      //     showDetailsProvider
-                      //         .sectionDetailModel.result?.typeId);
+                      await showDetailsProvider.setDownloadComplete(
+                          context,
+                          showDetailsProvider.sectionDetailModel
+                              .session?[showDetailsProvider.seasonPos].id,
+                          showDetailsProvider
+                              .sectionDetailModel.result?.videoType,
+                          showDetailsProvider.sectionDetailModel.result?.typeId,
+                          showDetailsProvider.sectionDetailModel.result?.id);
+                      await downloadProvider.deleteShowFromDownload(
+                          showDetailsProvider.sectionDetailModel.result?.id
+                                  .toString() ??
+                              "");
                     },
                     child: Container(
                       height: Dimens.minHtDialogContent,

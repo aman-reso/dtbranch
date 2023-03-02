@@ -670,7 +670,7 @@ class MovieDetailsState extends State<MovieDetails> {
                           /* Download */
                           if (!(kIsWeb || Constant.isTV))
                             (videoDetailsProvider.sectionDetailModel.result
-                                            ?.isDownloaded ??
+                                            ?.download ??
                                         0) ==
                                     1
                                 ? _buildDownloadWithSubCheck()
@@ -2819,7 +2819,9 @@ class MovieDetailsState extends State<MovieDetails> {
 
   Widget _buildDownloadBtn() {
     if (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ==
-        "server_video") {
+            "server_video" ||
+        videoDetailsProvider.sectionDetailModel.result?.videoUploadType ==
+            "external") {
       return Expanded(
         child: InkWell(
           borderRadius: BorderRadius.circular(5),
@@ -2954,7 +2956,7 @@ class MovieDetailsState extends State<MovieDetails> {
             localPath = await Utils.prepareSaveDir();
             log("localPath ====> $localPath");
             mTargetFile = File(path.join(localPath,
-                '$mFileName.${(videoDetailsProvider.sectionDetailModel.result?.videoExtension ?? ".mp4")}'));
+                '$mFileName.${(videoDetailsProvider.sectionDetailModel.result?.videoExtension ?? "mp4")}'));
             // This is a sync operation on a real
             // app you'd probably prefer to use writeAsByte and handle its Future
           } catch (e) {
@@ -2981,6 +2983,160 @@ class MovieDetailsState extends State<MovieDetails> {
     }
   }
 
+  buildDownloadCompleteDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  MyText(
+                    text: "download_options",
+                    multilanguage: true,
+                    fontsizeNormal: 16,
+                    color: white,
+                    fontstyle: FontStyle.normal,
+                    fontweight: FontWeight.w700,
+                    maxline: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 5),
+                  MyText(
+                    text: "download_options_note",
+                    multilanguage: true,
+                    fontsizeNormal: 10,
+                    color: otherColor,
+                    fontstyle: FontStyle.normal,
+                    fontweight: FontWeight.w500,
+                    maxline: 5,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 12),
+
+                  /* To Download */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: white,
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (Constant.userID != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const MyDownloads(),
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginSocial(),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      height: Dimens.minHtDialogContent,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
+                            imagePath: "ic_setting.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: MyText(
+                              text: "take_me_to_the_downloads_page",
+                              multilanguage: true,
+                              fontsizeNormal: 14,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  /* Delete */
+                  InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: white,
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await videoDetailsProvider.setDownloadComplete(
+                          context,
+                          videoDetailsProvider.sectionDetailModel.result?.id,
+                          videoDetailsProvider
+                              .sectionDetailModel.result?.videoType,
+                          videoDetailsProvider
+                              .sectionDetailModel.result?.typeId);
+                      await downloadProvider.deleteVideoFromDownload(
+                          videoDetailsProvider.sectionDetailModel.result?.id
+                                  .toString() ??
+                              "");
+                    },
+                    child: Container(
+                      height: Dimens.minHtDialogContent,
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyImage(
+                            width: Dimens.dialogIconSize,
+                            height: Dimens.dialogIconSize,
+                            imagePath: "ic_delete.png",
+                            fit: BoxFit.fill,
+                            color: lightGray,
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: MyText(
+                              text: "delete_download",
+                              multilanguage: true,
+                              fontsizeNormal: 14,
+                              color: white,
+                              fontstyle: FontStyle.normal,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textalign: TextAlign.start,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
   /* ========= Download ========= */
 
   /* ========= Dialogs ========= */
@@ -3486,156 +3642,6 @@ class MovieDetailsState extends State<MovieDetails> {
     );
   }
 
-  buildDownloadCompleteDialog() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: lightBlack,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return Wrap(
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.all(23),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  MyText(
-                    text: "download_options",
-                    multilanguage: true,
-                    fontsizeNormal: 16,
-                    color: white,
-                    fontstyle: FontStyle.normal,
-                    fontweight: FontWeight.w700,
-                    maxline: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textalign: TextAlign.start,
-                  ),
-                  const SizedBox(height: 5),
-                  MyText(
-                    text: "download_options_note",
-                    multilanguage: true,
-                    fontsizeNormal: 10,
-                    color: otherColor,
-                    fontstyle: FontStyle.normal,
-                    fontweight: FontWeight.w500,
-                    maxline: 5,
-                    overflow: TextOverflow.ellipsis,
-                    textalign: TextAlign.start,
-                  ),
-                  const SizedBox(height: 12),
-
-                  /* To Download */
-                  InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    focusColor: white,
-                    onTap: () {
-                      Navigator.pop(context);
-                      if (Constant.userID != null) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const MyDownloads(),
-                          ),
-                        );
-                      } else {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const LoginSocial(),
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_setting.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "take_me_to_the_downloads_page",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  /* Delete */
-                  InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    focusColor: white,
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await videoDetailsProvider.setDownloadComplete(
-                          context,
-                          videoDetailsProvider.sectionDetailModel.result?.id,
-                          videoDetailsProvider
-                              .sectionDetailModel.result?.videoType,
-                          videoDetailsProvider
-                              .sectionDetailModel.result?.typeId);
-                    },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_delete.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "delete_download",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
   /* ========= Dialogs ========= */
 
   /* ========= Open Player ========= */

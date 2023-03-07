@@ -3,6 +3,9 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:dtlive/pages/mydownloads.dart';
+import 'package:dtlive/pages/player_better.dart';
+import 'package:dtlive/pages/player_vimeo.dart';
+import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -59,10 +62,11 @@ class MovieDetailsState extends State<MovieDetails> {
 
   @override
   void initState() {
-    /* Download init ****/
-    _bindBackgroundIsolate();
-    FlutterDownloader.registerCallback(downloadCallback, step: 1);
-    /* ****/
+    if (!kIsWeb) {
+      /* Download init ****/
+      _bindBackgroundIsolate();
+      FlutterDownloader.registerCallback(downloadCallback, step: 1); /* ****/
+    }
 
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     videoDetailsProvider =
@@ -162,8 +166,10 @@ class MovieDetailsState extends State<MovieDetails> {
       'task ($id) is in status ($status) and process ($progress)',
     );
 
-    IsolateNameServer.lookupPortByName(Constant.videoDownloadPort)
-        ?.send([id, status.value, progress]);
+    if (!kIsWeb) {
+      IsolateNameServer.lookupPortByName(Constant.videoDownloadPort)
+          ?.send([id, status.value, progress]);
+    }
   }
 
   @override
@@ -327,7 +333,7 @@ class MovieDetailsState extends State<MovieDetails> {
                     ),
                   ),
                 ),
-                if (Platform.isAndroid || Platform.isIOS)
+                if (!kIsWeb)
                   Positioned(
                     top: 15,
                     left: 15,
@@ -3039,6 +3045,10 @@ class MovieDetailsState extends State<MovieDetails> {
                           ),
                         );
                       } else {
+                        if ((kIsWeb || Constant.isTV)) {
+                          Utils.buildWebAlertDialog(context, "login", "");
+                          return;
+                        }
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const LoginSocial(),
@@ -3691,7 +3701,47 @@ class MovieDetailsState extends State<MovieDetails> {
 
     log("vUploadType ===> $vUploadType");
     log("stopTime ===> $stopTime");
-    if (!mounted) return;
+
+    // Unhide This code for Pod Player & Must Hide below Better, Youtube & Vimeo Players
+    /* Pod Player */
+    _openPodPlayer(
+      playType == "Trailer" ? "Trailer" : "Video",
+      vID,
+      vType,
+      vTypeID,
+      vUrl,
+      vSubtitle,
+      stopTime,
+      vUploadType,
+      videoThumb,
+    );
+
+    // Unhide This code for Better Player & Must Hide above Pod Player
+    /* Better, Youtube & Vimeo Players */
+    // _openOtherPlayer(
+    //   playType == "Trailer" ? "Trailer" : "Video",
+    //   vID,
+    //   vType,
+    //   vTypeID,
+    //   vUrl,
+    //   vSubtitle,
+    //   stopTime,
+    //   vUploadType,
+    //   videoThumb,
+    // );
+  }
+
+  _openPodPlayer(
+    String? playType,
+    int? vID,
+    int? vType,
+    int? vTypeID,
+    String? vUrl,
+    String? vSubtitle,
+    int? stopTime,
+    String? vUploadType,
+    String? videoThumb,
+  ) async {
     var isContinue = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -3714,54 +3764,68 @@ class MovieDetailsState extends State<MovieDetails> {
     if (isContinue != null && isContinue == true) {
       _getData();
     }
+  }
 
-    // if (vUploadType == "youtube") {
-    //   if (!mounted) return;
-    //   await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) {
-    //         return PlayerYoutube(
-    //           videoUrl: vUrl,
-    //         );
-    //       },
-    //     ),
-    //   );
-    // } else if (vUploadType == "vimeo") {
-    //   if (!mounted) return;
-    //   await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) {
-    //         return PlayerVimeo(
-    //           url: vUrl,
-    //         );
-    //       },
-    //     ),
-    //   );
-    // } else {
-    //   if (!mounted) return;
-    //   var isContinue = await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) {
-    //         return PlayerPod(
-    //             playType == "Trailer" ? "Trailer" : "Video",
-    //             vID,
-    //             vType,
-    //             vTypeID,
-    //             vUrl ?? "",
-    //             vSubtitle ?? "",
-    //             stopTime,
-    //             vUploadType);
-    //       },
-    //     ),
-    //   );
-    //   log("isContinue ===> $isContinue");
-    //   if (isContinue != null && isContinue == true) {
-    //     _getData();
-    //   }
-    // }
+  _openOtherPlayer(
+    String? playType,
+    int? vID,
+    int? vType,
+    int? vTypeID,
+    String? vUrl,
+    String? vSubtitle,
+    int? stopTime,
+    String? vUploadType,
+    String? videoThumb,
+  ) async {
+    dynamic isContinue;
+    if (vUploadType == "youtube") {
+      if (!mounted) return;
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerYoutube(
+              videoUrl: vUrl,
+            );
+          },
+        ),
+      );
+    } else if (vUploadType == "vimeo") {
+      if (!mounted) return;
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerVimeo(
+              url: vUrl,
+            );
+          },
+        ),
+      );
+    } else {
+      if (!mounted) return;
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerBetter(
+                playType == "Trailer" ? "Trailer" : "Video",
+                vID,
+                vType,
+                vTypeID,
+                vUrl ?? "",
+                vSubtitle ?? "",
+                stopTime,
+                vUploadType,
+                videoThumb);
+          },
+        ),
+      );
+    }
+    log("isContinue ===> $isContinue");
+    if (isContinue != null && isContinue == true) {
+      _getData();
+    }
   }
   /* ========= Open Player ========= */
 

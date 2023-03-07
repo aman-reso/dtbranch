@@ -9,6 +9,7 @@ import 'package:dtlive/model/channelsectionmodel.dart' as banner;
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -19,7 +20,6 @@ import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player_better.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
 import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
@@ -323,64 +323,7 @@ class ChannelsState extends State<Channels> {
               borderRadius: BorderRadius.circular(4),
               onTap: () async {
                 log("Clicked on index ==> $index");
-                if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
-                  if (Constant.userID != null) {
-                    if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            if ((sectionBannerList?[index].link ?? "")
-                                .contains("youtube")) {
-                              return PlayerYoutube(
-                                videoUrl: sectionBannerList?[index].link,
-                              );
-                            } else if ((sectionBannerList?[index].link ?? "")
-                                .contains("vimeo")) {
-                              return PlayerVimeo(
-                                url: sectionBannerList?[index].link,
-                              );
-                            } else {
-                              return PlayerBetter(
-                                "Channel",
-                                0,
-                                0,
-                                0,
-                                sectionBannerList?[index].link ?? "",
-                                sectionBannerList?[index].name ?? "",
-                                0,
-                              );
-                            }
-                          },
-                        ),
-                      );
-                    } else {
-                      if (kIsWeb) {
-                        Utils.showSnackbar(
-                            context, "info", webPaymentNotAvailable, false);
-                        return;
-                      }
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const Subscription();
-                          },
-                        ),
-                      );
-                      _getData();
-                    }
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const LoginSocial();
-                        },
-                      ),
-                    );
-                  }
-                }
+                openPlayer(sectionBannerList, index);
               },
               child: Container(
                 padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
@@ -748,10 +691,13 @@ class ChannelsState extends State<Channels> {
     );
   }
 
+  /* ========= Open Player ========= */
   openPlayer(List<banner.LiveUrl>? sectionBannerList, int index) async {
-    if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
-      if (Constant.userID != null) {
+    if (Constant.userID != null) {
+      if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
         if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
+          /* Unhide This code for Pod Player & 
+          Must Hide below for (Better, Youtube & Vimeo Players) */
           await Navigator.push(
             context,
             MaterialPageRoute(
@@ -770,7 +716,10 @@ class ChannelsState extends State<Channels> {
               },
             ),
           );
-          // Navigator.push(
+
+          /* Unhide This code for (Better, Youtube & Vimeo Players) & 
+          Must Hide below for Pod Player */
+          // await Navigator.push(
           //   context,
           //   MaterialPageRoute(
           //     builder: (context) {
@@ -793,6 +742,8 @@ class ChannelsState extends State<Channels> {
           //           sectionBannerList?[index].link ?? "",
           //           sectionBannerList?[index].name ?? "",
           //           0,
+          //           "",
+          //           sectionBannerList?[index].image ?? "",
           //         );
           //       }
           //     },
@@ -816,19 +767,23 @@ class ChannelsState extends State<Channels> {
           }
         }
       } else {
-        if (kIsWeb) {
-          Utils.buildWebAlertDialog(context, "login", "");
-          return;
-        }
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const LoginSocial();
-            },
-          ),
-        );
+        if (!mounted) return;
+        Utils.showSnackbar(context, "fail", "invalid_url", true);
       }
+    } else {
+      if ((kIsWeb || Constant.isTV)) {
+        Utils.buildWebAlertDialog(context, "login", "");
+        return;
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginSocial();
+          },
+        ),
+      );
     }
   }
+  /* ========= Open Player ========= */
 }

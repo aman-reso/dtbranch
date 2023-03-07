@@ -14,6 +14,7 @@ import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/widget/nodata.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -815,6 +816,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                               0,
                         );
                       } else {
+                        if ((kIsWeb || Constant.isTV)) {
+                          Utils.buildWebAlertDialog(context, "login", "");
+                          return;
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(

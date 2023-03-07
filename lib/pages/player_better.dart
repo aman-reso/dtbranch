@@ -10,9 +10,17 @@ import 'package:provider/provider.dart';
 
 class PlayerBetter extends StatefulWidget {
   final int? videoId, videoType, typeId, stopTime;
-  final String? playType, videoUrl, vSubTitleUrl;
-  const PlayerBetter(this.playType, this.videoId, this.videoType, this.typeId,
-      this.videoUrl, this.vSubTitleUrl, this.stopTime,
+  final String? playType, videoUrl, vSubTitleUrl, vUploadType, videoThumb;
+  const PlayerBetter(
+      this.playType,
+      this.videoId,
+      this.videoType,
+      this.typeId,
+      this.videoUrl,
+      this.vSubTitleUrl,
+      this.stopTime,
+      this.vUploadType,
+      this.videoThumb,
       {Key? key})
       : super(key: key);
 
@@ -27,6 +35,8 @@ class _PlayerBetterState extends State<PlayerBetter> {
 
   @override
   void initState() {
+    debugPrint("videoUrl ========> ${widget.videoUrl}");
+    debugPrint("vUploadType ========> ${widget.vUploadType}");
     playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     // BetterPlayerConfiguration betterPlayerConfiguration =
     //     BetterPlayerConfiguration(
@@ -77,8 +87,14 @@ class _PlayerBetterState extends State<PlayerBetter> {
 
   void _setupDataSource() async {
     debugPrint("vSubTitle URL =======> ${widget.vSubTitleUrl}");
+    // BetterPlayerDataSourceType dataSourceType;
+    // if (widget.playType == "Download") {
+    //   dataSourceType = BetterPlayerDataSourceType.file;
+    // } else {
+    //   dataSourceType = BetterPlayerDataSourceType.network;
+    // }
     // BetterPlayerDataSource dataSource = BetterPlayerDataSource(
-    //   BetterPlayerDataSourceType.network,
+    //   dataSourceType,
     //   widget.videoUrl ?? "",
     //   resolutions:
     //       Constant.resolutionsUrls.isNotEmpty ? Constant.resolutionsUrls : {},

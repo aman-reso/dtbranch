@@ -32,28 +32,31 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: YoutubePlayerBuilder(
-        onEnterFullScreen: () {
-          fullScreen = true;
-        },
-        onExitFullScreen: () {
-          fullScreen = true;
-        },
-        builder: (context, player) {
-          return Column(
-            children: <Widget>[player],
-          );
-        },
-        player: YoutubePlayer(
-          controller: controller,
-          aspectRatio: 16 / 9,
-          showVideoProgressIndicator: true,
-          width: MediaQuery.of(context).size.width,
-          bottomActions: [
-            CurrentPosition(),
-            ProgressBar(isExpanded: true),
-          ],
+    return WillPopScope(
+      onWillPop: onBackPressed,
+      child: Scaffold(
+        body: YoutubePlayerBuilder(
+          onEnterFullScreen: () {
+            fullScreen = true;
+          },
+          onExitFullScreen: () {
+            fullScreen = false;
+          },
+          builder: (context, player) {
+            return Column(
+              children: <Widget>[player],
+            );
+          },
+          player: YoutubePlayer(
+            controller: controller,
+            aspectRatio: 16 / 9,
+            showVideoProgressIndicator: true,
+            width: MediaQuery.of(context).size.width,
+            bottomActions: [
+              CurrentPosition(),
+              ProgressBar(isExpanded: true),
+            ],
+          ),
         ),
       ),
     );
@@ -65,6 +68,41 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
+  }
+
+  Future<bool> onBackPressed() async {
+    // log("onBackPressed playerCPosition :===> $playerCPosition");
+    // log("onBackPressed videoDuration :===> $videoDuration");
+    // log("onBackPressed playType :===> ${widget.playType}");
+    // if (widget.playType == "Video" || widget.playType == "Show") {
+    //   if ((playerCPosition ?? 0) > 0 &&
+    //       (playerCPosition == videoDuration ||
+    //           (playerCPosition ?? 0) > (videoDuration ?? 0))) {
+    //     /* Remove From Continue */
+    //     await playerProvider.removeFromContinue(
+    //         "${widget.videoId}", "${widget.videoType}");
+    //     if (!mounted) return Future.value(false);
+    //     Navigator.pop(context, true);
+    //     return Future.value(true);
+    //   } else if ((playerCPosition ?? 0) > 0) {
+    //     /* Add to Continue */
+    //     await playerProvider.addToContinue(
+    //         "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
+    //     if (!mounted) return Future.value(false);
+    //     Navigator.pop(context, true);
+    //     return Future.value(true);
+    //   } else {
+    //     if (!mounted) return Future.value(false);
+    //     Navigator.pop(context, false);
+    //     return Future.value(true);
+    //   }
+    // } else {
+    if (!mounted) return Future.value(false);
+    Navigator.pop(context, false);
+    return Future.value(true);
+    // }
   }
 }

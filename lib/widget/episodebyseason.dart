@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/loginsocial.dart';
+import 'package:dtlive/pages/player_better.dart';
+import 'package:dtlive/pages/player_vimeo.dart';
+import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
 import 'package:dtlive/provider/episodeprovider.dart';
@@ -430,6 +433,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
     }
   }
 
+  /* ========= Open Player ========= */
   void openPlayer(
       String playType, int epiPos, List<episode.Result>? episodeList) async {
     final showDetailsProvider =
@@ -453,18 +457,119 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       log("epiUrl =======> $epiUrl");
       log("vSubtitle ====> $vSubtitle");
 
+      // Unhide below code for Pod Player & Must Hide below Better, Youtube & Vimeo Players
+      _openPodPlayer(
+        "Show",
+        epiID,
+        vType,
+        vTypeID,
+        epiUrl,
+        vSubtitle,
+        stopTime,
+        vUploadType,
+        videoThumb,
+      );
+
+      // Unhide below code for Better, Youtube & Vimeo Players & Must Hide above Pod Player
+      /* Better, Youtube & Vimeo Players */
+      // _openOtherPlayer(
+      //   "Show",
+      //   epiID,
+      //   vType,
+      //   vTypeID,
+      //   epiUrl,
+      //   vSubtitle,
+      //   stopTime,
+      //   vUploadType,
+      //   videoThumb,
+      // );
+    }
+  }
+
+  _openPodPlayer(
+    String? playType,
+    int? vID,
+    int? vType,
+    int? vTypeID,
+    String? vUrl,
+    String? vSubtitle,
+    int? stopTime,
+    String? vUploadType,
+    String? videoThumb,
+  ) async {
+    var isContinue = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PlayerPod(
+            playType,
+            vID,
+            vType,
+            vTypeID,
+            vUrl ?? "",
+            vSubtitle ?? "",
+            stopTime,
+            vUploadType,
+            videoThumb,
+          );
+        },
+      ),
+    );
+    log("isContinue ===> $isContinue");
+    if (isContinue != null && isContinue == true) {
+      await getAllEpisode();
+    }
+  }
+
+  _openOtherPlayer(
+    String? playType,
+    int? vID,
+    int? vType,
+    int? vTypeID,
+    String? vUrl,
+    String? vSubtitle,
+    int? stopTime,
+    String? vUploadType,
+    String? videoThumb,
+  ) async {
+    dynamic isContinue;
+    if (vUploadType == "youtube") {
       if (!mounted) return;
-      var isContinue = await Navigator.push(
+      isContinue = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return PlayerPod(
-              "Show",
-              epiID,
+            return PlayerYoutube(
+              videoUrl: vUrl,
+            );
+          },
+        ),
+      );
+    } else if (vUploadType == "vimeo") {
+      if (!mounted) return;
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerVimeo(
+              url: vUrl,
+            );
+          },
+        ),
+      );
+    } else {
+      if (!mounted) return;
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerBetter(
+              playType,
+              vID,
               vType,
               vTypeID,
-              epiUrl,
-              vSubtitle,
+              vUrl ?? "",
+              vSubtitle ?? "",
               stopTime,
               vUploadType,
               videoThumb,
@@ -472,60 +577,11 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
           },
         ),
       );
-      log("isContinue ===> $isContinue");
-      if (isContinue != null && isContinue == true) {
-        getAllEpisode();
-      }
-
-      // if (episodeList?[epiPos].videoUploadType == "youtube") {
-      //   if (!mounted) return;
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) {
-      //         return PlayerYoutube(
-      //           videoUrl: episodeList?[epiPos].videoUrl,
-      //         );
-      //       },
-      //     ),
-      //   );
-      // } else if (episodeList?[epiPos].videoUploadType == "vimeo") {
-      //   if (!mounted) return;
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) {
-      //         return PlayerVimeo(
-      //           url: episodeList?[epiPos].videoUrl,
-      //         );
-      //       },
-      //     ),
-      //   );
-      // } else {
-      //   if (!mounted) return;
-      //   var isContinue = await Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) {
-      //         return PlayerPod(
-      //           playType,
-      //           epiID,
-      //           vType,
-      //           vTypeID,
-      //           epiUrl,
-      //           vSubtitle,
-      //           stopTime,
-      //           vUploadType,
-      //           videoThumb,
-      //         );
-      //       },
-      //     ),
-      //   );
-      //   log("isContinue ===> $isContinue");
-      //   if (isContinue != null && isContinue == true) {
-      //     getAllEpisode();
-      //   }
-      // }
+    }
+    log("isContinue ===> $isContinue");
+    if (isContinue != null && isContinue == true) {
+      await getAllEpisode();
     }
   }
+  /* ========= Open Player ========= */
 }

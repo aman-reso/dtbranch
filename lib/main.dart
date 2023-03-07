@@ -32,6 +32,7 @@ import 'package:dtlive/provider/watchlistprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -43,7 +44,10 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+  if (!kIsWeb) {
+    await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+  }
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Locales.init(['en', 'ar', 'hi']);
   //Remove this method to stop OneSignal Debugging
@@ -186,10 +190,7 @@ class _MyAppState extends State<MyApp> {
           },
           builder: (context, child) {
             return ResponsiveWrapper.builder(
-              BouncingScrollWrapper.builder(
-                context,
-                child!,
-              ),
+              BouncingScrollWrapper.builder(context, child!),
               minWidth: 360,
               defaultScale: true,
               breakpoints: [
@@ -198,9 +199,7 @@ class _MyAppState extends State<MyApp> {
                 const ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
                 const ResponsiveBreakpoint.autoScale(1200, name: "4K"),
               ],
-              background: Container(
-                color: appBgColor,
-              ),
+              background: Container(color: appBgColor),
             );
           },
           home: const Splash(),

@@ -3,8 +3,10 @@ import 'dart:io';
 import 'dart:math' as number;
 
 import 'package:android_path_provider/android_path_provider.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dtlive/pages/player_pod.dart';
+import 'package:dtlive/pages/player_better.dart';
+import 'package:dtlive/pages/player_vimeo.dart';
+import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/subscription/allpayment.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -15,6 +17,7 @@ import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -106,7 +109,7 @@ class Utils {
       required String? videoThumb,
       required String? vSubtitle,
       required int? vStopTime}) async {
-    deleteCacheDir();
+    if (!(kIsWeb || Constant.isTV)) deleteCacheDir();
     dynamic isContinue;
     int? vID = (videoId ?? 0);
     int? vType = (videoType ?? 0);
@@ -130,6 +133,9 @@ class Utils {
     vUploadType = (uploadType ?? "");
     log("stopTime ===> $stopTime");
     log("===>vUploadType $vUploadType");
+
+    // Unhide below code for Pod Player & Must Hide below Better, Youtube & Vimeo Players
+    /* Pod Player */
     if (!context.mounted) return;
     isContinue = await Navigator.push(
       context,
@@ -153,6 +159,9 @@ class Utils {
         },
       ),
     );
+
+    // Unhide below code for Better Player & Must Hide above Pod Player
+    /* Better, Youtube & Vimeo Players */
     // if (vUploadType == "youtube") {
     //   isContinue = await Navigator.push(
     //     context,
@@ -180,8 +189,17 @@ class Utils {
     //     context,
     //     MaterialPageRoute(
     //       builder: (context) {
-    //         return PlayerBetter(playType, vID, vType, vTypeID, vUrl ?? "",
-    //             vSubtitle ?? "", stopTime);
+    //         return PlayerBetter(
+    //           playType,
+    //           vID,
+    //           vType,
+    //           vTypeID,
+    //           vUrl ?? "",
+    //           vSubtitle ?? "",
+    //           stopTime,
+    //           vUploadType,
+    //           videoThumb,
+    //         );
     //       },
     //     ),
     //   );

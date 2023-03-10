@@ -6,9 +6,11 @@ import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/watchlistprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -1327,7 +1329,9 @@ class _MyWatchlistState extends State<MyWatchlist> {
     );
   }
 
+  /* ========= Open Player ========= */
   openPlayer(playType, position) async {
+    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     Map<String, String> qualityUrlList = <String, String>{
       '320p': watchlistProvider.watchlistModel.result?[position].video320 ?? '',
       '480p': watchlistProvider.watchlistModel.result?[position].video480 ?? '',
@@ -1335,10 +1339,20 @@ class _MyWatchlistState extends State<MyWatchlist> {
       '1080p':
           watchlistProvider.watchlistModel.result?[position].video1080 ?? '',
     };
+
+    /* CHECK SUBSCRIPTION */
+    if (playType != "Trailer") {
+      bool? isPrimiumUser = await _checkSubsRentLogin(position);
+      log("isPrimiumUser =============> $isPrimiumUser");
+      if (!isPrimiumUser) return;
+    }
+    /* CHECK SUBSCRIPTION */
+
     debugPrint("qualityUrlList ==========> ${qualityUrlList.length}");
     Constant.resolutionsUrls = qualityUrlList;
     debugPrint(
         "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+    if (!mounted) return;
     var isContinues = await Utils.openPlayer(
         context: context,
         playType: playType ?? "",
@@ -1361,6 +1375,116 @@ class _MyWatchlistState extends State<MyWatchlist> {
             watchlistProvider.watchlistModel.result?[position].stopTime ?? 0);
     if (isContinues != null && isContinues == true) {
       await watchlistProvider.getWatchlist();
+    }
+  }
+  /* ========= Open Player ========= */
+
+  Future<bool> _checkSubsRentLogin(position) async {
+    if (Constant.userID != null) {
+      if ((watchlistProvider.watchlistModel.result?[position].isPremium ?? 0) ==
+              1 &&
+          (watchlistProvider.watchlistModel.result?[position].isRent ?? 0) ==
+              1) {
+        if ((watchlistProvider.watchlistModel.result?[position].isBuy ?? 0) ==
+                1 ||
+            (watchlistProvider.watchlistModel.result?[position].rentBuy ?? 0) ==
+                1) {
+          return true;
+        } else {
+          if ((kIsWeb || Constant.isTV)) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isSubscribed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          if (isSubscribed != null && isSubscribed == true) {
+            _getData();
+          }
+          return false;
+        }
+      } else if ((watchlistProvider
+                  .watchlistModel.result?[position].isPremium ??
+              0) ==
+          1) {
+        if ((watchlistProvider.watchlistModel.result?[position].isBuy ?? 0) ==
+            1) {
+          return true;
+        } else {
+          if ((kIsWeb || Constant.isTV)) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isSubscribed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          if (isSubscribed != null && isSubscribed == true) {
+            _getData();
+          }
+          return false;
+        }
+      } else if ((watchlistProvider.watchlistModel.result?[position].isRent ??
+              0) ==
+          1) {
+        if ((watchlistProvider.watchlistModel.result?[position].rentBuy ?? 0) ==
+            1) {
+          return true;
+        } else {
+          if ((kIsWeb || Constant.isTV)) {
+            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
+            return false;
+          }
+          dynamic isRented = await Utils.paymentForRent(
+            context: context,
+            videoId: watchlistProvider.watchlistModel.result?[position].id
+                    .toString() ??
+                '',
+            rentPrice: watchlistProvider
+                    .watchlistModel.result?[position].rentPrice
+                    .toString() ??
+                '',
+            vTitle: watchlistProvider.watchlistModel.result?[position].name
+                    .toString() ??
+                '',
+            typeId: watchlistProvider.watchlistModel.result?[position].typeId
+                    .toString() ??
+                '',
+            vType: watchlistProvider.watchlistModel.result?[position].videoType
+                    .toString() ??
+                '',
+          );
+          if (isRented != null && isRented == true) {
+            _getData();
+          }
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      if ((kIsWeb || Constant.isTV)) {
+        Utils.buildWebAlertDialog(context, "login", "");
+        return false;
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const LoginSocial();
+          },
+        ),
+      );
+      return false;
     }
   }
 }

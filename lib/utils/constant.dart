@@ -13,12 +13,6 @@ class Constant {
   /* OneSignal App ID */
   static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
 
-  /* Google Client ID & Client Secret */
-  static const String googleClientId =
-      "346606981660-juds0qd8k9p651md7gv38bd1bn9jq66v.apps.googleusercontent.com";
-  static const String googleClientSecret =
-      "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";
-
   static String? userID;
   static String userPlaceholder =
       "https://i.pinimg.com/564x/5d/69/42/5d6942c6dff12bd3f960eb30c5fdd0f9.jpg";

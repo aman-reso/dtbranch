@@ -134,76 +134,76 @@ class Utils {
     log("stopTime ===> $stopTime");
     log("===>vUploadType $vUploadType");
 
-    // Unhide below code for Pod Player & Must Hide below Better, Youtube & Vimeo Players
-    /* Pod Player */
-    if (!context.mounted) return;
-    isContinue = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return PlayerPod(
-            playType == "Trailer"
-                ? "Trailer"
-                : playType == "Download"
-                    ? "Download"
-                    : (videoType == 2 ? "Show" : "Video"),
-            vID,
-            vType,
-            vTypeID,
-            vUrl ?? "",
-            vSubtitle ?? "",
-            stopTime,
-            vUploadType,
-            videoThumb,
-          );
-        },
-      ),
-    );
-
-    // Unhide below code for Better Player & Must Hide above Pod Player
-    /* Better, Youtube & Vimeo Players */
-    // if (vUploadType == "youtube") {
-    //   isContinue = await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) {
-    //         return PlayerYoutube(
-    //           videoUrl: vUrl,
-    //         );
-    //       },
-    //     ),
-    //   );
-    // } else if (vUploadType == "vimeo") {
-    //   isContinue = await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) {
-    //         return PlayerVimeo(
-    //           url: vUrl,
-    //         );
-    //       },
-    //     ),
-    //   );
-    // } else {
-    //   isContinue = await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) {
-    //         return PlayerBetter(
-    //           playType,
-    //           vID,
-    //           vType,
-    //           vTypeID,
-    //           vUrl ?? "",
-    //           vSubtitle ?? "",
-    //           stopTime,
-    //           vUploadType,
-    //           videoThumb,
-    //         );
-    //       },
-    //     ),
-    //   );
-    // }
+    if (kIsWeb) {
+      /* Pod Player */
+      if (!context.mounted) return;
+      isContinue = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PlayerPod(
+              playType == "Trailer"
+                  ? "Trailer"
+                  : playType == "Download"
+                      ? "Download"
+                      : (videoType == 2 ? "Show" : "Video"),
+              vID,
+              vType,
+              vTypeID,
+              vUrl ?? "",
+              vSubtitle ?? "",
+              stopTime,
+              vUploadType,
+              videoThumb,
+            );
+          },
+        ),
+      );
+    } else {
+      /* Better, Youtube & Vimeo Players */
+      if (vUploadType == "youtube") {
+        isContinue = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PlayerYoutube(
+                videoUrl: vUrl,
+              );
+            },
+          ),
+        );
+      } else if (vUploadType == "vimeo") {
+        isContinue = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PlayerVimeo(
+                url: vUrl,
+              );
+            },
+          ),
+        );
+      } else {
+        isContinue = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PlayerBetter(
+                playType,
+                vID,
+                vType,
+                vTypeID,
+                vUrl ?? "",
+                vSubtitle ?? "",
+                stopTime,
+                vUploadType,
+                videoThumb,
+              );
+            },
+          ),
+        );
+      }
+    }
     log("isContinue ===> $isContinue");
     return isContinue;
   }

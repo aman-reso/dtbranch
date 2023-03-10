@@ -199,7 +199,6 @@ class _BetterPlayerMaterialControlsState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // _buildStrach(),
                     if (_controlsConfiguration.enablePip)
                       _buildPipButtonWrapperWidget(
                           controlsNotVisible, _onPlayerHide)
@@ -256,19 +255,6 @@ class _BetterPlayerMaterialControlsState
           return const SizedBox();
         }
       },
-    );
-  }
-
-  Widget buildStrach() {
-    return BetterPlayerMaterialClickableWidget(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Icon(
-          _controlsConfiguration.fullscreenEnableIcon,
-          color: _controlsConfiguration.iconsColor,
-        ),
-      ),
     );
   }
 
@@ -439,7 +425,7 @@ class _BetterPlayerMaterialControlsState
     return _buildHitAreaClickableButton(
       icon: Icon(
         _controlsConfiguration.skipBackIcon,
-        size: 28,
+        size: 24,
         color: _controlsConfiguration.iconsColor,
       ),
       onClicked: skipBack,
@@ -450,7 +436,7 @@ class _BetterPlayerMaterialControlsState
     return _buildHitAreaClickableButton(
       icon: Icon(
         _controlsConfiguration.skipForwardIcon,
-        size: 28,
+        size: 24,
         color: _controlsConfiguration.iconsColor,
       ),
       onClicked: skipForward,
@@ -574,7 +560,6 @@ class _BetterPlayerMaterialControlsState
               ? _controlsConfiguration.pauseIcon
               : _controlsConfiguration.playIcon,
           color: _controlsConfiguration.iconsColor,
-          size: 30,
         ),
       ),
     );

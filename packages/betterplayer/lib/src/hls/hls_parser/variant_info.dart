@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class VariantInfo {
   VariantInfo({
     this.bitrate,
@@ -41,7 +39,6 @@ class VariantInfo {
   }
 
   @override
-  // ignore: deprecated_member_use
-  int get hashCode => hashValues(
+  int get hashCode => Object.hash(
       bitrate, videoGroupId, audioGroupId, subtitleGroupId, captionGroupId);
 }

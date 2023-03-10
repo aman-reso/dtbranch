@@ -696,59 +696,57 @@ class ChannelsState extends State<Channels> {
     if (Constant.userID != null) {
       if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
         if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
-          /* Unhide This code for Pod Player & 
-          Must Hide below for (Better, Youtube & Vimeo Players) */
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return PlayerPod(
-                  "Channel",
-                  0,
-                  0,
-                  0,
-                  sectionBannerList?[index].link ?? "",
-                  "",
-                  0,
-                  "",
-                  sectionBannerList?[index].image ?? "",
-                );
-              },
-            ),
-          );
-
-          /* Unhide This code for (Better, Youtube & Vimeo Players) & 
-          Must Hide below for Pod Player */
-          // await Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) {
-          //       if ((sectionBannerList?[index].link ?? "")
-          //           .contains("youtube")) {
-          //         return PlayerYoutube(
-          //           videoUrl: sectionBannerList?[index].link,
-          //         );
-          //       } else if ((sectionBannerList?[index].link ?? "")
-          //           .contains("vimeo")) {
-          //         return PlayerVimeo(
-          //           url: sectionBannerList?[index].link,
-          //         );
-          //       } else {
-          //         return PlayerBetter(
-          //           "Channel",
-          //           0,
-          //           0,
-          //           0,
-          //           sectionBannerList?[index].link ?? "",
-          //           sectionBannerList?[index].name ?? "",
-          //           0,
-          //           "",
-          //           sectionBannerList?[index].image ?? "",
-          //         );
-          //       }
-          //     },
-          //   ),
-          // );
+          if (kIsWeb) {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return PlayerPod(
+                    "Channel",
+                    0,
+                    0,
+                    0,
+                    sectionBannerList?[index].link ?? "",
+                    "",
+                    0,
+                    "",
+                    sectionBannerList?[index].image ?? "",
+                  );
+                },
+              ),
+            );
+          } else {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  if ((sectionBannerList?[index].link ?? "")
+                      .contains("youtube")) {
+                    return PlayerYoutube(
+                      videoUrl: sectionBannerList?[index].link,
+                    );
+                  } else if ((sectionBannerList?[index].link ?? "")
+                      .contains("vimeo")) {
+                    return PlayerVimeo(
+                      url: sectionBannerList?[index].link,
+                    );
+                  } else {
+                    return PlayerBetter(
+                      "Channel",
+                      0,
+                      0,
+                      0,
+                      sectionBannerList?[index].link ?? "",
+                      sectionBannerList?[index].name ?? "",
+                      0,
+                      "",
+                      sectionBannerList?[index].image ?? "",
+                    );
+                  }
+                },
+              ),
+            );
+          }
         } else {
           if (kIsWeb) {
             Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);

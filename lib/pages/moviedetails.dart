@@ -3,15 +3,11 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:dtlive/pages/mydownloads.dart';
-import 'package:dtlive/pages/player_better.dart';
-import 'package:dtlive/pages/player_vimeo.dart';
-import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
-import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/widget/castcrew.dart';
 import 'package:dtlive/widget/moredetails.dart';
 import 'package:dtlive/widget/relatedvideoshow.dart';
@@ -3702,126 +3698,21 @@ class MovieDetailsState extends State<MovieDetails> {
     log("vUploadType ===> $vUploadType");
     log("stopTime ===> $stopTime");
 
-    // Unhide This code for Pod Player & Must Hide below Better, Youtube & Vimeo Players
-    /* Pod Player */
-    _openPodPlayer(
-      playType == "Trailer" ? "Trailer" : "Video",
-      vID,
-      vType,
-      vTypeID,
-      vUrl,
-      vSubtitle,
-      stopTime,
-      vUploadType,
-      videoThumb,
+    if (!mounted) return;
+    dynamic isContinue = await Utils.openPlayer(
+      context: context,
+      playType: playType == "Trailer" ? "Trailer" : "Video",
+      videoId: vID,
+      videoType: vType,
+      typeId: vTypeID,
+      videoUrl: vUrl,
+      trailerUrl: vUrl,
+      uploadType: vUploadType,
+      videoThumb: videoThumb,
+      vSubtitle: vSubtitle,
+      vStopTime: stopTime,
     );
 
-    // Unhide This code for Better Player & Must Hide above Pod Player
-    /* Better, Youtube & Vimeo Players */
-    // _openOtherPlayer(
-    //   playType == "Trailer" ? "Trailer" : "Video",
-    //   vID,
-    //   vType,
-    //   vTypeID,
-    //   vUrl,
-    //   vSubtitle,
-    //   stopTime,
-    //   vUploadType,
-    //   videoThumb,
-    // );
-  }
-
-  _openPodPlayer(
-    String? playType,
-    int? vID,
-    int? vType,
-    int? vTypeID,
-    String? vUrl,
-    String? vSubtitle,
-    int? stopTime,
-    String? vUploadType,
-    String? videoThumb,
-  ) async {
-    var isContinue = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return PlayerPod(
-            playType == "Trailer" ? "Trailer" : "Video",
-            vID,
-            vType,
-            vTypeID,
-            vUrl ?? "",
-            vSubtitle ?? "",
-            stopTime,
-            vUploadType,
-            videoThumb,
-          );
-        },
-      ),
-    );
-    log("isContinue ===> $isContinue");
-    if (isContinue != null && isContinue == true) {
-      _getData();
-    }
-  }
-
-  _openOtherPlayer(
-    String? playType,
-    int? vID,
-    int? vType,
-    int? vTypeID,
-    String? vUrl,
-    String? vSubtitle,
-    int? stopTime,
-    String? vUploadType,
-    String? videoThumb,
-  ) async {
-    dynamic isContinue;
-    if (vUploadType == "youtube") {
-      if (!mounted) return;
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerYoutube(
-              videoUrl: vUrl,
-            );
-          },
-        ),
-      );
-    } else if (vUploadType == "vimeo") {
-      if (!mounted) return;
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerVimeo(
-              url: vUrl,
-            );
-          },
-        ),
-      );
-    } else {
-      if (!mounted) return;
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerBetter(
-                playType == "Trailer" ? "Trailer" : "Video",
-                vID,
-                vType,
-                vTypeID,
-                vUrl ?? "",
-                vSubtitle ?? "",
-                stopTime,
-                vUploadType,
-                videoThumb);
-          },
-        ),
-      );
-    }
     log("isContinue ===> $isContinue");
     if (isContinue != null && isContinue == true) {
       _getData();

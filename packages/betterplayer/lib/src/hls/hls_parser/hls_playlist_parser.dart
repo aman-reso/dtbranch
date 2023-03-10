@@ -342,7 +342,8 @@ class HlsPlaylistParser {
       }
     }
 
-    // Don't deduplicate variants by URL.
+    // ignore: todo
+    // TODO: Don't deduplicate variants by URL.
     final List<Variant> deduplicatedVariants =
         []; // ignore: always_specify_types
     final Set<Uri> urlsInDeduplicatedVariants =

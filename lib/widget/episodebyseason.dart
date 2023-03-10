@@ -2,9 +2,6 @@ import 'dart:developer';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/player_better.dart';
-import 'package:dtlive/pages/player_vimeo.dart';
-import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
 import 'package:dtlive/provider/episodeprovider.dart';
@@ -14,7 +11,6 @@ import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
-import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -453,134 +449,29 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       log("vTypeID ======> $vTypeID");
       log("stopTime =====> $stopTime");
       log("vUploadType ==> $vUploadType");
-      log("videoThumb ==> $videoThumb");
+      log("videoThumb ===> $videoThumb");
       log("epiUrl =======> $epiUrl");
       log("vSubtitle ====> $vSubtitle");
 
-      // Unhide below code for Pod Player & Must Hide below Better, Youtube & Vimeo Players
-      _openPodPlayer(
-        "Show",
-        epiID,
-        vType,
-        vTypeID,
-        epiUrl,
-        vSubtitle,
-        stopTime,
-        vUploadType,
-        videoThumb,
+      if (!mounted) return;
+      dynamic isContinue = await Utils.openPlayer(
+        context: context,
+        playType: "Show",
+        videoId: epiID,
+        videoType: vType,
+        typeId: vTypeID,
+        videoUrl: epiUrl,
+        trailerUrl: "",
+        uploadType: vUploadType,
+        videoThumb: videoThumb,
+        vSubtitle: vSubtitle,
+        vStopTime: stopTime,
       );
 
-      // Unhide below code for Better, Youtube & Vimeo Players & Must Hide above Pod Player
-      /* Better, Youtube & Vimeo Players */
-      // _openOtherPlayer(
-      //   "Show",
-      //   epiID,
-      //   vType,
-      //   vTypeID,
-      //   epiUrl,
-      //   vSubtitle,
-      //   stopTime,
-      //   vUploadType,
-      //   videoThumb,
-      // );
-    }
-  }
-
-  _openPodPlayer(
-    String? playType,
-    int? vID,
-    int? vType,
-    int? vTypeID,
-    String? vUrl,
-    String? vSubtitle,
-    int? stopTime,
-    String? vUploadType,
-    String? videoThumb,
-  ) async {
-    var isContinue = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return PlayerPod(
-            playType,
-            vID,
-            vType,
-            vTypeID,
-            vUrl ?? "",
-            vSubtitle ?? "",
-            stopTime,
-            vUploadType,
-            videoThumb,
-          );
-        },
-      ),
-    );
-    log("isContinue ===> $isContinue");
-    if (isContinue != null && isContinue == true) {
-      await getAllEpisode();
-    }
-  }
-
-  _openOtherPlayer(
-    String? playType,
-    int? vID,
-    int? vType,
-    int? vTypeID,
-    String? vUrl,
-    String? vSubtitle,
-    int? stopTime,
-    String? vUploadType,
-    String? videoThumb,
-  ) async {
-    dynamic isContinue;
-    if (vUploadType == "youtube") {
-      if (!mounted) return;
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerYoutube(
-              videoUrl: vUrl,
-            );
-          },
-        ),
-      );
-    } else if (vUploadType == "vimeo") {
-      if (!mounted) return;
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerVimeo(
-              url: vUrl,
-            );
-          },
-        ),
-      );
-    } else {
-      if (!mounted) return;
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerBetter(
-              playType,
-              vID,
-              vType,
-              vTypeID,
-              vUrl ?? "",
-              vSubtitle ?? "",
-              stopTime,
-              vUploadType,
-              videoThumb,
-            );
-          },
-        ),
-      );
-    }
-    log("isContinue ===> $isContinue");
-    if (isContinue != null && isContinue == true) {
-      await getAllEpisode();
+      log("isContinue ===> $isContinue");
+      if (isContinue != null && isContinue == true) {
+        await getAllEpisode();
+      }
     }
   }
   /* ========= Open Player ========= */

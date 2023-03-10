@@ -30,8 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # better_player:
-  #   path: packages/betterplayer/
+  better_player:
+    path: packages/betterplayer/
   pod_player:
     path: packages/podplayer/
 

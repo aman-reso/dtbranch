@@ -3,9 +3,7 @@ import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dtlive/firebase_options.dart';
-import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/splash.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
 import 'package:dtlive/provider/avatarprovider.dart';
 import 'package:dtlive/provider/castdetailsprovider.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
@@ -111,50 +109,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     _getDeviceInfo();
     _getPackage();
-    OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
     super.initState();
-  }
-
-  // What to do when the user opens/taps on a notification
-  void _handleNotificationOpened(OSNotificationOpenedResult result) {
-    /* id, video_type, type_id */
-
-    log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");
-    log("setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['id']}");
-    log("setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
-    log("setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
-
-    if (result.notification.additionalData?['id'] != null) {
-      String? videoID =
-          result.notification.additionalData?['id'].toString() ?? "";
-      String? videoType =
-          result.notification.additionalData?['video_type'].toString() ?? "";
-      String? typeID =
-          result.notification.additionalData?['type_id'].toString() ?? "";
-      log("videoID =====> $videoID");
-      log("videoType =====> $videoType");
-      log("typeID =====> $typeID");
-
-      navigatorKey.currentState?.push(
-        MaterialPageRoute(
-          builder: (context) {
-            if (videoType == "2") {
-              return TvShowDetails(
-                int.parse(videoID),
-                int.parse(videoType),
-                int.parse(typeID),
-              );
-            } else {
-              return MovieDetails(
-                int.parse(videoID),
-                int.parse(videoType),
-                int.parse(typeID),
-              );
-            }
-          },
-        ),
-      );
-    }
   }
 
   @override

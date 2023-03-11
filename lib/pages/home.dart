@@ -28,6 +28,7 @@ import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -76,6 +77,49 @@ class HomeState extends State<Home> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getData();
     });
+    OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
+  }
+
+  // What to do when the user opens/taps on a notification
+  void _handleNotificationOpened(OSNotificationOpenedResult result) {
+    /* id, video_type, type_id */
+
+    log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");
+    log("setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['id']}");
+    log("setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
+    log("setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
+
+    if (result.notification.additionalData?['id'] != null) {
+      String? videoID =
+          result.notification.additionalData?['id'].toString() ?? "";
+      String? videoType =
+          result.notification.additionalData?['video_type'].toString() ?? "";
+      String? typeID =
+          result.notification.additionalData?['type_id'].toString() ?? "";
+      log("videoID =====> $videoID");
+      log("videoType =====> $videoType");
+      log("typeID =====> $typeID");
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            if (videoType == "2") {
+              return TvShowDetails(
+                int.parse(videoID),
+                int.parse(videoType),
+                int.parse(typeID),
+              );
+            } else {
+              return MovieDetails(
+                int.parse(videoID),
+                int.parse(videoType),
+                int.parse(typeID),
+              );
+            }
+          },
+        ),
+      );
+    }
   }
 
   _getData() async {

@@ -3750,9 +3750,7 @@ class MovieDetailsState extends State<MovieDetails> {
       } else if ((videoDetailsProvider.sectionDetailModel.result?.isPremium ??
               0) ==
           1) {
-        if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-            (videoDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
-                1) {
+        if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1) {
           return true;
         } else {
           if ((kIsWeb || Constant.isTV)) {

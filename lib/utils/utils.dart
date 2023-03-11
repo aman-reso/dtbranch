@@ -484,11 +484,11 @@ class Utils {
     try {
       log("timeInMilli ==> ${(timeInMilli / 1000)}");
       if (timeInMilli > 0) {
-        int seconds = ((timeInMilli / 1000) % 60).round();
-        int minutes = ((timeInMilli / (1000 * 60)) % 60).round();
-        int hours = ((timeInMilli / (1000 * 60 * 60)) % 24).round();
+        int seconds = ((timeInMilli / 1000) % 60).toInt();
+        int minutes = ((timeInMilli / (1000 * 60)) % 60).toInt();
+        int hours = ((timeInMilli / (1000 * 60 * 60)) % 24).toInt();
 
-        if (hours > 0) {
+        if (hours >= 1) {
           if (minutes > 0 && seconds > 0) {
             convTime = "$hours : $minutes : $seconds hr";
           } else if (minutes > 0 && seconds == 0) {
@@ -520,30 +520,31 @@ class Utils {
     String convTime = "";
 
     try {
-      log("timeInMilli ==> ${(timeInMilli / 1000)}");
+      log("timeInMilli ==> $timeInMilli");
       if (timeInMilli > 0) {
-        int seconds = ((timeInMilli / 1000) % 60).round();
-        int minutes = ((timeInMilli / (1000 * 60)) % 60).round();
-        int hours = ((timeInMilli / (1000 * 60 * 60)) % 24).round();
+        double seconds = ((timeInMilli / 1000) % 60);
+        double minutes = ((timeInMilli / (1000 * 60)) % 60);
+        double hours = ((timeInMilli / (1000 * 60 * 60)) % 24);
 
-        if (hours > 0) {
+        if (hours >= 1) {
           if (minutes > 0 && seconds > 0) {
-            convTime = "$hours hr $minutes min $seconds sec";
+            convTime =
+                "${hours.toInt()} hr ${minutes.toInt()} min ${seconds.toInt()} sec";
           } else if (minutes > 0 && seconds == 0) {
-            convTime = "$hours hr $minutes min";
+            convTime = "${hours.toInt()} hr ${minutes.toInt()} min";
           } else if (minutes == 0 && seconds > 0) {
-            convTime = "$hours hr $seconds sec";
+            convTime = "${hours.toInt()} hr ${seconds.toInt()} sec";
           } else if (minutes == 0 && seconds == 0) {
-            convTime = "$hours hr";
+            convTime = "${hours.toInt()} hr";
           }
         } else if (minutes > 0) {
           if (seconds > 0) {
-            convTime = "$minutes min $seconds sec";
+            convTime = "${minutes.toInt()} min ${seconds.toInt()} sec";
           } else if (minutes > 0 && seconds == 0) {
-            convTime = "$minutes min";
+            convTime = "${minutes.toInt()} min";
           }
         } else if (seconds > 0) {
-          convTime = "$seconds sec";
+          convTime = "${seconds.toInt()} sec";
         }
       } else {
         convTime = "0";
@@ -560,28 +561,29 @@ class Utils {
     try {
       log("remainWatch ==> ${(remainWatch / 1000)}");
       if (remainWatch > 0) {
-        int seconds = ((remainWatch / 1000) % 60).round();
-        int minutes = ((remainWatch / (1000 * 60)) % 60).round();
-        int hours = ((remainWatch / (1000 * 60 * 60)) % 24).round();
+        double seconds = ((remainWatch / 1000) % 60);
+        double minutes = ((remainWatch / (1000 * 60)) % 60);
+        double hours = ((remainWatch / (1000 * 60 * 60)) % 24);
 
-        if (hours > 0) {
+        if (hours >= 1) {
           if (minutes > 0 && seconds > 0) {
-            convTime = "$hours hr $minutes min $seconds sec";
+            convTime =
+                "${hours.toInt()} hr ${minutes.toInt()} min ${seconds.toInt()} sec";
           } else if (minutes > 0 && seconds == 0) {
-            convTime = "$hours hr $minutes min";
+            convTime = "${hours.toInt()} hr ${minutes.toInt()} min";
           } else if (minutes == 0 && seconds > 0) {
-            convTime = "$hours hr $seconds sec";
+            convTime = "${hours.toInt()} hr ${seconds.toInt()} sec";
           } else if (minutes == 0 && seconds == 0) {
-            convTime = "$hours hr";
+            convTime = "${hours.toInt()} hr";
           }
         } else if (minutes > 0) {
           if (seconds > 0) {
-            convTime = "$minutes min $seconds sec";
+            convTime = "${minutes.toInt()} min ${seconds.toInt()} sec";
           } else if (minutes > 0 && seconds == 0) {
-            convTime = "$minutes min";
+            convTime = "${minutes.toInt()} min";
           }
         } else if (seconds > 0) {
-          convTime = "$seconds sec";
+          convTime = "${seconds.toInt()} sec";
         }
       } else {
         convTime = "0";
@@ -597,14 +599,14 @@ class Utils {
 
     try {
       if (remainWatch > 0) {
-        int minutes = ((remainWatch / (1000 * 60)) % 60).round();
-        int seconds = ((remainWatch / 1000) % 60).round();
+        double minutes = ((remainWatch / (1000 * 60)) % 60);
+        double seconds = ((remainWatch / 1000) % 60);
         if (minutes == 0) {
-          convTime = "$seconds sec";
+          convTime = "${seconds.toInt()} sec";
         } else if (minutes < 10) {
-          convTime = "0$minutes min";
+          convTime = "0${minutes.toInt()} min";
         } else {
-          convTime = "$minutes min";
+          convTime = "${minutes.toInt()} min";
         }
       } else {
         convTime = "00 min";

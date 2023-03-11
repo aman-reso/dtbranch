@@ -337,9 +337,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       } else if ((showDetailsProvider.sectionDetailModel.result?.isPremium ??
               0) ==
           1) {
-        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
-                1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1) {
           return true;
         } else {
           if (kIsWeb) {

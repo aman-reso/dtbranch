@@ -96,9 +96,11 @@ class _PlayerBetterState extends State<PlayerBetter> {
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       dataSourceType,
       widget.videoUrl ?? "",
+      liveStream: widget.playType == "Channel" ? true : false,
       resolutions:
           Constant.resolutionsUrls.isNotEmpty ? Constant.resolutionsUrls : {},
-      subtitles: (widget.vSubTitleUrl ?? "").isNotEmpty
+      subtitles: (widget.vSubTitleUrl != null &&
+              (widget.vSubTitleUrl ?? "").isNotEmpty)
           ? [
               BetterPlayerSubtitlesSource(
                 type: BetterPlayerSubtitlesSourceType.network,

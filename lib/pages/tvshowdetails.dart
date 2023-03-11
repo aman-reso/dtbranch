@@ -3330,9 +3330,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
       } else if ((showDetailsProvider.sectionDetailModel.result?.isPremium ??
               0) ==
           1) {
-        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
-            (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) ==
-                1) {
+        if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1) {
           return true;
         } else {
           if ((kIsWeb || Constant.isTV)) {

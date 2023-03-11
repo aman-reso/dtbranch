@@ -59,7 +59,7 @@ class _PlayerPodState extends State<PlayerPod> {
       podPlayerConfig: const PodPlayerConfig(
         autoPlay: true,
         isLooping: false,
-        videoQualityPriority: [2160, 1440, 1080, 720, 360, 240, 144],
+        videoQualityPriority: [2160, 1440, 1080, 720, 480, 360, 240, 144],
       ),
     );
     _controller.videoSeekTo(Duration(milliseconds: widget.stopTime ?? 0));

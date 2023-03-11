@@ -737,7 +737,7 @@ class ChannelsState extends State<Channels> {
                       0,
                       0,
                       sectionBannerList?[index].link ?? "",
-                      sectionBannerList?[index].name ?? "",
+                      "",
                       0,
                       "",
                       sectionBannerList?[index].image ?? "",

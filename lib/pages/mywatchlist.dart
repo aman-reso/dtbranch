@@ -1436,8 +1436,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
       } else if ((watchlistProvider.watchlistModel.result?[position].isRent ??
               0) ==
           1) {
-        if ((watchlistProvider.watchlistModel.result?[position].rentBuy ?? 0) ==
-            1) {
+        if ((watchlistProvider.watchlistModel.result?[position].isBuy ?? 0) ==
+                1 ||
+            (watchlistProvider.watchlistModel.result?[position].rentBuy ?? 0) ==
+                1) {
           return true;
         } else {
           if ((kIsWeb || Constant.isTV)) {

@@ -158,12 +158,12 @@ class SubscriptionState extends State<Subscription> {
       options: CarouselOptions(
         initialPage: 0,
         height: MediaQuery.of(context).size.height,
-        enlargeCenterPage: true,
+        enlargeCenterPage: (packageList?.length ?? 0) > 1 ? true : false,
         enlargeFactor: 0.18,
         autoPlay: false,
         autoPlayCurve: Curves.easeInOutQuart,
-        enableInfiniteScroll: true,
-        viewportFraction: 0.8,
+        enableInfiniteScroll: (packageList?.length ?? 0) > 1 ? true : false,
+        viewportFraction: (packageList?.length ?? 0) > 1 ? 0.8 : 0.9,
       ),
       itemBuilder: (BuildContext context, int index, int pageViewIndex) {
         return Wrap(

@@ -280,7 +280,7 @@ class ChannelsState extends State<Channels> {
                   width: 8,
                   cornerRadius: 4,
                   color: dotsDefaultColor,
-                  activeColor: white,
+                  activeColor: dotsActiveColor,
                 );
               },
             ),

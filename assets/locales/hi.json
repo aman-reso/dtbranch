@@ -1,5 +1,4 @@
 {
-    "appname":"डी टी लाइव",
     "finish":"समाप्त",
     "next":"अगला",
     "skip":"छोड़ें",
@@ -22,6 +21,8 @@
     "manageprofile":"अपना प्रोफ़ाइल प्रबंधित करें",
     "subsciption":"अंशदान",
     "subsciptionnotes":"अपनी सदस्यता का अधिक लाभ उठाने के लिए अपग्रेड करें",
+    "transactions" : "लेनदेन",
+    "transactions_notes" : "अपने पिछले लेनदेन देखें।",
     "notification":"सूचनाएं",
     "recivepushnotification":"पुश सूचनाएं प्राप्त करें",
     "clearcatch":"कैश को साफ़ करें",
@@ -201,6 +202,8 @@
     "subscriptiondesc" : "अपनी सदस्यता से अधिक प्राप्त करने के लिए अपग्रेड करें",
     "chooseplan" : "योजना चुनें",
     "current" : "मौजूदा",
-    "signed_in_as" : "के रूप में हस्ताक्षर किए"
+    "signed_in_as" : "के रूप में हस्ताक्षर किए",
+
+    "connect_with_us" : "हमारे साथ जुड़ें"
     
 }

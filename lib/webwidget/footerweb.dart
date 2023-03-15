@@ -19,7 +19,11 @@ class FooterWeb extends StatefulWidget {
 class _FooterWebState extends State<FooterWeb> {
   final JSHelper _jsHelper = JSHelper();
   SharedPre sharedPref = SharedPre();
-  String? aboutUsUrl, privacyUrl, termsConditionUrl, refundPolicyUrl;
+  String? appDescription,
+      aboutUsUrl,
+      privacyUrl,
+      termsConditionUrl,
+      refundPolicyUrl;
 
   @override
   void initState() {
@@ -38,6 +42,7 @@ class _FooterWebState extends State<FooterWeb> {
   }
 
   _getData() async {
+    appDescription = await sharedPref.read("app_desripation") ?? "";
     aboutUsUrl = await sharedPref.read("about-us") ?? "";
     privacyUrl = await sharedPref.read("privacy-policy") ?? "";
     termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
@@ -139,8 +144,7 @@ class _FooterWebState extends State<FooterWeb> {
               MyText(
                 color: lightGray,
                 multilanguage: false,
-                text:
-                    "© 2023 DivineTechs. All Rights Reserved. HBO, Home Box Office and all related channel and programming logos are service marks of, and all related programming visuals and elements are the property of, Home Box Office, Inc. All rights reserved.",
+                text: appDescription ?? "",
                 fontweight: FontWeight.w500,
                 fontsizeWeb: 12,
                 fontsizeNormal: 12,
@@ -166,7 +170,7 @@ class _FooterWebState extends State<FooterWeb> {
                   MyText(
                     color: white,
                     multilanguage: false,
-                    text: "Connect with us",
+                    text: "connect_with_us",
                     fontweight: FontWeight.w600,
                     fontsizeWeb: 14,
                     fontsizeNormal: 14,
@@ -183,7 +187,9 @@ class _FooterWebState extends State<FooterWeb> {
                     children: [
                       InkWell(
                         borderRadius: BorderRadius.circular(30),
-                        onTap: () {},
+                        onTap: () {
+                          _redirectToUrl(Constant.facebookUrl);
+                        },
                         child: InteractiveIcon(
                           width: 18.0,
                           height: 18.0,
@@ -198,7 +204,9 @@ class _FooterWebState extends State<FooterWeb> {
                       ),
                       const SizedBox(width: 3),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          _redirectToUrl(Constant.instagramUrl);
+                        },
                         borderRadius: BorderRadius.circular(30),
                         child: InteractiveIcon(
                           width: 18.0,
@@ -224,7 +232,7 @@ class _FooterWebState extends State<FooterWeb> {
                   MyText(
                     color: white,
                     multilanguage: false,
-                    text: "DTLive App",
+                    text: Constant.appName ?? "",
                     fontweight: FontWeight.w600,
                     fontsizeWeb: 14,
                     fontsizeNormal: 14,
@@ -357,8 +365,7 @@ class _FooterWebState extends State<FooterWeb> {
         MyText(
           color: lightGray,
           multilanguage: false,
-          text:
-              "© 2023 DivineTechs. All Rights Reserved. HBO, Home Box Office and all related channel and programming logos are service marks of, and all related programming visuals and elements are the property of, Home Box Office, Inc. All rights reserved.",
+          text: appDescription ?? "",
           fontweight: FontWeight.w500,
           fontsizeWeb: 12,
           fontsizeNormal: 12,
@@ -381,7 +388,7 @@ class _FooterWebState extends State<FooterWeb> {
                 MyText(
                   color: white,
                   multilanguage: false,
-                  text: "Connect with us",
+                  text: "connect_with_us",
                   fontweight: FontWeight.w600,
                   fontsizeWeb: 14,
                   fontsizeNormal: 14,
@@ -390,9 +397,7 @@ class _FooterWebState extends State<FooterWeb> {
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 /* Social Icons */
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -400,7 +405,9 @@ class _FooterWebState extends State<FooterWeb> {
                   children: [
                     InkWell(
                       borderRadius: BorderRadius.circular(30),
-                      onTap: () {},
+                      onTap: () {
+                        _redirectToUrl(Constant.facebookUrl);
+                      },
                       child: InteractiveIcon(
                         width: 18,
                         height: 18,
@@ -415,7 +422,9 @@ class _FooterWebState extends State<FooterWeb> {
                     ),
                     const SizedBox(width: 3),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        _redirectToUrl(Constant.instagramUrl);
+                      },
                       borderRadius: BorderRadius.circular(30),
                       child: InteractiveIcon(
                         width: 18,
@@ -441,7 +450,7 @@ class _FooterWebState extends State<FooterWeb> {
                 MyText(
                   color: white,
                   multilanguage: false,
-                  text: "DTLive App",
+                  text: Constant.appName ?? "",
                   fontweight: FontWeight.w600,
                   fontsizeWeb: 14,
                   fontsizeNormal: 14,
@@ -450,9 +459,7 @@ class _FooterWebState extends State<FooterWeb> {
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 /* Social Icons */
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,

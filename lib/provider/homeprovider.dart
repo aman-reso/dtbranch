@@ -18,6 +18,11 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setLoading(bool isLoading) {
+    loading = isLoading;
+    notifyListeners();
+  }
+
   setSelectedTab(index) {
     selectedIndex = index;
     notifyListeners();

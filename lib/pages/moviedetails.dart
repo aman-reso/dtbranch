@@ -2654,8 +2654,7 @@ class MovieDetailsState extends State<MovieDetails> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(Dimens.cardRadius),
                         child: MyNetworkImage(
-                          imageUrl: directorList?[0].image ??
-                              Constant.userPlaceholder,
+                          imageUrl: directorList?[0].image ?? "",
                           fit: BoxFit.cover,
                         ),
                       ),

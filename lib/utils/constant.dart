@@ -14,12 +14,6 @@ class Constant {
   static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
 
   static String? userID;
-  static String userPlaceholder =
-      "https://i.pinimg.com/564x/5d/69/42/5d6942c6dff12bd3f960eb30c5fdd0f9.jpg";
-  static String placeHolderLand =
-      "https://propertywiselaunceston.com.au/wp-content/themes/property-wise/images/no-image.png";
-  static String placeHolderPort =
-      "https://stream-cinema.online/images/no-image.png";
   static String currencySymbol = "";
 
   static String androidAppShareUrlDesc =
@@ -31,6 +25,8 @@ class Constant {
       "https://play.google.com/store/apps/details?id=${Constant.appPackageName}";
   static String iosAppUrl =
       "https://apps.apple.com/us/app/${appName?.toLowerCase()}/${Constant.appPackageName}";
+  static String facebookUrl = "https://www.facebook.com/divinetechs";
+  static String instagramUrl = "https://www.instagram.com/divinetechs/";
 
   static Map<String, String> resolutionsUrls = <String, String>{};
 

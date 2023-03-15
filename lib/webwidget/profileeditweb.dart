@@ -8,7 +8,6 @@ import 'package:dtlive/widget/mytextformfield.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -107,9 +106,9 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
                               ? profileProvider.profileModel.result != null
                                   ? (profileProvider
                                           .profileModel.result?.image ??
-                                      Constant.userPlaceholder)
-                                  : Constant.userPlaceholder
-                              : Constant.userPlaceholder,
+                                      "")
+                                  : ""
+                              : "",
                           fit: BoxFit.cover,
                           imgHeight: 90,
                           imgWidth: 90,

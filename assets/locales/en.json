@@ -1,5 +1,4 @@
 {
-    "appname":"DTLive",
     "finish":"Finish",
     "next":"Next",
     "skip":"Skip",
@@ -23,6 +22,8 @@
     "subsciption":"Subscription",
     "subscribe":"Subscribe",
     "subsciptionnotes":"Upgrade to get more out of your Subscription",
+    "transactions" : "Transactions",
+    "transactions_notes" : "View your past transactions.",
     "notification":"Notifications",
     "recivepushnotification":"Receive push notifications",
     "clearcatch":"Clear cache",
@@ -202,5 +203,7 @@
     "subscriptiondesc" : "UPGRADE TO GET MORE OUT OF YOUR SUBSCRIPTION",
     "chooseplan" : "Choose Plan",
     "current" : "Current",
-    "signed_in_as" : "Signed in as"
+    "signed_in_as" : "Signed in as",
+
+    "connect_with_us" : "Connect with us"
 }

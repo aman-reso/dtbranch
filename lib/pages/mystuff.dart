@@ -124,9 +124,9 @@ class MyStuffState extends State<MyStuff> with TickerProviderStateMixin {
                                                           .result
                                                           ?.image
                                                           .toString() ??
-                                                      Constant.userPlaceholder)
-                                                  : Constant.userPlaceholder
-                                              : Constant.userPlaceholder,
+                                                      "")
+                                                  : ""
+                                              : "",
                                       fit: BoxFit.cover,
                                       imgHeight: 50,
                                       imgWidth: 50,

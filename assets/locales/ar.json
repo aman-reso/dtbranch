@@ -1,5 +1,4 @@
 {
-    "appname":"دي تي لايف",
     "finish":"إنهاء",
     "next":"التالي",
     "skip":"يتخطى",
@@ -22,6 +21,8 @@
     "manageprofile":"إدارة ملف التعريف الخاص بك",
     "subsciption":"الاشتراك",
     "subsciptionnotes":"قم بالترقية للاستفادة بشكل أكبر من اشتراكك",
+    "transactions" : "المعاملات",
+    "transactions_notes" : "عرض المعاملات السابقة الخاصة بك.",
     "notification":"إشعارات",
     "recivepushnotification":"تلقي الإخطارات",
     "clearcatch":"مسح ذاكرة التخزين المؤقت",
@@ -201,6 +202,8 @@
     "subscriptiondesc" : "قم بالترقية للاستفادة بشكل أكبر من اشتراكك",
     "chooseplan" : "اختر خطة",
     "current" : "حاضِر",
-    "signed_in_as" : "وقعت باسم"
+    "signed_in_as" : "وقعت باسم",
+
+    "connect_with_us" : "اتصل بنا"
 
 }

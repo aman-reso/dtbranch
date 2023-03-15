@@ -8,6 +8,7 @@ import 'package:dtlive/provider/avatarprovider.dart';
 import 'package:dtlive/provider/castdetailsprovider.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
 import 'package:dtlive/provider/showdownloadprovider.dart';
+import 'package:dtlive/provider/subhistoryprovider.dart';
 import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/findprovider.dart';
@@ -80,6 +81,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => VideoByIDProvider()),
         ChangeNotifierProvider(create: (_) => SectionByTypeProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
+        ChangeNotifierProvider(create: (_) => SubHistoryProvider()),
         ChangeNotifierProvider(create: (_) => MyStuffProvider()),
         ChangeNotifierProvider(create: (_) => WatchlistProvider()),
         ChangeNotifierProvider(create: (_) => VideoDownloadProvider()),
@@ -182,15 +184,13 @@ class _MyAppState extends State<MyApp> {
 
   _getPackage() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String appName = packageInfo.appName;
     String packageName = packageInfo.packageName;
     String appVersion = packageInfo.version;
     String appBuildNumber = packageInfo.buildNumber;
 
-    Constant.appName = appName;
     Constant.appPackageName = packageName;
     Constant.appVersion = appVersion;
     Constant.appBuildNumber = appBuildNumber;
-    log("App Name : $appName, App Package Name : $packageName, App Version : $appVersion, App build Number : $appBuildNumber");
+    log("App Package Name : $packageName, App Version : $appVersion, App build Number : $appBuildNumber");
   }
 }

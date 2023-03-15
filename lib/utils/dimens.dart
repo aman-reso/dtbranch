@@ -51,6 +51,7 @@ class Dimens {
   static double rentBanner = 103;
 
   static double minHeightSettings = 45;
+  static double heightHistory = 70;
 
   static double minHtDialogContent = 42;
   static double dialogIconSize = 20;

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
@@ -44,10 +43,7 @@ class HomeState extends State<Home> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
   CarouselController pageController = CarouselController();
-  late ScrollController tabScrollController;
-  final TextEditingController searchController = TextEditingController();
   late HomeProvider homeProvider;
-  late SearchProvider searchProvider;
   int? videoId, videoType, typeId;
   String? currentPage,
       langCatName,
@@ -70,9 +66,7 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     currentPage = widget.pageName ?? "";
-    searchProvider = Provider.of<SearchProvider>(context, listen: false);
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    tabScrollController = ScrollController();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getData();
@@ -89,7 +83,9 @@ class HomeState extends State<Home> {
     log("setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
     log("setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
 
-    if (result.notification.additionalData?['id'] != null) {
+    if (result.notification.additionalData?['id'] != null &&
+        result.notification.additionalData?['video_type'] != null &&
+        result.notification.additionalData?['type_id'] != null) {
       String? videoID =
           result.notification.additionalData?['id'].toString() ?? "";
       String? videoType =
@@ -127,7 +123,9 @@ class HomeState extends State<Home> {
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
+
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.getSectionType();
 
     aboutUsUrl = await sharedPref.read("about-us") ?? "";
     privacyUrl = await sharedPref.read("privacy-policy") ?? "";
@@ -275,7 +273,7 @@ class HomeState extends State<Home> {
         ];
       },
       body: homeProvider.loading
-          ? Utils.pageLoader()
+          ? ShimmerUtils.buildHomeMobileShimmer(context)
           : (homeProvider.sectionTypeModel.status == 200)
               ? (homeProvider.sectionTypeModel.result != null ||
                       (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
@@ -298,7 +296,7 @@ class HomeState extends State<Home> {
 
   Widget _webAppBarWithDetails() {
     if (homeProvider.loading) {
-      return Utils.pageLoader();
+      return ShimmerUtils.buildHomeMobileShimmer(context);
     } else {
       if (homeProvider.sectionTypeModel.status == 200) {
         if (homeProvider.sectionTypeModel.result != null ||
@@ -573,7 +571,7 @@ class HomeState extends State<Home> {
                   width: 8,
                   cornerRadius: 4,
                   color: dotsDefaultColor,
-                  activeColor: white,
+                  activeColor: dotsActiveColor,
                 );
               },
             ),

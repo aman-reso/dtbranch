@@ -15,6 +15,7 @@ const primaryTras5 = Color(0x0Dbafa34);
 
 const appBgColor = Color(0xFF000000);
 const dotsDefaultColor = Color(0xFF2D2D2D);
+const dotsActiveColor = Color(0xFFFFFFFF);
 const statusBarColor = Color.fromRGBO(0, 0, 0, 0);
 const tabDefaultColor = Color(0x990A4666);
 const subscriptionBG = Color(0xff0c0c0d);
@@ -46,7 +47,7 @@ const blackTrans20 = Color(0x20000000);
 const blackTrans10 = Color(0x10000000);
 const lightBlack = Color(0xff0c0c0d);
 const shimmerColor = Color(0xff454545);
-const shimmerBgColor = Color(0xff0c0c0d);
+const shimmerItemColor = Color(0xff0c0c0d);
 const gray = Color(0xffa9aaac);
 const grayDark = Color(0xff454545);
 const lightGray = Color(0xffc3c3c3);

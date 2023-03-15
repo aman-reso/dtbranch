@@ -10,6 +10,7 @@ import 'package:dtlive/pages/mywatchlist.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/subscription/subscription.dart';
+import 'package:dtlive/subscription/subscriptionhistory.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
@@ -225,6 +226,33 @@ class SettingState extends State<Setting> {
                   child: _buildSettingButton(
                     title: 'subsciption',
                     subTitle: 'subsciptionnotes',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
+                  ),
+                ),
+                _buildLine(16.0, 8.0),
+
+                /* Transactions */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    if (Constant.userID != null) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SubscriptionHistory(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: _buildSettingButton(
+                    title: 'transactions',
+                    subTitle: 'transactions_notes',
                     titleMultilang: true,
                     subTitleMultilang: true,
                   ),

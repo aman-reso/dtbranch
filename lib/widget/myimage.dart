@@ -25,6 +25,14 @@ class MyImage extends StatelessWidget {
       color: color,
       width: width,
       fit: fit,
+      errorBuilder: (context, url, error) {
+        return Image.asset(
+          "assets/images/no_image_port.png",
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+        );
+      },
     );
   }
 }

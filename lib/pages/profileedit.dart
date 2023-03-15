@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dtlive/provider/profileprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -104,9 +103,9 @@ class ProfileEditState extends State<ProfileEdit> {
                                 ? profileProvider.profileModel.result != null
                                     ? (profileProvider
                                             .profileModel.result?.image ??
-                                        Constant.userPlaceholder)
-                                    : Constant.userPlaceholder
-                                : Constant.userPlaceholder,
+                                        "")
+                                    : ""
+                                : "",
                             fit: BoxFit.cover,
                             imgHeight: 90,
                             imgWidth: 90,

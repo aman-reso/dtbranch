@@ -150,8 +150,7 @@ class _CastCrewState extends State<CastCrew> {
                           borderRadius:
                               BorderRadius.circular(Dimens.cardRadius),
                           child: MyNetworkImage(
-                            imageUrl: widget.castList?[position].image ??
-                                Constant.userPlaceholder,
+                            imageUrl: widget.castList?[position].image ?? "",
                             fit: BoxFit.cover,
                           ),
                         ),

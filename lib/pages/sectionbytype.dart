@@ -243,7 +243,7 @@ class SectionByTypeState extends State<SectionByType> {
                   width: 8,
                   cornerRadius: 4,
                   color: dotsDefaultColor,
-                  activeColor: white,
+                  activeColor: dotsActiveColor,
                 );
               },
             ),

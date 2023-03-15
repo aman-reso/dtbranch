@@ -6,6 +6,7 @@ import 'package:dio_logger/dio_logger.dart';
 import 'package:dtlive/model/avatarmodel.dart';
 import 'package:dtlive/model/castdetailmodel.dart';
 import 'package:dtlive/model/couponmodel.dart';
+import 'package:dtlive/model/historymodel.dart';
 import 'package:dtlive/model/paymentoptionmodel.dart';
 import 'package:dtlive/model/paytmmodel.dart';
 import 'package:dtlive/model/subscriptionmodel.dart';
@@ -682,5 +683,20 @@ class ApiService {
     );
     successModel = SuccessModel.fromJson(response.data);
     return successModel;
+  }
+
+  // subscription_list API
+  Future<HistoryModel> subscriptionList() async {
+    HistoryModel historyModel;
+    String subscriptionListAPI = "subscription_list";
+    Response response = await dio.post(
+      '$baseUrl$subscriptionListAPI',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+      },
+    );
+    historyModel = HistoryModel.fromJson(response.data);
+    return historyModel;
   }
 }

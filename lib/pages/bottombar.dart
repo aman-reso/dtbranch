@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dtlive/pages/channels.dart';
 import 'package:dtlive/pages/find.dart';
 import 'package:dtlive/pages/home.dart';
@@ -44,7 +46,7 @@ class BottombarState extends State<Bottombar> {
           child: widgetOptions[selectedIndex],
         ),
         bottomNavigationBar: Container(
-          height: 70,
+          height: Platform.isIOS ? 92 : 70,
           alignment: Alignment.center,
           color: black,
           child: BottomNavigationBar(

@@ -15,7 +15,6 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -30,8 +29,7 @@ class LoginSocial extends StatefulWidget {
 }
 
 class LoginSocialState extends State<LoginSocial> {
-  FacebookLogin? plugin;
-  late ProgressDialog prDialog;
+   late ProgressDialog prDialog;
   SharedPre sharePref = SharedPre();
   final numberController = TextEditingController();
   String? mobileNumber, email, userName, strType;
@@ -302,75 +300,75 @@ class LoginSocialState extends State<LoginSocial> {
     );
   }
 
-  /* Facebook Login */
-  Future<void> facebookLogin() async {
-    await plugin?.logIn(permissions: [
-      FacebookPermission.publicProfile,
-      FacebookPermission.email,
-    ]);
+  // /* Facebook Login */
+  // Future<void> facebookLogin() async {
+  //   await plugin?.logIn(permissions: [
+  //     FacebookPermission.publicProfile,
+  //     FacebookPermission.email,
+  //   ]);
 
-    final token = await plugin?.accessToken;
-    debugPrint("_getFBLoginInfo token ====> $token");
-    FacebookUserProfile? profile;
-    String? imageUrl;
+  //   final token = await plugin?.accessToken;
+  //   debugPrint("_getFBLoginInfo token ====> $token");
+  //   FacebookUserProfile? profile;
+  //   String? imageUrl;
 
-    if (token != null) {
-      profile = await plugin?.getUserProfile();
-      if (token.permissions.contains(FacebookPermission.email.name)) {
-        email = await plugin?.getUserEmail();
-      }
-      imageUrl = await plugin?.getProfileImageUrl(width: 100);
-      debugPrint("_getFBLoginInfo firstname ====> ${profile?.firstName ?? ""}");
-      debugPrint("_getFBLoginInfo lastname ====> ${profile?.lastName ?? ""}");
-      debugPrint("_getFBLoginInfo email ====> $email");
-      debugPrint("_getFBLoginInfo imageUrl ====> $imageUrl");
-      debugPrint("_getFBLoginInfo name ====> ${profile?.name ?? ""}");
-      strType = "1";
+  //   if (token != null) {
+  //     profile = await plugin?.getUserProfile();
+  //     if (token.permissions.contains(FacebookPermission.email.name)) {
+  //       email = await plugin?.getUserEmail();
+  //     }
+  //     imageUrl = await plugin?.getProfileImageUrl(width: 100);
+  //     debugPrint("_getFBLoginInfo firstname ====> ${profile?.firstName ?? ""}");
+  //     debugPrint("_getFBLoginInfo lastname ====> ${profile?.lastName ?? ""}");
+  //     debugPrint("_getFBLoginInfo email ====> $email");
+  //     debugPrint("_getFBLoginInfo imageUrl ====> $imageUrl");
+  //     debugPrint("_getFBLoginInfo name ====> ${profile?.name ?? ""}");
+  //     strType = "1";
 
-      // Login to Firebase Console
-      if (!mounted) return;
-      Utils.showProgress(context, prDialog);
+  //     // Login to Firebase Console
+  //     if (!mounted) return;
+  //     Utils.showProgress(context, prDialog);
 
-      UserCredential userCredential;
-      try {
-        AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: token.token,
-          idToken: token.userId,
-        );
+  //     UserCredential userCredential;
+  //     try {
+  //       AuthCredential credential = GoogleAuthProvider.credential(
+  //         accessToken: token.token,
+  //         idToken: token.userId,
+  //       );
 
-        userCredential = await _auth.signInWithCredential(credential);
-        assert(await userCredential.user?.getIdToken() != null);
-        debugPrint("User Name: ${userCredential.user?.displayName}");
-        debugPrint("User Email ${userCredential.user?.email}");
-        debugPrint("User photoURL ${userCredential.user?.photoURL}");
-        debugPrint("uid ===> ${userCredential.user?.uid}");
-        String firebasedid = userCredential.user?.uid ?? "";
-        debugPrint('firebasedid :===> $firebasedid');
+  //       userCredential = await _auth.signInWithCredential(credential);
+  //       assert(await userCredential.user?.getIdToken() != null);
+  //       debugPrint("User Name: ${userCredential.user?.displayName}");
+  //       debugPrint("User Email ${userCredential.user?.email}");
+  //       debugPrint("User photoURL ${userCredential.user?.photoURL}");
+  //       debugPrint("uid ===> ${userCredential.user?.uid}");
+  //       String firebasedid = userCredential.user?.uid ?? "";
+  //       debugPrint('firebasedid :===> $firebasedid');
 
-        /* Save PhotoUrl in File */
-        mProfileImg =
-            await Utils.saveImageInStorage(userCredential.user?.photoURL ?? "");
-        debugPrint('mProfileImg :===> $mProfileImg');
+  //       /* Save PhotoUrl in File */
+  //       mProfileImg =
+  //           await Utils.saveImageInStorage(userCredential.user?.photoURL ?? "");
+  //       debugPrint('mProfileImg :===> $mProfileImg');
 
-        checkAndNavigate(userCredential.user?.email ?? "",
-            userCredential.user?.displayName ?? "", "1");
-      } on FirebaseAuthException catch (e) {
-        debugPrint('===>Exp${e.code.toString()}');
-        debugPrint('===>Exp${e.message.toString()}');
-        if (e.code.toString() == "user-not-found") {
-          // registerFirebaseUser(email ?? "", profile?.name ?? "", "1");
-        } else if (e.code == 'wrong-password') {
-          // Hide Progress Dialog
-          await prDialog.hide();
-          debugPrint('Wrong password provided.');
-          Utils.showToast('Wrong password provided.');
-        } else {
-          // Hide Progress Dialog
-          await prDialog.hide();
-        }
-      }
-    }
-  }
+  //       checkAndNavigate(userCredential.user?.email ?? "",
+  //           userCredential.user?.displayName ?? "", "1");
+  //     } on FirebaseAuthException catch (e) {
+  //       debugPrint('===>Exp${e.code.toString()}');
+  //       debugPrint('===>Exp${e.message.toString()}');
+  //       if (e.code.toString() == "user-not-found") {
+  //         // registerFirebaseUser(email ?? "", profile?.name ?? "", "1");
+  //       } else if (e.code == 'wrong-password') {
+  //         // Hide Progress Dialog
+  //         await prDialog.hide();
+  //         debugPrint('Wrong password provided.');
+  //         Utils.showToast('Wrong password provided.');
+  //       } else {
+  //         // Hide Progress Dialog
+  //         await prDialog.hide();
+  //       }
+  //     }
+  //   }
+  // }
 
   /* Google(Gmail) Login */
   Future<void> _gmailLogin() async {

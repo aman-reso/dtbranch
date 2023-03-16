@@ -1624,348 +1624,6 @@ class MovieDetailsState extends State<MovieDetails> {
                                     ),
                                   ),
                                 ),
-
-                                // /* Continue Watching Button */
-                                // /* Watch Now button */
-                                // _buildWatchNow(),
-                                // /* Included Features buttons */
-                                // Container(
-                                //   width: (kIsWeb || Constant.isTV)
-                                //       ? (MediaQuery.of(context).size.width / 2)
-                                //       : MediaQuery.of(context).size.width,
-                                //   constraints:
-                                //       const BoxConstraints(minHeight: 0),
-                                //   margin:
-                                //       const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                                //   alignment: Alignment.center,
-                                //   child: Row(
-                                //     crossAxisAlignment:
-                                //         CrossAxisAlignment.start,
-                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                //     children: [
-                                //       /* Rent Button */
-                                //       Container(
-                                //         constraints:
-                                //             const BoxConstraints(minWidth: 0),
-                                //         child: _buildRentBtn(),
-                                //       ),
-                                //       const SizedBox(width: 10),
-                                //       /* Trailer & StartOver Button */
-                                //       Container(
-                                //         constraints:
-                                //             const BoxConstraints(minWidth: 50),
-                                //         child: Consumer<VideoDetailsProvider>(
-                                //           builder: (context,
-                                //               videoDetailsProvider, child) {
-                                //             if ((videoDetailsProvider
-                                //                             .sectionDetailModel
-                                //                             .result
-                                //                             ?.stopTime ??
-                                //                         0) >
-                                //                     0 &&
-                                //                 videoDetailsProvider
-                                //                         .sectionDetailModel
-                                //                         .result
-                                //                         ?.videoDuration !=
-                                //                     null) {
-                                //               /* Start Over */
-                                //               return Column(
-                                //                 mainAxisAlignment:
-                                //                     MainAxisAlignment.center,
-                                //                 children: [
-                                //                   InkWell(
-                                //                     focusColor: white,
-                                //                     borderRadius: BorderRadius
-                                //                         .circular(((kIsWeb ||
-                                //                                 Constant.isTV))
-                                //                             ? Dimens
-                                //                                 .featureWebSize
-                                //                             : Dimens.featureSize /
-                                //                                 2),
-                                //                     onTap: () async {
-                                //                       openPlayer("startOver");
-                                //                     },
-                                //                     child: Container(
-                                //                       width: ((kIsWeb ||
-                                //                               Constant.isTV))
-                                //                           ? Dimens
-                                //                               .featureWebSize
-                                //                           : Dimens.featureSize,
-                                //                       height: ((kIsWeb ||
-                                //                               Constant.isTV))
-                                //                           ? Dimens
-                                //                               .featureWebSize
-                                //                           : Dimens.featureSize,
-                                //                       alignment:
-                                //                           Alignment.center,
-                                //                       padding:
-                                //                           const EdgeInsets.all(
-                                //                               2.0),
-                                //                       decoration: BoxDecoration(
-                                //                         border: Border.all(
-                                //                           color: primaryLight,
-                                //                         ),
-                                //                         borderRadius: BorderRadius
-                                //                             .circular((((kIsWeb ||
-                                //                                         Constant
-                                //                                             .isTV))
-                                //                                     ? Dimens
-                                //                                         .featureWebSize
-                                //                                     : Dimens
-                                //                                         .featureSize) /
-                                //                                 2),
-                                //                       ),
-                                //                       child: MyImage(
-                                //                         width: ((kIsWeb ||
-                                //                                 Constant.isTV))
-                                //                             ? Dimens
-                                //                                 .featureIconWebSize
-                                //                             : Dimens
-                                //                                 .featureIconSize,
-                                //                         height: ((kIsWeb ||
-                                //                                 Constant.isTV))
-                                //                             ? Dimens
-                                //                                 .featureIconWebSize
-                                //                             : Dimens
-                                //                                 .featureIconSize,
-                                //                         color: lightGray,
-                                //                         imagePath:
-                                //                             "ic_restart.png",
-                                //                       ),
-                                //                     ),
-                                //                   ),
-                                //                   const SizedBox(height: 5),
-                                //                   MyText(
-                                //                     color: white,
-                                //                     text: "startover",
-                                //                     multilanguage: true,
-                                //                     fontsizeNormal: 12,
-                                //                     fontsizeWeb: 12,
-                                //                     fontweight: FontWeight.w500,
-                                //                     maxline: 1,
-                                //                     overflow:
-                                //                         TextOverflow.ellipsis,
-                                //                     textalign: TextAlign.center,
-                                //                     fontstyle: FontStyle.normal,
-                                //                   ),
-                                //                 ],
-                                //               );
-                                //             } else {
-                                //               /* Trailer */
-                                //               return Column(
-                                //                 mainAxisAlignment:
-                                //                     MainAxisAlignment.center,
-                                //                 children: [
-                                //                   InkWell(
-                                //                     focusColor: white,
-                                //                     borderRadius: BorderRadius
-                                //                         .circular((((kIsWeb ||
-                                //                                     Constant
-                                //                                         .isTV))
-                                //                                 ? Dimens
-                                //                                     .featureWebSize
-                                //                                 : Dimens
-                                //                                     .featureSize) /
-                                //                             2),
-                                //                     onTap: () {
-                                //                       openPlayer("Trailer");
-                                //                     },
-                                //                     child: Padding(
-                                //                       padding:
-                                //                           const EdgeInsets.all(
-                                //                               2.0),
-                                //                       child: Container(
-                                //                         width: ((kIsWeb ||
-                                //                                 Constant.isTV))
-                                //                             ? Dimens
-                                //                                 .featureWebSize
-                                //                             : Dimens
-                                //                                 .featureSize,
-                                //                         height: ((kIsWeb ||
-                                //                                 Constant.isTV))
-                                //                             ? Dimens
-                                //                                 .featureWebSize
-                                //                             : Dimens
-                                //                                 .featureSize,
-                                //                         alignment:
-                                //                             Alignment.center,
-                                //                         decoration:
-                                //                             BoxDecoration(
-                                //                           border: Border.all(
-                                //                             color: primaryLight,
-                                //                           ),
-                                //                           borderRadius: BorderRadius
-                                //                               .circular(Dimens
-                                //                                       .featureSize /
-                                //                                   2),
-                                //                         ),
-                                //                         child: MyImage(
-                                //                           width: ((kIsWeb ||
-                                //                                   Constant
-                                //                                       .isTV))
-                                //                               ? Dimens
-                                //                                   .featureIconWebSize
-                                //                               : Dimens
-                                //                                   .featureIconSize,
-                                //                           height: ((kIsWeb ||
-                                //                                   Constant
-                                //                                       .isTV))
-                                //                               ? Dimens
-                                //                                   .featureIconWebSize
-                                //                               : Dimens
-                                //                                   .featureIconSize,
-                                //                           color: lightGray,
-                                //                           imagePath:
-                                //                               "ic_borderplay.png",
-                                //                         ),
-                                //                       ),
-                                //                     ),
-                                //                   ),
-                                //                   const SizedBox(height: 5),
-                                //                   MyText(
-                                //                     color: white,
-                                //                     text: "trailer",
-                                //                     fontsizeNormal: 12,
-                                //                     fontsizeWeb: 12,
-                                //                     fontweight: FontWeight.w500,
-                                //                     multilanguage: true,
-                                //                     maxline: 1,
-                                //                     overflow:
-                                //                         TextOverflow.ellipsis,
-                                //                     textalign: TextAlign.center,
-                                //                     fontstyle: FontStyle.normal,
-                                //                   ),
-                                //                 ],
-                                //               );
-                                //             }
-                                //           },
-                                //         ),
-                                //       ),
-                                //       const SizedBox(width: 10),
-                                //       /* Watchlist */
-                                //       Container(
-                                //         constraints:
-                                //             const BoxConstraints(minWidth: 50),
-                                //         child: Column(
-                                //           mainAxisAlignment:
-                                //               MainAxisAlignment.center,
-                                //           children: [
-                                //             InkWell(
-                                //               focusColor: white,
-                                //               onTap: () async {
-                                //                 log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                                //                 if (Constant.userID != null) {
-                                //                   await videoDetailsProvider
-                                //                       .setBookMark(
-                                //                     context,
-                                //                     widget.typeId,
-                                //                     widget.videoType,
-                                //                     widget.videoId,
-                                //                   );
-                                //                 } else {
-                                //                   if ((kIsWeb ||
-                                //                       Constant.isTV)) {
-                                //                     Utils.buildWebAlertDialog(
-                                //                         context, "login", "");
-                                //                     return;
-                                //                   }
-                                //                   Navigator.push(
-                                //                     context,
-                                //                     MaterialPageRoute(
-                                //                       builder: (context) {
-                                //                         return const LoginSocial();
-                                //                       },
-                                //                     ),
-                                //                   );
-                                //                 }
-                                //               },
-                                //               borderRadius: BorderRadius
-                                //                   .circular(((kIsWeb ||
-                                //                               Constant.isTV)
-                                //                           ? Dimens
-                                //                               .featureWebSize
-                                //                           : Dimens
-                                //                               .featureSize) /
-                                //                       2),
-                                //               child: Padding(
-                                //                 padding:
-                                //                     const EdgeInsets.all(2.0),
-                                //                 child: Container(
-                                //                   width: (kIsWeb ||
-                                //                           Constant.isTV)
-                                //                       ? Dimens.featureWebSize
-                                //                       : Dimens.featureSize,
-                                //                   height: (kIsWeb ||
-                                //                           Constant.isTV)
-                                //                       ? Dimens.featureWebSize
-                                //                       : Dimens.featureSize,
-                                //                   alignment: Alignment.center,
-                                //                   decoration: BoxDecoration(
-                                //                     border: Border.all(
-                                //                       color: primaryLight,
-                                //                     ),
-                                //                     borderRadius: BorderRadius
-                                //                         .circular((((kIsWeb ||
-                                //                                     Constant
-                                //                                         .isTV))
-                                //                                 ? Dimens
-                                //                                     .featureWebSize
-                                //                                 : Dimens
-                                //                                     .featureSize) /
-                                //                             2),
-                                //                   ),
-                                //                   child: Consumer<
-                                //                       VideoDetailsProvider>(
-                                //                     builder: (context,
-                                //                         videoDetailsProvider,
-                                //                         child) {
-                                //                       return MyImage(
-                                //                         width: ((kIsWeb ||
-                                //                                 Constant.isTV))
-                                //                             ? Dimens
-                                //                                 .featureIconWebSize
-                                //                             : Dimens
-                                //                                 .featureIconSize,
-                                //                         height: ((kIsWeb ||
-                                //                                 Constant.isTV))
-                                //                             ? Dimens
-                                //                                 .featureIconWebSize
-                                //                             : Dimens
-                                //                                 .featureIconSize,
-                                //                         color: lightGray,
-                                //                         imagePath: (videoDetailsProvider
-                                //                                         .sectionDetailModel
-                                //                                         .result
-                                //                                         ?.isBookmark ??
-                                //                                     0) ==
-                                //                                 1
-                                //                             ? "watchlist_remove.png"
-                                //                             : "ic_plus.png",
-                                //                       );
-                                //                     },
-                                //                   ),
-                                //                 ),
-                                //               ),
-                                //             ),
-                                //             const SizedBox(height: 5),
-                                //             MyText(
-                                //               color: white,
-                                //               text: "watchlist",
-                                //               fontsizeNormal: 12,
-                                //               fontsizeWeb: 12,
-                                //               fontweight: FontWeight.w500,
-                                //               multilanguage: true,
-                                //               maxline: 1,
-                                //               overflow: TextOverflow.ellipsis,
-                                //               textalign: TextAlign.center,
-                                //               fontstyle: FontStyle.normal,
-                                //             ),
-                                //           ],
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),
@@ -3162,9 +2820,7 @@ class MovieDetailsState extends State<MovieDetails> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -3296,37 +2952,10 @@ class MovieDetailsState extends State<MovieDetails> {
                       Navigator.pop(context);
                       buildShareWithDialog();
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_share.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "share",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              fontweight: FontWeight.w600,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_share.png",
+                      title: "share",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -3339,37 +2968,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             Navigator.pop(context);
                             openPlayer("Trailer");
                           },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: "ic_borderplay.png",
-                                  fit: BoxFit.fill,
-                                  color: lightGray,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: MyText(
-                                    text: "trailer",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    fontweight: FontWeight.w600,
-                                    fontsizeWeb: 16,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          child: _buildDialogItems(
+                            icon: "ic_borderplay.png",
+                            title: "trailer",
+                            isMultilang: true,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -3406,6 +3008,7 @@ class MovieDetailsState extends State<MovieDetails> {
                             "",
                     multilanguage: false,
                     fontsizeNormal: 18,
+                    fontsizeWeb: 18,
                     color: white,
                     fontstyle: FontStyle.normal,
                     fontweight: FontWeight.w700,
@@ -3433,6 +3036,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                     "",
                                 multilanguage: false,
                                 fontsizeNormal: 10,
+                                fontsizeWeb: 12,
                                 color: otherColor,
                                 fontstyle: FontStyle.normal,
                                 fontweight: FontWeight.w500,
@@ -3467,37 +3071,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
                       }
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_sms.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "sms",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_sms.png",
+                      title: "sms",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -3511,37 +3088,10 @@ class MovieDetailsState extends State<MovieDetails> {
                           ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_insta.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "instagram_stories",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_insta.png",
+                      title: "instagram_stories",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -3561,37 +3111,10 @@ class MovieDetailsState extends State<MovieDetails> {
                             context, "success", "link_copied", true);
                       });
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_link.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "copy_link",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_link.png",
+                      title: "copy_link",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -3605,37 +3128,10 @@ class MovieDetailsState extends State<MovieDetails> {
                           ? "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${videoDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_dots_h.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "more",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_dots_h.png",
+                      title: "more",
+                      isMultilang: true,
                     ),
                   ),
                 ],
@@ -3644,6 +3140,45 @@ class MovieDetailsState extends State<MovieDetails> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildDialogItems({
+    required String icon,
+    required String title,
+    required bool isMultilang,
+  }) {
+    return Container(
+      height: Dimens.minHtDialogContent,
+      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          MyImage(
+            width: Dimens.dialogIconSize,
+            height: Dimens.dialogIconSize,
+            imagePath: icon,
+            fit: BoxFit.contain,
+            color: otherColor,
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: MyText(
+              text: title,
+              multilanguage: isMultilang,
+              fontsizeNormal: 14,
+              fontsizeWeb: 16,
+              color: white,
+              fontstyle: FontStyle.normal,
+              fontweight: FontWeight.w600,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              textalign: TextAlign.start,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

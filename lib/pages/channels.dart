@@ -19,7 +19,6 @@ import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/player_better.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
 import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/provider/channelsectionprovider.dart';
@@ -723,15 +722,31 @@ class ChannelsState extends State<Channels> {
                   if ((sectionBannerList?[index].link ?? "")
                       .contains("youtube")) {
                     return PlayerYoutube(
-                      videoUrl: sectionBannerList?[index].link,
+                      "Channel",
+                      0,
+                      0,
+                      0,
+                      sectionBannerList?[index].link ?? "",
+                      "",
+                      0,
+                      "",
+                      sectionBannerList?[index].image ?? "",
                     );
                   } else if ((sectionBannerList?[index].link ?? "")
                       .contains("vimeo")) {
                     return PlayerVimeo(
-                      url: sectionBannerList?[index].link,
+                      "Channel",
+                      0,
+                      0,
+                      0,
+                      sectionBannerList?[index].link ?? "",
+                      "",
+                      0,
+                      "",
+                      sectionBannerList?[index].image ?? "",
                     );
                   } else {
-                    return PlayerBetter(
+                    return PlayerPod(
                       "Channel",
                       0,
                       0,

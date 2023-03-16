@@ -1,13 +1,26 @@
 import 'dart:developer';
 
+import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 class PlayerVimeo extends StatefulWidget {
-  final String? url;
-  const PlayerVimeo({Key? key, required this.url}) : super(key: key);
+  final int? videoId, videoType, typeId, stopTime;
+  final String? playType, videoUrl, vSubTitleUrl, vUploadType, videoThumb;
+  const PlayerVimeo(
+      this.playType,
+      this.videoId,
+      this.videoType,
+      this.typeId,
+      this.videoUrl,
+      this.vSubTitleUrl,
+      this.stopTime,
+      this.vUploadType,
+      this.videoThumb,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<PlayerVimeo> createState() => PlayerVimeoState();
@@ -15,11 +28,13 @@ class PlayerVimeo extends StatefulWidget {
 
 class PlayerVimeoState extends State<PlayerVimeo> {
   String? vUrl;
+  late PlayerProvider playerProvider;
+  int? playerCPosition, videoDuration;
 
   @override
   void initState() {
     super.initState();
-    vUrl = widget.url;
+    vUrl = widget.videoUrl;
     if (!(vUrl ?? "").contains("https://vimeo.com/")) {
       vUrl = "https://vimeo.com/$vUrl";
     }
@@ -38,6 +53,16 @@ class PlayerVimeoState extends State<PlayerVimeo> {
               url: vUrl ?? "",
               systemUiOverlay: [],
               deviceOrientation: DeviceOrientation.landscapeLeft,
+              startAt: Duration(milliseconds: widget.stopTime ?? 0),
+              onProgress: (timePoint) {
+                playerCPosition = timePoint.inMilliseconds;
+                log("playerCPosition :===> $playerCPosition");
+              },
+              onFinished: () async {
+                /* Remove From Continue */
+                await playerProvider.removeFromContinue(
+                    "${widget.videoId}", "${widget.videoType}");
+              },
             ),
           ),
         ),
@@ -46,35 +71,26 @@ class PlayerVimeoState extends State<PlayerVimeo> {
   }
 
   Future<bool> onBackPressed() async {
-    // log("onBackPressed playerCPosition :===> $playerCPosition");
-    // log("onBackPressed videoDuration :===> $videoDuration");
-    // log("onBackPressed playType :===> ${widget.playType}");
-    // if (widget.playType == "Video" || widget.playType == "Show") {
-    //   if ((playerCPosition ?? 0) > 0 &&
-    //       (playerCPosition == videoDuration ||
-    //           (playerCPosition ?? 0) > (videoDuration ?? 0))) {
-    //     /* Remove From Continue */
-    //     await playerProvider.removeFromContinue(
-    //         "${widget.videoId}", "${widget.videoType}");
-    //     if (!mounted) return Future.value(false);
-    //     Navigator.pop(context, true);
-    //     return Future.value(true);
-    //   } else if ((playerCPosition ?? 0) > 0) {
-    //     /* Add to Continue */
-    //     await playerProvider.addToContinue(
-    //         "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
-    //     if (!mounted) return Future.value(false);
-    //     Navigator.pop(context, true);
-    //     return Future.value(true);
-    //   } else {
-    //     if (!mounted) return Future.value(false);
-    //     Navigator.pop(context, false);
-    //     return Future.value(true);
-    //   }
-    // } else {
-    if (!mounted) return Future.value(false);
-    Navigator.pop(context, false);
-    return Future.value(true);
-    // }
+    log("onBackPressed playerCPosition :===> $playerCPosition");
+    log("onBackPressed videoDuration :===> $videoDuration");
+    log("onBackPressed playType :===> ${widget.playType}");
+    if (widget.playType == "Video" || widget.playType == "Show") {
+      if ((playerCPosition ?? 0) > 0) {
+        /* Add to Continue */
+        await playerProvider.addToContinue(
+            "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
+        if (!mounted) return Future.value(false);
+        Navigator.pop(context, true);
+        return Future.value(true);
+      } else {
+        if (!mounted) return Future.value(false);
+        Navigator.pop(context, false);
+        return Future.value(true);
+      }
+    } else {
+      if (!mounted) return Future.value(false);
+      Navigator.pop(context, false);
+      return Future.value(true);
+    }
   }
 }

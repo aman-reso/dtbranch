@@ -1,10 +1,25 @@
+import 'dart:developer';
+
+import 'package:dtlive/provider/playerprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PlayerYoutube extends StatefulWidget {
-  final String? videoUrl;
-  const PlayerYoutube({Key? key, this.videoUrl}) : super(key: key);
+  final int? videoId, videoType, typeId, stopTime;
+  final String? playType, videoUrl, vSubTitleUrl, vUploadType, videoThumb;
+  const PlayerYoutube(
+      this.playType,
+      this.videoId,
+      this.videoType,
+      this.typeId,
+      this.videoUrl,
+      this.vSubTitleUrl,
+      this.stopTime,
+      this.vUploadType,
+      this.videoThumb,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<PlayerYoutube> createState() => PlayerYoutubeState();
@@ -13,6 +28,8 @@ class PlayerYoutube extends StatefulWidget {
 class PlayerYoutubeState extends State<PlayerYoutube> {
   late YoutubePlayerController controller;
   bool fullScreen = false;
+  late PlayerProvider playerProvider;
+  int? playerCPosition, videoDuration;
 
   @override
   void initState() {
@@ -56,6 +73,17 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
               CurrentPosition(),
               ProgressBar(isExpanded: true),
             ],
+            onReady: () {
+              playerCPosition = controller.value.position.inMilliseconds;
+              videoDuration = controller.metadata.duration.inMilliseconds;
+              log("playerCPosition :===> $playerCPosition");
+              log("videoDuration :===> $videoDuration");
+            },
+            onEnded: (metaData) async {
+              /* Remove From Continue */
+              await playerProvider.removeFromContinue(
+                  "${widget.videoId}", "${widget.videoType}");
+            },
           ),
         ),
       ),
@@ -74,35 +102,26 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
   }
 
   Future<bool> onBackPressed() async {
-    // log("onBackPressed playerCPosition :===> $playerCPosition");
-    // log("onBackPressed videoDuration :===> $videoDuration");
-    // log("onBackPressed playType :===> ${widget.playType}");
-    // if (widget.playType == "Video" || widget.playType == "Show") {
-    //   if ((playerCPosition ?? 0) > 0 &&
-    //       (playerCPosition == videoDuration ||
-    //           (playerCPosition ?? 0) > (videoDuration ?? 0))) {
-    //     /* Remove From Continue */
-    //     await playerProvider.removeFromContinue(
-    //         "${widget.videoId}", "${widget.videoType}");
-    //     if (!mounted) return Future.value(false);
-    //     Navigator.pop(context, true);
-    //     return Future.value(true);
-    //   } else if ((playerCPosition ?? 0) > 0) {
-    //     /* Add to Continue */
-    //     await playerProvider.addToContinue(
-    //         "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
-    //     if (!mounted) return Future.value(false);
-    //     Navigator.pop(context, true);
-    //     return Future.value(true);
-    //   } else {
-    //     if (!mounted) return Future.value(false);
-    //     Navigator.pop(context, false);
-    //     return Future.value(true);
-    //   }
-    // } else {
-    if (!mounted) return Future.value(false);
-    Navigator.pop(context, false);
-    return Future.value(true);
-    // }
+    log("onBackPressed playerCPosition :===> $playerCPosition");
+    log("onBackPressed videoDuration :===> $videoDuration");
+    log("onBackPressed playType :===> ${widget.playType}");
+    if (widget.playType == "Video" || widget.playType == "Show") {
+      if ((playerCPosition ?? 0) > 0) {
+        /* Add to Continue */
+        await playerProvider.addToContinue(
+            "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
+        if (!mounted) return Future.value(false);
+        Navigator.pop(context, true);
+        return Future.value(true);
+      } else {
+        if (!mounted) return Future.value(false);
+        Navigator.pop(context, false);
+        return Future.value(true);
+      }
+    } else {
+      if (!mounted) return Future.value(false);
+      Navigator.pop(context, false);
+      return Future.value(true);
+    }
   }
 }

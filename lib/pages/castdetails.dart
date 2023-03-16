@@ -150,9 +150,7 @@ class _CastDetailsState extends State<CastDetails> {
                         overflow: TextOverflow.ellipsis,
                         fontstyle: FontStyle.normal,
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         constraints: const BoxConstraints(minHeight: 0),
@@ -172,6 +170,8 @@ class _CastDetailsState extends State<CastDetails> {
                           maxLines: 10,
                           linkColor: otherColor,
                           textAlign: TextAlign.start,
+                          expandOnTextTap: true,
+                          collapseOnTextTap: true,
                           style: GoogleFonts.montserrat(
                             letterSpacing: 0.5,
                             wordSpacing: 0.2,

@@ -75,7 +75,7 @@ class HomeState extends State<Home> {
   }
 
   // What to do when the user opens/taps on a notification
-  void _handleNotificationOpened(OSNotificationOpenedResult result) {
+  _handleNotificationOpened(OSNotificationOpenedResult result) {
     /* id, video_type, type_id */
 
     log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");

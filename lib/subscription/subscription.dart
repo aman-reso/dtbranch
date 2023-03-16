@@ -224,105 +224,95 @@ class SubscriptionState extends State<Subscription> {
                   ),
                   (packageList?[index].data != null &&
                           (packageList?[index].data?.length ?? 0) > 0)
-                      ? Scrollbar(
-                          thickness: 3,
-                          thumbVisibility: true,
-                          scrollbarOrientation: ScrollbarOrientation.right,
-                          controller: scrollController,
-                          radius: const Radius.circular(5),
-                          child: AlignedGridView.count(
-                            shrinkWrap: true,
-                            crossAxisCount: 1,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                            itemCount: (packageList?[index].data?.length ?? 0),
-                            padding: const EdgeInsets.only(left: 20, right: 20),
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (BuildContext context, int position) {
-                              return Container(
-                                constraints:
-                                    const BoxConstraints(minHeight: 30),
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.only(bottom: 15),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: MyText(
-                                        color: (packageList?[index].isBuy == 1
-                                            ? black
-                                            : otherColor),
-                                        text: packageList?[index]
-                                                .data?[position]
-                                                .packageKey ??
-                                            "",
-                                        textalign: TextAlign.start,
-                                        multilanguage: false,
-                                        fontsizeNormal: 15,
-                                        fontsizeWeb: 18,
-                                        maxline: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontweight: FontWeight.w600,
-                                        fontstyle: FontStyle.normal,
-                                      ),
+                      ? AlignedGridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 1,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          itemCount: (packageList?[index].data?.length ?? 0),
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (BuildContext context, int position) {
+                            return Container(
+                              constraints: const BoxConstraints(minHeight: 30),
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.only(bottom: 15),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: MyText(
+                                      color: (packageList?[index].isBuy == 1
+                                          ? black
+                                          : otherColor),
+                                      text: packageList?[index]
+                                              .data?[position]
+                                              .packageKey ??
+                                          "",
+                                      textalign: TextAlign.start,
+                                      multilanguage: false,
+                                      fontsizeNormal: 15,
+                                      fontsizeWeb: 18,
+                                      maxline: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontweight: FontWeight.w600,
+                                      fontstyle: FontStyle.normal,
                                     ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    ((packageList?[index]
-                                                        .data?[position]
-                                                        .packageValue ??
-                                                    "") ==
-                                                "1" ||
-                                            (packageList?[index]
-                                                        .data?[position]
-                                                        .packageValue ??
-                                                    "") ==
-                                                "0")
-                                        ? MyImage(
-                                            width: 23,
-                                            height: 23,
-                                            color: (packageList?[index]
-                                                            .data?[position]
-                                                            .packageValue ??
-                                                        "") ==
-                                                    "1"
-                                                ? (packageList?[index].isBuy ==
-                                                        1
-                                                    ? black
-                                                    : primaryColor)
-                                                : redColor,
-                                            imagePath: (packageList?[index]
-                                                            .data?[position]
-                                                            .packageValue ??
-                                                        "") ==
-                                                    "1"
-                                                ? "tick_mark.png"
-                                                : "cross_mark.png",
-                                          )
-                                        : MyText(
-                                            color:
-                                                (packageList?[index].isBuy == 1
-                                                    ? black
-                                                    : otherColor),
-                                            text: packageList?[index]
-                                                    .data?[position]
-                                                    .packageValue ??
-                                                "",
-                                            textalign: TextAlign.center,
-                                            fontsizeNormal: 16,
-                                            fontsizeWeb: 24,
-                                            multilanguage: false,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontweight: FontWeight.bold,
-                                            fontstyle: FontStyle.normal,
-                                          ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  ((packageList?[index]
+                                                      .data?[position]
+                                                      .packageValue ??
+                                                  "") ==
+                                              "1" ||
+                                          (packageList?[index]
+                                                      .data?[position]
+                                                      .packageValue ??
+                                                  "") ==
+                                              "0")
+                                      ? MyImage(
+                                          width: 23,
+                                          height: 23,
+                                          color: (packageList?[index]
+                                                          .data?[position]
+                                                          .packageValue ??
+                                                      "") ==
+                                                  "1"
+                                              ? (packageList?[index].isBuy == 1
+                                                  ? black
+                                                  : primaryColor)
+                                              : redColor,
+                                          imagePath: (packageList?[index]
+                                                          .data?[position]
+                                                          .packageValue ??
+                                                      "") ==
+                                                  "1"
+                                              ? "tick_mark.png"
+                                              : "cross_mark.png",
+                                        )
+                                      : MyText(
+                                          color: (packageList?[index].isBuy == 1
+                                              ? black
+                                              : otherColor),
+                                          text: packageList?[index]
+                                                  .data?[position]
+                                                  .packageValue ??
+                                              "",
+                                          textalign: TextAlign.center,
+                                          fontsizeNormal: 16,
+                                          fontsizeWeb: 24,
+                                          multilanguage: false,
+                                          maxline: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontweight: FontWeight.bold,
+                                          fontstyle: FontStyle.normal,
+                                        ),
+                                ],
+                              ),
+                            );
+                          },
                         )
                       : const SizedBox.shrink(),
                   const SizedBox(height: 20),

@@ -2,7 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/provider/playerprovider.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pod_player/pod_player.dart';
@@ -63,7 +65,12 @@ class _PlayerPodState extends State<PlayerPod> {
       ),
     );
     _controller.videoSeekTo(Duration(milliseconds: widget.stopTime ?? 0));
-    _initializeVideoPlayerFuture = _controller.initialise();
+    if (kIsWeb || Constant.isTV) {
+      _initializeVideoPlayerFuture = _controller.initialise();
+    } else {
+      _initializeVideoPlayerFuture = _controller.initialise()
+        ..then((value) => _controller.enableFullScreen());
+    }
 
     _controller.addListener(() async {
       playerCPosition =

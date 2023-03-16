@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:dtlive/pages/bottombar.dart';
 import 'package:dtlive/provider/generalprovider.dart';
+import 'package:dtlive/provider/homeprovider.dart';
+import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
@@ -263,13 +265,14 @@ class OTPVerifyState extends State<OTPVerify> {
         UserCredential? credential =
             await user?.linkWithCredential(authCredential);
         log("_onVerificationCompleted credential =====> ${credential?.user?.phoneNumber ?? ""}");
+        _login(widget.mobileNumber.toString());
       } on FirebaseAuthException catch (e) {
         if (e.code == 'provider-already-linked') {
           await _auth.signInWithCredential(authCredential);
+          _login(widget.mobileNumber.toString());
         }
       }
       log("Firebase Verification Complated");
-      _login(widget.mobileNumber.toString());
     }
   }
 
@@ -296,7 +299,12 @@ class OTPVerifyState extends State<OTPVerify> {
   _login(String mobile) async {
     log("click on Submit mobile => $mobile");
     var generalProvider = Provider.of<GeneralProvider>(context, listen: false);
-    Utils.showProgress(context, prDialog);
+    if (!prDialog.isShowing()) {
+      Utils.showProgress(context, prDialog);
+    }
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
     await generalProvider.loginWithOTP(mobile);
 
     if (!generalProvider.loading) {
@@ -322,6 +330,13 @@ class OTPVerifyState extends State<OTPVerify> {
         Constant.userID = generalProvider.loginOTPModel.result?.id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
+        await homeProvider.setSelectedTab(0);
+        await sectionDataProvider.getSectionBanner("0", "1");
+        await sectionDataProvider.getSectionList("0", "1");
+
+        // Hide Progress Dialog
+        await prDialog.hide();
+
         if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -329,6 +344,8 @@ class OTPVerifyState extends State<OTPVerify> {
           ),
         );
       } else {
+        // Hide Progress Dialog
+        await prDialog.hide();
         if (!mounted) return;
         Utils.showSnackbar(
             context, "fail", "${generalProvider.loginOTPModel.message}", false);

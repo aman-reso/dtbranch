@@ -367,6 +367,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                     text: myDownloadsList?[position].name ?? "",
                     multilanguage: false,
                     fontsizeNormal: 18,
+                    fontsizeWeb: 18,
                     color: white,
                     fontstyle: FontStyle.normal,
                     fontweight: FontWeight.w700,
@@ -441,6 +442,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                               multilanguage: true,
                               textalign: TextAlign.start,
                               fontsizeNormal: 12,
+                              fontsizeWeb: 13,
                               fontweight: FontWeight.w800,
                               maxline: 1,
                               overflow: TextOverflow.ellipsis,
@@ -469,6 +471,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                                     text: Constant.currencySymbol,
                                     textalign: TextAlign.center,
                                     fontsizeNormal: 10,
+                                    fontsizeWeb: 12,
                                     multilanguage: false,
                                     fontweight: FontWeight.w800,
                                     maxline: 1,
@@ -482,6 +485,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                                   multilanguage: true,
                                   textalign: TextAlign.start,
                                   fontsizeNormal: 12,
+                                  fontsizeWeb: 13,
                                   fontweight: FontWeight.w500,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -502,36 +506,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             Navigator.pop(context);
                             openPlayer(position);
                           },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: "ic_play.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: MyText(
-                                    text: "watch_now",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          child: _buildDialogItems(
+                            icon: "ic_play.png",
+                            title: "watch_now",
+                            isMultilang: true,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -561,36 +539,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                                 vSubtitle: "",
                                 vStopTime: 0);
                           },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: "ic_borderplay.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: MyText(
-                                    text: "watch_trailer",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          child: _buildDialogItems(
+                            icon: "ic_borderplay.png",
+                            title: "watch_trailer",
+                            isMultilang: true,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -624,43 +576,14 @@ class _MyDownloadsState extends State<MyDownloads> {
                               await _getData();
                             }
                           },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath:
-                                      myDownloadsList?[position].isDownload == 1
-                                          ? "ic_delete.png"
-                                          : "ic_download.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: MyText(
-                                    text:
-                                        myDownloadsList?[position].isDownload ==
-                                                1
-                                            ? "delete_download"
-                                            : "download",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          child: _buildDialogItems(
+                            icon: myDownloadsList?[position].isDownload == 1
+                                ? "ic_delete.png"
+                                : "ic_download.png",
+                            title: myDownloadsList?[position].isDownload == 1
+                                ? "delete_download"
+                                : "download",
+                            isMultilang: true,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -672,38 +595,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                       Navigator.pop(context);
                       _buildShareWithDialog(position);
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_share.png",
-                            fit: BoxFit.contain,
-                            color: otherColor,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "share",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_share.png",
+                      title: "share",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -742,36 +637,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                         );
                       }
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_info.png",
-                            fit: BoxFit.contain,
-                            color: otherColor,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "view_details",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_info.png",
+                      title: "view_details",
+                      isMultilang: true,
                     ),
                   ),
                 ],
@@ -829,36 +698,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
                       }
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_sms.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "sms",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_sms.png",
+                      title: "sms",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -871,36 +714,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                           ? "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_insta.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "instagram_stories",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_insta.png",
+                      title: "instagram_stories",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -919,36 +736,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                             context, "success", "link_copied", true);
                       });
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_link.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "copy_link",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_link.png",
+                      title: "copy_link",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -961,36 +752,10 @@ class _MyDownloadsState extends State<MyDownloads> {
                           ? "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${myDownloadsList?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_dots_h.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "more",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_dots_h.png",
+                      title: "more",
+                      isMultilang: true,
                     ),
                   ),
                 ],
@@ -999,6 +764,45 @@ class _MyDownloadsState extends State<MyDownloads> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildDialogItems({
+    required String icon,
+    required String title,
+    required bool isMultilang,
+  }) {
+    return Container(
+      height: Dimens.minHtDialogContent,
+      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          MyImage(
+            width: Dimens.dialogIconSize,
+            height: Dimens.dialogIconSize,
+            imagePath: icon,
+            fit: BoxFit.contain,
+            color: otherColor,
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: MyText(
+              text: title,
+              multilanguage: isMultilang,
+              fontsizeNormal: 14,
+              fontsizeWeb: 15,
+              color: white,
+              fontstyle: FontStyle.normal,
+              fontweight: FontWeight.w600,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              textalign: TextAlign.start,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

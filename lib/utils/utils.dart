@@ -167,7 +167,19 @@ class Utils {
           MaterialPageRoute(
             builder: (context) {
               return PlayerYoutube(
-                videoUrl: vUrl,
+                playType == "Trailer"
+                    ? "Trailer"
+                    : playType == "Download"
+                        ? "Download"
+                        : (videoType == 2 ? "Show" : "Video"),
+                vID,
+                vType,
+                vTypeID,
+                vUrl ?? "",
+                vSubtitle ?? "",
+                stopTime,
+                vUploadType,
+                videoThumb,
               );
             },
           ),
@@ -178,7 +190,19 @@ class Utils {
           MaterialPageRoute(
             builder: (context) {
               return PlayerVimeo(
-                url: vUrl,
+                playType == "Trailer"
+                    ? "Trailer"
+                    : playType == "Download"
+                        ? "Download"
+                        : (videoType == 2 ? "Show" : "Video"),
+                vID,
+                vType,
+                vTypeID,
+                vUrl ?? "",
+                vSubtitle ?? "",
+                stopTime,
+                vUploadType,
+                videoThumb,
               );
             },
           ),
@@ -189,7 +213,11 @@ class Utils {
           MaterialPageRoute(
             builder: (context) {
               return PlayerBetter(
-                playType,
+                playType == "Trailer"
+                    ? "Trailer"
+                    : playType == "Download"
+                        ? "Download"
+                        : (videoType == 2 ? "Show" : "Video"),
                 vID,
                 vType,
                 vTypeID,

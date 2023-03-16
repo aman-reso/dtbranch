@@ -746,6 +746,8 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             collapseText: less_,
                             maxLines: (kIsWeb || Constant.isTV) ? 50 : 3,
                             linkColor: otherColor,
+                            expandOnTextTap: true,
+                            collapseOnTextTap: true,
                             style: TextStyle(
                               fontSize: (kIsWeb || Constant.isTV) ? 13 : 14,
                               fontStyle: FontStyle.normal,
@@ -2876,9 +2878,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -2942,9 +2942,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                  const SizedBox(height: 12),
 
                   /* SMS */
                   InkWell(
@@ -2959,37 +2957,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${showDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
                       }
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_sms.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "sms",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_sms.png",
+                      title: "sms",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -3002,37 +2973,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           ? "Hey! I'm watching ${showDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${showDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_insta.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "instagram_stories",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_insta.png",
+                      title: "instagram_stories",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -3051,37 +2995,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                             context, "success", "link_copied", true);
                       });
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_link.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "copy_link",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_link.png",
+                      title: "copy_link",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -3094,37 +3011,10 @@ class TvShowDetailsState extends State<TvShowDetails> {
                           ? "Hey! I'm watching ${showDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${showDetailsProvider.sectionDetailModel.result?.name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_dots_h.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: MyText(
-                              text: "more",
-                              multilanguage: true,
-                              fontsizeNormal: 16,
-                              fontsizeWeb: 16,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w500,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_dots_h.png",
+                      title: "more",
+                      isMultilang: true,
                     ),
                   ),
                 ],
@@ -3143,9 +3033,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
       backgroundColor: lightBlack,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(0),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
@@ -3216,6 +3104,45 @@ class TvShowDetailsState extends State<TvShowDetails> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildDialogItems({
+    required String icon,
+    required String title,
+    required bool isMultilang,
+  }) {
+    return Container(
+      height: Dimens.minHtDialogContent,
+      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          MyImage(
+            width: Dimens.dialogIconSize,
+            height: Dimens.dialogIconSize,
+            imagePath: icon,
+            fit: BoxFit.contain,
+            color: otherColor,
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: MyText(
+              text: title,
+              multilanguage: isMultilang,
+              fontsizeNormal: 14,
+              fontsizeWeb: 15,
+              color: white,
+              fontstyle: FontStyle.normal,
+              fontweight: FontWeight.w600,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              textalign: TextAlign.start,
+            ),
+          ),
+        ],
+      ),
     );
   }
   /* ========= Dialogs ========= */

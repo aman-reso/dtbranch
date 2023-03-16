@@ -28,8 +28,6 @@ class SplashState extends State<Splash> {
   @override
   void initState() {
     _getData();
-    final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
-    generalsetting.getGeneralsetting(context);
     super.initState();
   }
 

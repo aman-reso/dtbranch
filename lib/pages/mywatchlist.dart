@@ -476,6 +476,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                         "",
                     multilanguage: false,
                     fontsizeNormal: 18,
+                    fontsizeWeb: 20,
                     color: white,
                     fontstyle: FontStyle.normal,
                     fontweight: FontWeight.w700,
@@ -504,6 +505,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 overflow: TextOverflow.ellipsis,
                                 textalign: TextAlign.center,
                                 fontsizeNormal: 12,
+                                fontsizeWeb: 13,
                                 fontweight: FontWeight.w500,
                                 fontstyle: FontStyle.normal,
                               ),
@@ -535,6 +537,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                     maxline: 1,
                                     overflow: TextOverflow.ellipsis,
                                     fontsizeNormal: 12,
+                                    fontsizeWeb: 13,
                                     fontweight: FontWeight.w500,
                                     fontstyle: FontStyle.normal,
                                   ),
@@ -633,48 +636,20 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             Navigator.pop(context);
                             openPlayer("Video", position);
                           },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: (watchlistProvider.watchlistModel
-                                                  .result?[position].stopTime ??
-                                              0) >
-                                          0
-                                      ? "ic_resume.png"
-                                      : "ic_play.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: MyText(
-                                    text: (watchlistProvider
-                                                    .watchlistModel
-                                                    .result?[position]
-                                                    .stopTime ??
-                                                0) >
-                                            0
-                                        ? "resume"
-                                        : "watch_now",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          child: _buildDialogItems(
+                            icon: (watchlistProvider.watchlistModel
+                                            .result?[position].stopTime ??
+                                        0) >
+                                    0
+                                ? "ic_resume.png"
+                                : "ic_play.png",
+                            title: (watchlistProvider.watchlistModel
+                                            .result?[position].stopTime ??
+                                        0) >
+                                    0
+                                ? "resume"
+                                : "watch_now",
+                            isMultilang: true,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -694,38 +669,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             Navigator.pop(context);
                             openPlayer("startOver", position);
                           },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: "ic_restart.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                  child: MyText(
-                                    text: "startover",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          child: _buildDialogItems(
+                            icon: "ic_restart.png",
+                            title: "startover",
+                            isMultilang: true,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -763,36 +710,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 vSubtitle: "",
                                 vStopTime: 0);
                           },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: "ic_borderplay.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: MyText(
-                                    text: "watch_trailer",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          child: _buildDialogItems(
+                            icon: "ic_borderplay.png",
+                            title: "watch_trailer",
+                            isMultilang: true,
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -832,96 +753,40 @@ class _MyWatchlistState extends State<MyWatchlist> {
                         );
                       }
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: ((watchlistProvider.watchlistModel
-                                            .result?[position].isBookmark ??
-                                        0) ==
-                                    1)
-                                ? "watchlist_remove.png"
-                                : "ic_plus.png",
-                            fit: BoxFit.contain,
-                            color: otherColor,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: ((watchlistProvider.watchlistModel
-                                              .result?[position].isBookmark ??
-                                          0) ==
-                                      1)
-                                  ? "remove_from_watchlist"
-                                  : "add_to_watchlist",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: ((watchlistProvider.watchlistModel.result?[position]
+                                      .isBookmark ??
+                                  0) ==
+                              1)
+                          ? "watchlist_remove.png"
+                          : "ic_plus.png",
+                      title: ((watchlistProvider.watchlistModel
+                                      .result?[position].isBookmark ??
+                                  0) ==
+                              1)
+                          ? "remove_from_watchlist"
+                          : "add_to_watchlist",
+                      isMultilang: true,
                     ),
                   ),
 
                   /* Download Add/Delete */
-                  ((watchlistProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0) !=
-                          2)
-                      ? InkWell(
-                          borderRadius: BorderRadius.circular(5),
-                          onTap: () async {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            height: Dimens.minHtDialogContent,
-                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                MyImage(
-                                  width: Dimens.dialogIconSize,
-                                  height: Dimens.dialogIconSize,
-                                  imagePath: "ic_download.png",
-                                  fit: BoxFit.contain,
-                                  color: otherColor,
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                  child: MyText(
-                                    text: "download",
-                                    multilanguage: true,
-                                    fontsizeNormal: 14,
-                                    color: white,
-                                    fontstyle: FontStyle.normal,
-                                    fontweight: FontWeight.w600,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textalign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                  // ((watchlistProvider
+                  //                 .watchlistModel.result?[position].videoType ??
+                  //             0) !=
+                  //         2)
+                  //     ? InkWell(
+                  //         borderRadius: BorderRadius.circular(5),
+                  //         onTap: () async {
+                  //           Navigator.pop(context);
+                  //         },
+                  //         child: _buildDialogItems(
+                  //           icon: "ic_download.png",
+                  //           title: "download",
+                  //           isMultilang: true,
+                  //         ),
+                  //       )
+                  //     : const SizedBox.shrink(),
 
                   /* Video Share */
                   InkWell(
@@ -930,38 +795,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                       Navigator.pop(context);
                       _buildShareWithDialog(position);
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_share.png",
-                            fit: BoxFit.contain,
-                            color: otherColor,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "share",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_share.png",
+                      title: "share",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -1017,38 +854,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                         );
                       }
                     },
-                    child: Container(
-                      height: Dimens.minHtDialogContent,
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: Dimens.dialogIconSize,
-                            height: Dimens.dialogIconSize,
-                            imagePath: "ic_info.png",
-                            fit: BoxFit.contain,
-                            color: otherColor,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "view_details",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_info.png",
+                      title: "view_details",
+                      isMultilang: true,
                     ),
                   ),
                 ],
@@ -1084,6 +893,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                         "",
                     multilanguage: false,
                     fontsizeNormal: 18,
+                    fontsizeWeb: 20,
                     color: white,
                     fontstyle: FontStyle.normal,
                     fontweight: FontWeight.w700,
@@ -1091,9 +901,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                     overflow: TextOverflow.ellipsis,
                     textalign: TextAlign.start,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1113,6 +921,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                     "",
                                 multilanguage: false,
                                 fontsizeNormal: 10,
+                                fontsizeWeb: 12,
                                 color: otherColor,
                                 fontstyle: FontStyle.normal,
                                 fontweight: FontWeight.w500,
@@ -1131,9 +940,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
+                  const SizedBox(height: 12),
 
                   /* SMS */
                   InkWell(
@@ -1148,38 +955,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             'sms:&body=${Uri.encodeComponent("Hey! I'm watching ${watchlistProvider.watchlistModel.result?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n")}');
                       }
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_sms.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "sms",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_sms.png",
+                      title: "sms",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -1192,38 +971,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                           ? "Hey! I'm watching ${watchlistProvider.watchlistModel.result?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${watchlistProvider.watchlistModel.result?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_insta.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "instagram_stories",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_insta.png",
+                      title: "instagram_stories",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -1242,38 +993,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             context, "success", "link_copied", true);
                       });
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_link.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "copy_link",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_link.png",
+                      title: "copy_link",
+                      isMultilang: true,
                     ),
                   ),
 
@@ -1286,38 +1009,10 @@ class _MyWatchlistState extends State<MyWatchlist> {
                           ? "Hey! I'm watching ${watchlistProvider.watchlistModel.result?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://apps.apple.com/us/app/${Constant.appName?.toLowerCase()}/${Constant.appPackageName} \n"
                           : "Hey! I'm watching ${watchlistProvider.watchlistModel.result?[position].name ?? ""}. Check it out now on ${Constant.appName}! \nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} \n");
                     },
-                    child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          MyImage(
-                            width: 22,
-                            height: 22,
-                            imagePath: "ic_dots_h.png",
-                            fit: BoxFit.fill,
-                            color: lightGray,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: MyText(
-                              text: "more",
-                              multilanguage: true,
-                              fontsizeNormal: 14,
-                              color: white,
-                              fontstyle: FontStyle.normal,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textalign: TextAlign.start,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _buildDialogItems(
+                      icon: "ic_dots_h.png",
+                      title: "more",
+                      isMultilang: true,
                     ),
                   ),
                 ],
@@ -1326,6 +1021,45 @@ class _MyWatchlistState extends State<MyWatchlist> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildDialogItems({
+    required String icon,
+    required String title,
+    required bool isMultilang,
+  }) {
+    return Container(
+      height: Dimens.minHtDialogContent,
+      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          MyImage(
+            width: Dimens.dialogIconSize,
+            height: Dimens.dialogIconSize,
+            imagePath: icon,
+            fit: BoxFit.contain,
+            color: otherColor,
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: MyText(
+              text: title,
+              multilanguage: isMultilang,
+              fontsizeNormal: 14,
+              fontsizeWeb: 16,
+              color: white,
+              fontstyle: FontStyle.normal,
+              fontweight: FontWeight.w600,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              textalign: TextAlign.start,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

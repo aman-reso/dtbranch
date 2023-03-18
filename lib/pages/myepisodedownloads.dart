@@ -534,34 +534,12 @@ class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
                       ? InkWell(
                           borderRadius: BorderRadius.circular(5),
                           onTap: () async {
-                            if (myEpisodeList?[position].isDownloaded == 1) {
-                              List<EpisodeItem>? dummyDownloadsList =
-                                  myEpisodeList;
-                              final showDetailsProvider =
-                                  Provider.of<ShowDetailsProvider>(context,
-                                      listen: false);
-                              myEpisodeList?.removeAt(position);
-                              setState(() {});
+                            bool isDeleted =
+                                await deleteFromDownloads(position);
+                            log("isDeleted =============> $isDeleted");
+                            if (isDeleted) {
+                              if (!mounted) return;
                               Navigator.pop(context);
-                              await showDetailsProvider.setDownloadComplete(
-                                context,
-                                dummyDownloadsList?[position].sessionId,
-                                dummyDownloadsList?[position].videoType,
-                                widget.typeId,
-                                dummyDownloadsList?[position].showId,
-                              );
-                              await downloadProvider.deleteEpisodeFromDownload(
-                                  dummyDownloadsList,
-                                  dummyDownloadsList?[position].id.toString() ??
-                                      "",
-                                  dummyDownloadsList?[position]
-                                          .showId
-                                          .toString() ??
-                                      "",
-                                  dummyDownloadsList?[position]
-                                          .sessionId
-                                          .toString() ??
-                                      "");
                             }
                           },
                           child: Container(
@@ -720,6 +698,30 @@ class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
         );
       },
     );
+  }
+
+  Future<bool> deleteFromDownloads(position) async {
+    final showDetailsProvider =
+        Provider.of<ShowDetailsProvider>(context, listen: false);
+    await downloadProvider.deleteEpisodeFromDownload(
+      myEpisodeList?[position].id.toString() ?? "",
+      widget.showId.toString(),
+      mySeasonList?[downloadProvider.seasonClickIndex ?? 0].id.toString() ?? "",
+    );
+    log("myEpisodeList =========> ${myEpisodeList?.length}");
+    myEpisodeList?.removeAt(position);
+    if ((myEpisodeList?.length ?? 0) == 0) {
+      if (!mounted) return false;
+      await showDetailsProvider.setDownloadComplete(
+        context,
+        mySeasonList?[downloadProvider.seasonClickIndex ?? 0].id,
+        widget.videoType,
+        widget.typeId,
+        widget.showId,
+      );
+    }
+    setState(() {});
+    return true;
   }
 
   _buildShareWithDialog(position) {

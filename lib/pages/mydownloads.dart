@@ -36,7 +36,9 @@ class _MyDownloadsState extends State<MyDownloads> {
   void initState() {
     downloadProvider =
         Provider.of<VideoDownloadProvider>(context, listen: false);
-    _getData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getData();
+    });
     super.initState();
   }
 
@@ -45,6 +47,7 @@ class _MyDownloadsState extends State<MyDownloads> {
         await downloadProvider.getDownloadsByType("video");
     List<DownloadVideoModel>? myShowDownloadsList =
         await downloadProvider.getDownloadsByType("show");
+    myDownloadsList = [];
     myDownloadsList =
         (myVideoDownloadsList ?? []) + (myShowDownloadsList ?? []);
     log("myDownloadsList =================> ${myDownloadsList?.length}");
@@ -130,12 +133,12 @@ class _MyDownloadsState extends State<MyDownloads> {
                   ),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(0),
-                    onTap: () {
+                    onTap: () async {
                       log("Clicked on position ==> $position");
                       if ((myDownloadsList?[position].videoType ?? 0) != 2) {
                         openPlayer(position);
                       } else {
-                        Navigator.push(
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
@@ -147,6 +150,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                             },
                           ),
                         );
+                        _getData();
                       }
                     },
                     child: MyNetworkImage(
@@ -284,11 +288,11 @@ class _MyDownloadsState extends State<MyDownloads> {
                     bottom: 10,
                     right: 10,
                     child: InkWell(
-                      onTap: () {
+                      onTap: () async {
                         if ((myDownloadsList?[position].videoType ?? 0) != 2) {
                           _buildVideoMoreDialog(position);
                         } else {
-                          Navigator.push(
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) {
@@ -300,6 +304,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                               },
                             ),
                           );
+                          _getData();
                         }
                       },
                       child: Container(
@@ -552,28 +557,13 @@ class _MyDownloadsState extends State<MyDownloads> {
                       ? InkWell(
                           borderRadius: BorderRadius.circular(5),
                           onTap: () async {
-                            if (myDownloadsList?[position].isDownload == 1) {
-                              int dummyPosition = position;
-                              List<DownloadVideoModel>? dummyDownloadsList =
-                                  myDownloadsList;
-                              final videoDetailsProvider =
-                                  Provider.of<VideoDetailsProvider>(context,
-                                      listen: false);
-                              myDownloadsList?.removeAt(position);
-                              setState(() {});
+                            log("Clicked on position =============> $position");
+                            bool isDeleted =
+                                await deleteFromDownloads(position);
+                            log("isDeleted =============> $isDeleted");
+                            if (isDeleted) {
+                              if (!mounted) return;
                               Navigator.pop(context);
-                              await videoDetailsProvider.setDownloadComplete(
-                                  context,
-                                  dummyDownloadsList?[dummyPosition].id,
-                                  dummyDownloadsList?[dummyPosition].videoType,
-                                  dummyDownloadsList?[dummyPosition].typeId);
-                              await downloadProvider.checkVideoInSecure(
-                                  dummyDownloadsList,
-                                  dummyDownloadsList?[dummyPosition]
-                                          .id
-                                          .toString() ??
-                                      "");
-                              await _getData();
                             }
                           },
                           child: _buildDialogItems(
@@ -650,6 +640,21 @@ class _MyDownloadsState extends State<MyDownloads> {
         );
       },
     );
+  }
+
+  Future<bool> deleteFromDownloads(position) async {
+    final videoDetailsProvider =
+        Provider.of<VideoDetailsProvider>(context, listen: false);
+    downloadProvider.deleteVideoFromDownload(
+        myDownloadsList?[position].id.toString() ?? "");
+    await videoDetailsProvider.setDownloadComplete(
+        context,
+        myDownloadsList?[position].id,
+        myDownloadsList?[position].videoType,
+        myDownloadsList?[position].typeId);
+    myDownloadsList?.removeAt(position);
+    setState(() {});
+    return true;
   }
 
   _buildShareWithDialog(position) {

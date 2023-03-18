@@ -142,7 +142,7 @@ class SessionItem {
         rentPrice: json["rent_price"],
         isBuy: json["is_buy"],
         episode: List<EpisodeItem>.from(
-            json["episode"].map((x) => EpisodeItem.fromJson(x))),
+            json["episode"]?.map((x) => EpisodeItem.fromJson(x)) ?? []),
       );
 
   Map<String, dynamic> toJson() => {

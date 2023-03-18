@@ -452,6 +452,11 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       log("vSubtitle ====> $vSubtitle");
 
       if (!mounted) return;
+      if (epiUrl.isEmpty || epiUrl == "") {
+        Utils.showSnackbar(context, "info", "episode_not_found", true);
+        return;
+      }
+
       dynamic isContinue = await Utils.openPlayer(
         context: context,
         playType: "Show",

@@ -47,7 +47,7 @@ class MovieDetails extends StatefulWidget {
 class MovieDetailsState extends State<MovieDetails> {
   /* Download init */
   late VideoDownloadProvider downloadProvider;
-  late bool _permissionReady;
+  // late bool _permissionReady;
   final ReceivePort _port = ReceivePort();
 
   String? audioLanguages;
@@ -133,14 +133,18 @@ class MovieDetailsState extends State<MovieDetails> {
         final task = downloadProvider.currentTasks!
             .firstWhere((task) => task.taskId == taskId);
         log('task status ============> ${task.status}');
-        downloadProvider.setDownloadProgress(progress);
-        if (status == DownloadTaskStatus.complete) {
-          videoDetailsProvider.setDownloadComplete(
-              context,
-              videoDetailsProvider.sectionDetailModel.result?.id,
-              videoDetailsProvider.sectionDetailModel.result?.videoType,
-              videoDetailsProvider.sectionDetailModel.result?.typeId);
-          downloadProvider.setDownloadProgress(0);
+        if (progress > 0) {
+          downloadProvider.setDownloadProgress(progress);
+        }
+        if (status == DownloadTaskStatus.complete && progress == 100) {
+          Utils.setDownloadComplete(
+            context,
+            "Video",
+            videoDetailsProvider.sectionDetailModel.result?.id,
+            videoDetailsProvider.sectionDetailModel.result?.videoType,
+            videoDetailsProvider.sectionDetailModel.result?.typeId,
+            0,
+          );
         }
       }
     });
@@ -171,7 +175,12 @@ class MovieDetailsState extends State<MovieDetails> {
   @override
   void dispose() {
     super.dispose();
-    videoDetailsProvider.clearProvider();
+    log("dispose isBroadcast ============================> ${_port.isBroadcast}");
+    if (!_port.isBroadcast) {
+      downloadProvider.clearProvider();
+      videoDetailsProvider.clearProvider();
+    }
+    super.dispose();
   }
 
   @override
@@ -2601,45 +2610,46 @@ class MovieDetailsState extends State<MovieDetails> {
   }
 
   _checkAndDownload() async {
-    _permissionReady = await Utils.checkPermission();
-    if (_permissionReady) {
-      if (videoDetailsProvider.sectionDetailModel.result?.isDownloaded == 0) {
-        if ((videoDetailsProvider.sectionDetailModel.result?.video320 ?? "")
-            .isNotEmpty) {
-          File? mTargetFile;
-          String? localPath;
-          String? mFileName =
-              '${(videoDetailsProvider.sectionDetailModel.result?.name ?? "")}'
-              '${(videoDetailsProvider.sectionDetailModel.result?.id ?? 0)}${(Constant.userID)}';
-          try {
-            localPath = await Utils.prepareSaveDir();
-            log("localPath ====> $localPath");
-            mTargetFile = File(path.join(localPath,
-                '$mFileName.${(videoDetailsProvider.sectionDetailModel.result?.videoExtension ?? "mp4")}'));
-            // This is a sync operation on a real
-            // app you'd probably prefer to use writeAsByte and handle its Future
-          } catch (e) {
-            debugPrint("saveVideoStorage Exception ===> $e");
-          }
-          log("mFileName ========> $mFileName");
-          log("mTargetFile ========> ${mTargetFile?.absolute.path ?? ""}");
-          if (mTargetFile != null) {
-            try {
-              downloadProvider.prepareDownload(
-                  videoDetailsProvider.sectionDetailModel.result,
-                  localPath,
-                  mFileName);
-              log("mTargetFile length ========> ${mTargetFile.length()}");
-            } catch (e) {
-              log("Downloading... Exception ======> $e");
-            }
-          }
-        } else {
-          if (!mounted) return;
-          Utils.showSnackbar(context, "fail", "invalid_url", true);
+    // _permissionReady = await Utils.checkPermission();
+    // log("_permissionReady ====> $_permissionReady");
+    // if (_permissionReady) {
+    if (videoDetailsProvider.sectionDetailModel.result?.isDownloaded == 0) {
+      if ((videoDetailsProvider.sectionDetailModel.result?.video320 ?? "")
+          .isNotEmpty) {
+        File? mTargetFile;
+        String? localPath;
+        String? mFileName =
+            '${(videoDetailsProvider.sectionDetailModel.result?.name ?? "")}'
+            '${(videoDetailsProvider.sectionDetailModel.result?.id ?? 0)}${(Constant.userID)}';
+        try {
+          localPath = await Utils.prepareSaveDir();
+          log("localPath ====> $localPath");
+          mTargetFile = File(path.join(localPath,
+              '$mFileName.${(videoDetailsProvider.sectionDetailModel.result?.videoExtension ?? "mp4")}'));
+          // This is a sync operation on a real
+          // app you'd probably prefer to use writeAsByte and handle its Future
+        } catch (e) {
+          debugPrint("saveVideoStorage Exception ===> $e");
         }
+        log("mFileName ========> $mFileName");
+        log("mTargetFile ========> ${mTargetFile?.absolute.path ?? ""}");
+        if (mTargetFile != null) {
+          try {
+            downloadProvider.prepareDownload(
+                videoDetailsProvider.sectionDetailModel.result,
+                localPath,
+                mFileName);
+            log("mTargetFile length ========> ${mTargetFile.length()}");
+          } catch (e) {
+            log("Downloading... Exception ======> $e");
+          }
+        }
+      } else {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "fail", "invalid_url", true);
       }
     }
+    // }
   }
 
   buildDownloadCompleteDialog() {
@@ -2689,14 +2699,15 @@ class MovieDetailsState extends State<MovieDetails> {
                   InkWell(
                     borderRadius: BorderRadius.circular(5),
                     focusColor: white,
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
                       if (Constant.userID != null) {
-                        Navigator.of(context).push(
+                        await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const MyDownloads(),
                           ),
                         );
+                        setState(() {});
                       } else {
                         if ((kIsWeb || Constant.isTV)) {
                           Utils.buildWebAlertDialog(context, "login", "");
@@ -3233,6 +3244,15 @@ class MovieDetailsState extends State<MovieDetails> {
     log("stopTime ===> $stopTime");
 
     if (!mounted) return;
+    if (vUrl.isEmpty || vUrl == "") {
+      if (playType == "Trailer") {
+        Utils.showSnackbar(context, "info", "trailer_not_found", true);
+      } else {
+        Utils.showSnackbar(context, "info", "video_not_found", true);
+      }
+      return;
+    }
+
     dynamic isContinue = await Utils.openPlayer(
       context: context,
       playType: playType == "Trailer" ? "Trailer" : "Video",

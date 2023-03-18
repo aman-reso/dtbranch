@@ -2,11 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as number;
 
-import 'package:android_path_provider/android_path_provider.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/pages/player_better.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
 import 'package:dtlive/pages/player_youtube.dart';
+import 'package:dtlive/provider/showdetailsprovider.dart';
+import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/subscription/allpayment.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -28,6 +29,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
@@ -814,6 +816,11 @@ class Utils {
         Permission.storage,
       ].request();
       // final result = await Permission.storage.request();
+      debugPrint("result ========1========> ${statuses[Permission.storage]}");
+      if (statuses[Permission.storage] != PermissionStatus.granted) {
+        statuses = await [Permission.storage].request();
+        debugPrint("result =======2=======> ${statuses[Permission.storage]}");
+      }
       return (statuses[Permission.storage] == PermissionStatus.granted);
     }
 
@@ -822,8 +829,11 @@ class Utils {
 
   static Future<String> prepareSaveDir() async {
     String localPath = (await _getSavedDir())!;
+    log("localPath ------------> $localPath");
     final savedDir = Directory(localPath);
-    if (!savedDir.existsSync()) {
+    log("savedDir -------------> $savedDir");
+    log("is exists ? ----------> ${savedDir.existsSync()}");
+    if (!(await savedDir.exists())) {
       await savedDir.create(recursive: true);
     }
     return localPath;
@@ -833,17 +843,18 @@ class Utils {
     String? externalStorageDirPath;
 
     if (Platform.isAndroid) {
+      final directory = await getExternalStorageDirectory();
       try {
-        externalStorageDirPath = await AndroidPathProvider.downloadsPath;
+        externalStorageDirPath = "${directory?.absolute.path}/downloads/";
       } catch (err, st) {
         log('failed to get downloads path: $err, $st');
-        final directory = await getExternalStorageDirectory();
-        externalStorageDirPath = "${directory?.path}/downloads/";
+        externalStorageDirPath = "${directory?.absolute.path}/downloads/";
       }
     } else if (Platform.isIOS) {
       externalStorageDirPath =
           (await getApplicationDocumentsDirectory()).absolute.path;
     }
+    log("externalStorageDirPath ------------> $externalStorageDirPath");
     return externalStorageDirPath;
   }
 
@@ -867,12 +878,9 @@ class Utils {
 
     if (Platform.isAndroid) {
       try {
-        externalStorageDirPath = File(path.join(
-                await AndroidPathProvider.downloadsPath,
-                '${showName.toLowerCase()}/${seasonName.toLowerCase()}'))
-            .path;
-        // externalStorageDirPath =
-        //     "${(await AndroidPathProvider.downloadsPath)}$showName/$seasonName";
+        final directory = await getExternalStorageDirectory();
+        externalStorageDirPath =
+            "${directory?.path}/downloads/${showName.toLowerCase()}/${seasonName.toLowerCase()}";
       } catch (err, st) {
         log('failed to get downloads path: $err, $st');
         final directory = await getExternalStorageDirectory();
@@ -884,6 +892,35 @@ class Utils {
           "${(await getApplicationDocumentsDirectory()).absolute.path}/downloads/${showName.toLowerCase()}/${seasonName.toLowerCase()}";
     }
     return externalStorageDirPath;
+  }
+
+  static Future<void> setDownloadComplete(
+      BuildContext context,
+      String downloadType,
+      int? itemId,
+      int? videoType,
+      int? typeId,
+      int? otherId) async {
+    if (downloadType == "Show") {
+      final showDetailsProvider =
+          Provider.of<ShowDetailsProvider>(context, listen: false);
+      showDetailsProvider.setDownloadComplete(
+        context,
+        itemId,
+        videoType,
+        typeId,
+        otherId,
+      );
+    } else if (downloadType == "Video") {
+      final videoDetailsProvider =
+          Provider.of<VideoDetailsProvider>(context, listen: false);
+      videoDetailsProvider.setDownloadComplete(
+        context,
+        itemId,
+        videoType,
+        typeId,
+      );
+    }
   }
   /* ***************** Download ***************** */
 }

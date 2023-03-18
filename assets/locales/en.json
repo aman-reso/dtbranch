@@ -74,6 +74,9 @@
     "link_copied" : "Link copied",
     "please_wait": "Please wait...",
 
+    "episode_not_found": "Episode not found in this show.",
+    "video_not_found": "Video not found.",
+    "trailer_not_found": "Trailer not found.",
     "addwatchlistmessage" : "Successfully added to Watchlist",
     "removewatchlistmessage" : "Successfully removed from Watchlist",
     "download_success" : "File downloaded successfully.",

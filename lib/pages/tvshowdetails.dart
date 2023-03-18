@@ -49,7 +49,7 @@ class TvShowDetails extends StatefulWidget {
 
 class TvShowDetailsState extends State<TvShowDetails> {
   /* Download init */
-  late bool _permissionReady;
+  // late bool _permissionReady;
   late ShowDownloadProvider downloadProvider;
   final ReceivePort _port = ReceivePort();
 
@@ -112,7 +112,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
       );
 
       if (progress > 0) {
-        downloadProvider.setDownloadProgress(progress);
+        downloadProvider.setDownloadProgress(progress, status);
       }
     });
   }
@@ -142,9 +142,12 @@ class TvShowDetailsState extends State<TvShowDetails> {
   @override
   void dispose() {
     super.dispose();
-    showDetailsProvider.clearProvider();
-    episodeProvider.clearProvider();
-    downloadProvider.clearProvider();
+    log("dispose isBroadcast ============================> ${_port.isBroadcast}");
+    if (!_port.isBroadcast) {
+      downloadProvider.clearProvider();
+      showDetailsProvider.clearProvider();
+      episodeProvider.clearProvider();
+    }
   }
 
   @override
@@ -2545,7 +2548,7 @@ class TvShowDetailsState extends State<TvShowDetails> {
       child: InkWell(
         borderRadius: BorderRadius.circular(5),
         focusColor: white,
-        onTap: () {
+        onTap: () async {
           if (Constant.userID != null) {
             if (showDetailsProvider.sectionDetailModel
                     .session?[showDetailsProvider.seasonPos].isDownloaded ==
@@ -2660,28 +2663,28 @@ class TvShowDetailsState extends State<TvShowDetails> {
   }
 
   _checkAndDownload() async {
-    _permissionReady = await Utils.checkPermission();
-    if (_permissionReady) {
-      if (showDetailsProvider.sectionDetailModel
-              .session?[showDetailsProvider.seasonPos].isDownloaded ==
-          0) {
-        if ((showDetailsProvider.episodeBySeasonModel.result?[0].video320 ?? "")
-            .isNotEmpty) {
-          log("seasonPos ----------------------> ${showDetailsProvider.seasonPos}");
-          log("episode Length -----------------> ${episodeProvider.episodeBySeasonModel.result?.length}");
-          if (!mounted) return;
-          await downloadProvider.prepareDownload(
-              context,
-              showDetailsProvider.sectionDetailModel.result,
-              showDetailsProvider.sectionDetailModel.session,
-              showDetailsProvider.seasonPos,
-              episodeProvider.episodeBySeasonModel.result);
-        } else {
-          if (!mounted) return;
-          Utils.showSnackbar(context, "fail", "invalid_url", true);
-        }
+    // _permissionReady = await Utils.checkPermission();
+    // if (_permissionReady) {
+    if (showDetailsProvider.sectionDetailModel
+            .session?[showDetailsProvider.seasonPos].isDownloaded ==
+        0) {
+      if ((showDetailsProvider.episodeBySeasonModel.result?[0].video320 ?? "")
+          .isNotEmpty) {
+        log("seasonPos ----------------------> ${showDetailsProvider.seasonPos}");
+        log("episode Length -----------------> ${episodeProvider.episodeBySeasonModel.result?.length}");
+        if (!mounted) return;
+        await downloadProvider.prepareDownload(
+            context,
+            showDetailsProvider.sectionDetailModel.result,
+            showDetailsProvider.sectionDetailModel.session,
+            showDetailsProvider.seasonPos,
+            episodeProvider.episodeBySeasonModel.result);
+      } else {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "fail", "invalid_url", true);
       }
     }
+    // }
   }
 
   buildDownloadCompleteDialog() {
@@ -2731,14 +2734,15 @@ class TvShowDetailsState extends State<TvShowDetails> {
                   InkWell(
                     borderRadius: BorderRadius.circular(5),
                     focusColor: white,
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
                       if (Constant.userID != null) {
-                        Navigator.of(context).push(
+                        await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const MyDownloads(),
                           ),
                         );
+                        setState(() {});
                       } else {
                         if ((kIsWeb || Constant.isTV)) {
                           Utils.buildWebAlertDialog(context, "login", "");
@@ -3158,15 +3162,16 @@ class TvShowDetailsState extends State<TvShowDetails> {
   void openPlayer(String playType) async {
     if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
-    if ((episodeProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
-      /* CHECK SUBSCRIPTION */
-      if (playType != "Trailer") {
-        bool? isPrimiumUser = await _checkSubsRentLogin();
-        log("isPrimiumUser =============> $isPrimiumUser");
-        if (!isPrimiumUser) return;
-      }
-      /* CHECK SUBSCRIPTION */
 
+    /* CHECK SUBSCRIPTION */
+    if (playType != "Trailer") {
+      bool? isPrimiumUser = await _checkSubsRentLogin();
+      log("isPrimiumUser =============> $isPrimiumUser");
+      if (!isPrimiumUser) return;
+    }
+    /* CHECK SUBSCRIPTION */
+
+    if ((episodeProvider.episodeBySeasonModel.result?.length ?? 0) > 0) {
       int? epiID = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].id ??
           0);
@@ -3222,6 +3227,9 @@ class TvShowDetailsState extends State<TvShowDetails> {
         await getAllEpisode(showDetailsProvider.seasonPos,
             showDetailsProvider.sectionDetailModel.session);
       }
+    } else {
+      if (!mounted) return;
+      Utils.showSnackbar(context, "info", "episode_not_found", true);
     }
   }
   /* ========= Open Player ========= */

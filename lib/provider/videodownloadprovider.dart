@@ -32,6 +32,7 @@ class VideoDownloadProvider extends ChangeNotifier {
 
     currentTasks = [];
 
+    log('videoExtension ============> ${sectionDetails?.videoExtension}');
     DownloadVideoModel taskInfo = DownloadVideoModel(
       id: sectionDetails?.id,
       taskId: sectionDetails?.id.toString(),
@@ -40,7 +41,7 @@ class VideoDownloadProvider extends ChangeNotifier {
       videoUrl: sectionDetails?.video320,
       savedDir: localPath,
       savedFile: path.join(localPath ?? '',
-          '$mFileName.${(sectionDetails?.videoExtension ?? '.mp4')}'),
+          '$mFileName.${sectionDetails?.videoExtension != '' ? (sectionDetails?.videoExtension ?? 'mp4') : 'mp4'}'),
       videoType: sectionDetails?.videoType,
       typeId: sectionDetails?.typeId,
       isPremium: sectionDetails?.isPremium,
@@ -64,7 +65,7 @@ class VideoDownloadProvider extends ChangeNotifier {
     log('savedDir ============> ${task.savedDir}');
     log('link ============> ${task.videoUrl!}');
     task.taskId = await FlutterDownloader.enqueue(
-      url: task.videoUrl!,
+      url: task.videoUrl ?? "",
       headers: {'auth': 'test_for_sql_encoding'},
       fileName: basename(task.savedFile ?? ''),
       savedDir: task.savedDir ?? '',
@@ -73,28 +74,35 @@ class VideoDownloadProvider extends ChangeNotifier {
   }
 
   saveInSecureStorage() async {
-    var listString = await storage.read(
+    List<DownloadVideoModel>? myVideoList;
+
+    String? listString = await storage.read(
             key: "${Constant.hawkVIDEOList}${Constant.userID}") ??
         '';
-    log("listString ===> ${listString.toString()}");
-    List<DownloadVideoModel>? myVideoList;
-    if (listString.isNotEmpty) {
+    log("listString ===> $listString");
+    if (listString != "") {
       myVideoList = List<DownloadVideoModel>.from(
-          jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
+          jsonDecode(listString)?.map((x) => DownloadVideoModel.fromJson(x)) ??
+              []);
     }
+    log("myVideoList ===> ${myVideoList?.length}");
 
     if ((myVideoList?.length ?? 0) > 0) {
       await checkVideoInSecure(
           myVideoList, currentTasks?[0].id.toString() ?? "");
     }
-    myVideoList = currentTasks;
+    if ((myVideoList?.length ?? 0) > 0 || (currentTasks?.length ?? 0) > 0) {
+      myVideoList = (myVideoList ?? []) + (currentTasks ?? []);
+    }
     log("myVideoList ===> ${myVideoList?.length}");
 
-    if ((myVideoList?.length ?? 0) > 0) {
-      await storage.write(
-          key: "${Constant.hawkVIDEOList}${Constant.userID}",
-          value: jsonEncode(myVideoList));
-    }
+    await storage.write(
+      key: "${Constant.hawkVIDEOList}${Constant.userID}",
+      value: jsonEncode(myVideoList),
+    );
+
+    dProgress = 0;
+    notifyListeners();
   }
 
   checkVideoInSecure(
@@ -103,7 +111,7 @@ class VideoDownloadProvider extends ChangeNotifier {
     log("checkVideoInSecure videoID ===> $videoID");
 
     if ((myVideoList?.length ?? 0) == 0) {
-      await storage.delete(key: "${Constant.hawkVIDEOList} ${Constant.userID}");
+      await storage.delete(key: "${Constant.hawkVIDEOList}${Constant.userID}");
       return;
     }
     for (int i = 0; i < (myVideoList?.length ?? 0); i++) {
@@ -114,12 +122,13 @@ class VideoDownloadProvider extends ChangeNotifier {
         myVideoList?.remove(myVideoList[i]);
         if ((myVideoList?.length ?? 0) == 0) {
           await storage.delete(
-              key: "${Constant.hawkVIDEOList} ${Constant.userID}");
+              key: "${Constant.hawkVIDEOList}${Constant.userID}");
           return;
         }
         await storage.write(
-            key: "${Constant.hawkVIDEOList} ${Constant.userID}",
-            value: jsonEncode(myVideoList));
+          key: "${Constant.hawkVIDEOList}${Constant.userID}",
+          value: jsonEncode(myVideoList),
+        );
         return;
       }
     }
@@ -129,13 +138,14 @@ class VideoDownloadProvider extends ChangeNotifier {
     loading = true;
     List<DownloadVideoModel>? myDownloadsList;
     if (dType == "video") {
-      var listString = await storage.read(
+      String? listString = await storage.read(
               key: "${Constant.hawkVIDEOList}${Constant.userID}") ??
           '';
       log("listString ===> ${listString.toString()}");
-      if (listString.isNotEmpty) {
-        myDownloadsList = List<DownloadVideoModel>.from(
-            jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
+      if (listString != "") {
+        myDownloadsList = List<DownloadVideoModel>.from(jsonDecode(listString)
+                ?.map((x) => DownloadVideoModel.fromJson(x)) ??
+            []);
       }
       loading = false;
       notifyListeners();
@@ -143,13 +153,14 @@ class VideoDownloadProvider extends ChangeNotifier {
     } else if (dType == "show") {
       loading = true;
       List<DownloadVideoModel>? myDownloadsList;
-      var listString = await storage.read(
+      String? listString = await storage.read(
               key: "${Constant.hawkSHOWList}${Constant.userID}") ??
           '';
       log("listString ===> ${listString.toString()}");
-      if (listString.isNotEmpty) {
-        myDownloadsList = List<DownloadVideoModel>.from(
-            jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
+      if (listString != "") {
+        myDownloadsList = List<DownloadVideoModel>.from(jsonDecode(listString)
+                ?.map((x) => DownloadVideoModel.fromJson(x)) ??
+            []);
       }
       loading = false;
       notifyListeners();
@@ -165,13 +176,14 @@ class VideoDownloadProvider extends ChangeNotifier {
     log("deleteVideoFromDownload UserID ===> ${Constant.userID}");
     log("deleteVideoFromDownload videoID ===> $videoID");
     List<DownloadVideoModel>? myVideoList = [];
-    var listString = await storage.read(
+    String? listString = await storage.read(
             key: '${Constant.hawkVIDEOList}${Constant.userID}') ??
         '';
-    log("listString ===> ${listString.toString()}");
-    if (listString.isNotEmpty) {
+    log("listString ===> $listString");
+    if (listString != "") {
       myVideoList = List<DownloadVideoModel>.from(
-          jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
+          jsonDecode(listString)?.map((x) => DownloadVideoModel.fromJson(x)) ??
+              []);
     }
     log("myVideoList ===> ${myVideoList.length}");
 
@@ -190,8 +202,18 @@ class VideoDownloadProvider extends ChangeNotifier {
         if (await file.exists()) {
           file.delete();
         }
-        await storage.delete(
-            key: "${Constant.hawkVIDEOList}${Constant.userID}");
+        log("myVideoList ==1==> ${myVideoList.length}");
+        if (myVideoList.isEmpty) {
+          await storage.delete(
+              key: "${Constant.hawkVIDEOList}${Constant.userID}");
+          return;
+        }
+        log("myVideoList ==2==> ${myVideoList.length}");
+        await storage.write(
+          key: "${Constant.hawkVIDEOList}${Constant.userID}",
+          value: jsonEncode(myVideoList),
+        );
+        return;
       }
     }
   }
@@ -207,5 +229,6 @@ class VideoDownloadProvider extends ChangeNotifier {
 
   clearProvider() {
     log("<================ clearProvider ================>");
+    dProgress = 0;
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:provider/provider.dart';
 import 'package:dtlive/model/downloadvideomodel.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/utils/constant.dart';
@@ -13,7 +14,6 @@ import 'package:dtlive/model/episodebyseasonmodel.dart' as episode;
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path/path.dart';
-import 'package:provider/provider.dart';
 
 class ShowDownloadProvider extends ChangeNotifier {
   /* view Downloads init */
@@ -76,10 +76,8 @@ class ShowDownloadProvider extends ChangeNotifier {
   }
 
   _downloadEpisodeByPos(int epiPosition) async {
+    log("_downloadEpi epiPosition ========> $epiPosition");
     if ((episodeList?[epiPosition].video320 ?? "").isNotEmpty) {
-      cEpisodePos = epiPosition;
-      log("cEpisodePos ========> $cEpisodePos");
-
       File? mTargetFile;
       String? mFileName =
           '${(seasonList?[(seasonPos ?? 0)].name ?? "").replaceAll(RegExp('\\W+'), '')}'
@@ -87,7 +85,7 @@ class ShowDownloadProvider extends ChangeNotifier {
 
       try {
         mTargetFile = File(path.join(localPath ?? "",
-            '$mFileName.${(episodeList?[epiPosition].videoExtension ?? "mp4")}'));
+            '$mFileName.${episodeList?[epiPosition].videoExtension != '' ? (episodeList?[epiPosition].videoExtension ?? 'mp4') : 'mp4'}'));
         // This is a sync operation on a real
         // app you'd probably prefer to use writeAsByte and handle its Future
       } catch (e) {
@@ -98,9 +96,9 @@ class ShowDownloadProvider extends ChangeNotifier {
 
       if (mTargetFile != null) {
         try {
-          savedEpiPathList ??= [];
           savedEpiPathList?.add(mTargetFile.path);
-          log("savedEpiPathList ========> ${savedEpiPathList?[epiPosition]}");
+          log("savedEpiPathList $epiPosition ========> ${savedEpiPathList?[epiPosition]}");
+          log("savedEpiPathList length ========> ${savedEpiPathList?.length}");
           await _requestDownload((episodeList?[epiPosition].video320 ?? ""),
               localPath, mTargetFile.path);
         } catch (e) {
@@ -128,18 +126,17 @@ class ShowDownloadProvider extends ChangeNotifier {
   }
 
   saveEpisodeInSecureStorage(int epiPosition) async {
-    var listString = await storage.read(
+    log("saveEpisode epiPosition ========> $epiPosition");
+    String? listString = await storage.read(
             key:
                 '${Constant.hawkEPISODEList}${Constant.userID}${seasonList?[(seasonPos ?? 0)].id}${sectionDetails?.id}') ??
         '';
-    log("listString ===> ${listString.toString()}");
     List<EpisodeItem>? myEpiList;
-    if (listString.isNotEmpty) {
+    if (listString != "") {
       myEpiList = List<EpisodeItem>.from(
-          jsonDecode(listString).map((x) => EpisodeItem.fromJson(x)));
+          jsonDecode(listString)?.map((x) => EpisodeItem.fromJson(x)) ?? []);
     }
     log("myEpiList ===> ${myEpiList?.length}");
-    log("savedEpiPathList ===> ${savedEpiPathList?[epiPosition]}");
 
     /* Save Episodes */
     EpisodeItem episodeItem = EpisodeItem(
@@ -150,7 +147,9 @@ class ShowDownloadProvider extends ChangeNotifier {
       landscape: episodeList?[epiPosition].landscape,
       videoUploadType: episodeList?[epiPosition].videoUploadType,
       videoType: episodeList?[epiPosition].videoType,
-      videoExtension: episodeList?[epiPosition].videoExtension,
+      videoExtension: episodeList?[epiPosition].videoExtension != ''
+          ? (episodeList?[epiPosition].videoExtension ?? 'mp4')
+          : 'mp4',
       videoDuration: episodeList?[epiPosition].videoDuration,
       isPremium: episodeList?[epiPosition].isPremium,
       description: episodeList?[epiPosition].description,
@@ -185,47 +184,49 @@ class ShowDownloadProvider extends ChangeNotifier {
 
     if (myEpiList.isNotEmpty) {
       await storage.write(
-          key:
-              '${Constant.hawkEPISODEList}${Constant.userID}${seasonList?[(seasonPos ?? 0)].id}${sectionDetails?.id}',
-          value: jsonEncode(myEpiList));
+        key:
+            '${Constant.hawkEPISODEList}${Constant.userID}${seasonList?[(seasonPos ?? 0)].id}${sectionDetails?.id}',
+        value: jsonEncode(myEpiList),
+      );
     }
     /* **************/
 
-    log("cEpisodePos -------------------===> $cEpisodePos");
-    log("lastEpiPos --------------------===> ${((mTotalEpi ?? 0) - 1)}");
-    if (cEpisodePos == (mTotalEpi ?? 0) - 1) {
-      saveShowInSecureStorage();
+    log("epiPosition -------------------===> $epiPosition");
+    log("myEpiList ---------------------===> ${myEpiList.length}");
+    log("mTotalEpi ---------------------===> $mTotalEpi");
+    if (myEpiList.length == mTotalEpi) {
+      saveShowInSecureStorage(myEpiList.length);
     } else {
-      cEpisodePos = (cEpisodePos ?? 0) + 1;
-      _downloadEpisodeByPos(cEpisodePos ?? 0);
+      _downloadEpisodeByPos(epiPosition + 1);
     }
     log("cEpisodePos -------------------===> $cEpisodePos");
   }
 
-  saveShowInSecureStorage() async {
+  saveShowInSecureStorage(int epiLength) async {
     final showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
-    var listString = await storage.read(
+    String? listString = await storage.read(
             key:
                 "${Constant.hawkEPISODEList}${Constant.userID}${seasonList?[(seasonPos ?? 0)].id}${sectionDetails?.id}") ??
         '';
     log("listString ===> ${listString.toString()}");
     List<EpisodeItem>? myEpiList;
-    if (listString.isNotEmpty) {
+    if (listString != "") {
       myEpiList = List<EpisodeItem>.from(
-          jsonDecode(listString).map((x) => EpisodeItem.fromJson(x)));
+          jsonDecode(listString)?.map((x) => EpisodeItem.fromJson(x)) ?? []);
     }
 
     /* Save Seasons */
-    var listSeasonString = await storage.read(
+    String? listSeasonString = await storage.read(
             key:
                 "${Constant.hawkSEASONList}${Constant.userID}${sectionDetails?.id}") ??
         '';
     log("listSeasonString ===> ${listSeasonString.toString()}");
     List<SessionItem>? mySeasonList;
-    if (listSeasonString.isNotEmpty) {
+    if (listSeasonString != "") {
       mySeasonList = List<SessionItem>.from(
-          jsonDecode(listSeasonString).map((x) => SessionItem.fromJson(x)));
+          jsonDecode(listSeasonString)?.map((x) => SessionItem.fromJson(x)) ??
+              []);
     }
     SessionItem sessionItem = SessionItem(
       id: seasonList?[(seasonPos ?? 0)].id,
@@ -252,21 +253,23 @@ class ShowDownloadProvider extends ChangeNotifier {
 
     if (mySeasonList.isNotEmpty) {
       await storage.write(
-          key:
-              "${Constant.hawkSEASONList}${Constant.userID}${sectionDetails?.id}",
-          value: jsonEncode(mySeasonList));
+        key:
+            "${Constant.hawkSEASONList}${Constant.userID}${sectionDetails?.id}",
+        value: jsonEncode(mySeasonList),
+      );
     }
     /* ************/
 
     /* Save Show */
-    var listShowString =
+    String? listShowString =
         await storage.read(key: "${Constant.hawkSHOWList}${Constant.userID}") ??
             '';
     log("listShowString ===> ${listShowString.toString()}");
     List<DownloadVideoModel>? myShowList;
-    if (listShowString.isNotEmpty) {
+    if (listShowString != "") {
       myShowList = List<DownloadVideoModel>.from(jsonDecode(listShowString)
-          .map((x) => DownloadVideoModel.fromJson(x)));
+              ?.map((x) => DownloadVideoModel.fromJson(x)) ??
+          []);
     }
     DownloadVideoModel downloadShowModel = DownloadVideoModel(
       id: sectionDetails?.id,
@@ -296,20 +299,24 @@ class ShowDownloadProvider extends ChangeNotifier {
 
     if (myShowList.isNotEmpty) {
       await storage.write(
-          key: "${Constant.hawkSHOWList}${Constant.userID}",
-          value: jsonEncode(myShowList));
+        key: "${Constant.hawkSHOWList}${Constant.userID}",
+        value: jsonEncode(myShowList),
+      );
     }
     /* ************/
 
-    if (cEpisodePos == (mTotalEpi ?? 0) - 1) {
+    log("mTotalEpi ------------------------===> $mTotalEpi");
+    if (myEpiList?.length == mTotalEpi) {
       // ignore: use_build_context_synchronously
-      showDetailsProvider.setDownloadComplete(
-          context,
-          showDetailsProvider
-              .sectionDetailModel.session?[showDetailsProvider.seasonPos].id,
-          showDetailsProvider.sectionDetailModel.result?.videoType,
-          showDetailsProvider.sectionDetailModel.result?.typeId,
-          showDetailsProvider.sectionDetailModel.result?.id);
+      Utils.setDownloadComplete(
+        context,
+        "Show",
+        showDetailsProvider
+            .sectionDetailModel.session?[showDetailsProvider.seasonPos].id,
+        showDetailsProvider.sectionDetailModel.result?.videoType,
+        showDetailsProvider.sectionDetailModel.result?.typeId,
+        showDetailsProvider.sectionDetailModel.result?.id,
+      );
     }
     notifyListeners();
   }
@@ -330,8 +337,9 @@ class ShowDownloadProvider extends ChangeNotifier {
         myShowList?.remove(myShowList[i]);
 
         await storage.write(
-            key: "${Constant.hawkSHOWList}${Constant.userID}",
-            value: jsonEncode(myShowList));
+          key: "${Constant.hawkSHOWList}${Constant.userID}",
+          value: jsonEncode(myShowList),
+        );
       }
     }
   }
@@ -356,8 +364,9 @@ class ShowDownloadProvider extends ChangeNotifier {
         mySeasonList?.remove(mySeasonList[i]);
 
         await storage.write(
-            key: "${Constant.hawkSEASONList}${Constant.userID}$showID",
-            value: jsonEncode(mySeasonList));
+          key: "${Constant.hawkSEASONList}${Constant.userID}$showID",
+          value: jsonEncode(mySeasonList),
+        );
       }
     }
   }
@@ -384,9 +393,9 @@ class ShowDownloadProvider extends ChangeNotifier {
         myEpisodeList?.remove(myEpisodeList[i]);
 
         await storage.write(
-            key:
-                "${Constant.hawkEPISODEList}${Constant.userID}$seasonID$showID",
-            value: jsonEncode(myEpisodeList));
+          key: "${Constant.hawkEPISODEList}${Constant.userID}$seasonID$showID",
+          value: jsonEncode(myEpisodeList),
+        );
       }
     }
   }
@@ -394,13 +403,13 @@ class ShowDownloadProvider extends ChangeNotifier {
   Future<List<SessionItem>?> getDownloadedSeasons(String showID) async {
     loading = true;
     List<SessionItem>? mySeasonList;
-    var listString = await storage.read(
+    String? listString = await storage.read(
             key: "${Constant.hawkSEASONList}${Constant.userID}$showID") ??
         '';
     log("listString ===> ${listString.toString()}");
-    if (listString.isNotEmpty) {
+    if (listString != "") {
       mySeasonList = List<SessionItem>.from(
-          jsonDecode(listString).map((x) => SessionItem.fromJson(x)));
+          jsonDecode(listString)?.map((x) => SessionItem.fromJson(x)) ?? []);
     }
     loading = false;
     notifyListeners();
@@ -411,14 +420,14 @@ class ShowDownloadProvider extends ChangeNotifier {
       String showID, String seasonID) async {
     loading = true;
     List<EpisodeItem>? myEpisodeList;
-    var listString = await storage.read(
+    String? listString = await storage.read(
             key:
                 "${Constant.hawkEPISODEList}${Constant.userID}$seasonID$showID") ??
         '';
     log("listString ===> ${listString.toString()}");
-    if (listString.isNotEmpty) {
+    if (listString != "") {
       myEpisodeList = List<EpisodeItem>.from(
-          jsonDecode(listString).map((x) => EpisodeItem.fromJson(x)));
+          jsonDecode(listString)?.map((x) => EpisodeItem.fromJson(x)) ?? []);
     }
     loading = false;
     notifyListeners();
@@ -429,13 +438,14 @@ class ShowDownloadProvider extends ChangeNotifier {
     log("deleteShowFromDownload UserID ===> ${Constant.userID}");
     log("deleteShowFromDownload showID ===> $showID");
     List<DownloadVideoModel>? myShowList = [];
-    var listString =
+    String? listString =
         await storage.read(key: '${Constant.hawkSHOWList}${Constant.userID}') ??
             '';
     log("listString ===> ${listString.toString()}");
-    if (listString.isNotEmpty) {
+    if (listString != "") {
       myShowList = List<DownloadVideoModel>.from(
-          jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
+          jsonDecode(listString)?.map((x) => DownloadVideoModel.fromJson(x)) ??
+              []);
     }
     log("myShowList ===> ${myShowList.length}");
 
@@ -453,115 +463,141 @@ class ShowDownloadProvider extends ChangeNotifier {
         File dirFolder = File(dirPath);
         log("File existsSync ==> ${dirFolder.existsSync()}");
         dirFolder.deleteSync(recursive: true);
-        await storage.delete(key: "${Constant.hawkSHOWList}${Constant.userID}");
+        log("myShowList ==1==> ${myShowList.length}");
+        if (myShowList.isEmpty) {
+          await storage.delete(
+              key: "${Constant.hawkSHOWList}${Constant.userID}");
+          return;
+        }
+        log("myShowList ==2==> ${myShowList.length}");
+        await storage.write(
+          key: "${Constant.hawkSHOWList}${Constant.userID}",
+          value: jsonEncode(myShowList),
+        );
+        return;
       }
     }
   }
 
-  Future<void> deleteEpisodeFromDownload(List<EpisodeItem>? myEpisodeList,
+  Future<void> deleteEpisodeFromDownload(
       String epiID, String showID, String seasonID) async {
-    List<DownloadVideoModel>? myShowList = [];
-    List<SessionItem>? mySessionList = [];
-    List<EpisodeItem>? myEpisodeList = [];
-    var listString =
+    log("epiID ======> $epiID");
+    log("showID =====> $showID");
+    log("seasonID ===> $seasonID");
+    List<DownloadVideoModel>? myShowList;
+    List<SessionItem>? mySessionList;
+    List<EpisodeItem>? myEpisodeList;
+    String? listString =
         await storage.read(key: '${Constant.hawkSHOWList}${Constant.userID}') ??
             '';
-    log("listString ===> ${listString.toString()}");
-    if (listString.isNotEmpty) {
+    if (listString != "") {
       myShowList = List<DownloadVideoModel>.from(
-          jsonDecode(listString).map((x) => DownloadVideoModel.fromJson(x)));
+          jsonDecode(listString)?.map((x) => DownloadVideoModel.fromJson(x)) ??
+              []);
     }
-    log("myShowList ===> ${myShowList.length}");
+    log("myShowList ===> ${myShowList?.length}");
 
-    var listSeasonString = await storage.read(
-            key:
-                '${Constant.hawkSEASONList}${Constant.userID}${sectionDetails?.id}') ??
+    String? listSeasonString = await storage.read(
+            key: '${Constant.hawkSEASONList}${Constant.userID}$showID') ??
         '';
-    log("listSeasonString ===> ${listSeasonString.toString()}");
-    if (listSeasonString.isNotEmpty) {
+    if (listSeasonString != "") {
       mySessionList = List<SessionItem>.from(
-          jsonDecode(listSeasonString).map((x) => SessionItem.fromJson(x)));
+          jsonDecode(listSeasonString)?.map((x) => SessionItem.fromJson(x)) ??
+              []);
     }
-    log("mySeasonList ===> ${mySessionList.length}");
+    log("mySeasonList ===> ${mySessionList?.length}");
 
-    var listEpisodeString = await storage.read(
+    String? listEpiString = await storage.read(
             key:
-                '${Constant.hawkEPISODEList}${Constant.userID}${seasonList?[(seasonPos ?? 0)].id}${sectionDetails?.id}') ??
+                '${Constant.hawkEPISODEList}${Constant.userID}$seasonID$showID') ??
         '';
-    log("listEpisodeString ===> ${listEpisodeString.toString()}");
-    if (listEpisodeString.isNotEmpty) {
+    log("listEpiString ===> $listEpiString");
+    if (listEpiString != "") {
       myEpisodeList = List<EpisodeItem>.from(
-          jsonDecode(listEpisodeString).map((x) => EpisodeItem.fromJson(x)));
+          jsonDecode(listEpiString)?.map((x) => EpisodeItem.fromJson(x)) ?? []);
     }
-    log("myEpisodeList ===> ${myEpisodeList.length}");
+    log("myEpisodeList ===> ${myEpisodeList?.length}");
 
     /* Main Download Loop */
-    for (int i = 0; i < myShowList.length; i++) {
-      if ((myShowList[i].id.toString()) == showID) {
-        log("Stored ShowID ========> ${myShowList[i].id}");
+    for (int i = 0; i < (myShowList?.length ?? 0); i++) {
+      if ((myShowList?[i].id.toString()) == showID) {
+        log("Stored ShowID ========> ${myShowList?[i].id}");
         /* Season(Session) Loop */
-        for (int j = 0; j < mySessionList.length; j++) {
-          if (mySessionList[j].id.toString() == seasonID.toString() &&
-              mySessionList[j].showId.toString() == showID.toString()) {
-            log("Stored SessionID ========> ${mySessionList[j].id}");
+        for (int j = 0; j < (mySessionList?.length ?? 0); j++) {
+          if (mySessionList?[j].id.toString() == seasonID.toString() &&
+              mySessionList?[j].showId.toString() == showID.toString()) {
+            log("Stored SessionID ========> ${mySessionList?[j].id}");
             /* Episode Loop */
-            for (int k = 0; k < myEpisodeList.length; k++) {
-              log("Hawk epiID ==> ${myEpisodeList[k].id}");
-              if (myEpisodeList[k].id.toString() == epiID.toString() &&
-                  myEpisodeList[k].showId.toString() == showID.toString() &&
-                  myEpisodeList[k].sessionId.toString() ==
+            for (int k = 0; k < (myEpisodeList?.length ?? 0); k++) {
+              log("Hawk epiID ==> ${myEpisodeList?[k].id}");
+              if (myEpisodeList?[k].id.toString() == epiID.toString() &&
+                  myEpisodeList?[k].showId.toString() == showID.toString() &&
+                  myEpisodeList?[k].sessionId.toString() ==
                       seasonID.toString()) {
-                log("Stored EpisodeID ========> ${myEpisodeList[k].id}");
-                log("Stored SessionID ========> ${myEpisodeList[k].sessionId}");
-                log("Stored ShowID ========> ${myEpisodeList[k].showId}");
+                log("Stored EpisodeID ========> ${myEpisodeList?[k].id}");
+                log("Stored SessionID ========> ${myEpisodeList?[k].sessionId}");
+                log("Stored ShowID ========> ${myEpisodeList?[k].showId}");
                 log("myEpisodeList =======================> k = $k");
-                String dirPath = myShowList[i].savedDir ?? "";
-                String epiPath = myEpisodeList[k].savedFile ?? "";
+                String dirPath = myShowList?[i].savedDir ?? "";
+                String epiPath = myEpisodeList?[k].savedFile ?? "";
                 log("epiPath =====> $epiPath");
                 log("dirPath =====> $dirPath");
 
-                log("myEpisodeList ====BEFORE=====> ${myEpisodeList.length}");
-                myEpisodeList.remove(myEpisodeList[k]);
-                log("myEpisodeList ====AFTER=====> ${myEpisodeList.length}");
+                log("myEpisodeList ====BEFORE=====> ${myEpisodeList?.length}");
+                myEpisodeList?.remove(myEpisodeList[k]);
+                log("myEpisodeList ====AFTER=====> ${myEpisodeList?.length}");
                 await storage.write(
+                  key:
+                      "${Constant.hawkEPISODEList}${Constant.userID}$seasonID$showID",
+                  value: jsonEncode(myEpisodeList),
+                );
+                if ((myEpisodeList?.length ?? 0) == 0) {
+                  log("mySessionList ====BEFORE=====> ${mySessionList?.length}");
+                  mySessionList?.remove(mySessionList[j]);
+                  log("mySessionList ====AFTER=====> ${mySessionList?.length}");
+                  await storage.delete(
                     key:
                         "${Constant.hawkEPISODEList}${Constant.userID}$seasonID$showID",
-                    value: jsonEncode(myEpisodeList));
-                if (myEpisodeList.isEmpty) {
-                  log("mySessionList ====BEFORE=====> ${mySessionList.length}");
-                  mySessionList.remove(mySessionList[j]);
-                  log("mySessionList ====AFTER=====> ${mySessionList.length}");
+                  );
                 }
-                if (myEpisodeList.isNotEmpty) {
-                  mySessionList[j].episode = myEpisodeList;
+                if ((myEpisodeList?.length ?? 0) > 0) {
+                  mySessionList?[j].episode = myEpisodeList;
                 }
                 await storage.write(
-                    key: "${Constant.hawkSEASONList}${Constant.userID}$showID",
-                    value: jsonEncode(mySessionList));
-                if (mySessionList.isEmpty) {
-                  log("myShowList ====BEFORE=====> ${myShowList.length}");
-                  myShowList.remove(myShowList[i]);
-                  log("myShowList ====AFTER=====> ${myShowList.length}");
+                  key: "${Constant.hawkSEASONList}${Constant.userID}$showID",
+                  value: jsonEncode(mySessionList),
+                );
+                if ((mySessionList?.length ?? 0) == 0) {
+                  log("myShowList ====BEFORE=====> ${myShowList?.length}");
+                  myShowList?.remove(myShowList[i]);
+                  log("myShowList ====AFTER=====> ${myShowList?.length}");
+                  await storage.delete(
+                    key:
+                        "${Constant.hawkSEASONList}${Constant.userID}$seasonID",
+                  );
                 }
-                if (mySessionList.isNotEmpty) {
-                  myShowList[i].session = mySessionList;
+                if ((mySessionList?.length ?? 0) > 0) {
+                  myShowList?[i].session = mySessionList;
                 }
 
                 await storage.write(
-                    key: "${Constant.hawkSHOWList}${Constant.userID}",
-                    value: jsonEncode(myShowList));
-                log("myShowList ====SIZE=====> ${myShowList.length}");
+                  key: "${Constant.hawkSHOWList}${Constant.userID}",
+                  value: jsonEncode(myShowList),
+                );
+                log("myShowList ====SIZE=====> ${myShowList?.length}");
 
-                if (myEpisodeList.isNotEmpty) {
+                if ((myEpisodeList?.length ?? 0) > 0) {
                   File file = File(epiPath);
                   if (await file.exists()) {
                     file.delete();
                   }
                 } else {
-                  if (mySessionList.isEmpty) {
+                  if ((mySessionList?.length ?? 0) == 0) {
                     File dirFolder = File(dirPath);
                     log("File existsSync ==> ${dirFolder.existsSync()}");
-                    dirFolder.deleteSync(recursive: true);
+                    if (dirFolder.existsSync()) {
+                      dirFolder.deleteSync(recursive: true);
+                    }
                     await storage.delete(
                         key: "${Constant.hawkSHOWList}${Constant.userID}");
                   }
@@ -580,27 +616,34 @@ class ShowDownloadProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setDownloadProgress(int progress) {
+  setDownloadProgress(int progress, DownloadTaskStatus taskStatus) {
     dProgress = progress;
-    if (progress == 100) {
+    if (taskStatus == DownloadTaskStatus.complete && progress == 100) {
+      log('cEpisodePos ==============> $cEpisodePos');
       saveEpisodeInSecureStorage(cEpisodePos ?? 0);
       dProgress = 0;
+      log('mTotalEpi   ==============> $mTotalEpi');
+      if ((cEpisodePos ?? 0) < ((mTotalEpi ?? 0) - 1)) {
+        cEpisodePos = (cEpisodePos ?? 0) + 1;
+      }
+      log('setDownloadProgress cEpisodePos ==============> $cEpisodePos');
+      return;
     }
     notifyListeners();
     log('setDownloadProgress dProgress ==============> $dProgress');
   }
 
   clearProvider() {
-    seasonClickIndex;
+    seasonClickIndex = 0;
     dProgress = 0;
-    cEpisodePos;
-    seasonPos;
-    mTotalEpi;
+    cEpisodePos = 0;
+    seasonPos = 0;
+    mTotalEpi = 0;
     sectionDetails;
     seasonList = [];
     episodeList = [];
     localPath = "";
     savedEpiPathList = [];
-    log("<================ clearProvider ================>");
+    log("<================ D clearProvider ================>");
   }
 }

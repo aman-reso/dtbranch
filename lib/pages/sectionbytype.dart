@@ -6,7 +6,7 @@ import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/sectionbytypeprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -187,7 +187,7 @@ class SectionByTypeState extends State<SectionByType> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return TvShowDetails(
+                            return ShowDetails(
                               sectionBannerList?[index].id ?? 0,
                               sectionBannerList?[index].videoType ?? 0,
                               sectionBannerList?[index].typeId ?? 0,
@@ -416,7 +416,7 @@ class SectionByTypeState extends State<SectionByType> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return TvShowDetails(
+                      return ShowDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
@@ -483,7 +483,7 @@ class SectionByTypeState extends State<SectionByType> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return TvShowDetails(
+                      return ShowDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,
@@ -550,7 +550,7 @@ class SectionByTypeState extends State<SectionByType> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return TvShowDetails(
+                      return ShowDetails(
                         sectionDataList?[index].id ?? 0,
                         sectionDataList?[index].videoType ?? 0,
                         sectionDataList?[index].typeId ?? 0,

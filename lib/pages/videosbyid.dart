@@ -10,7 +10,7 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -182,7 +182,7 @@ class VideosByIDState extends State<VideosByID> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return TvShowDetails(
+                        return ShowDetails(
                           videoByIDProvider
                                   .videoByIdModel.result?[position].id ??
                               0,

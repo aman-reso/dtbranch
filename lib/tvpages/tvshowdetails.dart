@@ -38,16 +38,16 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 
-class TvShowDetails extends StatefulWidget {
+class TVShowDetails extends StatefulWidget {
   final int videoId, videoType, typeId;
-  const TvShowDetails(this.videoId, this.videoType, this.typeId, {Key? key})
+  const TVShowDetails(this.videoId, this.videoType, this.typeId, {Key? key})
       : super(key: key);
 
   @override
-  State<TvShowDetails> createState() => TvShowDetailsState();
+  State<TVShowDetails> createState() => TVShowDetailsState();
 }
 
-class TvShowDetailsState extends State<TvShowDetails> {
+class TVShowDetailsState extends State<TVShowDetails> {
   /* Download init */
   // late bool _permissionReady;
   late ShowDownloadProvider downloadProvider;

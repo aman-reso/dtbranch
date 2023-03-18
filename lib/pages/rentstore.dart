@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
@@ -74,7 +74,7 @@ class RentStoreState extends State<RentStore> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return TvShowDetails(
+            return ShowDetails(
               videoId ?? 0,
               videoType ?? 0,
               typeId ?? 0,

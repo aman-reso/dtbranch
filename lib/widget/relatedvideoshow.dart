@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -115,7 +115,7 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return TvShowDetails(
+                    return ShowDetails(
                       relatedDataList?[index].id ?? 0,
                       relatedDataList?[index].videoType ?? 0,
                       relatedDataList?[index].typeId ?? 0,

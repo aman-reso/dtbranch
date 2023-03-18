@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/tvpages/tvmoviedetails.dart';
+import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/utils/sharedpre.dart';
-import 'package:dtlive/webwidget/commonappbar.dart';
-import 'package:dtlive/webwidget/footerweb.dart';
+import 'package:dtlive/utils/strings.dart';
 
-import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
@@ -14,7 +15,6 @@ import 'package:dtlive/model/sectionbannermodel.dart' as banner;
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/homeprovider.dart';
@@ -25,25 +25,26 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatefulWidget {
+class TVHome extends StatefulWidget {
   final String? pageName;
-  const Home({Key? key, required this.pageName}) : super(key: key);
+  const TVHome({Key? key, required this.pageName}) : super(key: key);
 
   @override
-  State<Home> createState() => HomeState();
+  State<TVHome> createState() => TVHomeState();
 }
 
-class HomeState extends State<Home> {
+class TVHomeState extends State<TVHome> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
-  CarouselController pageController = CarouselController();
+  final TextEditingController searchController = TextEditingController();
   late HomeProvider homeProvider;
+  late SearchProvider searchProvider;
+  CarouselController pageController = CarouselController();
   int? videoId, videoType, typeId;
   String? currentPage,
       langCatName,
@@ -66,6 +67,7 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     currentPage = widget.pageName ?? "";
+    searchProvider = Provider.of<SearchProvider>(context, listen: false);
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -119,7 +121,7 @@ class HomeState extends State<Home> {
   }
 
   _getData() async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
+    if (!Constant.isTV) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
@@ -189,7 +191,7 @@ class HomeState extends State<Home> {
     debugPrint("videoId ==========> $videoId");
     debugPrint("videoType ==========> $videoType");
     debugPrint("typeId ==========> $typeId");
-    if (pageName != "" && (kIsWeb || Constant.isTV)) {
+    if (pageName != "" && Constant.isTV) {
       await setSelectedTab(-1);
     }
     if (videoType == 1) {
@@ -198,7 +200,7 @@ class HomeState extends State<Home> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return MovieDetails(
+            return TVMovieDetails(
               videoId,
               videoType,
               typeId,
@@ -212,7 +214,7 @@ class HomeState extends State<Home> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return ShowDetails(
+            return TVShowDetails(
               videoId,
               videoType,
               typeId,
@@ -233,79 +235,24 @@ class HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: appBgColor,
       body: SafeArea(
-        child: (kIsWeb || Constant.isTV)
-            ? _webAppBarWithDetails()
-            : _mobileAppBarWithDetails(),
+        child: _tvAppBarWithDetails(),
       ),
     );
   }
 
-  Widget _mobileAppBarWithDetails() {
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return <Widget>[
-          SliverOverlapAbsorber(
-            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            sliver: SliverAppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: appBgColor,
-              toolbarHeight: 65,
-              title: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                alignment: Alignment.center,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
-                  splashColor: transparentColor,
-                  highlightColor: transparentColor,
-                  onTap: () async {
-                    await getTabData(0, homeProvider.sectionTypeModel.result);
-                  },
-                  child:
-                      MyImage(width: 80, height: 80, imagePath: "appicon.png"),
-                ),
-              ), // This is the title in the app bar.
-              pinned: false,
-              expandedHeight: 0,
-              forceElevated: innerBoxIsScrolled,
-            ),
-          ),
-        ];
-      },
-      body: homeProvider.loading
-          ? ShimmerUtils.buildHomeMobileShimmer(context)
-          : (homeProvider.sectionTypeModel.status == 200)
-              ? (homeProvider.sectionTypeModel.result != null ||
-                      (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
-                  ? Stack(
-                      children: [
-                        tabItem(homeProvider.sectionTypeModel.result),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: Dimens.homeTabHeight,
-                          padding: const EdgeInsets.only(top: 8, bottom: 8),
-                          color: black.withOpacity(0.8),
-                          child: tabTitle(homeProvider.sectionTypeModel.result),
-                        ),
-                      ],
-                    )
-                  : const NoData(title: '', subTitle: '')
-              : const NoData(title: '', subTitle: ''),
-    );
-  }
-
-  Widget _webAppBarWithDetails() {
+  Widget _tvAppBarWithDetails() {
     if (homeProvider.loading) {
       return ShimmerUtils.buildHomeMobileShimmer(context);
     } else {
       if (homeProvider.sectionTypeModel.status == 200) {
         if (homeProvider.sectionTypeModel.result != null ||
             (homeProvider.sectionTypeModel.result?.length ?? 0) > 0) {
-          return Stack(
+          return Column(
             children: [
-              // _clickToRedirect(pageName: currentPage ?? ""),
-              tabItem(homeProvider.sectionTypeModel.result),
-              const CommonAppBar(),
+              _buildAppBar(),
+              Expanded(
+                child: tabItem(homeProvider.sectionTypeModel.result),
+              ),
             ],
           );
         } else {
@@ -317,49 +264,372 @@ class HomeState extends State<Home> {
     }
   }
 
+  Widget _buildAppBar() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: Dimens.homeTabHeight,
+      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+      color: black.withOpacity(0.75),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          /* App Icon */
+          Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              focusColor: whiteTransparent,
+              borderRadius: BorderRadius.circular(8),
+              onTap: () async {
+                if (Constant.isTV) _onItemTapped("");
+                await getTabData(0, homeProvider.sectionTypeModel.result);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: MyImage(
+                  width: 68,
+                  height: 68,
+                  imagePath: "appicon.png",
+                ),
+              ),
+            ),
+          ),
+
+          /* Types */
+          Expanded(
+            child: tabTitle(homeProvider.sectionTypeModel.result),
+          ),
+          const SizedBox(width: 10),
+
+          /* Feature buttons */
+          /* Search */
+          // Container(
+          //   height: 25,
+          //   constraints: const BoxConstraints(minWidth: 60, maxWidth: 130),
+          //   padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+          //   decoration: BoxDecoration(
+          //     color: transparentColor,
+          //     border: Border.all(
+          //       color: primaryColor,
+          //       width: 0.5,
+          //     ),
+          //     borderRadius: BorderRadius.circular(5),
+          //   ),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     children: [
+          //       Expanded(
+          //         child: Container(
+          //           width: MediaQuery.of(context).size.width,
+          //           height: MediaQuery.of(context).size.height,
+          //           alignment: Alignment.center,
+          //           child: TextField(
+          //             onChanged: (value) async {
+          //               log("value ====> $value");
+          //               if (value.isNotEmpty) {
+          //                 mSearchText = value;
+          //                 debugPrint("mSearchText ====> $mSearchText");
+          //                 _onItemTapped("search");
+          //                 await searchProvider.setLoading(true);
+          //                 await searchProvider.getSearchVideo(mSearchText);
+          //               }
+          //             },
+          //             textInputAction: TextInputAction.done,
+          //             obscureText: false,
+          //             controller: searchController,
+          //             keyboardType: TextInputType.text,
+          //             maxLines: 1,
+          //             style: const TextStyle(
+          //               color: white,
+          //               fontSize: 14,
+          //               overflow: TextOverflow.ellipsis,
+          //               fontWeight: FontWeight.w600,
+          //             ),
+          //             decoration: const InputDecoration(
+          //               border: InputBorder.none,
+          //               filled: true,
+          //               isCollapsed: true,
+          //               fillColor: transparentColor,
+          //               hintStyle: TextStyle(
+          //                 color: otherColor,
+          //                 fontSize: 13,
+          //                 overflow: TextOverflow.ellipsis,
+          //                 fontWeight: FontWeight.w500,
+          //               ),
+          //               hintText: searchHint2,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //       Consumer<SearchProvider>(
+          //         builder: (context, searchProvider, child) {
+          //           if (searchController.text.toString().isNotEmpty) {
+          //             return Material(
+          //               type: MaterialType.transparency,
+          //               child: InkWell(
+          //                 focusColor: whiteTransparent,
+          //                 borderRadius: BorderRadius.circular(5),
+          //                 onTap: () async {
+          //                   debugPrint("Click on Clear!");
+          //                   _onItemTapped("");
+          //                   searchController.clear();
+          //                   await searchProvider.clearProvider();
+          //                   await searchProvider.notifyProvider();
+          //                 },
+          //                 child: Container(
+          //                   constraints: const BoxConstraints(
+          //                     minWidth: 25,
+          //                     maxWidth: 25,
+          //                   ),
+          //                   padding: const EdgeInsets.all(5),
+          //                   alignment: Alignment.center,
+          //                   child: MyImage(
+          //                     height: 23,
+          //                     color: white,
+          //                     fit: BoxFit.contain,
+          //                     imagePath: "ic_close.png",
+          //                   ),
+          //                 ),
+          //               ),
+          //             );
+          //           } else {
+          //             return Material(
+          //               type: MaterialType.transparency,
+          //               child: InkWell(
+          //                 focusColor: whiteTransparent,
+          //                 borderRadius: BorderRadius.circular(5),
+          //                 onTap: () async {
+          //                   debugPrint("Click on Search!");
+          //                   if (searchController.text.toString().isNotEmpty) {
+          //                     mSearchText = searchController.text.toString();
+          //                     debugPrint("mSearchText ====> $mSearchText");
+          //                     _onItemTapped("search");
+          //                     await searchProvider.setLoading(true);
+          //                     await searchProvider.getSearchVideo(mSearchText);
+          //                   }
+          //                 },
+          //                 child: Container(
+          //                   constraints: const BoxConstraints(
+          //                     minWidth: 25,
+          //                     maxWidth: 25,
+          //                   ),
+          //                   padding: const EdgeInsets.all(5),
+          //                   alignment: Alignment.center,
+          //                   child: MyImage(
+          //                     height: 23,
+          //                     color: white,
+          //                     fit: BoxFit.contain,
+          //                     imagePath: "ic_find.png",
+          //                   ),
+          //                 ),
+          //               ),
+          //             );
+          //           }
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          // ),
+
+          /* Channels */
+          Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              focusColor: whiteTransparent,
+              onTap: () async {
+                _onItemTapped("channel");
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Consumer<HomeProvider>(
+                  builder: (context, homeProvider, child) {
+                    return MyText(
+                      color: homeProvider.currentPage == "channel"
+                          ? primaryColor
+                          : white,
+                      multilanguage: false,
+                      text: bottomView3,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontsizeNormal: 14,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 14,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          /* Rent */
+          Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              focusColor: whiteTransparent,
+              onTap: () async {
+                _onItemTapped("store");
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Consumer<HomeProvider>(
+                  builder: (context, homeProvider, child) {
+                    return MyText(
+                      color: homeProvider.currentPage == "store"
+                          ? primaryColor
+                          : white,
+                      multilanguage: false,
+                      text: bottomView4,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontsizeNormal: 14,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 14,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          /* Login / MyProfile */
+          Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              focusColor: whiteTransparent,
+              onTap: () async {
+                if (Constant.userID != null) {
+                  Utils.buildWebAlertDialog(context, "profile", "");
+                } else {
+                  Utils.buildWebAlertDialog(context, "login", "");
+                }
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Consumer<HomeProvider>(
+                  builder: (context, homeProvider, child) {
+                    return MyText(
+                      color: (homeProvider.currentPage == "login" ||
+                              homeProvider.currentPage == "setting")
+                          ? primaryColor
+                          : white,
+                      multilanguage: Constant.userID != null ? false : true,
+                      text: Constant.userID != null ? myProfile : "login",
+                      fontsizeNormal: 14,
+                      fontweight: FontWeight.w600,
+                      fontsizeWeb: 14,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          /* Logout */
+          Consumer<HomeProvider>(
+            builder: (context, homeProvider, child) {
+              if (Constant.userID != null) {
+                return Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    focusColor: whiteTransparent,
+                    onTap: () async {
+                      if (Constant.userID != null) {
+                        // _buildLogoutDialog();
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: MyText(
+                        color: white,
+                        multilanguage: true,
+                        text: "sign_out",
+                        fontsizeNormal: 14,
+                        fontweight: FontWeight.w600,
+                        fontsizeWeb: 14,
+                        maxline: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textalign: TextAlign.center,
+                        fontstyle: FontStyle.normal,
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget tabTitle(List<type.Result>? sectionTypeList) {
     return ListView.separated(
       itemCount: (sectionTypeList?.length ?? 0) + 1,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-      padding: const EdgeInsets.fromLTRB(13, 5, 13, 5),
+      padding: const EdgeInsets.fromLTRB(13, 3, 13, 3),
       separatorBuilder: (context, index) => const SizedBox(width: 5),
       itemBuilder: (BuildContext context, int index) {
         return Consumer<HomeProvider>(
           builder: (context, homeProvider, child) {
-            return InkWell(
-              borderRadius: BorderRadius.circular(25),
-              onTap: () async {
-                debugPrint("index ===========> $index");
-                if (kIsWeb) _onItemTapped("");
-                await getTabData(index, homeProvider.sectionTypeModel.result);
-              },
-              child: Container(
-                constraints: const BoxConstraints(maxHeight: 32),
-                decoration: Utils.setBackground(
-                  homeProvider.selectedIndex == index
-                      ? white
-                      : transparentColor,
-                  20,
-                ),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
-                child: MyText(
-                  color: homeProvider.selectedIndex == index ? black : white,
-                  multilanguage: false,
-                  text: index == 0
-                      ? "Home"
-                      : index > 0
-                          ? (sectionTypeList?[index - 1].name.toString() ?? "")
-                          : "",
-                  fontsizeNormal: 12,
-                  fontweight: FontWeight.w700,
-                  fontsizeWeb: 14,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textalign: TextAlign.center,
-                  fontstyle: FontStyle.normal,
+            return Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                focusColor: homeProvider.selectedIndex == index
+                    ? primaryColor
+                    : whiteTransparent,
+                borderRadius: BorderRadius.circular(25),
+                onTap: () async {
+                  debugPrint("index ===========> $index");
+                  _onItemTapped("");
+                  await getTabData(index, homeProvider.sectionTypeModel.result);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 32),
+                    decoration: Utils.setBackground(
+                      homeProvider.selectedIndex == index
+                          ? white
+                          : transparentColor,
+                      20,
+                    ),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
+                    child: MyText(
+                      color:
+                          homeProvider.selectedIndex == index ? black : white,
+                      multilanguage: false,
+                      text: index == 0
+                          ? "Home"
+                          : index > 0
+                              ? (sectionTypeList?[index - 1].name.toString() ??
+                                  "")
+                              : "",
+                      fontsizeNormal: 12,
+                      fontweight: FontWeight.w700,
+                      fontsizeWeb: 14,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
+                    ),
+                  ),
                 ),
               ),
             );
@@ -377,29 +647,16 @@ class HomeState extends State<Home> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            SizedBox(height: Dimens.homeTabHeight),
-
             /* Banner */
             Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
                 if (sectionDataProvider.loadingBanner) {
-                  if ((kIsWeb || Constant.isTV) &&
-                      MediaQuery.of(context).size.width > 720) {
-                    return ShimmerUtils.bannerWeb(context);
-                  } else {
-                    return ShimmerUtils.bannerMobile(context);
-                  }
+                  return ShimmerUtils.bannerWeb(context);
                 } else {
                   if (sectionDataProvider.sectionBannerModel.status == 200 &&
                       sectionDataProvider.sectionBannerModel.result != null) {
-                    if ((kIsWeb || Constant.isTV) &&
-                        MediaQuery.of(context).size.width > 720) {
-                      return _webHomeBanner(
-                          sectionDataProvider.sectionBannerModel.result);
-                    } else {
-                      return _mobileHomeBanner(
-                          sectionDataProvider.sectionBannerModel.result);
-                    }
+                    return _tvHomeBanner(
+                        sectionDataProvider.sectionBannerModel.result);
                   } else {
                     return const SizedBox.shrink();
                   }
@@ -438,9 +695,6 @@ class HomeState extends State<Home> {
               },
             ),
             const SizedBox(height: 20),
-
-            /* Web Footer */
-            kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
           ],
         ),
       ),
@@ -476,114 +730,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  Widget _mobileHomeBanner(List<banner.Result>? sectionBannerList) {
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
-    if ((sectionBannerList?.length ?? 0) > 0) {
-      return Stack(
-        alignment: AlignmentDirectional.bottomCenter,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: Dimens.homeBanner,
-            child: CarouselSlider.builder(
-              itemCount: (sectionBannerList?.length ?? 0),
-              carouselController: pageController,
-              options: CarouselOptions(
-                initialPage: 0,
-                height: Dimens.homeBanner,
-                enlargeCenterPage: false,
-                autoPlay: true,
-                autoPlayCurve: Curves.easeInOutQuart,
-                enableInfiniteScroll: true,
-                autoPlayInterval:
-                    Duration(milliseconds: Constant.bannerDuration),
-                autoPlayAnimationDuration:
-                    Duration(milliseconds: Constant.animationDuration),
-                viewportFraction: 1.0,
-                onPageChanged: (val, _) async {
-                  await sectionDataProvider.setCurrentBanner(val);
-                },
-              ),
-              itemBuilder:
-                  (BuildContext context, int index, int pageViewIndex) {
-                return InkWell(
-                  focusColor: white,
-                  borderRadius: BorderRadius.circular(0),
-                  onTap: () {
-                    log("Clicked on index ==> $index");
-                    openDetailPage(
-                      (sectionBannerList?[index].videoType ?? 0) == 2
-                          ? "showdetail"
-                          : "videodetail",
-                      sectionBannerList?[index].id ?? 0,
-                      sectionBannerList?[index].videoType ?? 0,
-                      sectionBannerList?[index].typeId ?? 0,
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Stack(
-                      alignment: AlignmentDirectional.bottomCenter,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: Dimens.homeBanner,
-                          child: MyNetworkImage(
-                            imageUrl: sectionBannerList?[index].landscape ?? "",
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(0),
-                          width: MediaQuery.of(context).size.width,
-                          height: Dimens.homeBanner,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.center,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                transparentColor,
-                                transparentColor,
-                                appBgColor,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            child: Consumer<SectionDataProvider>(
-              builder: (context, sectionDataProvider, child) {
-                return CarouselIndicator(
-                  count: (sectionBannerList?.length ?? 0),
-                  index: sectionDataProvider.cBannerIndex,
-                  space: 8,
-                  height: 8,
-                  width: 8,
-                  cornerRadius: 4,
-                  color: dotsDefaultColor,
-                  activeColor: dotsActiveColor,
-                );
-              },
-            ),
-          ),
-        ],
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
-
-  Widget _webHomeBanner(List<banner.Result>? sectionBannerList) {
+  Widget _tvHomeBanner(List<banner.Result>? sectionBannerList) {
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
@@ -1255,7 +1402,7 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  // if (kIsWeb) {
+                  // if () {
                   //   videoId = sectionDataList?[index].id ?? 0;
                   //   langCatName = sectionDataList?[index].name ?? "";
                   //   _onItemTapped("bylanguage");
@@ -1356,7 +1503,7 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  // if (kIsWeb) {
+                  // if () {
                   //   videoId = sectionDataList?[index].id ?? 0;
                   //   langCatName = sectionDataList?[index].name ?? "";
                   //   _onItemTapped("bycategory");

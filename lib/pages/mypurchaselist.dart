@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/purchaselistprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
@@ -200,7 +200,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return TvShowDetails(
+                            return ShowDetails(
                               purchaselistProvider
                                       .rentModel.video?[position].id ??
                                   0,
@@ -352,7 +352,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return TvShowDetails(
+                            return ShowDetails(
                               purchaselistProvider
                                       .rentModel.tvshow?[position].id ??
                                   0,

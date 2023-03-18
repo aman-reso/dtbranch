@@ -9,7 +9,7 @@ import 'package:dtlive/model/channelsectionmodel.dart' as banner;
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -87,7 +87,7 @@ class ChannelsState extends State<Channels> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return TvShowDetails(
+            return ShowDetails(
               videoId ?? 0,
               videoType ?? 0,
               typeId ?? 0,

@@ -5,6 +5,7 @@ import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/intro.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
+import 'package:dtlive/tvpages/tvhome.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
@@ -107,12 +108,21 @@ class SplashState extends State<Splash> {
     log('seen ==> $seen');
     log('Constant userID ==> ${Constant.userID}');
     if (!mounted) return;
-    if (kIsWeb || Constant.isTV) {
+    if (kIsWeb) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) {
             return const Home(pageName: "");
+          },
+        ),
+      );
+    } else if (Constant.isTV) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const TVHome(pageName: "");
           },
         ),
       );

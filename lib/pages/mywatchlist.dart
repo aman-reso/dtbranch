@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/watchlistprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -160,7 +160,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return TvShowDetails(
+                              return ShowDetails(
                                 watchlistProvider
                                         .watchlistModel.result?[position].id ??
                                     0,
@@ -838,7 +838,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return TvShowDetails(
+                              return ShowDetails(
                                 watchlistProvider
                                         .watchlistModel.result?[position].id ??
                                     0,

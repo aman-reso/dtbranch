@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dtlive/model/downloadvideomodel.dart';
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/provider/showdownloadprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -649,7 +649,7 @@ class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return TvShowDetails(
+                              return ShowDetails(
                                 widget.showId,
                                 widget.videoType,
                                 widget.typeId,

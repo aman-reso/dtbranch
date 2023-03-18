@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/tvshowdetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
@@ -478,7 +478,7 @@ class SearchState extends State<Search> {
                       context,
                       MaterialPageRoute(
                         builder: (context) {
-                          return TvShowDetails(
+                          return ShowDetails(
                             searchProvider.searchModel.tvshow?[position].id ??
                                 0,
                             searchProvider

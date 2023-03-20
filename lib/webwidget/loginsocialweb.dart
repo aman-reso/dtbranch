@@ -64,6 +64,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                   onTap: () {
                     Navigator.pop(context);
                   },
+                  focusColor: white.withOpacity(0.5),
                   child: Container(
                     width: 30,
                     height: 30,
@@ -177,35 +178,39 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                   Utils.buildWebAlertDialog(context, "otp", mobileNumber);
                 }
               },
+              focusColor: white.withOpacity(0.5),
               borderRadius: BorderRadius.circular(18),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 35,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      primaryLight,
-                      primaryDark,
-                    ],
-                    begin: FractionalOffset(0.0, 0.0),
-                    end: FractionalOffset(1.0, 0.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        primaryLight,
+                        primaryDark,
+                      ],
+                      begin: FractionalOffset(0.0, 0.0),
+                      end: FractionalOffset(1.0, 0.0),
+                      stops: [0.0, 1.0],
+                      tileMode: TileMode.clamp,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
                   ),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                alignment: Alignment.center,
-                child: MyText(
-                  color: white,
-                  text: "login",
-                  multilanguage: true,
-                  fontsizeNormal: 15,
-                  fontsizeWeb: 14,
-                  fontweight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textalign: TextAlign.center,
-                  fontstyle: FontStyle.normal,
+                  alignment: Alignment.center,
+                  child: MyText(
+                    color: white,
+                    text: "login",
+                    multilanguage: true,
+                    fontsizeNormal: 15,
+                    fontsizeWeb: 14,
+                    fontweight: FontWeight.w600,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ),
@@ -247,43 +252,47 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                 debugPrint("Clicked on : ====> loginWith Google");
                 _gmailLogin();
               },
+              focusColor: white.withOpacity(0.5),
               borderRadius: BorderRadius.circular(18),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 35,
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                decoration: BoxDecoration(
-                  color: white,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyImage(
-                      width: 20,
-                      height: 20,
-                      imagePath: "ic_google.png",
-                      fit: BoxFit.contain,
-                    ),
-                    const SizedBox(
-                      width: 25,
-                    ),
-                    Flexible(
-                      child: MyText(
-                        color: black,
-                        text: "loginwithgoogle",
-                        fontsizeNormal: 14,
-                        fontsizeWeb: 12,
-                        multilanguage: true,
-                        fontweight: FontWeight.w600,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textalign: TextAlign.center,
-                        fontstyle: FontStyle.normal,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 35,
+                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  decoration: BoxDecoration(
+                    color: white,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MyImage(
+                        width: 20,
+                        height: 20,
+                        imagePath: "ic_google.png",
+                        fit: BoxFit.contain,
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        width: 25,
+                      ),
+                      Flexible(
+                        child: MyText(
+                          color: black,
+                          text: "loginwithgoogle",
+                          fontsizeNormal: 14,
+                          fontsizeWeb: 12,
+                          multilanguage: true,
+                          fontweight: FontWeight.w600,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

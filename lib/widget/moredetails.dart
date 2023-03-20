@@ -1,5 +1,6 @@
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/foundation.dart';
@@ -48,21 +49,21 @@ class _MoreDetailsState extends State<MoreDetails> {
                   color: white,
                   text: widget.moreDetailList?[index].title ?? "",
                   textalign: TextAlign.start,
-                  fontsizeNormal: 13,
-                  fontweight: FontWeight.w600,
+                  fontsizeNormal: 14,
+                  fontweight: FontWeight.w700,
                   fontsizeWeb: 15,
                   multilanguage: false,
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
                   fontstyle: FontStyle.normal,
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 5),
                 MyText(
                   color: otherColor,
                   text: widget.moreDetailList?[index].description ?? "",
                   textalign: TextAlign.start,
                   fontsizeNormal: 13,
-                  fontweight: FontWeight.w500,
+                  fontweight: FontWeight.w600,
                   fontsizeWeb: 14,
                   multilanguage: false,
                   maxline: 20,
@@ -72,7 +73,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                 const SizedBox(height: 10),
                 Container(
                   constraints: BoxConstraints(
-                    maxWidth: kIsWeb
+                    maxWidth: (kIsWeb || Constant.isTV)
                         ? (MediaQuery.of(context).size.width * 0.5)
                         : MediaQuery.of(context).size.width,
                   ),

@@ -13,7 +13,6 @@ import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/castcrew.dart';
 import 'package:dtlive/widget/moredetails.dart';
@@ -207,26 +206,20 @@ class ShowDetailsState extends State<ShowDetails> {
   }
 
   Widget _buildUIWithAppBar() {
-    return Stack(
-      children: [
-        (showDetailsProvider.loading)
-            ? SingleChildScrollView(
-                child: ((kIsWeb || Constant.isTV) &&
-                        MediaQuery.of(context).size.width > 720)
-                    ? ShimmerUtils.buildDetailWebShimmer(context, "show")
-                    : ShimmerUtils.buildDetailMobileShimmer(context, "show"),
-              )
-            : (showDetailsProvider.sectionDetailModel.status == 200 &&
-                    showDetailsProvider.sectionDetailModel.result != null)
-                ? (((kIsWeb || Constant.isTV) &&
-                        MediaQuery.of(context).size.width > 720)
-                    ? _buildWebData()
-                    : _buildMobileData())
-                : const NoData(title: '', subTitle: ''),
-        /* Common AppBar */
-        if ((kIsWeb || Constant.isTV)) const CommonAppBar(),
-      ],
-    );
+    return (showDetailsProvider.loading)
+        ? SingleChildScrollView(
+            child: ((kIsWeb || Constant.isTV) &&
+                    MediaQuery.of(context).size.width > 720)
+                ? ShimmerUtils.buildDetailWebShimmer(context, "show")
+                : ShimmerUtils.buildDetailMobileShimmer(context, "show"),
+          )
+        : (showDetailsProvider.sectionDetailModel.status == 200 &&
+                showDetailsProvider.sectionDetailModel.result != null)
+            ? (((kIsWeb || Constant.isTV) &&
+                    MediaQuery.of(context).size.width > 720)
+                ? _buildWebData()
+                : _buildMobileData())
+            : const NoData(title: '', subTitle: '');
   }
 
   Widget _buildMobileData() {
@@ -1637,33 +1630,70 @@ class ShowDetailsState extends State<ShowDetails> {
           builder: (context, showDetailsProvider, child) {
             return DropdownButtonHideUnderline(
               child: DropdownButton2(
-                isExpanded: false,
-                customButton: SizedBox(
-                  height: 30,
-                  child: Row(
-                    children: [
-                      MyText(
-                        color: white,
-                        text: showDetailsProvider.sectionDetailModel
-                                .session?[showDetailsProvider.seasonPos].name ??
-                            "",
-                        textalign: TextAlign.center,
-                        multilanguage: false,
-                        fontweight: FontWeight.w700,
-                        fontsizeNormal: 15,
-                        fontsizeWeb: 16,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontstyle: FontStyle.normal,
-                      ),
-                      const SizedBox(width: 8),
-                      MyImage(
-                        width: 12,
-                        height: 12,
-                        imagePath: "ic_dropdown.png",
-                        color: lightGray,
-                      )
-                    ],
+                isDense: true,
+                isExpanded: true,
+                customButton: FittedBox(
+                  child: Container(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      children: [
+                        MyText(
+                          color: white,
+                          text: showDetailsProvider
+                                  .sectionDetailModel
+                                  .session?[showDetailsProvider.seasonPos]
+                                  .name ??
+                              "",
+                          textalign: TextAlign.center,
+                          multilanguage: false,
+                          fontweight: FontWeight.w700,
+                          fontsizeNormal: 15,
+                          fontsizeWeb: 16,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(width: 8),
+                        MyImage(
+                          width: 12,
+                          height: 12,
+                          imagePath: "ic_dropdown.png",
+                          color: lightGray,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                dropdownStyleData: DropdownStyleData(
+                  width: 180,
+                  isFullScreen: true,
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  decoration: Utils.setBackground(lightBlack, 5),
+                  elevation: 8,
+                ),
+                menuItemStyleData: MenuItemStyleData(
+                  overlayColor: MaterialStateProperty.resolveWith(
+                    (states) {
+                      if (states.contains(MaterialState.focused)) {
+                        return white.withOpacity(0.5);
+                      }
+                      return transparentColor;
+                    },
+                  ),
+                ),
+                buttonStyleData: ButtonStyleData(
+                  decoration:
+                      Utils.setBGWithBorder(transparentColor, white, 20, 1),
+                  overlayColor: MaterialStateProperty.resolveWith(
+                    (states) {
+                      if (states.contains(MaterialState.focused)) {
+                        return white.withOpacity(0.5);
+                      }
+                      if (states.contains(MaterialState.hovered)) {
+                        return white.withOpacity(0.5);
+                      }
+                      return transparentColor;
+                    },
                   ),
                 ),
                 items: _buildWebDropDownItems(),
@@ -1691,11 +1721,6 @@ class ShowDetailsState extends State<ShowDetails> {
                   await getAllEpisode(mSeason ?? (detailsProvider.seasonPos),
                       detailsProvider.sectionDetailModel.session);
                 },
-                dropdownPadding: const EdgeInsets.only(left: 10, right: 10),
-                dropdownWidth: 150,
-                dropdownElevation: 8,
-                dropdownDecoration: Utils.setBackground(lightBlack, 5),
-                itemPadding: const EdgeInsets.symmetric(horizontal: 8.0),
               ),
             );
           },
@@ -1756,46 +1781,55 @@ class ShowDetailsState extends State<ShowDetails> {
 
   List<DropdownMenuItem<Session>>? _buildWebDropDownItems() {
     return showDetailsProvider.sectionDetailModel.session
-        ?.map<DropdownMenuItem<Session>>((Session value) {
-      return DropdownMenuItem<Session>(
-        value: value,
-        child: Container(
-          constraints: const BoxConstraints(maxHeight: 30, minWidth: 0),
-          decoration: Utils.setBackground(
-            showDetailsProvider.seasonPos != -1
-                ? ((showDetailsProvider.sectionDetailModel
-                                .session?[showDetailsProvider.seasonPos].id ??
-                            0) ==
-                        (value.id ?? 0)
-                    ? white
-                    : transparentColor)
-                : transparentColor,
-            20,
-          ),
+        ?.map<DropdownMenuItem<Session>>(
+      (Session value) {
+        return DropdownMenuItem<Session>(
+          value: value,
           alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-          child: MyText(
-            color: showDetailsProvider.seasonPos != -1
-                ? ((showDetailsProvider.sectionDetailModel
-                                .session?[showDetailsProvider.seasonPos].id ??
-                            0) ==
-                        (value.id ?? 0)
-                    ? black
-                    : white)
-                : white,
-            multilanguage: false,
-            text: (value.name.toString()),
-            fontsizeNormal: 14,
-            fontweight: FontWeight.w600,
-            fontsizeWeb: 15,
-            maxline: 1,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.center,
-            fontstyle: FontStyle.normal,
+          child: FittedBox(
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 35, minWidth: 100),
+              decoration: Utils.setBackground(
+                showDetailsProvider.seasonPos != -1
+                    ? ((showDetailsProvider
+                                    .sectionDetailModel
+                                    .session?[showDetailsProvider.seasonPos]
+                                    .id ??
+                                0) ==
+                            (value.id ?? 0)
+                        ? white
+                        : transparentColor)
+                    : transparentColor,
+                20,
+              ),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: MyText(
+                color: showDetailsProvider.seasonPos != -1
+                    ? ((showDetailsProvider
+                                    .sectionDetailModel
+                                    .session?[showDetailsProvider.seasonPos]
+                                    .id ??
+                                0) ==
+                            (value.id ?? 0)
+                        ? black
+                        : white)
+                    : white,
+                multilanguage: false,
+                text: (value.name.toString()),
+                fontsizeNormal: 14,
+                fontweight: FontWeight.w600,
+                fontsizeWeb: 15,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                textalign: TextAlign.center,
+                fontstyle: FontStyle.normal,
+              ),
+            ),
           ),
-        ),
-      );
-    }).toList();
+        );
+      },
+    ).toList();
   }
 
   Widget _buildRentBtn() {
@@ -2511,7 +2545,7 @@ class ShowDetailsState extends State<ShowDetails> {
             fontsizeNormal: 10,
             fontsizeWeb: 14,
             fontweight: FontWeight.w600,
-            maxline: 1,
+            maxline: 2,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.center,
             fontstyle: FontStyle.normal,
@@ -3159,7 +3193,7 @@ class ShowDetailsState extends State<ShowDetails> {
   }
 
   /* ========= Open Player ========= */
-  void openPlayer(String playType) async {
+  openPlayer(String playType) async {
     if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
 

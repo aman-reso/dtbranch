@@ -192,52 +192,80 @@ class _CommonAppBarState extends State<CommonAppBar> {
                   ),
                   padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                   child: Consumer<HomeProvider>(
-                      builder: (context, homeProvider, child) {
-                    return DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        isExpanded: false,
-                        customButton: MyImage(
-                          height: 40,
-                          imagePath: "ic_menu.png",
-                          fit: BoxFit.contain,
-                          color: white,
-                        ),
-                        items: _buildWebDropDownItems(),
-                        onChanged: (type.Result? value) async {
-                          if (kIsWeb) {
-                            _onItemTapped("");
-                          }
-                          debugPrint(
-                              'value id ===============> ${value?.id.toString()}');
-                          if (value?.id == 0) {
-                            await getTabData(
-                                0, homeProvider.sectionTypeModel.result);
-                          } else {
-                            for (var i = 0;
-                                i <
-                                    (homeProvider
-                                            .sectionTypeModel.result?.length ??
-                                        0);
-                                i++) {
-                              if (value?.id ==
-                                  homeProvider.sectionTypeModel.result?[i].id) {
-                                await getTabData(i + 1,
-                                    homeProvider.sectionTypeModel.result);
-                                return;
+                    builder: (context, homeProvider, child) {
+                      return DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          isDense: true,
+                          isExpanded: true,
+                          customButton: MyImage(
+                            height: 40,
+                            imagePath: "ic_menu.png",
+                            fit: BoxFit.contain,
+                            color: white,
+                          ),
+                          items: _buildWebDropDownItems(),
+                          onChanged: (type.Result? value) async {
+                            if (kIsWeb) {
+                              _onItemTapped("");
+                            }
+                            debugPrint(
+                                'value id ===============> ${value?.id.toString()}');
+                            if (value?.id == 0) {
+                              await getTabData(
+                                  0, homeProvider.sectionTypeModel.result);
+                            } else {
+                              for (var i = 0;
+                                  i <
+                                      (homeProvider.sectionTypeModel.result
+                                              ?.length ??
+                                          0);
+                                  i++) {
+                                if (value?.id ==
+                                    homeProvider
+                                        .sectionTypeModel.result?[i].id) {
+                                  await getTabData(i + 1,
+                                      homeProvider.sectionTypeModel.result);
+                                  return;
+                                }
                               }
                             }
-                          }
-                        },
-                        dropdownPadding:
-                            const EdgeInsets.only(left: 10, right: 10),
-                        dropdownWidth: 150,
-                        dropdownElevation: 8,
-                        dropdownDecoration: Utils.setBackground(appBgColor, 5),
-                        itemPadding:
-                            const EdgeInsets.symmetric(horizontal: 8.0),
-                      ),
-                    );
-                  }),
+                          },
+                          dropdownStyleData: DropdownStyleData(
+                            width: 180,
+                            isFullScreen: true,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            decoration: Utils.setBackground(lightBlack, 5),
+                            elevation: 8,
+                          ),
+                          menuItemStyleData: MenuItemStyleData(
+                            overlayColor: MaterialStateProperty.resolveWith(
+                              (states) {
+                                if (states.contains(MaterialState.focused)) {
+                                  return white.withOpacity(0.5);
+                                }
+                                return transparentColor;
+                              },
+                            ),
+                          ),
+                          buttonStyleData: ButtonStyleData(
+                            decoration: Utils.setBGWithBorder(
+                                transparentColor, white, 20, 1),
+                            overlayColor: MaterialStateProperty.resolveWith(
+                              (states) {
+                                if (states.contains(MaterialState.focused)) {
+                                  return white.withOpacity(0.5);
+                                }
+                                if (states.contains(MaterialState.hovered)) {
+                                  return white.withOpacity(0.5);
+                                }
+                                return transparentColor;
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 )
               : const SizedBox.shrink(),
 
@@ -596,35 +624,38 @@ class _CommonAppBarState extends State<CommonAppBar> {
         .map<DropdownMenuItem<type.Result>>((type.Result value) {
       return DropdownMenuItem<type.Result>(
         value: value,
-        child: Container(
-          constraints: const BoxConstraints(maxHeight: 30, minWidth: 0),
-          decoration: Utils.setBackground(
-            homeProvider.selectedIndex != -1
-                ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
-                        (value.id ?? 0)
-                    ? white
-                    : transparentColor)
-                : transparentColor,
-            20,
-          ),
-          alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-          child: MyText(
-            color: homeProvider.selectedIndex != -1
-                ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
-                        (value.id ?? 0)
-                    ? black
-                    : white)
-                : white,
-            multilanguage: false,
-            text: (value.name.toString()),
-            fontsizeNormal: 14,
-            fontweight: FontWeight.w600,
-            fontsizeWeb: 15,
-            maxline: 1,
-            overflow: TextOverflow.ellipsis,
-            textalign: TextAlign.center,
-            fontstyle: FontStyle.normal,
+        alignment: Alignment.center,
+        child: FittedBox(
+          child: Container(
+            constraints: const BoxConstraints(maxHeight: 35, minWidth: 100),
+            decoration: Utils.setBackground(
+              homeProvider.selectedIndex != -1
+                  ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                          (value.id ?? 0)
+                      ? white
+                      : transparentColor)
+                  : transparentColor,
+              20,
+            ),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: MyText(
+              color: homeProvider.selectedIndex != -1
+                  ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                          (value.id ?? 0)
+                      ? black
+                      : white)
+                  : white,
+              multilanguage: false,
+              text: (value.name.toString()),
+              fontsizeNormal: 14,
+              fontweight: FontWeight.w600,
+              fontsizeWeb: 15,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              textalign: TextAlign.center,
+              fontstyle: FontStyle.normal,
+            ),
           ),
         ),
       );

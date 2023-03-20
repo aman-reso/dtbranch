@@ -90,7 +90,7 @@ class _CastCrewState extends State<CastCrew> {
           ),
         ),
         const SizedBox(height: 12),
-        _buildCastAndCrew(),
+        _buildCAndCLayout(),
         Container(
           width: MediaQuery.of(context).size.width,
           height: 0.7,
@@ -102,7 +102,7 @@ class _CastCrewState extends State<CastCrew> {
     );
   }
 
-  Widget _buildCastAndCrew() {
+  Widget _buildCAndCLayout() {
     if (widget.castList != null && (widget.castList?.length ?? 0) > 0) {
       return Container(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15),

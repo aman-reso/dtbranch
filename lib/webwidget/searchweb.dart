@@ -1,7 +1,6 @@
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -56,26 +55,18 @@ class _SearchWebState extends State<SearchWeb> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           color: appBgColor,
-          child: Stack(
+          child: Column(
             children: [
-              Column(
-                children: [
-                  if (kIsWeb || Constant.isTV)
-                    SizedBox(height: Dimens.homeTabHeight),
-                  /* Searched Data */
-                  Expanded(
-                    child: Consumer<SearchProvider>(
-                      builder: (context, searchProvider, child) {
-                        return _buildSearchPage();
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 22),
-                ],
+              if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
+              /* Searched Data */
+              Expanded(
+                child: Consumer<SearchProvider>(
+                  builder: (context, searchProvider, child) {
+                    return _buildSearchPage();
+                  },
+                ),
               ),
-
-              /* Common AppBar */
-              if (kIsWeb || Constant.isTV) const CommonAppBar(),
+              const SizedBox(height: 22),
             ],
           ),
         ),
@@ -93,50 +84,51 @@ class _SearchWebState extends State<SearchWeb> {
                 ? (MediaQuery.of(context).size.width * 0.5)
                 : MediaQuery.of(context).size.width,
           ),
+          alignment: Alignment.center,
           height: 40,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /* Video */
               Expanded(
                 child: InkWell(
+                  focusColor: Colors.grey.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(5),
                   onTap: () async {
                     searchProvider.setDataVisibility(true, false);
                   },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: MyText(
-                            color: white,
-                            text: "videos",
-                            multilanguage: true,
-                            textalign: TextAlign.center,
-                            fontsizeNormal: 16,
-                            fontsizeWeb: 17,
-                            fontweight: FontWeight.w600,
-                            maxline: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontstyle: FontStyle.normal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: MyText(
+                              color: white,
+                              text: "videos",
+                              multilanguage: true,
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              fontsizeWeb: 17,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Visibility(
-                        visible: searchProvider.isVideoClick,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 2,
-                          color: white,
+                        Visibility(
+                          visible: searchProvider.isVideoClick,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 2,
+                            color: white,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -144,44 +136,42 @@ class _SearchWebState extends State<SearchWeb> {
               /* Show */
               Expanded(
                 child: InkWell(
+                  focusColor: Colors.grey.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(5),
                   onTap: () async {
                     searchProvider.setDataVisibility(false, true);
                   },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: MyText(
-                            color: white,
-                            text: "shows",
-                            textalign: TextAlign.center,
-                            fontsizeNormal: 16,
-                            fontsizeWeb: 17,
-                            multilanguage: true,
-                            fontweight: FontWeight.w600,
-                            maxline: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontstyle: FontStyle.normal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: MyText(
+                              color: white,
+                              text: "shows",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              fontsizeWeb: 17,
+                              multilanguage: true,
+                              fontweight: FontWeight.w600,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Visibility(
-                        visible: searchProvider.isShowClick,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 2,
-                          color: white,
+                        Visibility(
+                          visible: searchProvider.isShowClick,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 2,
+                            color: white,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -216,35 +206,43 @@ class _SearchWebState extends State<SearchWeb> {
                 children: List.generate(
                   (searchProvider.searchModel.video?.length ?? 0),
                   (position) {
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(4),
-                      onTap: () {
-                        debugPrint("Clicked on position ==> $position");
-                        homeStateObject?.openDetailPage(
-                          "videodetail",
-                          searchProvider.searchModel.video?[position].id ?? 0,
-                          searchProvider
-                                  .searchModel.video?[position].videoType ??
-                              0,
-                          searchProvider.searchModel.video?[position].typeId ??
-                              0,
-                        );
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: Dimens.heightLand,
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: MyNetworkImage(
-                            imageUrl: searchProvider
-                                    .searchModel.video?[position].landscape
-                                    .toString() ??
-                                "",
-                            fit: BoxFit.cover,
-                            imgHeight: MediaQuery.of(context).size.height,
-                            imgWidth: MediaQuery.of(context).size.width,
+                    return Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        focusColor: white,
+                        borderRadius: BorderRadius.circular(4),
+                        onTap: () {
+                          debugPrint("Clicked on position ==> $position");
+                          homeStateObject?.openDetailPage(
+                            "videodetail",
+                            searchProvider.searchModel.video?[position].id ?? 0,
+                            searchProvider
+                                    .searchModel.video?[position].videoType ??
+                                0,
+                            searchProvider
+                                    .searchModel.video?[position].typeId ??
+                                0,
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: Dimens.heightLand,
+                            alignment: Alignment.center,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: MyNetworkImage(
+                                imageUrl: searchProvider
+                                        .searchModel.video?[position].landscape
+                                        .toString() ??
+                                    "",
+                                fit: BoxFit.cover,
+                                imgHeight: MediaQuery.of(context).size.height,
+                                imgWidth: MediaQuery.of(context).size.width,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -281,36 +279,45 @@ class _SearchWebState extends State<SearchWeb> {
                 children: List.generate(
                   (searchProvider.searchModel.tvshow?.length ?? 0),
                   (position) {
-                    return InkWell(
-                      onTap: () {
-                        debugPrint("Clicked on position ==> $position");
-                        homeStateObject?.openDetailPage(
-                          "showdetail",
-                          searchProvider.searchModel.tvshow?[position].id ?? 0,
-                          searchProvider
-                                  .searchModel.tvshow?[position].videoType ??
-                              0,
-                          searchProvider.searchModel.tvshow?[position].typeId ??
-                              0,
-                        );
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: Dimens.heightLand,
-                        alignment: Alignment.centerLeft,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: MyNetworkImage(
-                            imageUrl: searchProvider
-                                    .searchModel.tvshow?[position].landscape
-                                    .toString() ??
-                                "",
-                            fit: BoxFit.cover,
-                            imgHeight: MediaQuery.of(context).size.height,
-                            imgWidth: MediaQuery.of(context).size.width,
+                    return Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        focusColor: white,
+                        onTap: () {
+                          debugPrint("Clicked on position ==> $position");
+                          homeStateObject?.openDetailPage(
+                            "showdetail",
+                            searchProvider.searchModel.tvshow?[position].id ??
+                                0,
+                            searchProvider
+                                    .searchModel.tvshow?[position].videoType ??
+                                0,
+                            searchProvider
+                                    .searchModel.tvshow?[position].typeId ??
+                                0,
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: Dimens.heightLand,
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: MyNetworkImage(
+                                imageUrl: searchProvider
+                                        .searchModel.tvshow?[position].landscape
+                                        .toString() ??
+                                    "",
+                                fit: BoxFit.cover,
+                                imgHeight: MediaQuery.of(context).size.height,
+                                imgWidth: MediaQuery.of(context).size.width,
+                              ),
+                            ),
                           ),
                         ),
                       ),

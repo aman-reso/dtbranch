@@ -49,21 +49,22 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Locales.init(['en', 'ar', 'hi']);
-  //Remove this method to stop OneSignal Debugging
-  OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-  OneSignal.shared.setAppId(Constant.oneSignalAppId);
-  // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt.
-  // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-    log("Accepted permission: ===> $accepted");
-  });
-  OneSignal.shared.setNotificationWillShowInForegroundHandler(
-      (OSNotificationReceivedEvent event) {
-    // Will be called whenever a notification is received in foreground
-    // Display Notification, pass null param for not displaying the notification
-    event.complete(event.notification);
-  });
-
+  if (!kIsWeb) {
+    //Remove this method to stop OneSignal Debugging
+    OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+    OneSignal.shared.setAppId(Constant.oneSignalAppId);
+    // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt.
+    // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      log("Accepted permission: ===> $accepted");
+    });
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent event) {
+      // Will be called whenever a notification is received in foreground
+      // Display Notification, pass null param for not displaying the notification
+      event.complete(event.notification);
+    });
+  }
   runApp(
     MultiProvider(
       providers: [

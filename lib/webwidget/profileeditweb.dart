@@ -75,6 +75,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
                 onTap: () {
                   Navigator.pop(context);
                 },
+                focusColor: white.withOpacity(0.5),
                 child: Container(
                   width: 30,
                   height: 30,
@@ -124,6 +125,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
               onTap: () {
                 getFromGallery();
               },
+              focusColor: white.withOpacity(0.5),
               child: Container(
                 constraints: const BoxConstraints(
                   minHeight: 35,
@@ -170,6 +172,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
             /* Save */
             InkWell(
               borderRadius: BorderRadius.circular(5),
+              focusColor: white.withOpacity(0.5),
               onTap: () async {
                 log("nameController Name ==> ${nameController.text.toString()}");
                 log("pickedImageFile ==> ${pickedImageFile?.path ?? "not picked"}");
@@ -185,26 +188,29 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
                     .getUpdateProfile(nameController.text.toString());
                 await profileProvider.getProfile();
               },
-              child: Container(
-                height: 35,
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: BoxDecoration(
-                  color: primaryDark,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                alignment: Alignment.center,
-                child: MyText(
-                  color: white,
-                  text: "save",
-                  multilanguage: true,
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 15,
-                  fontsizeWeb: 15,
-                  fontweight: FontWeight.w600,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  height: 35,
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  decoration: BoxDecoration(
+                    color: primaryDark,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  alignment: Alignment.center,
+                  child: MyText(
+                    color: white,
+                    text: "save",
+                    multilanguage: true,
+                    textalign: TextAlign.center,
+                    fontsizeNormal: 15,
+                    fontsizeWeb: 15,
+                    fontweight: FontWeight.w600,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ),

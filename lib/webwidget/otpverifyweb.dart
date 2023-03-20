@@ -65,6 +65,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
               alignment: Alignment.centerLeft,
               child: InkWell(
                 borderRadius: BorderRadius.circular(25),
+                focusColor: white.withOpacity(0.5),
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -148,6 +149,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
             /* Confirm Button */
             InkWell(
               borderRadius: BorderRadius.circular(26),
+              focusColor: white.withOpacity(0.5),
               onTap: () {
                 debugPrint("Clicked sms Code =====> ${pinPutController.text}");
                 if (pinPutController.text.toString().isEmpty) {
@@ -156,34 +158,37 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
                   _login(widget.mobileNumber.toString());
                 }
               },
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 35,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      primaryLight,
-                      primaryDark,
-                    ],
-                    begin: FractionalOffset(0.0, 0.0),
-                    end: FractionalOffset(1.0, 0.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        primaryLight,
+                        primaryDark,
+                      ],
+                      begin: FractionalOffset(0.0, 0.0),
+                      end: FractionalOffset(1.0, 0.0),
+                      stops: [0.0, 1.0],
+                      tileMode: TileMode.clamp,
+                    ),
+                    borderRadius: BorderRadius.circular(26),
                   ),
-                  borderRadius: BorderRadius.circular(26),
-                ),
-                alignment: Alignment.center,
-                child: MyText(
-                  color: white,
-                  text: "confirm",
-                  fontsizeNormal: 17,
-                  fontsizeWeb: 16,
-                  multilanguage: true,
-                  fontweight: FontWeight.w700,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textalign: TextAlign.center,
-                  fontstyle: FontStyle.normal,
+                  alignment: Alignment.center,
+                  child: MyText(
+                    color: white,
+                    text: "confirm",
+                    fontsizeNormal: 17,
+                    fontsizeWeb: 16,
+                    multilanguage: true,
+                    fontweight: FontWeight.w700,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ),
@@ -192,6 +197,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
             /* Resend */
             InkWell(
               borderRadius: BorderRadius.circular(10),
+              focusColor: white.withOpacity(0.5),
               onTap: () {
                 if (!codeResended) {
                   codeSend(true);

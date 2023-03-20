@@ -415,6 +415,8 @@ class Utils {
       backgroundColor: appBgColor,
       centerTitle: true,
       leading: IconButton(
+        autofocus: true,
+        focusColor: white.withOpacity(0.5),
         onPressed: () {
           Navigator.pop(context);
         },

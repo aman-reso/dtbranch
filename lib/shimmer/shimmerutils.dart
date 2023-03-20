@@ -387,7 +387,6 @@ class ShimmerUtils {
   static Widget buildRentShimmer(context, double itemHeight, double itemWidth) {
     return Column(
       children: [
-        if (kIsWeb || Constant.isTV) SizedBox(height: Dimens.homeTabHeight),
         const SizedBox(height: 8),
         Container(
           width: MediaQuery.of(context).size.width,
@@ -763,8 +762,6 @@ class ShimmerUtils {
   static Widget buildDetailMobileShimmer(context, String detailType) {
     return Column(
       children: [
-        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
-
         /* Poster */
         Stack(
           alignment: Alignment.center,
@@ -1472,7 +1469,6 @@ class ShimmerUtils {
   static Widget buildDetailWebShimmer(context, String detailType) {
     return Column(
       children: [
-        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
         /* Poster */
         Container(
           padding: const EdgeInsets.all(0),

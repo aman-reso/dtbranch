@@ -83,9 +83,7 @@ class OTPVerifyState extends State<OTPVerify> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 30),
               MyText(
                 color: white,
                 text: "verifyphonenumber",

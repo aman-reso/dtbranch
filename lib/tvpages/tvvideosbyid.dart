@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dtlive/pages/home.dart';
-import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/tvpages/tvmoviedetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/showdetails.dart';
+import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -17,10 +18,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
-class VideosByID extends StatefulWidget {
+class TVVideosByID extends StatefulWidget {
   final String appBarTitle, layoutType;
   final int itemID;
-  const VideosByID(
+  const TVVideosByID(
     this.itemID,
     this.appBarTitle,
     this.layoutType, {
@@ -28,10 +29,10 @@ class VideosByID extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<VideosByID> createState() => VideosByIDState();
+  State<TVVideosByID> createState() => TVVideosByIDState();
 }
 
-class VideosByIDState extends State<VideosByID> {
+class TVVideosByIDState extends State<TVVideosByID> {
   HomeState? homeStateObject;
 
   @override
@@ -67,7 +68,8 @@ class VideosByIDState extends State<VideosByID> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Utils.myAppBarWithBack(context, widget.appBarTitle, false),
+            if (!kIsWeb)
+              Utils.myAppBarWithBack(context, widget.appBarTitle, false),
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -81,7 +83,7 @@ class VideosByIDState extends State<VideosByID> {
                               Dimens.heightLand,
                               Dimens.widthLand,
                               2,
-                              kIsWeb ? 40 : 20)
+                              (kIsWeb || Constant.isTV) ? 40 : 20)
                           : (videoByIDProvider.videoByIdModel.status == 200 &&
                                   videoByIDProvider.videoByIdModel.result !=
                                       null)
@@ -90,14 +92,8 @@ class VideosByIDState extends State<VideosByID> {
                                           0) >
                                       0
                                   ? _buildVideoItem()
-                                  : const NoData(
-                                      title: '',
-                                      subTitle: '',
-                                    )
-                              : const NoData(
-                                  title: '',
-                                  subTitle: '',
-                                ),
+                                  : const NoData(title: '', subTitle: '')
+                              : const NoData(title: '', subTitle: ''),
                       const SizedBox(height: 20),
 
                       /* Web Footer */
@@ -131,71 +127,78 @@ class VideosByIDState extends State<VideosByID> {
         children: List.generate(
           (videoByIDProvider.videoByIdModel.result?.length ?? 0),
           (position) {
-            return InkWell(
-              borderRadius: BorderRadius.circular(4),
-              onTap: () {
-                log("Clicked on position ==> $position");
-                if ((videoByIDProvider
-                            .videoByIdModel.result?[position].videoType ??
-                        0) ==
-                    1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MovieDetails(
-                          videoByIDProvider
-                                  .videoByIdModel.result?[position].id ??
-                              0,
-                          videoByIDProvider
-                                  .videoByIdModel.result?[position].videoType ??
-                              0,
-                          videoByIDProvider
-                                  .videoByIdModel.result?[position].typeId ??
-                              0,
-                        );
-                      },
+            return Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                focusColor: white,
+                onTap: () {
+                  log("Clicked on position ==> $position");
+                  if ((videoByIDProvider
+                              .videoByIdModel.result?[position].videoType ??
+                          0) ==
+                      1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return TVMovieDetails(
+                            videoByIDProvider
+                                    .videoByIdModel.result?[position].id ??
+                                0,
+                            videoByIDProvider.videoByIdModel.result?[position]
+                                    .videoType ??
+                                0,
+                            videoByIDProvider
+                                    .videoByIdModel.result?[position].typeId ??
+                                0,
+                          );
+                        },
+                      ),
+                    );
+                  } else if ((videoByIDProvider
+                              .videoByIdModel.result?[position].videoType ??
+                          0) ==
+                      2) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return TVShowDetails(
+                            videoByIDProvider
+                                    .videoByIdModel.result?[position].id ??
+                                0,
+                            videoByIDProvider.videoByIdModel.result?[position]
+                                    .videoType ??
+                                0,
+                            videoByIDProvider
+                                    .videoByIdModel.result?[position].typeId ??
+                                0,
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Container(
+                    width: Dimens.widthLand,
+                    height: Dimens.heightLand,
+                    alignment: Alignment.center,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: MyNetworkImage(
+                        imageUrl: videoByIDProvider
+                                .videoByIdModel.result?[position].landscape
+                                .toString() ??
+                            "",
+                        fit: BoxFit.cover,
+                        imgHeight: MediaQuery.of(context).size.height,
+                        imgWidth: MediaQuery.of(context).size.width,
+                      ),
                     ),
-                  );
-                } else if ((videoByIDProvider
-                            .videoByIdModel.result?[position].videoType ??
-                        0) ==
-                    2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ShowDetails(
-                          videoByIDProvider
-                                  .videoByIdModel.result?[position].id ??
-                              0,
-                          videoByIDProvider
-                                  .videoByIdModel.result?[position].videoType ??
-                              0,
-                          videoByIDProvider
-                                  .videoByIdModel.result?[position].typeId ??
-                              0,
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                width: Dimens.widthLand,
-                height: Dimens.heightLand,
-                alignment: Alignment.center,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: MyNetworkImage(
-                    imageUrl: videoByIDProvider
-                            .videoByIdModel.result?[position].landscape
-                            .toString() ??
-                        "",
-                    fit: BoxFit.cover,
-                    imgHeight: MediaQuery.of(context).size.height,
-                    imgWidth: MediaQuery.of(context).size.width,
                   ),
                 ),
               ),

@@ -16,7 +16,7 @@ import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/showdetails.dart';
-import 'package:dtlive/pages/videosbyid.dart';
+import 'package:dtlive/tvpages/tvvideosbyid.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -71,7 +71,9 @@ class HomeState extends State<Home> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getData();
     });
-    OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
+    if (!kIsWeb) {
+      OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
+    }
   }
 
   // What to do when the user opens/taps on a notification
@@ -1255,17 +1257,11 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  // if (kIsWeb) {
-                  //   videoId = sectionDataList?[index].id ?? 0;
-                  //   langCatName = sectionDataList?[index].name ?? "";
-                  //   _onItemTapped("bylanguage");
-                  //   return;
-                  // }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return VideosByID(
+                        return TVVideosByID(
                           sectionDataList?[index].id ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByLanguage",
@@ -1356,17 +1352,11 @@ class HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  // if (kIsWeb) {
-                  //   videoId = sectionDataList?[index].id ?? 0;
-                  //   langCatName = sectionDataList?[index].name ?? "";
-                  //   _onItemTapped("bycategory");
-                  //   return;
-                  // }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return VideosByID(
+                        return TVVideosByID(
                           sectionDataList?[index].id ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByCategory",

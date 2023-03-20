@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
+import 'package:dtlive/tvpages/tvmoviedetails.dart';
+import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
@@ -17,14 +17,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class RentStore extends StatefulWidget {
-  const RentStore({Key? key}) : super(key: key);
+class TVRentStore extends StatefulWidget {
+  const TVRentStore({Key? key}) : super(key: key);
 
   @override
-  State<RentStore> createState() => RentStoreState();
+  State<TVRentStore> createState() => TVRentStoreState();
 }
 
-class RentStoreState extends State<RentStore> {
+class TVRentStoreState extends State<TVRentStore> {
   @override
   void initState() {
     super.initState();
@@ -47,20 +47,12 @@ class RentStoreState extends State<RentStore> {
   }
 
   _openDetailPage(int? videoId, int? videoType, int? typeId) {
-    // if (kIsWeb) {
-    //   homeStateObject?.openDetailPage(
-    //     (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
-    //     videoId ?? 0,
-    //     videoType ?? 0,
-    //     typeId ?? 0,
-    //   );
-    // }
     if (videoType == 1) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return MovieDetails(
+            return TVMovieDetails(
               videoId ?? 0,
               videoType ?? 0,
               typeId ?? 0,
@@ -73,7 +65,7 @@ class RentStoreState extends State<RentStore> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return ShowDetails(
+            return TVShowDetails(
               videoId ?? 0,
               videoType ?? 0,
               typeId ?? 0,

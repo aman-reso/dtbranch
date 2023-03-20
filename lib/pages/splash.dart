@@ -101,7 +101,7 @@ class SplashState extends State<Splash> {
         log('${generalsettingData.generalSettingModel.result?[i].key.toString()} ==> ${generalsettingData.generalSettingModel.result?[i].value.toString()}');
       }
     }
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
 
     seen = await sharedPre.read('seen') ?? "0";
     Constant.userID = await sharedPre.read('userid');

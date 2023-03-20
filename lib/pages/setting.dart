@@ -20,6 +20,7 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -62,9 +63,11 @@ class SettingState extends State<Setting> {
       });
     }
     log('toggleSwitch isSwitched ==> $isSwitched');
-    // Flutter SDK 3.x.x use
-    await OneSignal.shared.disablePush(isSwitched ?? true);
-    await sharedPref.saveBool("PUSH", isSwitched);
+    if (!kIsWeb) {
+      // Flutter SDK 3.x.x use
+      await OneSignal.shared.disablePush(isSwitched ?? true);
+      await sharedPref.saveBool("PUSH", isSwitched);
+    }
   }
 
   void getUserData() async {

@@ -8,8 +8,8 @@ import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
+import 'package:dtlive/tvpages/tvmoviedetails.dart';
+import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -29,14 +29,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Channels extends StatefulWidget {
-  const Channels({Key? key}) : super(key: key);
+class TVChannels extends StatefulWidget {
+  const TVChannels({Key? key}) : super(key: key);
 
   @override
-  State<Channels> createState() => ChannelsState();
+  State<TVChannels> createState() => TVChannelsState();
 }
 
-class ChannelsState extends State<Channels> {
+class TVChannelsState extends State<TVChannels> {
   CarouselController pageController = CarouselController();
   HomeState? homeStateObject;
 
@@ -65,7 +65,7 @@ class ChannelsState extends State<Channels> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return MovieDetails(
+            return TVMovieDetails(
               videoId ?? 0,
               videoType ?? 0,
               typeId ?? 0,
@@ -78,7 +78,7 @@ class ChannelsState extends State<Channels> {
         context,
         MaterialPageRoute(
           builder: (context) {
-            return ShowDetails(
+            return TVShowDetails(
               videoId ?? 0,
               videoType ?? 0,
               typeId ?? 0,

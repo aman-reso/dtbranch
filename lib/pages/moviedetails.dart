@@ -6,7 +6,6 @@ import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
-import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/castcrew.dart';
 import 'package:dtlive/widget/moredetails.dart';
@@ -174,7 +173,6 @@ class MovieDetailsState extends State<MovieDetails> {
 
   @override
   void dispose() {
-    super.dispose();
     log("dispose isBroadcast ============================> ${_port.isBroadcast}");
     if (!_port.isBroadcast) {
       downloadProvider.clearProvider();
@@ -245,29 +243,20 @@ class MovieDetailsState extends State<MovieDetails> {
   }
 
   Widget _buildUIWithAppBar() {
-    return Stack(
-      children: [
-        (videoDetailsProvider.loading)
-            ? SingleChildScrollView(
-                child: ((kIsWeb || Constant.isTV) &&
-                        MediaQuery.of(context).size.width > 720)
-                    ? ShimmerUtils.buildDetailWebShimmer(context, "video")
-                    : ShimmerUtils.buildDetailMobileShimmer(context, "video"),
-              )
-            : (videoDetailsProvider.sectionDetailModel.status == 200 &&
-                    videoDetailsProvider.sectionDetailModel.result != null)
-                ? (((kIsWeb || Constant.isTV) &&
-                        MediaQuery.of(context).size.width > 720)
-                    ? _buildWebData()
-                    : _buildMobileData())
-                : const NoData(
-                    title: '',
-                    subTitle: '',
-                  ),
-        /* Common AppBar */
-        if (kIsWeb || Constant.isTV) const CommonAppBar(),
-      ],
-    );
+    return (videoDetailsProvider.loading)
+        ? SingleChildScrollView(
+            child: ((kIsWeb || Constant.isTV) &&
+                    MediaQuery.of(context).size.width > 720)
+                ? ShimmerUtils.buildDetailWebShimmer(context, "video")
+                : ShimmerUtils.buildDetailMobileShimmer(context, "video"),
+          )
+        : (videoDetailsProvider.sectionDetailModel.status == 200 &&
+                videoDetailsProvider.sectionDetailModel.result != null)
+            ? (((kIsWeb || Constant.isTV) &&
+                    MediaQuery.of(context).size.width > 720)
+                ? _buildWebData()
+                : _buildMobileData())
+            : const NoData(title: '', subTitle: '');
   }
 
   Widget _buildMobileData() {
@@ -278,9 +267,6 @@ class MovieDetailsState extends State<MovieDetails> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            if ((kIsWeb || Constant.isTV))
-              SizedBox(height: Dimens.homeTabHeight),
-
             /* Poster */
             Stack(
               alignment: Alignment.center,
@@ -1008,9 +994,6 @@ class MovieDetailsState extends State<MovieDetails> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            if ((kIsWeb || Constant.isTV))
-              SizedBox(height: Dimens.homeTabHeight),
-
             /* Poster */
             ClipRRect(
               borderRadius: BorderRadius.circular(0),
@@ -2453,7 +2436,7 @@ class MovieDetailsState extends State<MovieDetails> {
             fontsizeNormal: 10,
             fontsizeWeb: 14,
             fontweight: FontWeight.w600,
-            maxline: 1,
+            maxline: 2,
             overflow: TextOverflow.ellipsis,
             textalign: TextAlign.center,
             fontstyle: FontStyle.normal,

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:dtlive/tvpages/tvchannels.dart';
+import 'package:dtlive/tvpages/tvrentstore.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/tvpages/tvmoviedetails.dart';
@@ -12,21 +14,19 @@ import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
-import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/pages/showdetails.dart';
-import 'package:dtlive/pages/videosbyid.dart';
+import 'package:dtlive/tvpages/tvvideosbyid.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/webwidget/searchweb.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -73,51 +73,6 @@ class TVHomeState extends State<TVHome> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getData();
     });
-    OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
-  }
-
-  // What to do when the user opens/taps on a notification
-  _handleNotificationOpened(OSNotificationOpenedResult result) {
-    /* id, video_type, type_id */
-
-    log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");
-    log("setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['id']}");
-    log("setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
-    log("setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
-
-    if (result.notification.additionalData?['id'] != null &&
-        result.notification.additionalData?['video_type'] != null &&
-        result.notification.additionalData?['type_id'] != null) {
-      String? videoID =
-          result.notification.additionalData?['id'].toString() ?? "";
-      String? videoType =
-          result.notification.additionalData?['video_type'].toString() ?? "";
-      String? typeID =
-          result.notification.additionalData?['type_id'].toString() ?? "";
-      log("videoID =====> $videoID");
-      log("videoType =====> $videoType");
-      log("typeID =====> $typeID");
-
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            if (videoType == "2") {
-              return ShowDetails(
-                int.parse(videoID),
-                int.parse(videoType),
-                int.parse(typeID),
-              );
-            } else {
-              return MovieDetails(
-                int.parse(videoID),
-                int.parse(videoType),
-                int.parse(typeID),
-              );
-            }
-          },
-        ),
-      );
-    }
   }
 
   _getData() async {
@@ -191,9 +146,6 @@ class TVHomeState extends State<TVHome> {
     debugPrint("videoId ==========> $videoId");
     debugPrint("videoType ==========> $videoType");
     debugPrint("typeId ==========> $typeId");
-    if (pageName != "" && Constant.isTV) {
-      await setSelectedTab(-1);
-    }
     if (videoType == 1) {
       if (!mounted) return;
       await Navigator.push(
@@ -230,6 +182,19 @@ class TVHomeState extends State<TVHome> {
     super.dispose();
   }
 
+  Widget _clickToRedirect({required String pageName}) {
+    switch (pageName) {
+      case "channel":
+        return const TVChannels();
+      case "store":
+        return const TVRentStore();
+      case "search":
+        return SearchWeb(searchText: mSearchText);
+      default:
+        return tabItem(homeProvider.sectionTypeModel.result);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -251,7 +216,7 @@ class TVHomeState extends State<TVHome> {
             children: [
               _buildAppBar(),
               Expanded(
-                child: tabItem(homeProvider.sectionTypeModel.result),
+                child: _clickToRedirect(pageName: currentPage ?? ""),
               ),
             ],
           );
@@ -277,170 +242,164 @@ class TVHomeState extends State<TVHome> {
           Material(
             type: MaterialType.transparency,
             child: InkWell(
-              focusColor: whiteTransparent,
+              focusColor: white.withOpacity(0.5),
               borderRadius: BorderRadius.circular(8),
               onTap: () async {
                 if (Constant.isTV) _onItemTapped("");
                 await getTabData(0, homeProvider.sectionTypeModel.result);
               },
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: MyImage(
-                  width: 68,
-                  height: 68,
-                  imagePath: "appicon.png",
-                ),
+              child: Container(
+                padding: const EdgeInsets.all(3.0),
+                child: MyImage(width: 68, height: 68, imagePath: "appicon.png"),
               ),
             ),
           ),
 
           /* Types */
-          Expanded(
-            child: tabTitle(homeProvider.sectionTypeModel.result),
-          ),
+          Expanded(child: tabTitle(homeProvider.sectionTypeModel.result)),
           const SizedBox(width: 10),
 
           /* Feature buttons */
           /* Search */
-          // Container(
-          //   height: 25,
-          //   constraints: const BoxConstraints(minWidth: 60, maxWidth: 130),
-          //   padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-          //   decoration: BoxDecoration(
-          //     color: transparentColor,
-          //     border: Border.all(
-          //       color: primaryColor,
-          //       width: 0.5,
-          //     ),
-          //     borderRadius: BorderRadius.circular(5),
-          //   ),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       Expanded(
-          //         child: Container(
-          //           width: MediaQuery.of(context).size.width,
-          //           height: MediaQuery.of(context).size.height,
-          //           alignment: Alignment.center,
-          //           child: TextField(
-          //             onChanged: (value) async {
-          //               log("value ====> $value");
-          //               if (value.isNotEmpty) {
-          //                 mSearchText = value;
-          //                 debugPrint("mSearchText ====> $mSearchText");
-          //                 _onItemTapped("search");
-          //                 await searchProvider.setLoading(true);
-          //                 await searchProvider.getSearchVideo(mSearchText);
-          //               }
-          //             },
-          //             textInputAction: TextInputAction.done,
-          //             obscureText: false,
-          //             controller: searchController,
-          //             keyboardType: TextInputType.text,
-          //             maxLines: 1,
-          //             style: const TextStyle(
-          //               color: white,
-          //               fontSize: 14,
-          //               overflow: TextOverflow.ellipsis,
-          //               fontWeight: FontWeight.w600,
-          //             ),
-          //             decoration: const InputDecoration(
-          //               border: InputBorder.none,
-          //               filled: true,
-          //               isCollapsed: true,
-          //               fillColor: transparentColor,
-          //               hintStyle: TextStyle(
-          //                 color: otherColor,
-          //                 fontSize: 13,
-          //                 overflow: TextOverflow.ellipsis,
-          //                 fontWeight: FontWeight.w500,
-          //               ),
-          //               hintText: searchHint2,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //       Consumer<SearchProvider>(
-          //         builder: (context, searchProvider, child) {
-          //           if (searchController.text.toString().isNotEmpty) {
-          //             return Material(
-          //               type: MaterialType.transparency,
-          //               child: InkWell(
-          //                 focusColor: whiteTransparent,
-          //                 borderRadius: BorderRadius.circular(5),
-          //                 onTap: () async {
-          //                   debugPrint("Click on Clear!");
-          //                   _onItemTapped("");
-          //                   searchController.clear();
-          //                   await searchProvider.clearProvider();
-          //                   await searchProvider.notifyProvider();
-          //                 },
-          //                 child: Container(
-          //                   constraints: const BoxConstraints(
-          //                     minWidth: 25,
-          //                     maxWidth: 25,
-          //                   ),
-          //                   padding: const EdgeInsets.all(5),
-          //                   alignment: Alignment.center,
-          //                   child: MyImage(
-          //                     height: 23,
-          //                     color: white,
-          //                     fit: BoxFit.contain,
-          //                     imagePath: "ic_close.png",
-          //                   ),
-          //                 ),
-          //               ),
-          //             );
-          //           } else {
-          //             return Material(
-          //               type: MaterialType.transparency,
-          //               child: InkWell(
-          //                 focusColor: whiteTransparent,
-          //                 borderRadius: BorderRadius.circular(5),
-          //                 onTap: () async {
-          //                   debugPrint("Click on Search!");
-          //                   if (searchController.text.toString().isNotEmpty) {
-          //                     mSearchText = searchController.text.toString();
-          //                     debugPrint("mSearchText ====> $mSearchText");
-          //                     _onItemTapped("search");
-          //                     await searchProvider.setLoading(true);
-          //                     await searchProvider.getSearchVideo(mSearchText);
-          //                   }
-          //                 },
-          //                 child: Container(
-          //                   constraints: const BoxConstraints(
-          //                     minWidth: 25,
-          //                     maxWidth: 25,
-          //                   ),
-          //                   padding: const EdgeInsets.all(5),
-          //                   alignment: Alignment.center,
-          //                   child: MyImage(
-          //                     height: 23,
-          //                     color: white,
-          //                     fit: BoxFit.contain,
-          //                     imagePath: "ic_find.png",
-          //                   ),
-          //                 ),
-          //               ),
-          //             );
-          //           }
-          //         },
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          Container(
+            height: 25,
+            constraints: const BoxConstraints(minWidth: 60, maxWidth: 130),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            decoration: BoxDecoration(
+              color: transparentColor,
+              border: Border.all(
+                color: primaryColor,
+                width: 0.5,
+              ),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    alignment: Alignment.center,
+                    child: TextField(
+                      onChanged: (value) async {
+                        log("value ====> $value");
+                        if (value.isNotEmpty) {
+                          mSearchText = value;
+                          debugPrint("mSearchText ====> $mSearchText");
+                          _onItemTapped("search");
+                          await searchProvider.setLoading(true);
+                          await searchProvider.getSearchVideo(mSearchText);
+                        }
+                      },
+                      textInputAction: TextInputAction.done,
+                      obscureText: false,
+                      controller: searchController,
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      style: const TextStyle(
+                        color: white,
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        filled: true,
+                        isCollapsed: true,
+                        fillColor: transparentColor,
+                        hintStyle: TextStyle(
+                          color: otherColor,
+                          fontSize: 13,
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        hintText: searchHint2,
+                      ),
+                    ),
+                  ),
+                ),
+                Consumer<SearchProvider>(
+                  builder: (context, searchProvider, child) {
+                    if (searchController.text.toString().isNotEmpty) {
+                      return Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          focusColor: white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () async {
+                            debugPrint("Click on Clear!");
+                            _onItemTapped("");
+                            searchController.clear();
+                            await searchProvider.clearProvider();
+                            await searchProvider.notifyProvider();
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 25,
+                              maxWidth: 25,
+                            ),
+                            padding: const EdgeInsets.all(5),
+                            alignment: Alignment.center,
+                            child: MyImage(
+                              height: 23,
+                              color: white,
+                              fit: BoxFit.contain,
+                              imagePath: "ic_close.png",
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          focusColor: white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () async {
+                            debugPrint("Click on Search!");
+                            if (searchController.text.toString().isNotEmpty) {
+                              mSearchText = searchController.text.toString();
+                              debugPrint("mSearchText ====> $mSearchText");
+                              _onItemTapped("search");
+                              await searchProvider.setLoading(true);
+                              await searchProvider.getSearchVideo(mSearchText);
+                            }
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 25,
+                              maxWidth: 25,
+                            ),
+                            padding: const EdgeInsets.all(5),
+                            alignment: Alignment.center,
+                            child: MyImage(
+                              height: 23,
+                              color: white,
+                              fit: BoxFit.contain,
+                              imagePath: "ic_find.png",
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
 
           /* Channels */
           Material(
             type: MaterialType.transparency,
             child: InkWell(
-              focusColor: whiteTransparent,
+              focusColor: white.withOpacity(0.5),
               onTap: () async {
                 _onItemTapped("channel");
               },
               borderRadius: BorderRadius.circular(8),
-              child: Padding(
+              child: Container(
                 padding: const EdgeInsets.all(8),
                 child: Consumer<HomeProvider>(
                   builder: (context, homeProvider, child) {
@@ -468,12 +427,12 @@ class TVHomeState extends State<TVHome> {
           Material(
             type: MaterialType.transparency,
             child: InkWell(
-              focusColor: whiteTransparent,
+              focusColor: white.withOpacity(0.5),
               onTap: () async {
                 _onItemTapped("store");
               },
               borderRadius: BorderRadius.circular(8),
-              child: Padding(
+              child: Container(
                 padding: const EdgeInsets.all(8),
                 child: Consumer<HomeProvider>(
                   builder: (context, homeProvider, child) {
@@ -501,7 +460,7 @@ class TVHomeState extends State<TVHome> {
           Material(
             type: MaterialType.transparency,
             child: InkWell(
-              focusColor: whiteTransparent,
+              focusColor: white.withOpacity(0.5),
               onTap: () async {
                 if (Constant.userID != null) {
                   Utils.buildWebAlertDialog(context, "profile", "");
@@ -510,7 +469,7 @@ class TVHomeState extends State<TVHome> {
                 }
               },
               borderRadius: BorderRadius.circular(8),
-              child: Padding(
+              child: Container(
                 padding: const EdgeInsets.all(8),
                 child: Consumer<HomeProvider>(
                   builder: (context, homeProvider, child) {
@@ -542,14 +501,14 @@ class TVHomeState extends State<TVHome> {
                 return Material(
                   type: MaterialType.transparency,
                   child: InkWell(
-                    focusColor: whiteTransparent,
+                    focusColor: white.withOpacity(0.5),
                     onTap: () async {
                       if (Constant.userID != null) {
                         // _buildLogoutDialog();
                       }
                     },
                     borderRadius: BorderRadius.circular(8),
-                    child: Padding(
+                    child: Container(
                       padding: const EdgeInsets.all(8),
                       child: MyText(
                         color: white,
@@ -590,16 +549,17 @@ class TVHomeState extends State<TVHome> {
             return Material(
               type: MaterialType.transparency,
               child: InkWell(
+                autofocus: true,
                 focusColor: homeProvider.selectedIndex == index
                     ? primaryColor
-                    : whiteTransparent,
+                    : white.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(25),
                 onTap: () async {
                   debugPrint("index ===========> $index");
                   _onItemTapped("");
                   await getTabData(index, homeProvider.sectionTypeModel.result);
                 },
-                child: Padding(
+                child: Container(
                   padding: const EdgeInsets.all(2.0),
                   child: Container(
                     constraints: const BoxConstraints(maxHeight: 32),
@@ -1402,17 +1362,11 @@ class TVHomeState extends State<TVHome> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  // if () {
-                  //   videoId = sectionDataList?[index].id ?? 0;
-                  //   langCatName = sectionDataList?[index].name ?? "";
-                  //   _onItemTapped("bylanguage");
-                  //   return;
-                  // }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return VideosByID(
+                        return TVVideosByID(
                           sectionDataList?[index].id ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByLanguage",
@@ -1503,17 +1457,11 @@ class TVHomeState extends State<TVHome> {
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
                   log("Clicked on index ==> $index");
-                  // if () {
-                  //   videoId = sectionDataList?[index].id ?? 0;
-                  //   langCatName = sectionDataList?[index].name ?? "";
-                  //   _onItemTapped("bycategory");
-                  //   return;
-                  // }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return VideosByID(
+                        return TVVideosByID(
                           sectionDataList?[index].id ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByCategory",

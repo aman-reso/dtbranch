@@ -64,6 +64,14 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb || Constant.isTV) {
+      return _buildUITVWeb();
+    } else {
+      return _buildUIOther();
+    }
+  }
+
+  Widget _buildUIOther() {
     return AlignedGridView.count(
       shrinkWrap: true,
       crossAxisCount: 1,
@@ -97,7 +105,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
                         children: [
                           InkWell(
                             borderRadius: BorderRadius.circular(16),
-                            focusColor: gray.withOpacity(0.5),
+                            focusColor: white.withOpacity(0.5),
                             onTap: () async {
                               debugPrint("===> index $index");
                               _onTapEpisodePlay(index);
@@ -284,6 +292,48 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
     );
   }
 
+  Widget _buildUITVWeb() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: Dimens.heightLand,
+      child: ListView.separated(
+        itemCount: episodeProvider.episodeBySeasonModel.result?.length ?? 0,
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            borderRadius: BorderRadius.circular(4),
+            focusColor: white,
+            onTap: () {
+              debugPrint("===> index $index");
+              _onTapEpisodePlay(index);
+            },
+            child: Container(
+              width: Dimens.widthLand,
+              height: Dimens.heightLand,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(2.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: MyNetworkImage(
+                  imageUrl: (episodeProvider
+                          .episodeBySeasonModel.result?[index].landscape ??
+                      ""),
+                  fit: BoxFit.cover,
+                  imgHeight: MediaQuery.of(context).size.height,
+                  imgWidth: MediaQuery.of(context).size.width,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   _onTapEpisodePlay(index) async {
     final showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
@@ -299,7 +349,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               "Show", index, episodeProvider.episodeBySeasonModel.result);
         } else {
           if (Constant.userID != null) {
-            if (kIsWeb) {
+            if (kIsWeb || Constant.isTV) {
               Utils.showSnackbar(
                   context, "info", webPaymentNotAvailable, false);
               return;
@@ -320,7 +370,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               getAllEpisode();
             }
           } else {
-            if (kIsWeb) {
+            if (kIsWeb || Constant.isTV) {
               Utils.buildWebAlertDialog(context, "login", "");
               return false;
             }
@@ -340,7 +390,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1) {
           return true;
         } else {
-          if (kIsWeb) {
+          if (kIsWeb || Constant.isTV) {
             Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
             return false;
           }
@@ -370,7 +420,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               "Show", index, episodeProvider.episodeBySeasonModel.result);
         } else {
           if (Constant.userID != null) {
-            if (kIsWeb) {
+            if (kIsWeb || Constant.isTV) {
               Utils.showSnackbar(
                   context, "info", webPaymentNotAvailable, false);
               return;
@@ -394,7 +444,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               getAllEpisode();
             }
           } else {
-            if (kIsWeb) {
+            if (kIsWeb || Constant.isTV) {
               Utils.buildWebAlertDialog(context, "login", "");
               return false;
             }
@@ -412,7 +462,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         openPlayer("Show", index, episodeProvider.episodeBySeasonModel.result);
       }
     } else {
-      if (kIsWeb) {
+      if (kIsWeb || Constant.isTV) {
         Utils.buildWebAlertDialog(context, "login", "");
         return false;
       }
@@ -428,7 +478,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
   }
 
   /* ========= Open Player ========= */
-  void openPlayer(
+  openPlayer(
       String playType, int epiPos, List<episode.Result>? episodeList) async {
     final showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);

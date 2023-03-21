@@ -1065,7 +1065,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
 
   /* ========= Open Player ========= */
   openPlayer(playType, position) async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
+    if (!kIsWeb) Utils.deleteCacheDir();
     Map<String, String> qualityUrlList = <String, String>{
       '320p': watchlistProvider.watchlistModel.result?[position].video320 ?? '',
       '480p': watchlistProvider.watchlistModel.result?[position].video480 ?? '',

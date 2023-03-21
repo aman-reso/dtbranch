@@ -141,7 +141,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                   fontWeight: FontWeight.w500,
                 ),
                 keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.zero,
                   isCollapsed: true,
@@ -178,7 +178,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                   Utils.buildWebAlertDialog(context, "otp", mobileNumber);
                 }
               },
-              focusColor: white.withOpacity(0.5),
+              focusColor: white,
               borderRadius: BorderRadius.circular(18),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
@@ -252,7 +252,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                 debugPrint("Clicked on : ====> loginWith Google");
                 _gmailLogin();
               },
-              focusColor: white.withOpacity(0.5),
+              focusColor: primaryColor,
               borderRadius: BorderRadius.circular(18),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
@@ -274,9 +274,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
                         imagePath: "ic_google.png",
                         fit: BoxFit.contain,
                       ),
-                      const SizedBox(
-                        width: 25,
-                      ),
+                      const SizedBox(width: 25),
                       Flexible(
                         child: MyText(
                           color: black,

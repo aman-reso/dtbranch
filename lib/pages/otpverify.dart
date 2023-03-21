@@ -87,17 +87,15 @@ class OTPVerifyState extends State<OTPVerify> {
               MyText(
                 color: white,
                 text: "verifyphonenumber",
-                fontsizeNormal: 26,
+                fontsizeNormal: 22,
                 multilanguage: true,
                 fontweight: FontWeight.bold,
-                maxline: 1,
+                maxline: 2,
                 overflow: TextOverflow.ellipsis,
                 textalign: TextAlign.center,
                 fontstyle: FontStyle.normal,
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
               MyText(
                 color: otherColor,
                 text: "code_sent_desc",
@@ -120,9 +118,7 @@ class OTPVerifyState extends State<OTPVerify> {
                 multilanguage: false,
                 fontstyle: FontStyle.normal,
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
 
               /* Enter Received OTP */
               Pinput(
@@ -148,9 +144,7 @@ class OTPVerifyState extends State<OTPVerify> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 30),
 
               /* Confirm Button */
               InkWell(
@@ -196,9 +190,7 @@ class OTPVerifyState extends State<OTPVerify> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
 
               /* Resend */
               InkWell(

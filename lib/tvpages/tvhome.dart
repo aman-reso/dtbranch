@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/tvpages/tvchannels.dart';
 import 'package:dtlive/tvpages/tvrentstore.dart';
 import 'package:dtlive/provider/searchprovider.dart';
@@ -26,7 +27,9 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +49,7 @@ class TVHomeState extends State<TVHome> {
   late SearchProvider searchProvider;
   CarouselController pageController = CarouselController();
   int? videoId, videoType, typeId;
+  bool isSearchEnable = false;
   String? currentPage,
       langCatName,
       aboutUsUrl,
@@ -56,8 +60,16 @@ class TVHomeState extends State<TVHome> {
 
   _onItemTapped(String page) async {
     debugPrint("_onItemTapped -----------------> $page");
+    await homeProvider.setCurrentPage(page);
     if (page != "") {
       await setSelectedTab(-1);
+    }
+    if (page != "search") {
+      isSearchEnable = false;
+      mSearchText = "";
+      searchController.clear();
+      searchProvider.clearProvider();
+      await searchProvider.notifyProvider();
     }
     setState(() {
       currentPage = page;
@@ -76,7 +88,7 @@ class TVHomeState extends State<TVHome> {
   }
 
   _getData() async {
-    if (!Constant.isTV) Utils.deleteCacheDir();
+    if (!kIsWeb) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
@@ -238,6 +250,91 @@ class TVHomeState extends State<TVHome> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          /* Menu */
+          (MediaQuery.of(context).size.width < 800)
+              ? Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 25,
+                  ),
+                  padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+                  child: Consumer<HomeProvider>(
+                    builder: (context, homeProvider, child) {
+                      return DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          isDense: true,
+                          isExpanded: true,
+                          customButton: MyImage(
+                            height: 40,
+                            imagePath: "ic_menu.png",
+                            fit: BoxFit.contain,
+                            color: white,
+                          ),
+                          items: _buildWebDropDownItems(),
+                          onChanged: (type.Result? value) async {
+                            if (kIsWeb) {
+                              _onItemTapped("");
+                            }
+                            debugPrint(
+                                'value id ===============> ${value?.id.toString()}');
+                            if (value?.id == 0) {
+                              await getTabData(
+                                  0, homeProvider.sectionTypeModel.result);
+                            } else {
+                              for (var i = 0;
+                                  i <
+                                      (homeProvider.sectionTypeModel.result
+                                              ?.length ??
+                                          0);
+                                  i++) {
+                                if (value?.id ==
+                                    homeProvider
+                                        .sectionTypeModel.result?[i].id) {
+                                  await getTabData(i + 1,
+                                      homeProvider.sectionTypeModel.result);
+                                  return;
+                                }
+                              }
+                            }
+                          },
+                          dropdownStyleData: DropdownStyleData(
+                            width: 180,
+                            isFullScreen: true,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            decoration: Utils.setBackground(lightBlack, 5),
+                            elevation: 8,
+                          ),
+                          menuItemStyleData: MenuItemStyleData(
+                            overlayColor: MaterialStateProperty.resolveWith(
+                              (states) {
+                                if (states.contains(MaterialState.focused)) {
+                                  return white.withOpacity(0.5);
+                                }
+                                return transparentColor;
+                              },
+                            ),
+                          ),
+                          buttonStyleData: ButtonStyleData(
+                            decoration: Utils.setBGWithBorder(
+                                transparentColor, white, 20, 1),
+                            overlayColor: MaterialStateProperty.resolveWith(
+                              (states) {
+                                if (states.contains(MaterialState.focused)) {
+                                  return white.withOpacity(0.5);
+                                }
+                                if (states.contains(MaterialState.hovered)) {
+                                  return white.withOpacity(0.5);
+                                }
+                                return transparentColor;
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : const SizedBox.shrink(),
+
           /* App Icon */
           Material(
             type: MaterialType.transparency,
@@ -261,132 +358,171 @@ class TVHomeState extends State<TVHome> {
 
           /* Feature buttons */
           /* Search */
-          Container(
-            height: 25,
-            constraints: const BoxConstraints(minWidth: 60, maxWidth: 130),
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            decoration: BoxDecoration(
-              color: transparentColor,
-              border: Border.all(
-                color: primaryColor,
-                width: 0.5,
-              ),
+          Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              focusColor: white.withOpacity(0.5),
               borderRadius: BorderRadius.circular(5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    alignment: Alignment.center,
-                    child: TextField(
-                      onChanged: (value) async {
-                        log("value ====> $value");
-                        if (value.isNotEmpty) {
-                          mSearchText = value;
-                          debugPrint("mSearchText ====> $mSearchText");
-                          _onItemTapped("search");
-                          await searchProvider.setLoading(true);
-                          await searchProvider.getSearchVideo(mSearchText);
-                        }
-                      },
-                      textInputAction: TextInputAction.done,
-                      obscureText: false,
-                      controller: searchController,
-                      keyboardType: TextInputType.text,
-                      maxLines: 1,
-                      style: const TextStyle(
-                        color: white,
-                        fontSize: 14,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        filled: true,
-                        isCollapsed: true,
-                        fillColor: transparentColor,
-                        hintStyle: TextStyle(
-                          color: otherColor,
-                          fontSize: 13,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        hintText: searchHint2,
-                      ),
-                    ),
+              onTap: () {
+                log("isSearchEnable ====> $isSearchEnable");
+                if (!isSearchEnable) {
+                  FocusScope.of(context).requestFocus();
+                } else {
+                  FocusScope.of(context).unfocus();
+                }
+                setState(() {
+                  isSearchEnable = !isSearchEnable;
+                });
+              },
+              child: Container(
+                height: 25,
+                constraints: const BoxConstraints(minWidth: 60, maxWidth: 130),
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                decoration: BoxDecoration(
+                  color: transparentColor,
+                  border: Border.all(
+                    color: primaryColor,
+                    width: 0.7,
                   ),
+                  borderRadius: BorderRadius.circular(5),
                 ),
-                Consumer<SearchProvider>(
-                  builder: (context, searchProvider, child) {
-                    if (searchController.text.toString().isNotEmpty) {
-                      return Material(
-                        type: MaterialType.transparency,
-                        child: InkWell(
-                          focusColor: white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(5),
-                          onTap: () async {
-                            debugPrint("Click on Clear!");
-                            _onItemTapped("");
-                            searchController.clear();
-                            await searchProvider.clearProvider();
-                            await searchProvider.notifyProvider();
-                          },
-                          child: Container(
-                            constraints: const BoxConstraints(
-                              minWidth: 25,
-                              maxWidth: 25,
-                            ),
-                            padding: const EdgeInsets.all(5),
-                            alignment: Alignment.center,
-                            child: MyImage(
-                              height: 23,
-                              color: white,
-                              fit: BoxFit.contain,
-                              imagePath: "ic_close.png",
-                            ),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Material(
-                        type: MaterialType.transparency,
-                        child: InkWell(
-                          focusColor: white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(5),
-                          onTap: () async {
-                            debugPrint("Click on Search!");
-                            if (searchController.text.toString().isNotEmpty) {
-                              mSearchText = searchController.text.toString();
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        alignment: Alignment.center,
+                        child: TextField(
+                          enabled: isSearchEnable,
+                          onChanged: (value) async {
+                            log("value ====> $value");
+                            if (value.isNotEmpty) {
+                              mSearchText = value;
                               debugPrint("mSearchText ====> $mSearchText");
                               _onItemTapped("search");
                               await searchProvider.setLoading(true);
                               await searchProvider.getSearchVideo(mSearchText);
                             }
                           },
-                          child: Container(
-                            constraints: const BoxConstraints(
-                              minWidth: 25,
-                              maxWidth: 25,
+                          textInputAction: TextInputAction.done,
+                          obscureText: false,
+                          controller: searchController,
+                          keyboardType: TextInputType.text,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            color: white,
+                            fontSize: 14,
+                            overflow: TextOverflow.ellipsis,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onSubmitted: (value) {
+                            if (isSearchEnable) {
+                              isSearchEnable = false;
+                              FocusScope.of(context).unfocus();
+                            }
+                          },
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            filled: true,
+                            isCollapsed: true,
+                            fillColor: transparentColor,
+                            hintStyle: TextStyle(
+                              color: otherColor,
+                              fontSize: 13,
+                              overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.w500,
                             ),
-                            padding: const EdgeInsets.all(5),
-                            alignment: Alignment.center,
-                            child: MyImage(
-                              height: 23,
-                              color: white,
-                              fit: BoxFit.contain,
-                              imagePath: "ic_find.png",
-                            ),
+                            hintText: searchHint2,
                           ),
                         ),
-                      );
-                    }
-                  },
+                      ),
+                    ),
+                    Consumer<SearchProvider>(
+                      builder: (context, searchProvider, child) {
+                        if (searchController.text.toString().isNotEmpty) {
+                          return Material(
+                            type: MaterialType.transparency,
+                            child: InkWell(
+                              focusColor: white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(5),
+                              onTap: () async {
+                                debugPrint("Click on Clear!");
+                                _onItemTapped("");
+                                searchController.clear();
+                                if (isSearchEnable) {
+                                  isSearchEnable = false;
+                                  FocusScope.of(context).unfocus();
+                                }
+                                await searchProvider.clearProvider();
+                                await searchProvider.notifyProvider();
+                                setState(() {});
+                              },
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  minWidth: 25,
+                                  maxWidth: 25,
+                                ),
+                                padding: const EdgeInsets.all(5),
+                                alignment: Alignment.center,
+                                child: MyImage(
+                                  height: 23,
+                                  color: white,
+                                  fit: BoxFit.contain,
+                                  imagePath: "ic_close.png",
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Material(
+                            type: MaterialType.transparency,
+                            child: InkWell(
+                              focusColor: white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(5),
+                              onTap: () async {
+                                debugPrint("Click on Search!");
+                                if (searchController.text
+                                    .toString()
+                                    .isNotEmpty) {
+                                  if (isSearchEnable) {
+                                    isSearchEnable = false;
+                                    FocusScope.of(context).unfocus();
+                                  }
+                                  mSearchText =
+                                      searchController.text.toString();
+                                  debugPrint("mSearchText ====> $mSearchText");
+                                  _onItemTapped("search");
+                                  await searchProvider.setLoading(true);
+                                  await searchProvider
+                                      .getSearchVideo(mSearchText);
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  minWidth: 25,
+                                  maxWidth: 25,
+                                ),
+                                padding: const EdgeInsets.all(5),
+                                alignment: Alignment.center,
+                                child: MyImage(
+                                  height: 23,
+                                  color: white,
+                                  fit: BoxFit.contain,
+                                  imagePath: "ic_find.png",
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
 
@@ -457,41 +593,66 @@ class TVHomeState extends State<TVHome> {
           ),
 
           /* Login / MyProfile */
-          Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              focusColor: white.withOpacity(0.5),
-              onTap: () async {
-                if (Constant.userID != null) {
-                  Utils.buildWebAlertDialog(context, "profile", "");
-                } else {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                }
-              },
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Consumer<HomeProvider>(
-                  builder: (context, homeProvider, child) {
-                    return MyText(
-                      color: (homeProvider.currentPage == "login" ||
-                              homeProvider.currentPage == "setting")
-                          ? primaryColor
-                          : white,
-                      multilanguage: Constant.userID != null ? false : true,
-                      text: Constant.userID != null ? myProfile : "login",
-                      fontsizeNormal: 14,
-                      fontweight: FontWeight.w600,
-                      fontsizeWeb: 14,
-                      maxline: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.center,
-                      fontstyle: FontStyle.normal,
-                    );
-                  },
-                ),
-              ),
-            ),
+          Consumer<HomeProvider>(
+            builder: (context, homeProvider, child) {
+              if (Constant.userID != null) {
+                return Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    focusColor: white.withOpacity(0.5),
+                    onTap: () {
+                      Utils.buildWebAlertDialog(context, "profile", "");
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: MyText(
+                        color: (homeProvider.currentPage == "profile")
+                            ? primaryColor
+                            : white,
+                        multilanguage: false,
+                        text: myProfile,
+                        fontsizeNormal: 14,
+                        fontweight: FontWeight.w600,
+                        fontsizeWeb: 14,
+                        maxline: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textalign: TextAlign.center,
+                        fontstyle: FontStyle.normal,
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    focusColor: white.withOpacity(0.5),
+                    onTap: () async {
+                      Utils.buildWebAlertDialog(context, "login", "");
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: MyText(
+                        color: (homeProvider.currentPage == "login")
+                            ? primaryColor
+                            : white,
+                        multilanguage: true,
+                        text: "login",
+                        fontsizeNormal: 14,
+                        fontweight: FontWeight.w600,
+                        fontsizeWeb: 14,
+                        maxline: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textalign: TextAlign.center,
+                        fontstyle: FontStyle.normal,
+                      ),
+                    ),
+                  ),
+                );
+              }
+            },
           ),
 
           /* Logout */
@@ -504,7 +665,7 @@ class TVHomeState extends State<TVHome> {
                     focusColor: white.withOpacity(0.5),
                     onTap: () async {
                       if (Constant.userID != null) {
-                        // _buildLogoutDialog();
+                        _buildLogoutDialog();
                       }
                     },
                     borderRadius: BorderRadius.circular(8),
@@ -597,6 +758,63 @@ class TVHomeState extends State<TVHome> {
         );
       },
     );
+  }
+
+  List<DropdownMenuItem<type.Result>>? _buildWebDropDownItems() {
+    List<type.Result>? typeDropDownList = [];
+    for (var i = 0;
+        i < (homeProvider.sectionTypeModel.result?.length ?? 0) + 1;
+        i++) {
+      if (i == 0) {
+        type.Result typeHomeResult = type.Result();
+        typeHomeResult.id = 0;
+        typeHomeResult.name = "Home";
+        typeDropDownList.insert(i, typeHomeResult);
+      } else {
+        typeDropDownList.insert(i,
+            (homeProvider.sectionTypeModel.result?[(i - 1)] ?? type.Result()));
+      }
+    }
+    return typeDropDownList
+        .map<DropdownMenuItem<type.Result>>((type.Result value) {
+      return DropdownMenuItem<type.Result>(
+        value: value,
+        alignment: Alignment.center,
+        child: FittedBox(
+          child: Container(
+            constraints: const BoxConstraints(maxHeight: 35, minWidth: 100),
+            decoration: Utils.setBackground(
+              homeProvider.selectedIndex != -1
+                  ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                          (value.id ?? 0)
+                      ? white
+                      : transparentColor)
+                  : transparentColor,
+              20,
+            ),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: MyText(
+              color: homeProvider.selectedIndex != -1
+                  ? ((typeDropDownList[homeProvider.selectedIndex].id ?? 0) ==
+                          (value.id ?? 0)
+                      ? black
+                      : white)
+                  : white,
+              multilanguage: false,
+              text: (value.name.toString()),
+              fontsizeNormal: 14,
+              fontweight: FontWeight.w600,
+              fontsizeWeb: 15,
+              maxline: 1,
+              overflow: TextOverflow.ellipsis,
+              textalign: TextAlign.center,
+              fontstyle: FontStyle.normal,
+            ),
+          ),
+        ),
+      );
+    }).toList();
   }
 
   Widget tabItem(List<type.Result>? sectionTypeList) {
@@ -881,9 +1099,7 @@ class TVHomeState extends State<TVHome> {
               fontstyle: FontStyle.normal,
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.heightContiLand,
@@ -897,170 +1113,143 @@ class TVHomeState extends State<TVHome> {
                 width: 5,
               ),
               itemBuilder: (BuildContext context, int index) {
-                return Stack(
-                  alignment: AlignmentDirectional.bottomStart,
-                  children: [
-                    InkWell(
-                      focusColor: white,
-                      borderRadius: BorderRadius.circular(4),
-                      onTap: () {
-                        log("Clicked on index ==> $index");
-                        openDetailPage(
-                          (continueWatchingList?[index].videoType ?? 0) == 2
-                              ? "showdetail"
-                              : "videodetail",
-                          (continueWatchingList?[index].videoType ?? 0) == 2
-                              ? (continueWatchingList?[index].showId ?? 0)
-                              : (continueWatchingList?[index].id ?? 0),
-                          continueWatchingList?[index].videoType ?? 0,
-                          continueWatchingList?[index].typeId ?? 0,
-                        );
-                      },
-                      child: Container(
-                        width: Dimens.widthContiLand,
-                        height: Dimens.heightContiLand,
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: MyNetworkImage(
-                            imageUrl:
-                                continueWatchingList?[index].landscape ?? "",
-                            fit: BoxFit.cover,
-                            imgHeight: MediaQuery.of(context).size.height,
-                            imgWidth: MediaQuery.of(context).size.width,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, bottom: 8),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: () async {
-                              Map<String, String> qualityUrlList =
-                                  <String, String>{
-                                '320p':
-                                    continueWatchingList?[index].video320 ?? '',
-                                '480p':
-                                    continueWatchingList?[index].video480 ?? '',
-                                '720p':
-                                    continueWatchingList?[index].video720 ?? '',
-                                '1080p':
-                                    continueWatchingList?[index].video1080 ??
-                                        '',
-                              };
-                              debugPrint(
-                                  "qualityUrlList ==========> ${qualityUrlList.length}");
-                              Constant.resolutionsUrls = qualityUrlList;
-                              debugPrint(
-                                  "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
-                              var isContinues = await Utils.openPlayer(
-                                context: context,
-                                playType:
-                                    (continueWatchingList?[index].videoType ??
-                                                0) ==
-                                            2
-                                        ? "Show"
-                                        : "Video",
-                                videoId: (continueWatchingList?[index]
-                                                .videoType ??
-                                            0) ==
-                                        2
-                                    ? (continueWatchingList?[index].showId ?? 0)
-                                    : (continueWatchingList?[index].id ?? 0),
-                                videoType:
-                                    continueWatchingList?[index].videoType ?? 0,
-                                typeId:
-                                    continueWatchingList?[index].typeId ?? 0,
-                                videoUrl:
-                                    continueWatchingList?[index].video320 ?? "",
-                                trailerUrl:
-                                    continueWatchingList?[index].trailerUrl ??
-                                        "",
-                                uploadType: continueWatchingList?[index]
-                                        .videoUploadType ??
-                                    "",
-                                videoThumb:
-                                    continueWatchingList?[index].landscape ??
-                                        "",
-                                vSubtitle:
-                                    continueWatchingList?[index].subtitle ?? "",
-                                vStopTime:
-                                    continueWatchingList?[index].stopTime ?? 0,
-                              );
-                              if (isContinues != null && isContinues == true) {
-                                await sectionDataProvider.getSectionBanner(
-                                    "0", "1");
-                                await sectionDataProvider.getSectionList(
-                                    "0", "1");
-                                Future.delayed(Duration.zero).then((value) {
-                                  if (!mounted) return;
-                                  setState(() {});
-                                });
-                              }
-                            },
-                            child: MyImage(
-                              width: 30,
-                              height: 30,
-                              imagePath: "play.png",
+                return Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    focusColor: white,
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () async {
+                      debugPrint("index ==========> $index");
+                      Map<String, String> qualityUrlList = <String, String>{
+                        '320p': continueWatchingList?[index].video320 ?? '',
+                        '480p': continueWatchingList?[index].video480 ?? '',
+                        '720p': continueWatchingList?[index].video720 ?? '',
+                        '1080p': continueWatchingList?[index].video1080 ?? '',
+                      };
+                      debugPrint(
+                          "qualityUrlList ==========> ${qualityUrlList.length}");
+                      Constant.resolutionsUrls = qualityUrlList;
+                      debugPrint(
+                          "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+                      var isContinues = await Utils.openPlayer(
+                        context: context,
+                        playType:
+                            (continueWatchingList?[index].videoType ?? 0) == 2
+                                ? "Show"
+                                : "Video",
+                        videoId:
+                            (continueWatchingList?[index].videoType ?? 0) == 2
+                                ? (continueWatchingList?[index].showId ?? 0)
+                                : (continueWatchingList?[index].id ?? 0),
+                        videoType: continueWatchingList?[index].videoType ?? 0,
+                        typeId: continueWatchingList?[index].typeId ?? 0,
+                        videoUrl: continueWatchingList?[index].video320 ?? "",
+                        trailerUrl:
+                            continueWatchingList?[index].trailerUrl ?? "",
+                        uploadType:
+                            continueWatchingList?[index].videoUploadType ?? "",
+                        videoThumb:
+                            continueWatchingList?[index].landscape ?? "",
+                        vSubtitle: continueWatchingList?[index].subtitle ?? "",
+                        vStopTime: continueWatchingList?[index].stopTime ?? 0,
+                      );
+                      if (isContinues != null && isContinues == true) {
+                        await sectionDataProvider.getSectionBanner("0", "1");
+                        await sectionDataProvider.getSectionList("0", "1");
+                        Future.delayed(Duration.zero).then((value) {
+                          if (!mounted) return;
+                          setState(() {});
+                        });
+                      }
+                    },
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomStart,
+                      children: [
+                        Container(
+                          width: Dimens.widthContiLand,
+                          height: Dimens.heightContiLand,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(Constant.isTV ? 2 : 0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: MyNetworkImage(
+                              imageUrl:
+                                  continueWatchingList?[index].landscape ?? "",
+                              fit: BoxFit.cover,
+                              imgHeight: MediaQuery.of(context).size.height,
+                              imgWidth: MediaQuery.of(context).size.width,
                             ),
                           ),
                         ),
-                        Container(
-                          width: Dimens.widthContiLand,
-                          constraints: const BoxConstraints(minWidth: 0),
-                          padding: const EdgeInsets.all(3),
-                          child: LinearPercentIndicator(
-                            padding: const EdgeInsets.all(0),
-                            barRadius: const Radius.circular(2),
-                            lineHeight: 4,
-                            percent: Utils.getPercentage(
-                                continueWatchingList?[index].videoDuration ?? 0,
-                                continueWatchingList?[index].stopTime ?? 0),
-                            backgroundColor: secProgressColor,
-                            progressColor: primaryColor,
-                          ),
-                        ),
-                        (continueWatchingList?[index].releaseTag != null &&
-                                (continueWatchingList?[index].releaseTag ?? "")
-                                    .isNotEmpty)
-                            ? Container(
-                                decoration: const BoxDecoration(
-                                  color: black,
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(4),
-                                    bottomRight: Radius.circular(4),
-                                  ),
-                                  shape: BoxShape.rectangle,
-                                ),
-                                alignment: Alignment.center,
-                                width: Dimens.widthContiLand,
-                                height: 15,
-                                child: MyText(
-                                  color: white,
-                                  multilanguage: false,
-                                  text:
-                                      continueWatchingList?[index].releaseTag ??
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, bottom: 8),
+                              child: MyImage(
+                                width: 30,
+                                height: 30,
+                                imagePath: "play.png",
+                              ),
+                            ),
+                            Container(
+                              width: Dimens.widthContiLand,
+                              constraints: const BoxConstraints(minWidth: 0),
+                              padding: const EdgeInsets.all(3),
+                              child: LinearPercentIndicator(
+                                padding: const EdgeInsets.all(0),
+                                barRadius: const Radius.circular(2),
+                                lineHeight: 4,
+                                percent: Utils.getPercentage(
+                                    continueWatchingList?[index]
+                                            .videoDuration ??
+                                        0,
+                                    continueWatchingList?[index].stopTime ?? 0),
+                                backgroundColor: secProgressColor,
+                                progressColor: primaryColor,
+                              ),
+                            ),
+                            (continueWatchingList?[index].releaseTag != null &&
+                                    (continueWatchingList?[index].releaseTag ??
+                                            "")
+                                        .isNotEmpty)
+                                ? Container(
+                                    decoration: const BoxDecoration(
+                                      color: black,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(4),
+                                        bottomRight: Radius.circular(4),
+                                      ),
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                    alignment: Alignment.center,
+                                    width: Dimens.widthContiLand,
+                                    height: 15,
+                                    child: MyText(
+                                      color: white,
+                                      multilanguage: false,
+                                      text: continueWatchingList?[index]
+                                              .releaseTag ??
                                           "",
-                                  textalign: TextAlign.center,
-                                  fontsizeNormal: 6,
-                                  fontweight: FontWeight.w700,
-                                  fontsizeWeb: 10,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              )
-                            : const SizedBox.shrink(),
+                                      textalign: TextAlign.center,
+                                      fontsizeNormal: 6,
+                                      fontweight: FontWeight.w700,
+                                      fontsizeWeb: 10,
+                                      maxline: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontstyle: FontStyle.normal,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
+                  ),
                 );
               },
             ),
@@ -1529,6 +1718,171 @@ class TVHomeState extends State<TVHome> {
           );
         },
       ),
+    );
+  }
+
+  Future<void> _buildLogoutDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          insetPadding: const EdgeInsets.fromLTRB(100, 25, 100, 25),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          backgroundColor: lightBlack,
+          child: Container(
+            padding: const EdgeInsets.all(25),
+            constraints: const BoxConstraints(
+              minWidth: 250,
+              maxWidth: 300,
+              minHeight: 100,
+              maxHeight: 180,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyText(
+                        color: white,
+                        text: "confirmsognout",
+                        multilanguage: true,
+                        textalign: TextAlign.center,
+                        fontsizeNormal: 16,
+                        fontsizeWeb: 18,
+                        fontweight: FontWeight.bold,
+                        maxline: 2,
+                        overflow: TextOverflow.ellipsis,
+                        fontstyle: FontStyle.normal,
+                      ),
+                      const SizedBox(height: 3),
+                      MyText(
+                        color: white,
+                        text: "areyousurewanrtosignout",
+                        multilanguage: true,
+                        textalign: TextAlign.center,
+                        fontsizeNormal: 13,
+                        fontsizeWeb: 14,
+                        fontweight: FontWeight.w500,
+                        maxline: 2,
+                        overflow: TextOverflow.ellipsis,
+                        fontstyle: FontStyle.normal,
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          focusColor: white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Container(
+                              constraints: const BoxConstraints(minWidth: 75),
+                              height: 33,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: otherColor,
+                                  width: .5,
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: MyText(
+                                color: white,
+                                text: "cancel",
+                                multilanguage: true,
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 16,
+                                fontsizeWeb: 17,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontweight: FontWeight.w600,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          focusColor: white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: () async {
+                            final homeProvider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
+                            final sectionDataProvider =
+                                Provider.of<SectionDataProvider>(context,
+                                    listen: false);
+                            // Firebase Signout
+                            await auth.signOut();
+                            await GoogleSignIn().signOut();
+                            await Utils.setUserId(null);
+                            await sectionDataProvider.clearProvider();
+                            sectionDataProvider.getSectionBanner("0", "1");
+                            sectionDataProvider.getSectionList("0", "1");
+                            await homeProvider.homeNotifyProvider();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Container(
+                              constraints: const BoxConstraints(minWidth: 75),
+                              height: 33,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: primaryLight,
+                                borderRadius: BorderRadius.circular(5),
+                                shape: BoxShape.rectangle,
+                              ),
+                              child: MyText(
+                                color: black,
+                                text: "sign_out",
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 16,
+                                fontsizeWeb: 17,
+                                multilanguage: true,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontweight: FontWeight.w600,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

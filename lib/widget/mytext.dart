@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:dtlive/utils/constant.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -31,8 +32,8 @@ class MyText extends StatelessWidget {
 
   static getAdaptiveTextSize(BuildContext context, dynamic value) {
     // 720 is medium screen height
-    if (kIsWeb) {
-      return (value / 630) *
+    if (kIsWeb || Constant.isTV) {
+      return (value / 650) *
           min(MediaQuery.of(context).size.height,
               MediaQuery.of(context).size.width);
     } else {
@@ -49,8 +50,8 @@ class MyText extends StatelessWidget {
         overflow: overflow,
         maxLines: maxline,
         style: GoogleFonts.montserrat(
-          fontSize: getAdaptiveTextSize(
-              context, kIsWeb ? fontsizeWeb : fontsizeNormal),
+          fontSize: getAdaptiveTextSize(context,
+              (kIsWeb || Constant.isTV) ? fontsizeWeb : fontsizeNormal),
           fontStyle: fontstyle,
           color: color,
           fontWeight: fontweight,
@@ -63,8 +64,8 @@ class MyText extends StatelessWidget {
         overflow: overflow,
         maxLines: maxline,
         style: GoogleFonts.montserrat(
-          fontSize: getAdaptiveTextSize(
-              context, kIsWeb ? fontsizeWeb : fontsizeNormal),
+          fontSize: getAdaptiveTextSize(context,
+              (kIsWeb || Constant.isTV) ? fontsizeWeb : fontsizeNormal),
           fontStyle: fontstyle,
           color: color,
           fontWeight: fontweight,

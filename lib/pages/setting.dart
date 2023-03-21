@@ -333,7 +333,7 @@ class SettingState extends State<Setting> {
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
                   onTap: () async {
-                    await Utils.deleteCacheDir();
+                    if (!kIsWeb) Utils.deleteCacheDir();
                     if (!mounted) return;
                     Utils.showSnackbar(
                         context, "success", "cacheclearmsg", true);

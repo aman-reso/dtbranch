@@ -69,13 +69,16 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
                 onTap: () {
                   Navigator.pop(context);
                 },
-                child: Container(
-                  width: 25,
-                  height: 25,
-                  alignment: Alignment.center,
-                  child: MyImage(
-                    fit: BoxFit.fill,
-                    imagePath: "backwith_bg.png",
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    width: 25,
+                    height: 25,
+                    alignment: Alignment.center,
+                    child: MyImage(
+                      fit: BoxFit.fill,
+                      imagePath: "backwith_bg.png",
+                    ),
                   ),
                 ),
               ),
@@ -85,7 +88,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
               color: white,
               text: "verifyphonenumber",
               fontsizeNormal: 26,
-              fontsizeWeb: 26,
+              fontsizeWeb: 21,
               multilanguage: true,
               fontweight: FontWeight.bold,
               maxline: 1,

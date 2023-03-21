@@ -168,34 +168,36 @@ class TVShowDetailsState extends State<TVShowDetails> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              child: InkWell(
-                                autofocus: true,
-                                focusColor: gray.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(25),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(8),
-                                  child: MyImage(
-                                    fit: BoxFit.contain,
-                                    imagePath: "back.png",
+                            if (!kIsWeb)
+                              Container(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                child: InkWell(
+                                  autofocus: true,
+                                  focusColor: gray.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(25),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Container(
+                                    width: 35,
+                                    height: 35,
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.all(8),
+                                    child: MyImage(
+                                      fit: BoxFit.contain,
+                                      imagePath: "back.png",
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
 
                             /* Small Poster, Main title, ReleaseYear, Duration, Age Restriction, Video Quality */
                             Expanded(
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 constraints: const BoxConstraints(minHeight: 0),
-                                padding: const EdgeInsets.fromLTRB(0, 0, 10, 8),
+                                padding: const EdgeInsets.fromLTRB(
+                                    0, kIsWeb ? 20 : 0, 10, 8),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.max,
@@ -1162,10 +1164,10 @@ class TVShowDetailsState extends State<TVShowDetails> {
               child: Container(
                 padding: const EdgeInsets.all(2.0),
                 child: Container(
-                  height: (kIsWeb || Constant.isTV) ? 40 : 55,
+                  height: 60,
                   constraints: BoxConstraints(
                     maxWidth: (kIsWeb || Constant.isTV)
-                        ? 190
+                        ? 250
                         : MediaQuery.of(context).size.width,
                   ),
                   decoration: BoxDecoration(
@@ -1179,7 +1181,7 @@ class TVShowDetailsState extends State<TVShowDetails> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const SizedBox(width: 20),
+                            const SizedBox(width: 10),
                             MyImage(
                               width: 18,
                               height: 18,
@@ -1195,13 +1197,13 @@ class TVShowDetailsState extends State<TVShowDetails> {
                                   MyText(
                                     color: white,
                                     text:
-                                        "Continue Watching Episode ${(showDetailsProvider.mCurrentEpiPos + 1)}",
+                                        "Continue Watching Epi. ${(showDetailsProvider.mCurrentEpiPos + 1)}",
                                     multilanguage: false,
                                     textalign: TextAlign.start,
                                     fontsizeNormal: 13,
-                                    fontsizeWeb: 15,
+                                    fontsizeWeb: 13,
                                     fontweight: FontWeight.w700,
-                                    maxline: 1,
+                                    maxline: 2,
                                     overflow: TextOverflow.ellipsis,
                                     fontstyle: FontStyle.normal,
                                   ),
@@ -1251,7 +1253,7 @@ class TVShowDetailsState extends State<TVShowDetails> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 20),
+                            const SizedBox(width: 10),
                           ],
                         ),
                       ),
@@ -1298,7 +1300,7 @@ class TVShowDetailsState extends State<TVShowDetails> {
               child: Container(
                 padding: const EdgeInsets.all(2.0),
                 child: Container(
-                  height: (kIsWeb || Constant.isTV) ? 40 : 55,
+                  height: 55,
                   constraints: BoxConstraints(
                     maxWidth: (kIsWeb || Constant.isTV)
                         ? 190
@@ -1322,7 +1324,7 @@ class TVShowDetailsState extends State<TVShowDetails> {
                       Expanded(
                         child: MyText(
                           color: white,
-                          text: "Watch Episode 1",
+                          text: "Watch Epi. 1",
                           multilanguage: false,
                           textalign: TextAlign.start,
                           fontsizeNormal: 14,
@@ -1346,7 +1348,8 @@ class TVShowDetailsState extends State<TVShowDetails> {
 
   Widget _buildTabs() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          Constant.isTV ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         Container(
           constraints: BoxConstraints(
@@ -1363,92 +1366,98 @@ class TVShowDetailsState extends State<TVShowDetails> {
             children: [
               /* Related */
               Expanded(
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  focusColor: Colors.grey.withOpacity(0.5),
-                  onTap: () async {
-                    await showDetailsProvider.setTabClick("related");
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: MyText(
-                              color:
-                                  showDetailsProvider.tabClickedOn != "related"
-                                      ? otherColor
-                                      : white,
-                              text: "related",
-                              multilanguage: true,
-                              textalign: TextAlign.center,
-                              fontsizeNormal: 16,
-                              fontweight: FontWeight.w600,
-                              fontsizeWeb: 16,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: gray.withOpacity(0.5),
+                    onTap: () async {
+                      await showDetailsProvider.setTabClick("related");
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: MyText(
+                                color: showDetailsProvider.tabClickedOn !=
+                                        "related"
+                                    ? otherColor
+                                    : white,
+                                text: "related",
+                                multilanguage: true,
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 16,
+                                fontweight: FontWeight.w600,
+                                fontsizeWeb: 16,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
                             ),
                           ),
-                        ),
-                        Visibility(
-                          visible:
-                              showDetailsProvider.tabClickedOn == "related",
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 2,
-                            color: white,
+                          Visibility(
+                            visible:
+                                showDetailsProvider.tabClickedOn == "related",
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 2,
+                              color: white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
               /* More Details */
               Expanded(
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  focusColor: Colors.grey.withOpacity(0.5),
-                  onTap: () async {
-                    await showDetailsProvider.setTabClick("moredetails");
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: MyText(
-                              color: showDetailsProvider.tabClickedOn !=
-                                      "moredetails"
-                                  ? otherColor
-                                  : white,
-                              text: "moredetails",
-                              textalign: TextAlign.center,
-                              fontsizeNormal: 16,
-                              fontweight: FontWeight.w600,
-                              fontsizeWeb: 16,
-                              multilanguage: true,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(5),
+                    focusColor: gray.withOpacity(0.5),
+                    onTap: () async {
+                      await showDetailsProvider.setTabClick("moredetails");
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: MyText(
+                                color: showDetailsProvider.tabClickedOn !=
+                                        "moredetails"
+                                    ? otherColor
+                                    : white,
+                                text: "moredetails",
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 16,
+                                fontweight: FontWeight.w600,
+                                fontsizeWeb: 16,
+                                multilanguage: true,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
                             ),
                           ),
-                        ),
-                        Visibility(
-                          visible:
-                              showDetailsProvider.tabClickedOn == "moredetails",
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 2,
-                            color: white,
+                          Visibility(
+                            visible: showDetailsProvider.tabClickedOn ==
+                                "moredetails",
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 2,
+                              color: white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1523,101 +1532,116 @@ class TVShowDetailsState extends State<TVShowDetails> {
               /* Episodes END */
 
               /* Customers also watched */
-              const SizedBox(height: 25),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: MyText(
-                  color: white,
-                  text: "customer_also_watch",
-                  multilanguage: true,
-                  textalign: TextAlign.start,
-                  fontsizeNormal: 15,
-                  fontweight: FontWeight.w600,
-                  fontsizeWeb: 16,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
+              if ((showDetailsProvider
+                          .sectionDetailModel.getRelatedVideo?.length ??
+                      0) >
+                  0)
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  margin: const EdgeInsets.only(top: 25, bottom: 0),
+                  child: MyText(
+                    color: white,
+                    text: "customer_also_watch",
+                    multilanguage: true,
+                    textalign: TextAlign.start,
+                    fontsizeNormal: 15,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 16,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
-              ),
               /* video_type =>  1-video,  2-show,  3-language,  4-category */
               /* screen_layout =>  landscape, potrait, square */
-              landscape(showDetailsProvider.sectionDetailModel.getRelatedVideo),
+              if ((showDetailsProvider
+                          .sectionDetailModel.getRelatedVideo?.length ??
+                      0) >
+                  0)
+                landscape(
+                    showDetailsProvider.sectionDetailModel.getRelatedVideo),
 
               /* Cast & Crew */
-              const SizedBox(height: 25),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: MyText(
-                  color: white,
-                  text: "castandcrew",
-                  multilanguage: true,
-                  textalign: TextAlign.start,
-                  fontsizeNormal: 15,
-                  fontweight: FontWeight.w600,
-                  fontsizeWeb: 16,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
+              if ((showDetailsProvider.sectionDetailModel.cast?.length ?? 0) >
+                  0)
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  margin: const EdgeInsets.only(top: 25, bottom: 0),
+                  child: MyText(
+                    color: white,
+                    text: "castandcrew",
+                    multilanguage: true,
+                    textalign: TextAlign.start,
+                    fontsizeNormal: 15,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 16,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 2),
-              Container(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: MyText(
-                        color: otherColor,
-                        text: "detailsfrom",
-                        multilanguage: true,
-                        textalign: TextAlign.center,
-                        fontsizeNormal: 12,
-                        fontweight: FontWeight.w500,
-                        fontsizeWeb: 14,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontstyle: FontStyle.normal,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      padding: const EdgeInsets.fromLTRB(5, 1, 5, 1),
-                      decoration: BoxDecoration(
-                        border: Border.all(
+              if ((showDetailsProvider.sectionDetailModel.cast?.length ?? 0) >
+                  0)
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: MyText(
                           color: otherColor,
-                          width: .7,
+                          text: "detailsfrom",
+                          multilanguage: true,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 12,
+                          fontweight: FontWeight.w500,
+                          fontsizeWeb: 14,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
                         ),
-                        borderRadius: BorderRadius.circular(4),
-                        shape: BoxShape.rectangle,
                       ),
-                      child: MyText(
-                        color: otherColor,
-                        text: "IMDb",
-                        multilanguage: false,
-                        textalign: TextAlign.center,
-                        fontsizeNormal: 12,
-                        fontweight: FontWeight.w700,
-                        fontsizeWeb: 13,
-                        maxline: 1,
-                        overflow: TextOverflow.ellipsis,
-                        fontstyle: FontStyle.normal,
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.fromLTRB(5, 1, 5, 1),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: otherColor,
+                            width: .7,
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                          shape: BoxShape.rectangle,
+                        ),
+                        child: MyText(
+                          color: otherColor,
+                          text: "IMDb",
+                          multilanguage: false,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 12,
+                          fontweight: FontWeight.w700,
+                          fontsizeWeb: 13,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              _buildCAndCLayout(showDetailsProvider.sectionDetailModel.cast),
+              if ((showDetailsProvider.sectionDetailModel.cast?.length ?? 0) >
+                  0)
+                _buildCAndCLayout(showDetailsProvider.sectionDetailModel.cast),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 0.7,
                 margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 color: primaryColor,
               ),
+
               /* Director */
-              _buildDirector(),
+              if ((directorList?.length ?? 0) > 0) _buildDirector(),
             ],
           )
         else
@@ -1999,7 +2023,7 @@ class TVShowDetailsState extends State<TVShowDetails> {
 
   /* ========= Open Player ========= */
   openPlayer(String playType) async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
+    if (!kIsWeb) Utils.deleteCacheDir();
     log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
 
     /* CHECK SUBSCRIPTION */

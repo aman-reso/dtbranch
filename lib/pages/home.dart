@@ -121,7 +121,7 @@ class HomeState extends State<Home> {
   }
 
   _getData() async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
+    if (!kIsWeb) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);

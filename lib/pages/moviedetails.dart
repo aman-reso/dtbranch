@@ -3180,7 +3180,7 @@ class MovieDetailsState extends State<MovieDetails> {
 
   /* ========= Open Player ========= */
   void openPlayer(String playType) async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
+    if (!kIsWeb) Utils.deleteCacheDir();
 
     /* CHECK SUBSCRIPTION */
     if (playType != "Trailer") {

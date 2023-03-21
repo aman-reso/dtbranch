@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -17,7 +18,6 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -64,235 +64,253 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb || Constant.isTV) {
-      return _buildUITVWeb();
+    if (Constant.isTV) {
+      return _buildUITV();
     } else {
       return _buildUIOther();
     }
   }
 
   Widget _buildUIOther() {
-    return AlignedGridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 1,
-      crossAxisSpacing: 0,
-      mainAxisSpacing: 4,
-      itemCount: episodeProvider.episodeBySeasonModel.result?.length ?? 0,
-      scrollDirection: Axis.vertical,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        return ExpandableNotifier(
-          child: Container(
-            color: lightBlack,
-            child: ScrollOnExpand(
-              scrollOnExpand: true,
-              scrollOnCollapse: false,
-              child: ExpandablePanel(
-                theme: const ExpandableThemeData(
-                  headerAlignment: ExpandablePanelHeaderAlignment.center,
-                  tapBodyToCollapse: true,
-                  tapBodyToExpand: true,
-                ),
-                collapsed: Container(
-                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                  constraints: const BoxConstraints(minHeight: 60),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          InkWell(
-                            borderRadius: BorderRadius.circular(16),
-                            focusColor: white.withOpacity(0.5),
-                            onTap: () async {
-                              debugPrint("===> index $index");
-                              _onTapEpisodePlay(index);
-                            },
-                            child: Container(
-                              width: 32,
-                              height: 32,
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.all(2.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: MyImage(
-                                  fit: BoxFit.cover,
-                                  height: 32,
-                                  width: 32,
-                                  imagePath: "play.png",
+    return ResponsiveGridList(
+      minItemWidth: 60,
+      verticalGridSpacing: 6,
+      horizontalGridSpacing: 8,
+      minItemsPerRow: 1,
+      maxItemsPerRow: 2,
+      listViewBuilderOptions: ListViewBuilderOptions(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+      ),
+      children: List.generate(
+        (episodeProvider.episodeBySeasonModel.result?.length ?? 0),
+        (index) {
+          return ExpandableNotifier(
+            child: Wrap(
+              children: [
+                Container(
+                  color: lightBlack,
+                  child: ScrollOnExpand(
+                    scrollOnExpand: true,
+                    scrollOnCollapse: false,
+                    child: ExpandablePanel(
+                      theme: const ExpandableThemeData(
+                        headerAlignment: ExpandablePanelHeaderAlignment.center,
+                        tapBodyToCollapse: true,
+                        tapBodyToExpand: true,
+                      ),
+                      collapsed: Container(
+                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                        constraints: const BoxConstraints(minHeight: 60),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(16),
+                                  focusColor: white.withOpacity(0.5),
+                                  onTap: () async {
+                                    debugPrint("===> index $index");
+                                    _onTapEpisodePlay(index);
+                                  },
+                                  child: Container(
+                                    width: 32,
+                                    height: 32,
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.all(2.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: MyImage(
+                                        fit: BoxFit.cover,
+                                        height: 32,
+                                        width: 32,
+                                        imagePath: "play.png",
+                                      ),
+                                    ),
+                                  ),
                                 ),
+                                (episodeProvider.episodeBySeasonModel
+                                                .result?[index].videoDuration !=
+                                            null &&
+                                        (episodeProvider.episodeBySeasonModel
+                                                    .result?[index].stopTime ??
+                                                0) >
+                                            0)
+                                    ? Container(
+                                        height: 2,
+                                        width: 32,
+                                        margin: const EdgeInsets.only(top: 8),
+                                        child: LinearPercentIndicator(
+                                          padding: const EdgeInsets.all(0),
+                                          barRadius: const Radius.circular(2),
+                                          lineHeight: 2,
+                                          percent: Utils.getPercentage(
+                                              episodeProvider
+                                                      .episodeBySeasonModel
+                                                      .result?[index]
+                                                      .videoDuration ??
+                                                  0,
+                                              episodeProvider
+                                                      .episodeBySeasonModel
+                                                      .result?[index]
+                                                      .stopTime ??
+                                                  0),
+                                          backgroundColor: secProgressColor,
+                                          progressColor: primaryColor,
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ],
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  MyText(
+                                    color: white,
+                                    text: episodeProvider.episodeBySeasonModel
+                                            .result?[index].description ??
+                                        "",
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 13,
+                                    fontsizeWeb: 15,
+                                    multilanguage: false,
+                                    fontweight: FontWeight.w500,
+                                    maxline: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                  const SizedBox(height: 5),
+                                  MyText(
+                                    color: primaryColor,
+                                    text: ((episodeProvider
+                                                    .episodeBySeasonModel
+                                                    .result?[index]
+                                                    .videoDuration ??
+                                                0) >
+                                            0)
+                                        ? Utils.convertToColonText(
+                                            episodeProvider
+                                                    .episodeBySeasonModel
+                                                    .result?[index]
+                                                    .videoDuration ??
+                                                0)
+                                        : "-",
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 12,
+                                    fontsizeWeb: 12,
+                                    fontweight: FontWeight.bold,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          (episodeProvider.episodeBySeasonModel.result?[index]
-                                          .videoDuration !=
-                                      null &&
-                                  (episodeProvider.episodeBySeasonModel
-                                              .result?[index].stopTime ??
-                                          0) >
-                                      0)
-                              ? Container(
-                                  height: 2,
-                                  width: 32,
-                                  margin: const EdgeInsets.only(top: 8),
-                                  child: LinearPercentIndicator(
-                                    padding: const EdgeInsets.all(0),
-                                    barRadius: const Radius.circular(2),
-                                    lineHeight: 2,
-                                    percent: Utils.getPercentage(
-                                        episodeProvider.episodeBySeasonModel
-                                                .result?[index].videoDuration ??
-                                            0,
-                                        episodeProvider.episodeBySeasonModel
-                                                .result?[index].stopTime ??
-                                            0),
-                                    backgroundColor: secProgressColor,
-                                    progressColor: primaryColor,
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                        ],
+                          ],
+                        ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            MyText(
+                      expanded: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          MyNetworkImage(
+                            fit: BoxFit.fill,
+                            imgHeight: Dimens.epiPoster,
+                            imgWidth: MediaQuery.of(context).size.width,
+                            imageUrl: (episodeProvider.episodeBySeasonModel
+                                    .result?[index].landscape ??
+                                ""),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(15),
+                            child: MyText(
                               color: white,
                               text: episodeProvider.episodeBySeasonModel
                                       .result?[index].description ??
                                   "",
                               textalign: TextAlign.start,
+                              fontstyle: FontStyle.normal,
                               fontsizeNormal: 13,
-                              fontsizeWeb: 15,
-                              multilanguage: false,
+                              fontsizeWeb: 14,
+                              maxline: 5,
+                              overflow: TextOverflow.ellipsis,
                               fontweight: FontWeight.w500,
-                              maxline: 2,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
                             ),
-                            const SizedBox(height: 5),
-                            MyText(
-                              color: primaryColor,
-                              text: ((episodeProvider.episodeBySeasonModel
-                                              .result?[index].videoDuration ??
-                                          0) >
-                                      0)
-                                  ? Utils.convertToColonText(episodeProvider
-                                          .episodeBySeasonModel
-                                          .result?[index]
-                                          .videoDuration ??
-                                      0)
-                                  : "-",
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 12,
-                              fontsizeWeb: 12,
-                              fontweight: FontWeight.bold,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                expanded: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    MyNetworkImage(
-                      fit: BoxFit.fill,
-                      imgHeight: Dimens.epiPoster,
-                      imgWidth: MediaQuery.of(context).size.width,
-                      imageUrl: (episodeProvider
-                              .episodeBySeasonModel.result?[index].landscape ??
-                          ""),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(15),
-                      child: MyText(
-                        color: white,
-                        text: episodeProvider.episodeBySeasonModel
-                                .result?[index].description ??
-                            "",
-                        textalign: TextAlign.start,
-                        fontstyle: FontStyle.normal,
-                        fontsizeNormal: 13,
-                        fontsizeWeb: 14,
-                        maxline: 5,
-                        overflow: TextOverflow.ellipsis,
-                        fontweight: FontWeight.w500,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          MyText(
-                            color: otherColor,
-                            text: ((episodeProvider.episodeBySeasonModel
-                                            .result?[index].videoDuration ??
-                                        0) >
-                                    0)
-                                ? Utils.convertTimeToText(episodeProvider
-                                        .episodeBySeasonModel
-                                        .result?[index]
-                                        .videoDuration ??
-                                    0)
-                                : "-",
-                            textalign: TextAlign.start,
-                            fontsizeNormal: 13,
-                            fontsizeWeb: 14,
-                            fontweight: FontWeight.w600,
-                            maxline: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontstyle: FontStyle.normal,
                           ),
                           Container(
-                            margin: const EdgeInsets.only(left: 10),
-                            child: MyText(
-                              color: primaryColor,
-                              text: "primetag",
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 12,
-                              fontsizeWeb: 14,
-                              multilanguage: true,
-                              fontweight: FontWeight.w700,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                MyText(
+                                  color: otherColor,
+                                  text: ((episodeProvider
+                                                  .episodeBySeasonModel
+                                                  .result?[index]
+                                                  .videoDuration ??
+                                              0) >
+                                          0)
+                                      ? Utils.convertTimeToText(episodeProvider
+                                              .episodeBySeasonModel
+                                              .result?[index]
+                                              .videoDuration ??
+                                          0)
+                                      : "-",
+                                  textalign: TextAlign.start,
+                                  fontsizeNormal: 13,
+                                  fontsizeWeb: 14,
+                                  fontweight: FontWeight.w600,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: MyText(
+                                    color: primaryColor,
+                                    text: "primetag",
+                                    textalign: TextAlign.start,
+                                    fontsizeNormal: 12,
+                                    fontsizeWeb: 14,
+                                    multilanguage: true,
+                                    fontweight: FontWeight.w700,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
+                      builder: (_, collapsed, expanded) {
+                        return Expandable(
+                          collapsed: collapsed,
+                          expanded: expanded,
+                          theme: const ExpandableThemeData(crossFadePoint: 0),
+                        );
+                      },
                     ),
-                  ],
+                  ),
                 ),
-                builder: (_, collapsed, expanded) {
-                  return Expandable(
-                    collapsed: collapsed,
-                    expanded: expanded,
-                    theme: const ExpandableThemeData(crossFadePoint: 0),
-                  );
-                },
-              ),
+              ],
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildUITVWeb() {
+  Widget _buildUITV() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLand,

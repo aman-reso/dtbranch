@@ -37,7 +37,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
     super.initState();
   }
 
-  void getUserData() async {
+  getUserData() async {
     await profileProvider.getProfile();
 
     if (!profileProvider.loading) {
@@ -89,6 +89,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
                 ),
               ),
             ),
+
             /* Profile Image */
             Consumer<ProfileProvider>(
               builder: (context, value, child) {
@@ -120,29 +121,34 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
             const SizedBox(height: 8),
 
             /* Change Button */
-            InkWell(
-              borderRadius: BorderRadius.circular(5),
-              onTap: () {
-                getFromGallery();
-              },
-              focusColor: white.withOpacity(0.5),
-              child: Container(
-                constraints: const BoxConstraints(
-                  minHeight: 35,
-                  maxWidth: 100,
-                ),
-                alignment: Alignment.center,
-                child: MyText(
-                  text: "chnage",
-                  fontsizeNormal: 16,
-                  fontsizeWeb: 16,
-                  multilanguage: true,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontweight: FontWeight.w500,
-                  fontstyle: FontStyle.normal,
-                  textalign: TextAlign.center,
-                  color: otherColor,
+            Container(
+              height: 35,
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              alignment: Alignment.center,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(5),
+                onTap: () {
+                  getFromGallery();
+                },
+                focusColor: white.withOpacity(0.5),
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minHeight: 35,
+                    maxWidth: 100,
+                  ),
+                  alignment: Alignment.center,
+                  child: MyText(
+                    text: "chnage",
+                    fontsizeNormal: 16,
+                    fontsizeWeb: 16,
+                    multilanguage: true,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontweight: FontWeight.w500,
+                    fontstyle: FontStyle.normal,
+                    textalign: TextAlign.center,
+                    color: otherColor,
+                  ),
                 ),
               ),
             ),
@@ -162,7 +168,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
                 mHintTextColor: otherColor,
                 mTextColor: black,
                 mkeyboardType: TextInputType.name,
-                mTextInputAction: TextInputAction.done,
+                mTextInputAction: TextInputAction.next,
                 mInputBorder: InputBorder.none,
                 mTextAlign: TextAlign.center,
               ),
@@ -170,46 +176,51 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
             const SizedBox(height: 30),
 
             /* Save */
-            InkWell(
-              borderRadius: BorderRadius.circular(5),
-              focusColor: white.withOpacity(0.5),
-              onTap: () async {
-                log("nameController Name ==> ${nameController.text.toString()}");
-                log("pickedImageFile ==> ${pickedImageFile?.path ?? "not picked"}");
-                if (nameController.text.toString().isEmpty) {
-                  return Utils.showSnackbar(context, "info", enterName, false);
-                }
-                await sharePref.save(
-                    "username", nameController.text.toString());
-                if (pickedImageFile != null) {
-                  await profileProvider.getImageUpload(pickedImageFile);
-                }
-                await profileProvider
-                    .getUpdateProfile(nameController.text.toString());
-                await profileProvider.getProfile();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Container(
-                  height: 35,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  decoration: BoxDecoration(
-                    color: primaryDark,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  alignment: Alignment.center,
-                  child: MyText(
-                    color: white,
-                    text: "save",
-                    multilanguage: true,
-                    textalign: TextAlign.center,
-                    fontsizeNormal: 15,
-                    fontsizeWeb: 15,
-                    fontweight: FontWeight.w600,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    fontstyle: FontStyle.normal,
+            Container(
+              alignment: Alignment.center,
+              constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(5),
+                focusColor: white.withOpacity(0.5),
+                onTap: () async {
+                  log("nameController Name ==> ${nameController.text.toString()}");
+                  log("pickedImageFile ==> ${pickedImageFile?.path ?? "not picked"}");
+                  if (nameController.text.toString().isEmpty) {
+                    return Utils.showSnackbar(
+                        context, "info", enterName, false);
+                  }
+                  await sharePref.save(
+                      "username", nameController.text.toString());
+                  if (pickedImageFile != null) {
+                    await profileProvider.getImageUpload(pickedImageFile);
+                  }
+                  await profileProvider
+                      .getUpdateProfile(nameController.text.toString());
+                  await profileProvider.getProfile();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Container(
+                    height: 35,
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    decoration: BoxDecoration(
+                      color: primaryDark,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    alignment: Alignment.center,
+                    child: MyText(
+                      color: white,
+                      text: "save",
+                      multilanguage: true,
+                      textalign: TextAlign.center,
+                      fontsizeNormal: 15,
+                      fontsizeWeb: 15,
+                      fontweight: FontWeight.w600,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      fontstyle: FontStyle.normal,
+                    ),
                   ),
                 ),
               ),

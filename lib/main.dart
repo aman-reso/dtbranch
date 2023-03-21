@@ -138,7 +138,7 @@ class _MyAppState extends State<MyApp> {
               trackColor: MaterialStateProperty.all(whiteTransparent),
             ),
           ),
-          title: Constant.appName ?? "DTLive",
+          title: Constant.appName ?? "",
           localizationsDelegates: Locales.delegates,
           supportedLocales: Locales.supportedLocales,
           locale: locale,
@@ -155,7 +155,7 @@ class _MyAppState extends State<MyApp> {
                 const ResponsiveBreakpoint.resize(360, name: MOBILE),
                 const ResponsiveBreakpoint.autoScale(800, name: TABLET),
                 const ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
-                const ResponsiveBreakpoint.autoScale(1200, name: "4K"),
+                const ResponsiveBreakpoint.autoScale(1250, name: "4K"),
               ],
               background: Container(color: appBgColor),
             );

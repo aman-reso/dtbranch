@@ -1,5 +1,8 @@
-import 'package:dtlive/pages/home.dart';
+import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/tvpages/tvmoviedetails.dart';
+import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/foundation.dart';
@@ -22,12 +25,10 @@ class SearchWeb extends StatefulWidget {
 }
 
 class _SearchWebState extends State<SearchWeb> {
-  HomeState? homeStateObject;
   late SearchProvider searchProvider;
 
   @override
   void initState() {
-    homeStateObject = context.findAncestorStateOfType<HomeState>();
     searchProvider = Provider.of<SearchProvider>(context, listen: false);
     _getData();
     super.initState();
@@ -44,6 +45,59 @@ class _SearchWebState extends State<SearchWeb> {
       final searchProvider =
           Provider.of<SearchProvider>(context, listen: false);
       await searchProvider.getSearchVideo(widget.searchText ?? "");
+    }
+  }
+
+  openDetailPage(
+      String pageName, int videoId, int videoType, int typeId) async {
+    debugPrint("pageName ==========> $pageName");
+    debugPrint("videoId ==========> $videoId");
+    debugPrint("videoType ==========> $videoType");
+    debugPrint("typeId ==========> $typeId");
+    if (videoType == 1) {
+      if (!mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            if (kIsWeb || Constant.isTV) {
+              return TVMovieDetails(
+                videoId,
+                videoType,
+                typeId,
+              );
+            } else {
+              return MovieDetails(
+                videoId,
+                videoType,
+                typeId,
+              );
+            }
+          },
+        ),
+      );
+    } else if (videoType == 2) {
+      if (!mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            if (kIsWeb || Constant.isTV) {
+              return TVShowDetails(
+                videoId,
+                videoType,
+                typeId,
+              );
+            } else {
+              return ShowDetails(
+                videoId,
+                videoType,
+                typeId,
+              );
+            }
+          },
+        ),
+      );
     }
   }
 
@@ -85,49 +139,52 @@ class _SearchWebState extends State<SearchWeb> {
                 : MediaQuery.of(context).size.width,
           ),
           alignment: Alignment.center,
-          height: 40,
+          height: (kIsWeb || Constant.isTV) ? 40 : Dimens.detailTabs,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /* Video */
               Expanded(
-                child: InkWell(
-                  focusColor: Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: () async {
-                    searchProvider.setDataVisibility(true, false);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: MyText(
-                              color: white,
-                              text: "videos",
-                              multilanguage: true,
-                              textalign: TextAlign.center,
-                              fontsizeNormal: 16,
-                              fontsizeWeb: 17,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    focusColor: gray.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () async {
+                      searchProvider.setDataVisibility(true, false);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: MyText(
+                                color: white,
+                                text: "videos",
+                                multilanguage: true,
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 16,
+                                fontsizeWeb: 17,
+                                fontweight: FontWeight.w600,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
                             ),
                           ),
-                        ),
-                        Visibility(
-                          visible: searchProvider.isVideoClick,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 2,
-                            color: white,
+                          Visibility(
+                            visible: searchProvider.isVideoClick,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 2,
+                              color: white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -135,42 +192,45 @@ class _SearchWebState extends State<SearchWeb> {
 
               /* Show */
               Expanded(
-                child: InkWell(
-                  focusColor: Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: () async {
-                    searchProvider.setDataVisibility(false, true);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: MyText(
-                              color: white,
-                              text: "shows",
-                              textalign: TextAlign.center,
-                              fontsizeNormal: 16,
-                              fontsizeWeb: 17,
-                              multilanguage: true,
-                              fontweight: FontWeight.w600,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    focusColor: gray.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(5),
+                    onTap: () async {
+                      searchProvider.setDataVisibility(false, true);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: MyText(
+                                color: white,
+                                text: "shows",
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 16,
+                                fontsizeWeb: 17,
+                                multilanguage: true,
+                                fontweight: FontWeight.w600,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontstyle: FontStyle.normal,
+                              ),
                             ),
                           ),
-                        ),
-                        Visibility(
-                          visible: searchProvider.isShowClick,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 2,
-                            color: white,
+                          Visibility(
+                            visible: searchProvider.isShowClick,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 2,
+                              color: white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -213,7 +273,7 @@ class _SearchWebState extends State<SearchWeb> {
                         borderRadius: BorderRadius.circular(4),
                         onTap: () {
                           debugPrint("Clicked on position ==> $position");
-                          homeStateObject?.openDetailPage(
+                          openDetailPage(
                             "videodetail",
                             searchProvider.searchModel.video?[position].id ?? 0,
                             searchProvider
@@ -285,7 +345,7 @@ class _SearchWebState extends State<SearchWeb> {
                         focusColor: white,
                         onTap: () {
                           debugPrint("Clicked on position ==> $position");
-                          homeStateObject?.openDetailPage(
+                          openDetailPage(
                             "showdetail",
                             searchProvider.searchModel.tvshow?[position].id ??
                                 0,

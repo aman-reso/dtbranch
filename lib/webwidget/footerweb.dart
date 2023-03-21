@@ -169,7 +169,7 @@ class _FooterWebState extends State<FooterWeb> {
                 children: [
                   MyText(
                     color: white,
-                    multilanguage: false,
+                    multilanguage: true,
                     text: "connect_with_us",
                     fontweight: FontWeight.w600,
                     fontsizeWeb: 14,

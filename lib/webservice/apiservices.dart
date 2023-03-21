@@ -43,7 +43,7 @@ class ApiService {
 
   ApiService() {
     dio = Dio();
-    // dio.interceptors.add(dioLoggerInterceptor);
+    dio.interceptors.add(dioLoggerInterceptor);
   }
 
   // general_setting API

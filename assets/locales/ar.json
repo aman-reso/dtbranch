@@ -106,6 +106,9 @@
     "donthaveaccount" : "ليس لديك حساب؟",
     "signupnow" : " أفتح حساب الأن",
     "loginfspace" : "تسجيل الدخول",
+    "otp_invalid": "أدخل OTP صالح",
+    "otp_login_fail": "فشل تسجيل الدخول !!!",
+    "otp_session_expired" : "انتهت صلاحية جلسة تسجيل الدخول إلى OTP ، تابع عمليات تسجيل الدخول الأخرى.",
 
     "editprofile" : "تعديل الملف الشخصي",
     "profile" : "الملف الشخصي",

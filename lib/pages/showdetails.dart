@@ -1833,10 +1833,8 @@ class ShowDetailsState extends State<ShowDetails> {
   }
 
   Widget _buildRentBtn() {
-    if (((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1 &&
-            (showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) ==
-                1) ||
-        (showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1) {
+    if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) == 1 &&
+        (showDetailsProvider.sectionDetailModel.result?.isRent ?? 0) == 1) {
       if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1 ||
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();

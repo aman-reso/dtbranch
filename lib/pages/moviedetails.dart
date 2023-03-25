@@ -772,6 +772,8 @@ class MovieDetailsState extends State<MovieDetails> {
                             collapseText: less_,
                             maxLines: (kIsWeb || Constant.isTV) ? 50 : 3,
                             linkColor: otherColor,
+                            expandOnTextTap: true,
+                            collapseOnTextTap: true,
                             style: TextStyle(
                               fontSize: (kIsWeb || Constant.isTV) ? 12 : 14,
                               fontStyle: FontStyle.normal,

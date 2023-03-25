@@ -403,42 +403,46 @@ class SearchState extends State<Search> {
               padding: const EdgeInsets.only(left: 20, right: 20),
               physics: const AlwaysScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int position) {
-                return InkWell(
-                  borderRadius: BorderRadius.circular(4),
-                  onTap: () {
-                    log("Clicked on position ==> $position");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return MovieDetails(
-                            searchProvider.searchModel.video?[position].id ?? 0,
-                            searchProvider
-                                    .searchModel.video?[position].videoType ??
-                                0,
-                            searchProvider
-                                    .searchModel.video?[position].typeId ??
-                                0,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: Dimens.heightLand,
-                    alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: MyNetworkImage(
-                        imageUrl: searchProvider
-                                .searchModel.video?[position].landscape
-                                .toString() ??
-                            "",
-                        fit: BoxFit.cover,
-                        imgHeight: MediaQuery.of(context).size.height,
-                        imgWidth: MediaQuery.of(context).size.width,
+                return Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () {
+                      log("Clicked on position ==> $position");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return MovieDetails(
+                              searchProvider.searchModel.video?[position].id ??
+                                  0,
+                              searchProvider
+                                      .searchModel.video?[position].videoType ??
+                                  0,
+                              searchProvider
+                                      .searchModel.video?[position].typeId ??
+                                  0,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: Dimens.heightLand,
+                      alignment: Alignment.center,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: MyNetworkImage(
+                          imageUrl: searchProvider
+                                  .searchModel.video?[position].landscape
+                                  .toString() ??
+                              "",
+                          fit: BoxFit.cover,
+                          imgHeight: MediaQuery.of(context).size.height,
+                          imgWidth: MediaQuery.of(context).size.width,
+                        ),
                       ),
                     ),
                   ),
@@ -471,45 +475,48 @@ class SearchState extends State<Search> {
               padding: const EdgeInsets.only(left: 20, right: 20),
               physics: const AlwaysScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int position) {
-                return InkWell(
-                  onTap: () {
-                    log("Clicked on position ==> $position");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ShowDetails(
-                            searchProvider.searchModel.tvshow?[position].id ??
-                                0,
-                            searchProvider
-                                    .searchModel.tvshow?[position].videoType ??
-                                0,
-                            searchProvider
-                                    .searchModel.tvshow?[position].typeId ??
-                                0,
-                          );
-                        },
+                return Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      log("Clicked on position ==> $position");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ShowDetails(
+                              searchProvider.searchModel.tvshow?[position].id ??
+                                  0,
+                              searchProvider.searchModel.tvshow?[position]
+                                      .videoType ??
+                                  0,
+                              searchProvider
+                                      .searchModel.tvshow?[position].typeId ??
+                                  0,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: Dimens.heightLand,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                    );
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: Dimens.heightLand,
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: MyNetworkImage(
-                        imageUrl: searchProvider.searchModel.tvshow
-                                ?.elementAt(position)
-                                .landscape
-                                .toString() ??
-                            "",
-                        fit: BoxFit.cover,
-                        imgHeight: MediaQuery.of(context).size.height,
-                        imgWidth: MediaQuery.of(context).size.width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: MyNetworkImage(
+                          imageUrl: searchProvider.searchModel.tvshow
+                                  ?.elementAt(position)
+                                  .landscape
+                                  .toString() ??
+                              "",
+                          fit: BoxFit.cover,
+                          imgHeight: MediaQuery.of(context).size.height,
+                          imgWidth: MediaQuery.of(context).size.width,
+                        ),
                       ),
                     ),
                   ),

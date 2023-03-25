@@ -38,7 +38,9 @@ class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
   void initState() {
     downloadProvider =
         Provider.of<ShowDownloadProvider>(context, listen: false);
-    _getData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getData();
+    });
     super.initState();
   }
 

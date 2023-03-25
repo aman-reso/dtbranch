@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/tvpages/tvchannels.dart';
 import 'package:dtlive/tvpages/tvrentstore.dart';
@@ -353,7 +354,9 @@ class TVHomeState extends State<TVHome> {
           ),
 
           /* Types */
-          Expanded(child: tabTitle(homeProvider.sectionTypeModel.result)),
+          (MediaQuery.of(context).size.width >= 800)
+              ? Expanded(child: tabTitle(homeProvider.sectionTypeModel.result))
+              : const Expanded(child: SizedBox.shrink()),
           const SizedBox(width: 10),
 
           /* Feature buttons */
@@ -829,12 +832,23 @@ class TVHomeState extends State<TVHome> {
             Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
                 if (sectionDataProvider.loadingBanner) {
-                  return ShimmerUtils.bannerWeb(context);
+                  if ((kIsWeb || Constant.isTV) &&
+                      MediaQuery.of(context).size.width > 720) {
+                    return ShimmerUtils.bannerWeb(context);
+                  } else {
+                    return ShimmerUtils.bannerMobile(context);
+                  }
                 } else {
                   if (sectionDataProvider.sectionBannerModel.status == 200 &&
                       sectionDataProvider.sectionBannerModel.result != null) {
-                    return _tvHomeBanner(
-                        sectionDataProvider.sectionBannerModel.result);
+                    if ((kIsWeb || Constant.isTV) &&
+                        MediaQuery.of(context).size.width > 720) {
+                      return _tvHomeBanner(
+                          sectionDataProvider.sectionBannerModel.result);
+                    } else {
+                      return _mobileHomeBanner(
+                          sectionDataProvider.sectionBannerModel.result);
+                    }
                   } else {
                     return const SizedBox.shrink();
                   }
@@ -1069,6 +1083,113 @@ class TVHomeState extends State<TVHome> {
             );
           },
         ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _mobileHomeBanner(List<banner.Result>? sectionBannerList) {
+    final sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
+    if ((sectionBannerList?.length ?? 0) > 0) {
+      return Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: Dimens.homeBanner,
+            child: CarouselSlider.builder(
+              itemCount: (sectionBannerList?.length ?? 0),
+              carouselController: pageController,
+              options: CarouselOptions(
+                initialPage: 0,
+                height: Dimens.homeBanner,
+                enlargeCenterPage: false,
+                autoPlay: true,
+                autoPlayCurve: Curves.easeInOutQuart,
+                enableInfiniteScroll: true,
+                autoPlayInterval:
+                    Duration(milliseconds: Constant.bannerDuration),
+                autoPlayAnimationDuration:
+                    Duration(milliseconds: Constant.animationDuration),
+                viewportFraction: 1.0,
+                onPageChanged: (val, _) async {
+                  await sectionDataProvider.setCurrentBanner(val);
+                },
+              ),
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
+                return InkWell(
+                  focusColor: white,
+                  borderRadius: BorderRadius.circular(0),
+                  onTap: () {
+                    log("Clicked on index ==> $index");
+                    openDetailPage(
+                      (sectionBannerList?[index].videoType ?? 0) == 2
+                          ? "showdetail"
+                          : "videodetail",
+                      sectionBannerList?[index].id ?? 0,
+                      sectionBannerList?[index].videoType ?? 0,
+                      sectionBannerList?[index].typeId ?? 0,
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeBanner,
+                          child: MyNetworkImage(
+                            imageUrl: sectionBannerList?[index].landscape ?? "",
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(0),
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeBanner,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.center,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                transparentColor,
+                                transparentColor,
+                                appBgColor,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Consumer<SectionDataProvider>(
+              builder: (context, sectionDataProvider, child) {
+                return CarouselIndicator(
+                  count: (sectionBannerList?.length ?? 0),
+                  index: sectionDataProvider.cBannerIndex,
+                  space: 8,
+                  height: 8,
+                  width: 8,
+                  cornerRadius: 4,
+                  color: dotsDefaultColor,
+                  activeColor: dotsActiveColor,
+                );
+              },
+            ),
+          ),
+        ],
       );
     } else {
       return const SizedBox.shrink();

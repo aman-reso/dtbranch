@@ -14,7 +14,6 @@ import 'package:dtlive/provider/episodeprovider.dart';
 import 'package:dtlive/provider/findprovider.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
-import 'package:dtlive/provider/mystuffprovider.dart';
 import 'package:dtlive/provider/paymentprovider.dart';
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/provider/profileprovider.dart';
@@ -83,7 +82,6 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SectionByTypeProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
         ChangeNotifierProvider(create: (_) => SubHistoryProvider()),
-        ChangeNotifierProvider(create: (_) => MyStuffProvider()),
         ChangeNotifierProvider(create: (_) => WatchlistProvider()),
         ChangeNotifierProvider(create: (_) => VideoDownloadProvider()),
         ChangeNotifierProvider(create: (_) => ShowDownloadProvider()),

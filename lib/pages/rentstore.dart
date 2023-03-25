@@ -225,102 +225,107 @@ class RentStoreState extends State<RentStore> {
                     : (rentStoreProvider.rentModel.video?.length ?? 0) > 6
                         ? (Dimens.heightLand * 3)
                         : (Dimens.heightLand * 2),
-            child: AlignedGridView.count(
-              shrinkWrap: true,
-              crossAxisCount:
-                  (rentStoreProvider.rentModel.video?.length ?? 0) == 1
-                      ? 1
-                      : ((rentStoreProvider.rentModel.video?.length ?? 0) > 1 &&
-                              (rentStoreProvider.rentModel.video?.length ?? 0) <
-                                  7)
-                          ? 2
-                          : (rentStoreProvider.rentModel.video?.length ?? 0) > 6
-                              ? 3
-                              : 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              itemCount: (rentStoreProvider.rentModel.video?.length ?? 0),
-              padding: const EdgeInsets.only(left: 20, right: 20),
+            child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int position) {
-                return Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                    focusColor: white,
-                    borderRadius: BorderRadius.circular(4),
-                    onTap: () {
-                      log("Clicked on position ==> $position");
-                      _openDetailPage(
-                        rentStoreProvider.rentModel.video?[position].id ?? 0,
-                        rentStoreProvider
-                                .rentModel.video?[position].videoType ??
-                            0,
-                        rentStoreProvider.rentModel.video?[position].typeId ??
-                            0,
-                      );
-                    },
-                    child: Container(
-                      padding: !(kIsWeb || Constant.isTV)
-                          ? const EdgeInsets.all(0)
-                          : const EdgeInsets.all(2.0),
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Container(
-                            width: Dimens.widthLand,
-                            height: Dimens.heightLand,
-                            alignment: Alignment.center,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: MyNetworkImage(
-                                imageUrl: rentStoreProvider
-                                        .rentModel.video?[position].landscape
-                                        .toString() ??
-                                    "",
-                                fit: BoxFit.cover,
-                                imgHeight: MediaQuery.of(context).size.height,
-                                imgWidth: MediaQuery.of(context).size.width,
-                              ),
-                            ),
-                          ),
-                          FittedBox(
-                            child: Container(
-                              constraints: const BoxConstraints(
-                                minHeight: 15,
-                                minWidth: 30,
-                              ),
+              child: AlignedGridView.count(
+                shrinkWrap: true,
+                crossAxisCount: (rentStoreProvider.rentModel.video?.length ??
+                            0) ==
+                        1
+                    ? 1
+                    : ((rentStoreProvider.rentModel.video?.length ?? 0) > 1 &&
+                            (rentStoreProvider.rentModel.video?.length ?? 0) <
+                                7)
+                        ? 2
+                        : (rentStoreProvider.rentModel.video?.length ?? 0) > 6
+                            ? 3
+                            : 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                itemCount: (rentStoreProvider.rentModel.video?.length ?? 0),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int position) {
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
+                      focusColor: white,
+                      borderRadius: BorderRadius.circular(4),
+                      onTap: () {
+                        log("Clicked on position ==> $position");
+                        _openDetailPage(
+                          rentStoreProvider.rentModel.video?[position].id ?? 0,
+                          rentStoreProvider
+                                  .rentModel.video?[position].videoType ??
+                              0,
+                          rentStoreProvider.rentModel.video?[position].typeId ??
+                              0,
+                        );
+                      },
+                      child: Container(
+                        padding: !(kIsWeb || Constant.isTV)
+                            ? const EdgeInsets.all(0)
+                            : const EdgeInsets.all(2.0),
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Container(
+                              width: Dimens.widthLand,
+                              height: Dimens.heightLand,
                               alignment: Alignment.center,
-                              padding: const EdgeInsets.all(5),
-                              decoration: const BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(3),
-                                    topRight: Radius.circular(4),
-                                    bottomLeft: Radius.circular(8),
-                                    bottomRight: Radius.circular(3)),
-                              ),
-                              child: MyText(
-                                color: black,
-                                text:
-                                    "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?[position].rentPrice.toString() ?? "0"}",
-                                textalign: TextAlign.center,
-                                fontsizeNormal: 10,
-                                fontsizeWeb: 12,
-                                fontweight: FontWeight.w700,
-                                maxline: 1,
-                                multilanguage: false,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: MyNetworkImage(
+                                  imageUrl: rentStoreProvider
+                                          .rentModel.video?[position].landscape
+                                          .toString() ??
+                                      "",
+                                  fit: BoxFit.cover,
+                                  imgHeight: MediaQuery.of(context).size.height,
+                                  imgWidth: MediaQuery.of(context).size.width,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            FittedBox(
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  minHeight: 15,
+                                  minWidth: 30,
+                                ),
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(3),
+                                      topRight: Radius.circular(4),
+                                      bottomLeft: Radius.circular(8),
+                                      bottomRight: Radius.circular(3)),
+                                ),
+                                child: MyText(
+                                  color: black,
+                                  text:
+                                      "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?[position].rentPrice.toString() ?? "0"}",
+                                  textalign: TextAlign.center,
+                                  fontsizeNormal: 10,
+                                  fontsizeWeb: 12,
+                                  fontweight: FontWeight.w700,
+                                  maxline: 1,
+                                  multilanguage: false,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -422,102 +427,108 @@ class RentStoreState extends State<RentStore> {
                     : (rentStoreProvider.rentModel.tvshow?.length ?? 0) > 6
                         ? (Dimens.heightLand * 3)
                         : (Dimens.heightLand * 2),
-            child: AlignedGridView.count(
-              shrinkWrap: true,
-              crossAxisCount: (rentStoreProvider.rentModel.tvshow?.length ??
-                          0) ==
-                      1
-                  ? 1
-                  : ((rentStoreProvider.rentModel.tvshow?.length ?? 0) > 1 &&
-                          (rentStoreProvider.rentModel.tvshow?.length ?? 0) < 7)
-                      ? 2
-                      : (rentStoreProvider.rentModel.tvshow?.length ?? 0) > 6
-                          ? 3
-                          : 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              itemCount: (rentStoreProvider.rentModel.tvshow?.length ?? 0),
-              padding: const EdgeInsets.only(left: 20, right: 20),
+            child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int position) {
-                return Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                    focusColor: white,
-                    borderRadius: BorderRadius.circular(4),
-                    onTap: () {
-                      log("Clicked on position ==> $position");
-                      _openDetailPage(
-                        rentStoreProvider.rentModel.tvshow?[position].id ?? 0,
-                        rentStoreProvider
-                                .rentModel.tvshow?[position].videoType ??
-                            0,
-                        rentStoreProvider.rentModel.tvshow?[position].typeId ??
-                            0,
-                      );
-                    },
-                    child: Container(
-                      padding: !(kIsWeb || Constant.isTV)
-                          ? const EdgeInsets.all(0)
-                          : const EdgeInsets.all(2.0),
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Container(
-                            width: Dimens.widthLand,
-                            height: Dimens.heightLand,
-                            alignment: Alignment.center,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: MyNetworkImage(
-                                imageUrl: rentStoreProvider
-                                        .rentModel.tvshow?[position].landscape
-                                        .toString() ??
-                                    "",
-                                fit: BoxFit.cover,
-                                imgHeight: MediaQuery.of(context).size.height,
-                                imgWidth: MediaQuery.of(context).size.width,
-                              ),
-                            ),
-                          ),
-                          FittedBox(
-                            child: Container(
-                              constraints: const BoxConstraints(
-                                minHeight: 15,
-                                minWidth: 30,
-                              ),
+              child: AlignedGridView.count(
+                shrinkWrap: true,
+                crossAxisCount: (rentStoreProvider.rentModel.tvshow?.length ??
+                            0) ==
+                        1
+                    ? 1
+                    : ((rentStoreProvider.rentModel.tvshow?.length ?? 0) > 1 &&
+                            (rentStoreProvider.rentModel.tvshow?.length ?? 0) <
+                                7)
+                        ? 2
+                        : (rentStoreProvider.rentModel.tvshow?.length ?? 0) > 6
+                            ? 3
+                            : 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                itemCount: (rentStoreProvider.rentModel.tvshow?.length ?? 0),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int position) {
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
+                      focusColor: white,
+                      borderRadius: BorderRadius.circular(4),
+                      onTap: () {
+                        log("Clicked on position ==> $position");
+                        _openDetailPage(
+                          rentStoreProvider.rentModel.tvshow?[position].id ?? 0,
+                          rentStoreProvider
+                                  .rentModel.tvshow?[position].videoType ??
+                              0,
+                          rentStoreProvider
+                                  .rentModel.tvshow?[position].typeId ??
+                              0,
+                        );
+                      },
+                      child: Container(
+                        padding: !(kIsWeb || Constant.isTV)
+                            ? const EdgeInsets.all(0)
+                            : const EdgeInsets.all(2.0),
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Container(
+                              width: Dimens.widthLand,
+                              height: Dimens.heightLand,
                               alignment: Alignment.center,
-                              padding: const EdgeInsets.all(5),
-                              decoration: const BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(3),
-                                    topRight: Radius.circular(4),
-                                    bottomLeft: Radius.circular(8),
-                                    bottomRight: Radius.circular(3)),
-                              ),
-                              child: MyText(
-                                color: black,
-                                text:
-                                    "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?[position].rentPrice.toString() ?? "0"}",
-                                textalign: TextAlign.center,
-                                fontsizeNormal: 10,
-                                fontsizeWeb: 12,
-                                multilanguage: false,
-                                fontweight: FontWeight.w700,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontstyle: FontStyle.normal,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: MyNetworkImage(
+                                  imageUrl: rentStoreProvider
+                                          .rentModel.tvshow?[position].landscape
+                                          .toString() ??
+                                      "",
+                                  fit: BoxFit.cover,
+                                  imgHeight: MediaQuery.of(context).size.height,
+                                  imgWidth: MediaQuery.of(context).size.width,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            FittedBox(
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  minHeight: 15,
+                                  minWidth: 30,
+                                ),
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(3),
+                                      topRight: Radius.circular(4),
+                                      bottomLeft: Radius.circular(8),
+                                      bottomRight: Radius.circular(3)),
+                                ),
+                                child: MyText(
+                                  color: black,
+                                  text:
+                                      "${Constant.currencySymbol} ${rentStoreProvider.rentModel.tvshow?[position].rentPrice.toString() ?? "0"}",
+                                  textalign: TextAlign.center,
+                                  fontsizeNormal: 10,
+                                  fontsizeWeb: 12,
+                                  multilanguage: false,
+                                  fontweight: FontWeight.w700,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],

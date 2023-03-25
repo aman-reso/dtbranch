@@ -107,6 +107,9 @@
     "changelanguage":"Change Language",
     "selectyourlanguage":"Select your language.",
     "speechnotavailable":"Speech not available.",
+    "otp_invalid": "Enter valid OTP",
+    "otp_login_fail": "Login fail!!!",
+    "otp_session_expired" : "Your OTP login session is expired, continue with other logins.",
 
     "editprofile" : "Edit Profile",
     "profile" : "Profile",

@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/pages/profileavatar.dart';
-import 'package:dtlive/provider/mystuffprovider.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
@@ -173,8 +172,6 @@ class ProfileEditState extends State<ProfileEdit> {
                         return Utils.showSnackbar(
                             context, "info", enterName, false);
                       }
-                      final myStuffProvider =
-                          Provider.of<MyStuffProvider>(context, listen: false);
                       final profileProvider =
                           Provider.of<ProfileProvider>(context, listen: false);
                       Utils.showProgress(context, prDialog);
@@ -186,7 +183,6 @@ class ProfileEditState extends State<ProfileEdit> {
                       await profileProvider
                           .getUpdateProfile(nameController.text.toString());
                       await profileProvider.getProfile();
-                      await myStuffProvider.getProfile();
                       await prDialog.hide();
                     },
                     child: Container(

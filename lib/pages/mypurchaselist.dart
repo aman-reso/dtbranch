@@ -42,6 +42,36 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
     super.dispose();
   }
 
+  _openDetailPage(int? videoId, int? videoType, int? typeId) {
+    if (videoType == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return MovieDetails(
+              videoId ?? 0,
+              videoType ?? 0,
+              typeId ?? 0,
+            );
+          },
+        ),
+      );
+    } else if (videoType == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return ShowDetails(
+              videoId ?? 0,
+              videoType ?? 0,
+              typeId ?? 0,
+            );
+          },
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,95 +176,66 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                     : (purchaselistProvider.rentModel.video?.length ?? 0) > 6
                         ? (Dimens.heightLand * 3)
                         : (Dimens.heightLand * 2),
-            child: AlignedGridView.count(
-              shrinkWrap: true,
-              crossAxisCount: (purchaselistProvider.rentModel.video?.length ??
-                          0) ==
-                      1
-                  ? 1
-                  : ((purchaselistProvider.rentModel.video?.length ?? 0) > 1 &&
-                          (purchaselistProvider.rentModel.video?.length ?? 0) <
-                              7)
-                      ? 2
-                      : (purchaselistProvider.rentModel.video?.length ?? 0) > 6
-                          ? 3
-                          : 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              itemCount: (purchaselistProvider.rentModel.video?.length ?? 0),
-              padding: const EdgeInsets.only(left: 20, right: 20),
+            child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int position) {
-                return InkWell(
-                  borderRadius: BorderRadius.circular(4),
-                  onTap: () {
-                    log("Clicked on position ==> $position");
-                    if ((purchaselistProvider
+              child: AlignedGridView.count(
+                shrinkWrap: true,
+                crossAxisCount:
+                    (purchaselistProvider.rentModel.video?.length ?? 0) == 1
+                        ? 1
+                        : ((purchaselistProvider.rentModel.video?.length ?? 0) >
+                                    1 &&
+                                (purchaselistProvider.rentModel.video?.length ??
+                                        0) <
+                                    7)
+                            ? 2
+                            : (purchaselistProvider.rentModel.video?.length ??
+                                        0) >
+                                    6
+                                ? 3
+                                : 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                itemCount: (purchaselistProvider.rentModel.video?.length ?? 0),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int position) {
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () {
+                      log("Clicked on position ==> $position");
+                      _openDetailPage(
+                        purchaselistProvider.rentModel.video?[position].id ?? 0,
+                        purchaselistProvider
                                 .rentModel.video?[position].videoType ??
-                            0) ==
-                        1) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return MovieDetails(
-                              purchaselistProvider
-                                      .rentModel.video?[position].id ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.video?[position].videoType ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.video?[position].typeId ??
-                                  0,
-                            );
-                          },
-                        ),
+                            0,
+                        purchaselistProvider
+                                .rentModel.video?[position].typeId ??
+                            0,
                       );
-                    } else if ((purchaselistProvider
-                                .rentModel.video?[position].videoType ??
-                            0) ==
-                        2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return ShowDetails(
-                              purchaselistProvider
-                                      .rentModel.video?[position].id ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.video?[position].videoType ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.video?[position].typeId ??
-                                  0,
-                            );
-                          },
+                    },
+                    child: Container(
+                      width: Dimens.widthLand,
+                      height: Dimens.heightLand,
+                      alignment: Alignment.center,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: MyNetworkImage(
+                          imageUrl: purchaselistProvider
+                                  .rentModel.video?[position].landscape
+                                  .toString() ??
+                              "",
+                          fit: BoxFit.cover,
+                          imgHeight: MediaQuery.of(context).size.height,
+                          imgWidth: MediaQuery.of(context).size.width,
                         ),
-                      );
-                    }
-                  },
-                  child: Container(
-                    width: Dimens.widthLand,
-                    height: Dimens.heightLand,
-                    alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: MyNetworkImage(
-                        imageUrl: purchaselistProvider
-                                .rentModel.video?[position].landscape
-                                .toString() ??
-                            "",
-                        fit: BoxFit.cover,
-                        imgHeight: MediaQuery.of(context).size.height,
-                        imgWidth: MediaQuery.of(context).size.width,
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -284,9 +285,7 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: (purchaselistProvider.rentModel.tvshow?.length ?? 0) == 1
@@ -298,95 +297,71 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                     : (purchaselistProvider.rentModel.tvshow?.length ?? 0) > 6
                         ? (Dimens.heightLand * 3)
                         : (Dimens.heightLand * 2),
-            child: AlignedGridView.count(
-              shrinkWrap: true,
-              crossAxisCount: (purchaselistProvider.rentModel.tvshow?.length ??
-                          0) ==
-                      1
-                  ? 1
-                  : ((purchaselistProvider.rentModel.tvshow?.length ?? 0) > 1 &&
-                          (purchaselistProvider.rentModel.tvshow?.length ?? 0) <
-                              7)
-                      ? 2
-                      : (purchaselistProvider.rentModel.tvshow?.length ?? 0) > 6
-                          ? 3
-                          : 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              itemCount: (purchaselistProvider.rentModel.tvshow?.length ?? 0),
-              padding: const EdgeInsets.only(left: 20, right: 20),
+            child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int position) {
-                return InkWell(
-                  borderRadius: BorderRadius.circular(4),
-                  onTap: () {
-                    log("Clicked on position ==> $position");
-                    if ((purchaselistProvider
-                                .rentModel.tvshow?[position].videoType ??
+              child: AlignedGridView.count(
+                shrinkWrap: true,
+                crossAxisCount: (purchaselistProvider
+                                .rentModel.tvshow?.length ??
                             0) ==
-                        1) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return MovieDetails(
-                              purchaselistProvider
-                                      .rentModel.tvshow?[position].id ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.tvshow?[position].videoType ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.tvshow?[position].typeId ??
-                                  0,
-                            );
-                          },
-                        ),
-                      );
-                    } else if ((purchaselistProvider
-                                .rentModel.tvshow?[position].videoType ??
-                            0) ==
-                        2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return ShowDetails(
-                              purchaselistProvider
-                                      .rentModel.tvshow?[position].id ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.tvshow?[position].videoType ??
-                                  0,
-                              purchaselistProvider
-                                      .rentModel.tvshow?[position].typeId ??
-                                  0,
-                            );
-                          },
-                        ),
-                      );
-                    }
-                  },
-                  child: Container(
-                    width: Dimens.widthLand,
-                    height: Dimens.heightLand,
-                    alignment: Alignment.center,
-                    child: ClipRRect(
+                        1
+                    ? 1
+                    : ((purchaselistProvider.rentModel.tvshow?.length ?? 0) >
+                                1 &&
+                            (purchaselistProvider.rentModel.tvshow?.length ??
+                                    0) <
+                                7)
+                        ? 2
+                        : (purchaselistProvider.rentModel.tvshow?.length ?? 0) >
+                                6
+                            ? 3
+                            : 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                itemCount: (purchaselistProvider.rentModel.tvshow?.length ?? 0),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int position) {
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      child: MyNetworkImage(
-                        imageUrl: purchaselistProvider
-                                .rentModel.tvshow?[position].landscape
-                                .toString() ??
-                            "",
-                        fit: BoxFit.cover,
-                        imgHeight: MediaQuery.of(context).size.height,
-                        imgWidth: MediaQuery.of(context).size.width,
+                      onTap: () {
+                        log("Clicked on position ==> $position");
+                        _openDetailPage(
+                          purchaselistProvider.rentModel.tvshow?[position].id ??
+                              0,
+                          purchaselistProvider
+                                  .rentModel.tvshow?[position].videoType ??
+                              0,
+                          purchaselistProvider
+                                  .rentModel.tvshow?[position].typeId ??
+                              0,
+                        );
+                      },
+                      child: Container(
+                        width: Dimens.widthLand,
+                        height: Dimens.heightLand,
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: MyNetworkImage(
+                            imageUrl: purchaselistProvider
+                                    .rentModel.tvshow?[position].landscape
+                                    .toString() ??
+                                "",
+                            fit: BoxFit.cover,
+                            imgHeight: MediaQuery.of(context).size.height,
+                            imgWidth: MediaQuery.of(context).size.width,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],

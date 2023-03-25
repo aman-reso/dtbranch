@@ -56,7 +56,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         widget.seasonList?[(widget.seasonPos ?? 0)].id ?? 0, widget.videoId);
     await showDetailsProvider
         .setEpisodeBySeason(episodeProvider.episodeBySeasonModel);
-    Future.delayed(const Duration(seconds: 1)).then((value) {
+    Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {});
     });
@@ -77,7 +77,8 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       verticalGridSpacing: 6,
       horizontalGridSpacing: 8,
       minItemsPerRow: 1,
-      maxItemsPerRow: 2,
+      maxItemsPerRow:
+          (kIsWeb && MediaQuery.of(context).size.width > 720) ? 2 : 1,
       listViewBuilderOptions: ListViewBuilderOptions(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

@@ -32,7 +32,7 @@ class OTPVerifyState extends State<OTPVerify> {
   final numberController = TextEditingController();
   final pinPutController = TextEditingController();
   ScrollController scollController = ScrollController();
-  String? verificationId, finalOTP;
+  String? verificationId;
   int? forceResendingToken;
   bool codeResended = false;
 
@@ -157,7 +157,7 @@ class OTPVerifyState extends State<OTPVerify> {
                         context, "info", "enterreceivedotp", true);
                   } else {
                     Utils.showProgress(context, prDialog);
-                    _login(widget.mobileNumber.toString());
+                    _checkOTPAndLogin();
                   }
                 },
                 child: Container(
@@ -225,15 +225,15 @@ class OTPVerifyState extends State<OTPVerify> {
 
   codeSend(bool isResend) async {
     codeResended = isResend;
-    await phoneSignIn(
-        phoneNumber: widget.mobileNumber.toString(), isResend: isResend);
+    await phoneSignIn(phoneNumber: widget.mobileNumber.toString());
     prDialog.hide();
   }
 
-  Future<void> phoneSignIn(
-      {required String phoneNumber, required bool isResend}) async {
+  Future<void> phoneSignIn({required String phoneNumber}) async {
     await _auth.verifyPhoneNumber(
+      timeout: const Duration(seconds: 60),
       phoneNumber: phoneNumber,
+      forceResendingToken: forceResendingToken,
       verificationCompleted: _onVerificationCompleted,
       verificationFailed: _onVerificationFailed,
       codeSent: _onCodeSent,
@@ -242,28 +242,12 @@ class OTPVerifyState extends State<OTPVerify> {
   }
 
   _onVerificationCompleted(PhoneAuthCredential authCredential) async {
-    log("verification completed ${authCredential.smsCode}");
+    log("verification completed ======> ${authCredential.smsCode}");
     User? user = FirebaseAuth.instance.currentUser;
+    log("user phoneNumber =====> ${user?.phoneNumber}");
     setState(() {
-      finalOTP = authCredential.smsCode ?? "";
       pinPutController.text = authCredential.smsCode ?? "";
-      log("finalOTP =====> $finalOTP");
     });
-
-    if (authCredential.smsCode != null) {
-      try {
-        UserCredential? credential =
-            await user?.linkWithCredential(authCredential);
-        log("_onVerificationCompleted credential =====> ${credential?.user?.phoneNumber ?? ""}");
-        _login(widget.mobileNumber.toString());
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'provider-already-linked') {
-          await _auth.signInWithCredential(authCredential);
-          _login(widget.mobileNumber.toString());
-        }
-      }
-      log("Firebase Verification Complated");
-    }
   }
 
   _onVerificationFailed(FirebaseAuthException exception) {
@@ -276,14 +260,60 @@ class OTPVerifyState extends State<OTPVerify> {
   _onCodeSent(String verificationId, int? forceResendingToken) {
     this.verificationId = verificationId;
     this.forceResendingToken = forceResendingToken;
+    log("verificationId =======> $verificationId");
     log("resendingToken =======> ${forceResendingToken.toString()}");
     log("code sent");
   }
 
-  _onCodeTimeout(String timeout) {
+  _onCodeTimeout(String verificationId) {
+    log("_onCodeTimeout verificationId =======> $verificationId");
+    this.verificationId = verificationId;
     prDialog.hide();
     codeResended = false;
     return null;
+  }
+
+  _checkOTPAndLogin() async {
+    bool error = false;
+    UserCredential? userCredential;
+
+    log("_checkOTPAndLogin verificationId =====> $verificationId");
+    log("_checkOTPAndLogin smsCode =====> ${pinPutController.text}");
+    // Create a PhoneAuthCredential with the code
+    PhoneAuthCredential? phoneAuthCredential = PhoneAuthProvider.credential(
+      verificationId: verificationId ?? "",
+      smsCode: pinPutController.text.toString(),
+    );
+
+    log("phoneAuthCredential.smsCode        =====> ${phoneAuthCredential.smsCode}");
+    log("phoneAuthCredential.verificationId =====> ${phoneAuthCredential.verificationId}");
+    try {
+      userCredential = await _auth.signInWithCredential(phoneAuthCredential);
+      log("_checkOTPAndLogin userCredential =====> ${userCredential.user?.phoneNumber ?? ""}");
+    } on FirebaseAuthException catch (e) {
+      await prDialog.hide();
+      log("_checkOTPAndLogin error Code =====> ${e.code}");
+      if (e.code == 'invalid-verification-code' ||
+          e.code == 'invalid-verification-id') {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "info", "otp_invalid", true);
+        return;
+      } else if (e.code == 'session-expired') {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "fail", "otp_session_expired", true);
+        return;
+      } else {
+        error = true;
+      }
+    }
+    log("Firebase Verification Complated & phoneNumber => ${userCredential?.user?.phoneNumber} and isError => $error");
+    if (!error && userCredential != null) {
+      _login(widget.mobileNumber.toString());
+    } else {
+      await prDialog.hide();
+      if (!mounted) return;
+      Utils.showSnackbar(context, "fail", "otp_login_fail", true);
+    }
   }
 
   _login(String mobile) async {
@@ -303,17 +333,17 @@ class OTPVerifyState extends State<OTPVerify> {
       if (generalProvider.loginOTPModel.status == 200) {
         log('loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
         log('Login Successfull!');
-        sharePref.save(
+        await sharePref.save(
             "userid", generalProvider.loginOTPModel.result?.id.toString());
-        sharePref.save("username",
+        await sharePref.save("username",
             generalProvider.loginOTPModel.result?.name.toString() ?? "");
-        sharePref.save("userimage",
+        await sharePref.save("userimage",
             generalProvider.loginOTPModel.result?.image.toString() ?? "");
-        sharePref.save("useremail",
+        await sharePref.save("useremail",
             generalProvider.loginOTPModel.result?.email.toString() ?? "");
-        sharePref.save("usermobile",
+        await sharePref.save("usermobile",
             generalProvider.loginOTPModel.result?.mobile.toString() ?? "");
-        sharePref.save("usertype",
+        await sharePref.save("usertype",
             generalProvider.loginOTPModel.result?.type.toString() ?? "");
 
         // Set UserID for Next
@@ -324,9 +354,6 @@ class OTPVerifyState extends State<OTPVerify> {
         await sectionDataProvider.getSectionBanner("0", "1");
         await sectionDataProvider.getSectionList("0", "1");
 
-        // Hide Progress Dialog
-        await prDialog.hide();
-
         if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -334,8 +361,6 @@ class OTPVerifyState extends State<OTPVerify> {
           ),
         );
       } else {
-        // Hide Progress Dialog
-        await prDialog.hide();
         if (!mounted) return;
         Utils.showSnackbar(
             context, "fail", "${generalProvider.loginOTPModel.message}", false);

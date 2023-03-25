@@ -18,7 +18,7 @@ class NoData extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: appBgColor,
+        color: transparentColor,
         borderRadius: BorderRadius.circular(12),
         shape: BoxShape.rectangle,
       ),

@@ -30,6 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 class Home extends StatefulWidget {
   final String? pageName;
@@ -43,6 +44,8 @@ class HomeState extends State<Home> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
   CarouselController pageController = CarouselController();
+  final tabScrollController = ScrollController();
+  late ListObserverController observerController;
   late HomeProvider homeProvider;
   int? videoId, videoType, typeId;
   String? currentPage,
@@ -65,6 +68,8 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
+    observerController =
+        ListObserverController(controller: tabScrollController);
     currentPage = widget.pageName ?? "";
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     super.initState();
@@ -230,6 +235,15 @@ class HomeState extends State<Home> {
     super.dispose();
   }
 
+  _scrollToCurrent() {
+    log("selectedIndex ======> ${homeProvider.selectedIndex.toDouble()}");
+    observerController.animateTo(
+      index: homeProvider.selectedIndex,
+      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -320,54 +334,64 @@ class HomeState extends State<Home> {
   }
 
   Widget tabTitle(List<type.Result>? sectionTypeList) {
-    return ListView.separated(
-      itemCount: (sectionTypeList?.length ?? 0) + 1,
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      physics: const PageScrollPhysics(parent: BouncingScrollPhysics()),
-      padding: const EdgeInsets.fromLTRB(13, 5, 13, 5),
-      separatorBuilder: (context, index) => const SizedBox(width: 5),
-      itemBuilder: (BuildContext context, int index) {
-        return Consumer<HomeProvider>(
-          builder: (context, homeProvider, child) {
-            return InkWell(
-              borderRadius: BorderRadius.circular(25),
-              onTap: () async {
-                debugPrint("index ===========> $index");
-                if (kIsWeb) _onItemTapped("");
-                await getTabData(index, homeProvider.sectionTypeModel.result);
-              },
-              child: Container(
-                constraints: const BoxConstraints(maxHeight: 32),
-                decoration: Utils.setBackground(
-                  homeProvider.selectedIndex == index
-                      ? white
-                      : transparentColor,
-                  20,
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (tabScrollController.hasClients) {
+        _scrollToCurrent();
+      }
+    });
+    return ListViewObserver(
+      controller: observerController,
+      child: ListView.separated(
+        itemCount: (sectionTypeList?.length ?? 0) + 1,
+        shrinkWrap: true,
+        controller: tabScrollController,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(13, 5, 13, 5),
+        separatorBuilder: (context, index) => const SizedBox(width: 5),
+        itemBuilder: (BuildContext context, int index) {
+          return Consumer<HomeProvider>(
+            builder: (context, homeProvider, child) {
+              return InkWell(
+                borderRadius: BorderRadius.circular(25),
+                onTap: () async {
+                  debugPrint("index ===========> $index");
+                  if (kIsWeb) _onItemTapped("");
+                  await getTabData(index, homeProvider.sectionTypeModel.result);
+                },
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 32),
+                  decoration: Utils.setBackground(
+                    homeProvider.selectedIndex == index
+                        ? white
+                        : transparentColor,
+                    20,
+                  ),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
+                  child: MyText(
+                    color: homeProvider.selectedIndex == index ? black : white,
+                    multilanguage: false,
+                    text: index == 0
+                        ? "Home"
+                        : index > 0
+                            ? (sectionTypeList?[index - 1].name.toString() ??
+                                "")
+                            : "",
+                    fontsizeNormal: 12,
+                    fontweight: FontWeight.w700,
+                    fontsizeWeb: 14,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textalign: TextAlign.center,
+                    fontstyle: FontStyle.normal,
+                  ),
                 ),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
-                child: MyText(
-                  color: homeProvider.selectedIndex == index ? black : white,
-                  multilanguage: false,
-                  text: index == 0
-                      ? "Home"
-                      : index > 0
-                          ? (sectionTypeList?[index - 1].name.toString() ?? "")
-                          : "",
-                  fontsizeNormal: 12,
-                  fontweight: FontWeight.w700,
-                  fontsizeWeb: 14,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textalign: TextAlign.center,
-                  fontstyle: FontStyle.normal,
-                ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

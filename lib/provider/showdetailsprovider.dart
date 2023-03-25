@@ -108,6 +108,7 @@ class ShowDetailsProvider extends ChangeNotifier {
 
   setSeasonPosition(int position) {
     log("setSeasonPosition ===> $position");
+    mCurrentEpiPos = -1;
     seasonPos = position;
     notifyListeners();
   }

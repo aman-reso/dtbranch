@@ -57,6 +57,7 @@
         android:requestLegacyExternalStorage="true"
         android:largeHeap="true"
         android:allowBackup="true"
+        android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true">
 
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />

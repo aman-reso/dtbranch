@@ -110,6 +110,18 @@ class _PlayerBetterState extends State<PlayerBetter> {
               ),
             ]
           : [],
+      bufferingConfiguration: const BetterPlayerBufferingConfiguration(
+        minBufferMs: 5000,
+        maxBufferMs: 131072,
+        bufferForPlaybackMs: 2500,
+        bufferForPlaybackAfterRebufferMs: 5000,
+      ),
+      cacheConfiguration: const BetterPlayerCacheConfiguration(
+        useCache: true,
+        maxCacheSize: 10 * 1024 * 1024,
+        maxCacheFileSize: 10 * 1024 * 1024,
+        preCacheSize: 3 * 1024 * 1024,
+      ),
     );
     _betterPlayerController.setupDataSource(dataSource);
   }

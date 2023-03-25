@@ -74,131 +74,60 @@ class BottombarState extends State<Bottombar> {
               BottomNavigationBarItem(
                 backgroundColor: black,
                 label: bottomView1,
-                activeIcon: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Image.asset(
-                    "assets/images/ic_home.png",
-                    width: 22,
-                    height: 22,
-                    color: primaryColor,
-                  ),
-                ),
-                icon: Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7),
-                    child: Image.asset(
-                      "assets/images/ic_home.png",
-                      width: 22,
-                      height: 22,
-                      color: gray,
-                    ),
-                  ),
-                ),
+                activeIcon: _buildBottomNavIcon(
+                    iconName: 'ic_home', iconColor: primaryColor),
+                icon: _buildBottomNavIcon(iconName: 'ic_home', iconColor: gray),
               ),
               BottomNavigationBarItem(
                 backgroundColor: black,
                 label: bottomView2,
-                activeIcon: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Image.asset(
-                    "assets/images/ic_find.png",
-                    width: 22,
-                    height: 22,
-                    color: primaryColor,
-                  ),
-                ),
-                icon: Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7),
-                    child: Image.asset(
-                      "assets/images/ic_find.png",
-                      width: 22,
-                      height: 22,
-                      color: gray,
-                    ),
-                  ),
-                ),
+                activeIcon: _buildBottomNavIcon(
+                    iconName: 'ic_find', iconColor: primaryColor),
+                icon: _buildBottomNavIcon(iconName: 'ic_find', iconColor: gray),
               ),
               BottomNavigationBarItem(
                 backgroundColor: black,
                 label: bottomView3,
-                activeIcon: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Image.asset(
-                    "assets/images/ic_channels.png",
-                    width: 22,
-                    height: 22,
-                    color: primaryColor,
-                  ),
-                ),
-                icon: Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7),
-                    child: Image.asset(
-                      "assets/images/ic_channels.png",
-                      width: 22,
-                      height: 22,
-                      color: gray,
-                    ),
-                  ),
-                ),
+                activeIcon: _buildBottomNavIcon(
+                    iconName: 'ic_channels', iconColor: primaryColor),
+                icon: _buildBottomNavIcon(
+                    iconName: 'ic_channels', iconColor: gray),
               ),
               BottomNavigationBarItem(
                 backgroundColor: black,
                 label: bottomView4,
-                activeIcon: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Image.asset(
-                    "assets/images/ic_store.png",
-                    width: 22,
-                    height: 22,
-                    color: primaryColor,
-                  ),
-                ),
-                icon: Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7),
-                    child: Image.asset(
-                      "assets/images/ic_store.png",
-                      width: 22,
-                      height: 22,
-                      color: gray,
-                    ),
-                  ),
-                ),
+                activeIcon: _buildBottomNavIcon(
+                    iconName: 'ic_store', iconColor: primaryColor),
+                icon:
+                    _buildBottomNavIcon(iconName: 'ic_store', iconColor: gray),
               ),
               BottomNavigationBarItem(
                 backgroundColor: black,
                 label: bottomView5,
-                activeIcon: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Image.asset(
-                    "assets/images/ic_stuff.png",
-                    width: 22,
-                    height: 22,
-                    color: primaryColor,
-                  ),
-                ),
-                icon: Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7),
-                    child: Image.asset(
-                      "assets/images/ic_stuff.png",
-                      width: 22,
-                      height: 22,
-                      color: gray,
-                    ),
-                  ),
-                ),
+                activeIcon: _buildBottomNavIcon(
+                    iconName: 'ic_stuff', iconColor: primaryColor),
+                icon:
+                    _buildBottomNavIcon(iconName: 'ic_stuff', iconColor: gray),
               ),
             ],
             onTap: _onItemTapped,
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavIcon(
+      {required String iconName, required Color? iconColor}) {
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.all(7),
+        child: Image.asset(
+          "assets/images/$iconName.png",
+          width: 22,
+          height: 22,
+          color: iconColor,
         ),
       ),
     );

@@ -705,9 +705,7 @@ class SettingState extends State<Setting> {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
 
                           /* English */
                           InkWell(
@@ -746,9 +744,7 @@ class SettingState extends State<Setting> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
 
                           /* Arabic */
                           InkWell(
@@ -787,9 +783,7 @@ class SettingState extends State<Setting> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
 
                           /* Hindi */
                           InkWell(
@@ -877,9 +871,7 @@ class SettingState extends State<Setting> {
                           overflow: TextOverflow.ellipsis,
                           fontstyle: FontStyle.normal,
                         ),
-                        const SizedBox(
-                          height: 3,
-                        ),
+                        const SizedBox(height: 3),
                         MyText(
                           color: white,
                           text: "areyousurewanrtosignout",

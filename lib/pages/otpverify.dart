@@ -40,7 +40,6 @@ class OTPVerifyState extends State<OTPVerify> {
   void initState() {
     super.initState();
     prDialog = ProgressDialog(context);
-    Utils.showProgress(context, prDialog);
     codeSend(false);
   }
 
@@ -328,8 +327,6 @@ class OTPVerifyState extends State<OTPVerify> {
     await generalProvider.loginWithOTP(mobile);
 
     if (!generalProvider.loading) {
-      await prDialog.hide();
-
       if (generalProvider.loginOTPModel.status == 200) {
         log('loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
         log('Login Successfull!');
@@ -350,10 +347,11 @@ class OTPVerifyState extends State<OTPVerify> {
         Constant.userID = generalProvider.loginOTPModel.result?.id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
-        await homeProvider.setSelectedTab(0);
+        await homeProvider.setLoading(true);
         await sectionDataProvider.getSectionBanner("0", "1");
         await sectionDataProvider.getSectionList("0", "1");
 
+        await prDialog.hide();
         if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -361,6 +359,7 @@ class OTPVerifyState extends State<OTPVerify> {
           ),
         );
       } else {
+        await prDialog.hide();
         if (!mounted) return;
         Utils.showSnackbar(
             context, "fail", "${generalProvider.loginOTPModel.message}", false);

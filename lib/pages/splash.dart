@@ -44,13 +44,13 @@ class SplashState extends State<Splash> {
         /* Update GeneralSetting call Date */
         await sharedPre.save('gsDate', DateTime.now().toString());
         if (!mounted) return;
-        generalsetting.getGeneralsetting(context);
+        await generalsetting.getGeneralsetting(context);
       }
     } else {
       /* Update GeneralSetting call Date */
       await sharedPre.save('gsDate', DateTime.now().toString());
       if (!mounted) return;
-      generalsetting.getGeneralsetting(context);
+      await generalsetting.getGeneralsetting(context);
     }
 
     isFirstCheck();

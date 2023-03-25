@@ -124,13 +124,13 @@ class Utils {
       stopTime = (vStopTime ?? 0);
     }
 
-    String? vUrl, vSubtitle, vUploadType;
+    String? vUrl, vSubtitleFile, vUploadType;
     if (playType == "Trailer") {
       vUrl = (trailerUrl ?? "");
-      vSubtitle = "";
+      vSubtitleFile = "";
     } else {
       vUrl = (videoUrl ?? "");
-      vSubtitle = (vSubtitle ?? "");
+      vSubtitleFile = (vSubtitle ?? "");
     }
     vUploadType = (uploadType ?? "");
     log("stopTime ===> $stopTime");
@@ -153,7 +153,7 @@ class Utils {
               vType,
               vTypeID,
               vUrl ?? "",
-              vSubtitle ?? "",
+              vSubtitleFile ?? "",
               stopTime,
               vUploadType,
               videoThumb,
@@ -178,7 +178,7 @@ class Utils {
                 vType,
                 vTypeID,
                 vUrl ?? "",
-                vSubtitle ?? "",
+                vSubtitleFile ?? "",
                 stopTime,
                 vUploadType,
                 videoThumb,
@@ -201,7 +201,7 @@ class Utils {
                 vType,
                 vTypeID,
                 vUrl ?? "",
-                vSubtitle ?? "",
+                vSubtitleFile ?? "",
                 stopTime,
                 vUploadType,
                 videoThumb,
@@ -224,7 +224,7 @@ class Utils {
                 vType,
                 vTypeID,
                 vUrl ?? "",
-                vSubtitle ?? "",
+                vSubtitleFile ?? "",
                 stopTime,
                 vUploadType,
                 videoThumb,

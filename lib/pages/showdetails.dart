@@ -286,12 +286,11 @@ class ShowDetailsState extends State<ShowDetails> {
                     imagePath: "play_new.png",
                   ),
                 ),
-                if (Platform.isAndroid || Platform.isIOS)
-                  Positioned(
-                    top: 15,
-                    left: 15,
-                    child: Utils.buildBackBtn(context),
-                  ),
+                Positioned(
+                  top: 15,
+                  left: 15,
+                  child: Utils.buildBackBtn(context),
+                ),
               ],
             ),
 

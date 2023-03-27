@@ -15,7 +15,7 @@ class GeneralProvider extends ChangeNotifier {
 
   SharedPre sharedPre = SharedPre();
 
-  Future<void> getGeneralsetting(context) async {
+  Future<void> getGeneralsetting() async {
     loading = true;
     generalSettingModel = await ApiService().genaralSetting();
     debugPrint("genaral_setting status :==> ${generalSettingModel.status}");

@@ -1,9 +1,7 @@
 import 'dart:developer';
 
 import 'package:dtlive/pages/bottombar.dart';
-import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/intro.dart';
-import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/tvpages/tvhome.dart';
 import 'package:dtlive/utils/color.dart';
@@ -28,18 +26,11 @@ class SplashState extends State<Splash> {
 
   @override
   void initState() {
-    _getData();
-    super.initState();
-  }
-
-  _getData() async {
-    final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
-    generalsetting.getGeneralsetting(context);
-
     Future.delayed(const Duration(milliseconds: 500)).then((value) {
       if (!mounted) return;
       isFirstCheck();
     });
+    super.initState();
   }
 
   @override
@@ -75,16 +66,7 @@ class SplashState extends State<Splash> {
     log('seen ==> $seen');
     log('Constant userID ==> ${Constant.userID}');
     if (!mounted) return;
-    if (kIsWeb) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return const Home(pageName: "");
-          },
-        ),
-      );
-    } else if (Constant.isTV) {
+    if (kIsWeb || Constant.isTV) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

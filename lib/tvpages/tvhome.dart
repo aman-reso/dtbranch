@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/tvpages/tvchannels.dart';
 import 'package:dtlive/tvpages/tvrentstore.dart';
 import 'package:dtlive/provider/searchprovider.dart';
@@ -93,8 +94,9 @@ class TVHomeState extends State<TVHome> {
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
+    final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.setLoading(true);
     await homeProvider.getSectionType();
 
     aboutUsUrl = await sharedPref.read("about-us") ?? "";
@@ -114,11 +116,15 @@ class TVHomeState extends State<TVHome> {
                   0 ||
               (sectionDataProvider.sectionListModel.result?.length ?? 0) == 0) {
             getTabData(0, homeProvider.sectionTypeModel.result);
-            Future.delayed(Duration.zero).then((value) => setState(() {}));
           }
         }
       }
     }
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
+    generalsetting.getGeneralsetting();
   }
 
   Future<void> setSelectedTab(int tabPos) async {

@@ -27,6 +27,7 @@ import 'package:dtlive/provider/subscriptionprovider.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/provider/watchlistprovider.dart';
+import 'package:dtlive/tvpages/tvhome.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -158,7 +159,7 @@ class _MyAppState extends State<MyApp> {
               background: Container(color: appBgColor),
             );
           },
-          home: const Splash(),
+          home: (kIsWeb) ? const TVHome(pageName: "") : const Splash(),
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {
               PointerDeviceKind.mouse,

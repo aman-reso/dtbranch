@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
@@ -130,8 +131,9 @@ class HomeState extends State<Home> {
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
+    final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.setLoading(true);
     await homeProvider.getSectionType();
 
     aboutUsUrl = await sharedPref.read("about-us") ?? "";
@@ -159,6 +161,7 @@ class HomeState extends State<Home> {
       if (!mounted) return;
       setState(() {});
     });
+    generalsetting.getGeneralsetting();
   }
 
   Future<void> setSelectedTab(int tabPos) async {

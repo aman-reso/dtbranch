@@ -151,11 +151,14 @@ class HomeState extends State<Home> {
                   0 ||
               (sectionDataProvider.sectionListModel.result?.length ?? 0) == 0) {
             getTabData(0, homeProvider.sectionTypeModel.result);
-            Future.delayed(Duration.zero).then((value) => setState(() {}));
           }
         }
       }
     }
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   Future<void> setSelectedTab(int tabPos) async {

@@ -123,6 +123,7 @@ class OTPVerifyState extends State<OTPVerify> {
               Pinput(
                 length: 6,
                 keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
                 controller: pinPutController,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -242,8 +243,6 @@ class OTPVerifyState extends State<OTPVerify> {
 
   _onVerificationCompleted(PhoneAuthCredential authCredential) async {
     log("verification completed ======> ${authCredential.smsCode}");
-    User? user = FirebaseAuth.instance.currentUser;
-    log("user phoneNumber =====> ${user?.phoneNumber}");
     setState(() {
       pinPutController.text = authCredential.smsCode ?? "";
     });

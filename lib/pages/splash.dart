@@ -23,7 +23,7 @@ class Splash extends StatefulWidget {
 }
 
 class SplashState extends State<Splash> {
-  String? seen, userID, generalSettingDate;
+  String? seen;
   SharedPre sharedPre = SharedPre();
 
   @override
@@ -32,28 +32,14 @@ class SplashState extends State<Splash> {
     super.initState();
   }
 
-  void _getData() async {
+  _getData() async {
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
-    generalSettingDate = await sharedPre.read('gsDate');
-    debugPrint('generalSettingDate ==> $generalSettingDate');
-    debugPrint('DateTime now ==> ${DateTime.now().day}');
+    generalsetting.getGeneralsetting(context);
 
-    if (generalSettingDate != null) {
-      log('comparision ==========> ${DateTime.parse(generalSettingDate ?? "").day < (DateTime.now().day)}');
-      if (DateTime.parse(generalSettingDate ?? "").day < (DateTime.now().day)) {
-        /* Update GeneralSetting call Date */
-        await sharedPre.save('gsDate', DateTime.now().toString());
-        if (!mounted) return;
-        await generalsetting.getGeneralsetting(context);
-      }
-    } else {
-      /* Update GeneralSetting call Date */
-      await sharedPre.save('gsDate', DateTime.now().toString());
+    Future.delayed(const Duration(milliseconds: 500)).then((value) {
       if (!mounted) return;
-      await generalsetting.getGeneralsetting(context);
-    }
-
-    isFirstCheck();
+      isFirstCheck();
+    });
   }
 
   @override
@@ -81,27 +67,8 @@ class SplashState extends State<Splash> {
   }
 
   Future<void> isFirstCheck() async {
-    final generalsettingData =
-        Provider.of<GeneralProvider>(context, listen: false);
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     await homeProvider.setLoading(true);
-
-    log('Is generalsettingData loading...? ==> ${generalsettingData.loading}');
-    if (!generalsettingData.loading) {
-      log('generalSettingData status ==> ${generalsettingData.generalSettingModel.status}');
-      for (var i = 0;
-          i < (generalsettingData.generalSettingModel.result?.length ?? 0);
-          i++) {
-        await sharedPre.save(
-          generalsettingData.generalSettingModel.result?[i].key.toString() ??
-              "",
-          generalsettingData.generalSettingModel.result?[i].value.toString() ??
-              "",
-        );
-        log('${generalsettingData.generalSettingModel.result?[i].key.toString()} ==> ${generalsettingData.generalSettingModel.result?[i].value.toString()}');
-      }
-    }
-    await Future.delayed(const Duration(milliseconds: 500));
 
     seen = await sharedPre.read('seen') ?? "0";
     Constant.userID = await sharedPre.read('userid');

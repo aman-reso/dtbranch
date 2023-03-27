@@ -2331,7 +2331,10 @@ class MovieDetailsState extends State<MovieDetails> {
                         ),
                       ),
                     ),
-                    Padding(
+                    Container(
+                      width: (kIsWeb || Constant.isTV)
+                          ? Dimens.widthCastWeb
+                          : Dimens.widthCast,
                       padding: const EdgeInsets.all(5),
                       child: MyText(
                         multilanguage: false,
@@ -2350,7 +2353,7 @@ class MovieDetailsState extends State<MovieDetails> {
                 ),
               ),
             ),
-            const SizedBox(width: 15),
+            const SizedBox(width: 13),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

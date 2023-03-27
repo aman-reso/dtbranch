@@ -23,8 +23,8 @@ class Dimens {
   static double widthContiSquare = 172;
   static double heightContiSquare = 172;
 
-  static double widthCast = 116;
-  static double heightCast = 164;
+  static double widthCast = 110;
+  static double heightCast = 165;
   static double widthCastWeb = 160;
   static double heightCastWeb = 220;
 

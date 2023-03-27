@@ -13,14 +13,26 @@ class GeneralProvider extends ChangeNotifier {
 
   bool loading = false;
 
-  SharedPre sharePref = SharedPre();
+  SharedPre sharedPre = SharedPre();
 
   Future<void> getGeneralsetting(context) async {
     loading = true;
     generalSettingModel = await ApiService().genaralSetting();
     debugPrint("genaral_setting status :==> ${generalSettingModel.status}");
     loading = false;
-    notifyListeners();
+    debugPrint('generalSettingData status ==> ${generalSettingModel.status}');
+    if (generalSettingModel.status == 200) {
+      if (generalSettingModel.result != null) {
+        for (var i = 0; i < (generalSettingModel.result?.length ?? 0); i++) {
+          await sharedPre.save(
+            generalSettingModel.result?[i].key.toString() ?? "",
+            generalSettingModel.result?[i].value.toString() ?? "",
+          );
+          debugPrint(
+              '${generalSettingModel.result?[i].key.toString()} ==> ${generalSettingModel.result?[i].value.toString()}');
+        }
+      }
+    }
   }
 
   Future<void> loginWithSocial(email, name, type, File? profileImg) async {

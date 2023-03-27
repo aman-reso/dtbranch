@@ -127,6 +127,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
             Pinput(
               length: 6,
               keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
               controller: pinPutController,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -158,7 +159,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
                 if (pinPutController.text.toString().isEmpty) {
                   Utils.showSnackbar(context, "info", "enterreceivedotp", true);
                 } else {
-                  _login(widget.mobileNumber.toString());
+                  _checkOTPAndLogin();
                 }
               },
               child: Padding(
@@ -248,26 +249,11 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
 
   _onVerificationCompleted(PhoneAuthCredential authCredential) async {
     log("verification completed ${authCredential.smsCode}");
-    User? user = FirebaseAuth.instance.currentUser;
     setState(() {
       finalOTP = authCredential.smsCode ?? "";
       pinPutController.text = authCredential.smsCode ?? "";
       log("finalOTP =====> $finalOTP");
     });
-
-    if (authCredential.smsCode != null) {
-      try {
-        UserCredential? credential =
-            await user?.linkWithCredential(authCredential);
-        log("_onVerificationCompleted credential =====> ${credential?.user?.phoneNumber ?? ""}");
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'provider-already-linked') {
-          await _auth.signInWithCredential(authCredential);
-        }
-      }
-      log("Firebase Verification Complated");
-      _login(widget.mobileNumber.toString());
-    }
   }
 
   _onVerificationFailed(FirebaseAuthException exception) {
@@ -287,6 +273,47 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
   _onCodeTimeout(String timeout) {
     codeResended = false;
     return null;
+  }
+
+  _checkOTPAndLogin() async {
+    bool error = false;
+    UserCredential? userCredential;
+
+    log("_checkOTPAndLogin verificationId =====> $verificationId");
+    log("_checkOTPAndLogin smsCode =====> ${pinPutController.text}");
+    // Create a PhoneAuthCredential with the code
+    PhoneAuthCredential? phoneAuthCredential = PhoneAuthProvider.credential(
+      verificationId: verificationId ?? "",
+      smsCode: pinPutController.text.toString(),
+    );
+
+    log("phoneAuthCredential.smsCode        =====> ${phoneAuthCredential.smsCode}");
+    log("phoneAuthCredential.verificationId =====> ${phoneAuthCredential.verificationId}");
+    try {
+      userCredential = await _auth.signInWithCredential(phoneAuthCredential);
+      log("_checkOTPAndLogin userCredential =====> ${userCredential.user?.phoneNumber ?? ""}");
+    } on FirebaseAuthException catch (e) {
+      log("_checkOTPAndLogin error Code =====> ${e.code}");
+      if (e.code == 'invalid-verification-code' ||
+          e.code == 'invalid-verification-id') {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "info", "otp_invalid", true);
+        return;
+      } else if (e.code == 'session-expired') {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "fail", "otp_session_expired", true);
+        return;
+      } else {
+        error = true;
+      }
+    }
+    log("Firebase Verification Complated & phoneNumber => ${userCredential?.user?.phoneNumber} and isError => $error");
+    if (!error && userCredential != null) {
+      _login(widget.mobileNumber.toString());
+    } else {
+      if (!mounted) return;
+      Utils.showSnackbar(context, "fail", "otp_login_fail", true);
+    }
   }
 
   _login(String mobile) async {

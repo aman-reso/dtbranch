@@ -2386,6 +2386,7 @@ class ShowDetailsState extends State<ShowDetails> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
+              focusColor: white,
               borderRadius: BorderRadius.circular(Dimens.cardRadius),
               onTap: () {
                 Navigator.of(context).push(
@@ -2395,64 +2396,70 @@ class ShowDetailsState extends State<ShowDetails> {
                   ),
                 );
               },
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                clipBehavior: Clip.antiAlias,
-                children: <Widget>[
-                  SizedBox(
-                    height: (kIsWeb || Constant.isTV)
-                        ? Dimens.heightCastWeb
-                        : Dimens.heightCast,
-                    width: (kIsWeb || Constant.isTV)
-                        ? Dimens.widthCastWeb
-                        : Dimens.widthCast,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(Dimens.cardRadius),
-                      child: MyNetworkImage(
-                        imageUrl: directorList?[0].image ?? "",
-                        fit: BoxFit.cover,
+              child: Padding(
+                padding: const EdgeInsets.all(2),
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  clipBehavior: Clip.antiAlias,
+                  children: <Widget>[
+                    SizedBox(
+                      height: (kIsWeb || Constant.isTV)
+                          ? Dimens.heightCastWeb
+                          : Dimens.heightCast,
+                      width: (kIsWeb || Constant.isTV)
+                          ? Dimens.widthCastWeb
+                          : Dimens.widthCast,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Dimens.cardRadius),
+                        child: MyNetworkImage(
+                          imageUrl: directorList?[0].image ?? "",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(0),
-                    height: (kIsWeb || Constant.isTV)
-                        ? Dimens.heightCastWeb
-                        : Dimens.heightCast,
-                    width: (kIsWeb || Constant.isTV)
-                        ? Dimens.widthCastWeb
-                        : Dimens.widthCast,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.center,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          transparentColor,
-                          blackTransparent,
-                          black,
-                        ],
+                    Container(
+                      padding: const EdgeInsets.all(0),
+                      height: (kIsWeb || Constant.isTV)
+                          ? Dimens.heightCastWeb
+                          : Dimens.heightCast,
+                      width: (kIsWeb || Constant.isTV)
+                          ? Dimens.widthCastWeb
+                          : Dimens.widthCast,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            transparentColor,
+                            blackTransparent,
+                            black,
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: MyText(
-                      multilanguage: false,
-                      text: directorList?[0].name ?? "",
-                      fontstyle: FontStyle.normal,
-                      fontsizeNormal: 12,
-                      fontweight: FontWeight.w500,
-                      fontsizeWeb: 13,
-                      maxline: 3,
-                      overflow: TextOverflow.ellipsis,
-                      textalign: TextAlign.center,
-                      color: white,
+                    Container(
+                      width: (kIsWeb || Constant.isTV)
+                          ? Dimens.widthCastWeb
+                          : Dimens.widthCast,
+                      padding: const EdgeInsets.all(5),
+                      child: MyText(
+                        multilanguage: false,
+                        text: directorList?[0].name ?? "",
+                        fontstyle: FontStyle.normal,
+                        fontsizeNormal: 12,
+                        fontweight: FontWeight.w500,
+                        fontsizeWeb: 13,
+                        maxline: 3,
+                        overflow: TextOverflow.ellipsis,
+                        textalign: TextAlign.center,
+                        color: white,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            const SizedBox(width: 15),
+            const SizedBox(width: 13),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

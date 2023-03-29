@@ -10,10 +10,14 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+
+import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart'
+    show FirebaseAuthPlatform;
 
 class OTPVerifyWeb extends StatefulWidget {
   final String? mobileNumber;
@@ -36,7 +40,27 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
   @override
   void initState() {
     super.initState();
-    codeSend(false);
+    recptcha();
+  }
+
+  recptcha() async {
+    if (kIsWeb) {
+      log("===>Web");
+
+      ConfirmationResult confirmationResult = await _auth.signInWithPhoneNumber(
+          widget.mobileNumber!,
+          RecaptchaVerifier(
+            onSuccess: () => codeSend(false),
+            onError: (FirebaseAuthException error) => _onVerificationFailed,
+            onExpired: () => _onVerificationFailed,
+            size: RecaptchaVerifierSize.compact,
+            theme: RecaptchaVerifierTheme.dark,
+            auth: FirebaseAuthPlatform.instance,
+          ));
+    } else {
+      log("===>app");
+      codeSend(false);
+    }
   }
 
   @override

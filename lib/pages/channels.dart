@@ -441,58 +441,7 @@ class ChannelsState extends State<Channels> {
                   sectionList?[index].videoType ?? "",
                   sectionList?[index].screenLayout ?? "",
                 ),
-                child: ListView.separated(
-                  itemCount: (sectionList?[index].data?.length ?? 0),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  separatorBuilder: (context, index) => const SizedBox(
-                    width: 5,
-                  ),
-                  itemBuilder: (BuildContext context, int postion) {
-                    /* video_type =>  1-video,  2-show */
-                    /* screen_layout =>  landscape, potrait, square */
-                    if ((sectionList?[index].videoType ?? "") == "1") {
-                      if ((sectionList?[index].screenLayout ?? "") ==
-                          "landscape") {
-                        return landscape(sectionList?[index].data);
-                      } else if ((sectionList?[index].screenLayout ?? "") ==
-                          "potrait") {
-                        return portrait(sectionList?[index].data);
-                      } else if ((sectionList?[index].screenLayout ?? "") ==
-                          "square") {
-                        return square(sectionList?[index].data);
-                      } else {
-                        return landscape(sectionList?[index].data);
-                      }
-                    } else if ((sectionList?[index].videoType ?? "") == "2") {
-                      if ((sectionList?[index].screenLayout ?? "") ==
-                          "landscape") {
-                        return landscape(sectionList?[index].data);
-                      } else if ((sectionList?[index].screenLayout ?? "") ==
-                          "potrait") {
-                        return portrait(sectionList?[index].data);
-                      } else if ((sectionList?[index].screenLayout ?? "") ==
-                          "square") {
-                        return square(sectionList?[index].data);
-                      } else {
-                        return landscape(sectionList?[index].data);
-                      }
-                    } else {
-                      if ((sectionList?[index].screenLayout ?? "") ==
-                          "landscape") {
-                        return landscape(sectionList?[index].data);
-                      } else if ((sectionList?[index].screenLayout ?? "") ==
-                          "potrait") {
-                        return portrait(sectionList?[index].data);
-                      } else if ((sectionList?[index].screenLayout ?? "") ==
-                          "square") {
-                        return square(sectionList?[index].data);
-                      } else {
-                        return landscape(sectionList?[index].data);
-                      }
-                    }
-                  },
-                ),
+                child: setSectionData(sectionList: sectionList, index: index),
               ),
             ],
           );
@@ -501,6 +450,43 @@ class ChannelsState extends State<Channels> {
         }
       },
     );
+  }
+
+  Widget setSectionData(
+      {required List<list.Result>? sectionList, required int index}) {
+    /* video_type =>  1-video,  2-show */
+    /* screen_layout =>  landscape, potrait, square */
+    if ((sectionList?[index].videoType ?? "") == "1") {
+      if ((sectionList?[index].screenLayout ?? "") == "landscape") {
+        return landscape(sectionList?[index].data);
+      } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
+        return portrait(sectionList?[index].data);
+      } else if ((sectionList?[index].screenLayout ?? "") == "square") {
+        return square(sectionList?[index].data);
+      } else {
+        return landscape(sectionList?[index].data);
+      }
+    } else if ((sectionList?[index].videoType ?? "") == "2") {
+      if ((sectionList?[index].screenLayout ?? "") == "landscape") {
+        return landscape(sectionList?[index].data);
+      } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
+        return portrait(sectionList?[index].data);
+      } else if ((sectionList?[index].screenLayout ?? "") == "square") {
+        return square(sectionList?[index].data);
+      } else {
+        return landscape(sectionList?[index].data);
+      }
+    } else {
+      if ((sectionList?[index].screenLayout ?? "") == "landscape") {
+        return landscape(sectionList?[index].data);
+      } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
+        return portrait(sectionList?[index].data);
+      } else if ((sectionList?[index].screenLayout ?? "") == "square") {
+        return square(sectionList?[index].data);
+      } else {
+        return landscape(sectionList?[index].data);
+      }
+    }
   }
 
   double getRemainingDataHeight(String? videoType, String? layoutType) {

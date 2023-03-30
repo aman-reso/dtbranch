@@ -43,35 +43,30 @@ class _SubscriptionHistoryState extends State<SubscriptionHistory> {
       backgroundColor: appBgColor,
       appBar: Utils.myAppBarWithBack(context, "transactions", true),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(top: 12, bottom: 8),
+        child: Container(
+          constraints: const BoxConstraints.expand(),
+          child: SingleChildScrollView(
             child: Consumer<SubHistoryProvider>(
               builder: (context, subHistoryProvider, child) {
                 if (subHistoryProvider.loading) {
-                  return Expanded(
-                      child: ShimmerUtils.buildHistoryShimmer(context, 10));
+                  return ShimmerUtils.buildHistoryShimmer(context, 10);
                 } else {
                   if (subHistoryProvider.historyModel.status == 200 &&
                       subHistoryProvider.historyModel.result != null) {
                     if ((subHistoryProvider.historyModel.result?.length ?? 0) >
                         0) {
-                      return Expanded(
-                        child: AlignedGridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 1,
-                          crossAxisSpacing: 0,
-                          mainAxisSpacing: 12,
-                          padding: const EdgeInsets.only(left: 15, right: 15),
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount:
-                              subHistoryProvider.historyModel.result?.length ??
-                                  0,
-                          itemBuilder: (BuildContext context, int position) {
-                            return _buildHistoryItem(position);
-                          },
-                        ),
+                      return AlignedGridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 1,
+                        crossAxisSpacing: 0,
+                        mainAxisSpacing: 12,
+                        padding: const EdgeInsets.only(left: 15, right: 15),
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount:
+                            subHistoryProvider.historyModel.result?.length ?? 0,
+                        itemBuilder: (BuildContext context, int position) {
+                          return _buildHistoryItem(position);
+                        },
                       );
                     } else {
                       return const NoData(title: '', subTitle: '');
@@ -230,27 +225,27 @@ class _SubscriptionHistoryState extends State<SubscriptionHistory> {
             height: 30,
             constraints: const BoxConstraints(minWidth: 0),
             decoration: Utils.setBGWithBorder(
-                DateTime.now().isBefore(DateTime.parse(subHistoryProvider
+                /* DateTime.now().isBefore(DateTime.parse(subHistoryProvider
                             .historyModel.result?[position].expiryDate ??
                         ""))
                     ? complimentryColor
-                    : primaryColor,
+                    : */ primaryColor,
                 white,
                 15,
                 0.5),
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             alignment: Alignment.center,
             child: MyText(
-              color: DateTime.now().isBefore(DateTime.parse(subHistoryProvider
+              color: /* DateTime.now().isBefore(DateTime.parse(subHistoryProvider
                           .historyModel.result?[position].expiryDate ??
                       ""))
                   ? white
-                  : black,
-              text: DateTime.now().isBefore(DateTime.parse(subHistoryProvider
+                  :  */black,
+              text: /* DateTime.now().isBefore(DateTime.parse(subHistoryProvider
                           .historyModel.result?[position].expiryDate ??
                       ""))
                   ? "current"
-                  : "expired",
+                  :  */"expired",
               multilanguage: true,
               textalign: TextAlign.center,
               maxline: 1,

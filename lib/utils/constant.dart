@@ -1,12 +1,15 @@
 class Constant {
+  // static const String baseurl =
+  //     'http://demo.divinetechs.in/apps/dtlive/public/api/';
+
   static const String baseurl =
-      'http://demo.divinetechs.in/apps/dtlive/public/api/';
+      'http://demo.divinetechs.com/apps/dtlive/public/api/';
 
   //  static const String baseurl =
   //     'https://divinetechs.in/dtlive-admin/public/api/';
 
   static String? appName = "DTLive";
-  static String? appPackageName = "com.divinetechs.primevideoapp";
+  static String? appPackageName = "com.divinetechs.dtlive";
   static String? appVersion = "1";
   static String? appBuildNumber = "1.0";
 

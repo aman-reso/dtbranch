@@ -241,7 +241,11 @@ class _SubscriptionHistoryState extends State<SubscriptionHistory> {
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             alignment: Alignment.center,
             child: MyText(
-              color: white,
+              color: DateTime.now().isBefore(DateTime.parse(subHistoryProvider
+                          .historyModel.result?[position].expiryDate ??
+                      ""))
+                  ? white
+                  : black,
               text: DateTime.now().isBefore(DateTime.parse(subHistoryProvider
                           .historyModel.result?[position].expiryDate ??
                       ""))

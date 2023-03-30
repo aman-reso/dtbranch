@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBt2kWDmwynM9rdN6tuvGaEJyvgERjm5bQ',
-    appId: '1:346606981660:android:697f4fe7257fa2bb2fc5d9',
+    appId: '1:346606981660:android:200f87933ac5b8d02fc5d9',
     messagingSenderId: '346606981660',
     projectId: 'primevideoapp-43bf6',
     storageBucket: 'primevideoapp-43bf6.appspot.com',
@@ -62,23 +62,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB0KoOQEiQixmNx7PJfO6hjhuXhxxvYCds',
-    appId: '1:346606981660:ios:865bd76d32f5d05b2fc5d9',
+    appId: '1:346606981660:ios:f3e24ae04c8458492fc5d9',
     messagingSenderId: '346606981660',
     projectId: 'primevideoapp-43bf6',
     storageBucket: 'primevideoapp-43bf6.appspot.com',
     androidClientId: '346606981660-150eiiccap50sdco81aaj0av5lgn59us.apps.googleusercontent.com',
-    iosClientId: '346606981660-lbqt9i2edrlqvtd9lq4dmv21ti9s1i49.apps.googleusercontent.com',
-    iosBundleId: 'com.divinetechs.primevideoapp',
+    iosClientId: '346606981660-ad22hq6bccaet69s1btivfccqoneabps.apps.googleusercontent.com',
+    iosBundleId: 'com.divinetechs.dtlive',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyB0KoOQEiQixmNx7PJfO6hjhuXhxxvYCds',
-    appId: '1:346606981660:ios:865bd76d32f5d05b2fc5d9',
+    appId: '1:346606981660:ios:f3e24ae04c8458492fc5d9',
     messagingSenderId: '346606981660',
     projectId: 'primevideoapp-43bf6',
     storageBucket: 'primevideoapp-43bf6.appspot.com',
     androidClientId: '346606981660-150eiiccap50sdco81aaj0av5lgn59us.apps.googleusercontent.com',
-    iosClientId: '346606981660-lbqt9i2edrlqvtd9lq4dmv21ti9s1i49.apps.googleusercontent.com',
-    iosBundleId: 'com.divinetechs.primevideoapp',
+    iosClientId: '346606981660-ad22hq6bccaet69s1btivfccqoneabps.apps.googleusercontent.com',
+    iosBundleId: 'com.divinetechs.dtlive',
   );
 }

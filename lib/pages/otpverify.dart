@@ -59,164 +59,166 @@ class OTPVerifyState extends State<OTPVerify> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           margin: const EdgeInsets.all(25),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                alignment: Alignment.centerLeft,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(25),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.centerLeft,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(25),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.centerLeft,
+                      child: MyImage(
+                        fit: BoxFit.fill,
+                        imagePath: "backwith_bg.png",
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                MyText(
+                  color: white,
+                  text: "verifyphonenumber",
+                  fontsizeNormal: 22,
+                  multilanguage: true,
+                  fontweight: FontWeight.bold,
+                  maxline: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textalign: TextAlign.center,
+                  fontstyle: FontStyle.normal,
+                ),
+                const SizedBox(height: 8),
+                MyText(
+                  color: otherColor,
+                  text: "code_sent_desc",
+                  fontsizeNormal: 15,
+                  fontweight: FontWeight.w500,
+                  maxline: 3,
+                  overflow: TextOverflow.ellipsis,
+                  textalign: TextAlign.center,
+                  multilanguage: true,
+                  fontstyle: FontStyle.normal,
+                ),
+                MyText(
+                  color: otherColor,
+                  text: widget.mobileNumber,
+                  fontsizeNormal: 15,
+                  fontweight: FontWeight.w500,
+                  maxline: 3,
+                  overflow: TextOverflow.ellipsis,
+                  textalign: TextAlign.center,
+                  multilanguage: false,
+                  fontstyle: FontStyle.normal,
+                ),
+                const SizedBox(height: 40),
+
+                /* Enter Received OTP */
+                Pinput(
+                  length: 6,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  controller: pinPutController,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  defaultPinTheme: PinTheme(
+                    width: 45,
+                    height: 45,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: primaryColor, width: 0.7),
+                      shape: BoxShape.rectangle,
+                      color: edtBG,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    textStyle: GoogleFonts.montserrat(
+                      color: white,
+                      fontSize: 16,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                /* Confirm Button */
+                InkWell(
+                  borderRadius: BorderRadius.circular(26),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    debugPrint(
+                        "Clicked sms Code =====> ${pinPutController.text}");
+                    if (pinPutController.text.toString().isEmpty) {
+                      Utils.showSnackbar(
+                          context, "info", "enterreceivedotp", true);
+                    } else {
+                      Utils.showProgress(context, prDialog);
+                      _checkOTPAndLogin();
+                    }
                   },
                   child: Container(
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.centerLeft,
-                    child: MyImage(
-                      fit: BoxFit.fill,
-                      imagePath: "backwith_bg.png",
+                    width: MediaQuery.of(context).size.width,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          primaryLight,
+                          primaryDark,
+                        ],
+                        begin: FractionalOffset(0.0, 0.0),
+                        end: FractionalOffset(1.0, 0.0),
+                        stops: [0.0, 1.0],
+                        tileMode: TileMode.clamp,
+                      ),
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                    alignment: Alignment.center,
+                    child: MyText(
+                      color: white,
+                      text: "confirm",
+                      fontsizeNormal: 17,
+                      multilanguage: true,
+                      fontweight: FontWeight.w700,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              MyText(
-                color: white,
-                text: "verifyphonenumber",
-                fontsizeNormal: 22,
-                multilanguage: true,
-                fontweight: FontWeight.bold,
-                maxline: 2,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
-              ),
-              const SizedBox(height: 8),
-              MyText(
-                color: otherColor,
-                text: "code_sent_desc",
-                fontsizeNormal: 15,
-                fontweight: FontWeight.w500,
-                maxline: 3,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                multilanguage: true,
-                fontstyle: FontStyle.normal,
-              ),
-              MyText(
-                color: otherColor,
-                text: widget.mobileNumber,
-                fontsizeNormal: 15,
-                fontweight: FontWeight.w500,
-                maxline: 3,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                multilanguage: false,
-                fontstyle: FontStyle.normal,
-              ),
-              const SizedBox(height: 40),
+                const SizedBox(height: 40),
 
-              /* Enter Received OTP */
-              Pinput(
-                length: 6,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
-                controller: pinPutController,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                defaultPinTheme: PinTheme(
-                  width: 45,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: primaryColor, width: 0.7),
-                    shape: BoxShape.rectangle,
-                    color: edtBG,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  textStyle: GoogleFonts.montserrat(
-                    color: white,
-                    fontSize: 16,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              /* Confirm Button */
-              InkWell(
-                borderRadius: BorderRadius.circular(26),
-                onTap: () {
-                  debugPrint(
-                      "Clicked sms Code =====> ${pinPutController.text}");
-                  if (pinPutController.text.toString().isEmpty) {
-                    Utils.showSnackbar(
-                        context, "info", "enterreceivedotp", true);
-                  } else {
-                    Utils.showProgress(context, prDialog);
-                    _checkOTPAndLogin();
-                  }
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        primaryLight,
-                        primaryDark,
-                      ],
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(1.0, 0.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp,
+                /* Resend */
+                InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () {
+                    if (!codeResended) {
+                      codeSend(true);
+                    }
+                  },
+                  child: Container(
+                    constraints: const BoxConstraints(minWidth: 70),
+                    padding: const EdgeInsets.all(5),
+                    child: MyText(
+                      color: white,
+                      text: "resend",
+                      multilanguage: true,
+                      fontsizeNormal: 16,
+                      fontweight: FontWeight.w700,
+                      maxline: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textalign: TextAlign.center,
+                      fontstyle: FontStyle.normal,
                     ),
-                    borderRadius: BorderRadius.circular(26),
-                  ),
-                  alignment: Alignment.center,
-                  child: MyText(
-                    color: white,
-                    text: "confirm",
-                    fontsizeNormal: 17,
-                    multilanguage: true,
-                    fontweight: FontWeight.w700,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textalign: TextAlign.center,
-                    fontstyle: FontStyle.normal,
                   ),
                 ),
-              ),
-              const SizedBox(height: 40),
-
-              /* Resend */
-              InkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: () {
-                  if (!codeResended) {
-                    codeSend(true);
-                  }
-                },
-                child: Container(
-                  constraints: const BoxConstraints(minWidth: 70),
-                  padding: const EdgeInsets.all(5),
-                  child: MyText(
-                    color: white,
-                    text: "resend",
-                    multilanguage: true,
-                    fontsizeNormal: 16,
-                    fontweight: FontWeight.w700,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textalign: TextAlign.center,
-                    fontstyle: FontStyle.normal,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

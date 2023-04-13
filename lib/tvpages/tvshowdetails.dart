@@ -764,78 +764,81 @@ class TVShowDetailsState extends State<TVShowDetails> {
                 alignment: Alignment.centerLeft,
                 constraints: const BoxConstraints(minHeight: 0, minWidth: 0),
                 margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    /* Continue Watching Button */
-                    /* Watch Now button */
-                    _buildWatchNow(),
-                    const SizedBox(width: 10),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      /* Continue Watching Button */
+                      /* Watch Now button */
+                      _buildWatchNow(),
+                      const SizedBox(width: 10),
 
-                    /* Rent Button */
-                    Container(
-                      constraints: const BoxConstraints(minWidth: 0),
-                      child: _buildRentBtn(),
-                    ),
-                    const SizedBox(width: 10),
+                      /* Rent Button */
+                      Container(
+                        constraints: const BoxConstraints(minWidth: 0),
+                        child: _buildRentBtn(),
+                      ),
+                      const SizedBox(width: 10),
 
-                    /* Watchlist */
-                    Container(
-                      constraints: const BoxConstraints(minWidth: 50),
-                      child: InkWell(
-                        onTap: () async {
-                          log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                          if (Constant.userID != null) {
-                            await showDetailsProvider.setBookMark(
-                              context,
-                              widget.typeId,
-                              widget.videoType,
-                              widget.videoId,
-                            );
-                          } else {
-                            if ((kIsWeb || Constant.isTV)) {
-                              Utils.buildWebAlertDialog(context, "login", "");
-                              return;
-                            }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const LoginSocial();
-                                },
-                              ),
-                            );
-                          }
-                        },
-                        focusColor: gray.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(5),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Consumer<ShowDetailsProvider>(
-                            builder: (context, showDetailsProvider, child) {
-                              if ((showDetailsProvider.sectionDetailModel.result
-                                          ?.isBookmark ??
-                                      0) ==
-                                  1) {
-                                return _buildFeatureBtn(
-                                  icon: 'watchlist_remove.png',
-                                  title: 'watchlist',
-                                  multilanguage: true,
-                                );
-                              } else {
-                                return _buildFeatureBtn(
-                                  icon: 'ic_plus.png',
-                                  title: 'watchlist',
-                                  multilanguage: true,
-                                );
+                      /* Watchlist */
+                      Container(
+                        constraints: const BoxConstraints(minWidth: 50),
+                        child: InkWell(
+                          onTap: () async {
+                            log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                            if (Constant.userID != null) {
+                              await showDetailsProvider.setBookMark(
+                                context,
+                                widget.typeId,
+                                widget.videoType,
+                                widget.videoId,
+                              );
+                            } else {
+                              if ((kIsWeb || Constant.isTV)) {
+                                Utils.buildWebAlertDialog(context, "login", "");
+                                return;
                               }
-                            },
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return const LoginSocial();
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                          focusColor: gray.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(5),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Consumer<ShowDetailsProvider>(
+                              builder: (context, showDetailsProvider, child) {
+                                if ((showDetailsProvider.sectionDetailModel
+                                            .result?.isBookmark ??
+                                        0) ==
+                                    1) {
+                                  return _buildFeatureBtn(
+                                    icon: 'watchlist_remove.png',
+                                    title: 'watchlist',
+                                    multilanguage: true,
+                                  );
+                                } else {
+                                  return _buildFeatureBtn(
+                                    icon: 'ic_plus.png',
+                                    title: 'watchlist',
+                                    multilanguage: true,
+                                  );
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -1238,79 +1241,83 @@ class TVShowDetailsState extends State<TVShowDetails> {
                     constraints:
                         const BoxConstraints(minHeight: 0, minWidth: 0),
                     margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        /* Continue Watching Button */
-                        /* Watch Now button */
-                        _buildWatchNow(),
-                        const SizedBox(width: 10),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          /* Continue Watching Button */
+                          /* Watch Now button */
+                          _buildWatchNow(),
+                          const SizedBox(width: 10),
 
-                        /* Rent Button */
-                        Container(
-                          constraints: const BoxConstraints(minWidth: 0),
-                          child: _buildRentBtn(),
-                        ),
-                        const SizedBox(width: 10),
+                          /* Rent Button */
+                          Container(
+                            constraints: const BoxConstraints(minWidth: 0),
+                            child: _buildRentBtn(),
+                          ),
+                          const SizedBox(width: 10),
 
-                        /* Watchlist */
-                        Container(
-                          constraints: const BoxConstraints(minWidth: 50),
-                          child: InkWell(
-                            onTap: () async {
-                              log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                              if (Constant.userID != null) {
-                                await showDetailsProvider.setBookMark(
-                                  context,
-                                  widget.typeId,
-                                  widget.videoType,
-                                  widget.videoId,
-                                );
-                              } else {
-                                if ((kIsWeb || Constant.isTV)) {
-                                  Utils.buildWebAlertDialog(
-                                      context, "login", "");
-                                  return;
-                                }
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return const LoginSocial();
-                                    },
-                                  ),
-                                );
-                              }
-                            },
-                            focusColor: gray.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(5),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Consumer<ShowDetailsProvider>(
-                                builder: (context, showDetailsProvider, child) {
-                                  if ((showDetailsProvider.sectionDetailModel
-                                              .result?.isBookmark ??
-                                          0) ==
-                                      1) {
-                                    return _buildFeatureBtn(
-                                      icon: 'watchlist_remove.png',
-                                      title: 'watchlist',
-                                      multilanguage: true,
-                                    );
-                                  } else {
-                                    return _buildFeatureBtn(
-                                      icon: 'ic_plus.png',
-                                      title: 'watchlist',
-                                      multilanguage: true,
-                                    );
+                          /* Watchlist */
+                          Container(
+                            constraints: const BoxConstraints(minWidth: 50),
+                            child: InkWell(
+                              onTap: () async {
+                                log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                                if (Constant.userID != null) {
+                                  await showDetailsProvider.setBookMark(
+                                    context,
+                                    widget.typeId,
+                                    widget.videoType,
+                                    widget.videoId,
+                                  );
+                                } else {
+                                  if ((kIsWeb || Constant.isTV)) {
+                                    Utils.buildWebAlertDialog(
+                                        context, "login", "");
+                                    return;
                                   }
-                                },
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const LoginSocial();
+                                      },
+                                    ),
+                                  );
+                                }
+                              },
+                              focusColor: gray.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(5),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Consumer<ShowDetailsProvider>(
+                                  builder:
+                                      (context, showDetailsProvider, child) {
+                                    if ((showDetailsProvider.sectionDetailModel
+                                                .result?.isBookmark ??
+                                            0) ==
+                                        1) {
+                                      return _buildFeatureBtn(
+                                        icon: 'watchlist_remove.png',
+                                        title: 'watchlist',
+                                        multilanguage: true,
+                                      );
+                                    } else {
+                                      return _buildFeatureBtn(
+                                        icon: 'ic_plus.png',
+                                        title: 'watchlist',
+                                        multilanguage: true,
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 
@@ -1706,61 +1713,58 @@ class TVShowDetailsState extends State<TVShowDetails> {
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return Expanded(
-          child: InkWell(
-            focusColor: gray.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(5),
-            onTap: () async {
-              if (Constant.userID != null) {
-                if ((kIsWeb || Constant.isTV)) {
-                  Utils.showSnackbar(
-                      context, "info", webPaymentNotAvailable, false);
-                  return;
-                }
-                dynamic isRented = await Utils.paymentForRent(
-                  context: context,
-                  videoId: showDetailsProvider.sectionDetailModel.result?.id
-                          .toString() ??
-                      '',
-                  rentPrice: showDetailsProvider
-                          .sectionDetailModel.result?.rentPrice
-                          .toString() ??
-                      '',
-                  vTitle: showDetailsProvider.sectionDetailModel.result?.name
-                          .toString() ??
-                      '',
-                  typeId: showDetailsProvider.sectionDetailModel.result?.typeId
-                          .toString() ??
-                      '',
-                  vType: showDetailsProvider
-                          .sectionDetailModel.result?.videoType
-                          .toString() ??
-                      '',
-                );
-                if (isRented != null && isRented == true) {
-                  _getData();
-                }
-              } else {
-                if ((kIsWeb || Constant.isTV)) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
+        return InkWell(
+          focusColor: gray.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(5),
+          onTap: () async {
+            if (Constant.userID != null) {
+              if ((kIsWeb || Constant.isTV)) {
+                Utils.showSnackbar(
+                    context, "info", webPaymentNotAvailable, false);
+                return;
               }
-            },
-            child: _buildFeatureBtn(
-              icon: 'ic_store.png',
-              title:
-                  "Rent at just\n${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-              multilanguage: false,
-            ),
+              dynamic isRented = await Utils.paymentForRent(
+                context: context,
+                videoId: showDetailsProvider.sectionDetailModel.result?.id
+                        .toString() ??
+                    '',
+                rentPrice: showDetailsProvider
+                        .sectionDetailModel.result?.rentPrice
+                        .toString() ??
+                    '',
+                vTitle: showDetailsProvider.sectionDetailModel.result?.name
+                        .toString() ??
+                    '',
+                typeId: showDetailsProvider.sectionDetailModel.result?.typeId
+                        .toString() ??
+                    '',
+                vType: showDetailsProvider.sectionDetailModel.result?.videoType
+                        .toString() ??
+                    '',
+              );
+              if (isRented != null && isRented == true) {
+                _getData();
+              }
+            } else {
+              if ((kIsWeb || Constant.isTV)) {
+                Utils.buildWebAlertDialog(context, "login", "");
+                return;
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginSocial();
+                  },
+                ),
+              );
+            }
+          },
+          child: _buildFeatureBtn(
+            icon: 'ic_store.png',
+            title:
+                "Rent at just\n${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+            multilanguage: false,
           ),
         );
       }
@@ -1770,61 +1774,58 @@ class TVShowDetailsState extends State<TVShowDetails> {
           (showDetailsProvider.sectionDetailModel.result?.rentBuy ?? 0) == 1) {
         return const SizedBox.shrink();
       } else {
-        return Expanded(
-          child: InkWell(
-            focusColor: gray.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(5),
-            onTap: () async {
-              if (Constant.userID != null) {
-                if ((kIsWeb || Constant.isTV)) {
-                  Utils.showSnackbar(
-                      context, "info", webPaymentNotAvailable, false);
-                  return;
-                }
-                dynamic isRented = await Utils.paymentForRent(
-                  context: context,
-                  videoId: showDetailsProvider.sectionDetailModel.result?.id
-                          .toString() ??
-                      '',
-                  rentPrice: showDetailsProvider
-                          .sectionDetailModel.result?.rentPrice
-                          .toString() ??
-                      '',
-                  vTitle: showDetailsProvider.sectionDetailModel.result?.name
-                          .toString() ??
-                      '',
-                  typeId: showDetailsProvider.sectionDetailModel.result?.typeId
-                          .toString() ??
-                      '',
-                  vType: showDetailsProvider
-                          .sectionDetailModel.result?.videoType
-                          .toString() ??
-                      '',
-                );
-                if (isRented != null && isRented == true) {
-                  _getData();
-                }
-              } else {
-                if ((kIsWeb || Constant.isTV)) {
-                  Utils.buildWebAlertDialog(context, "login", "");
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const LoginSocial();
-                    },
-                  ),
-                );
+        return InkWell(
+          focusColor: gray.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(5),
+          onTap: () async {
+            if (Constant.userID != null) {
+              if ((kIsWeb || Constant.isTV)) {
+                Utils.showSnackbar(
+                    context, "info", webPaymentNotAvailable, false);
+                return;
               }
-            },
-            child: _buildFeatureBtn(
-              icon: 'ic_store.png',
-              title:
-                  "Rent at just\n${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
-              multilanguage: false,
-            ),
+              dynamic isRented = await Utils.paymentForRent(
+                context: context,
+                videoId: showDetailsProvider.sectionDetailModel.result?.id
+                        .toString() ??
+                    '',
+                rentPrice: showDetailsProvider
+                        .sectionDetailModel.result?.rentPrice
+                        .toString() ??
+                    '',
+                vTitle: showDetailsProvider.sectionDetailModel.result?.name
+                        .toString() ??
+                    '',
+                typeId: showDetailsProvider.sectionDetailModel.result?.typeId
+                        .toString() ??
+                    '',
+                vType: showDetailsProvider.sectionDetailModel.result?.videoType
+                        .toString() ??
+                    '',
+              );
+              if (isRented != null && isRented == true) {
+                _getData();
+              }
+            } else {
+              if ((kIsWeb || Constant.isTV)) {
+                Utils.buildWebAlertDialog(context, "login", "");
+                return;
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginSocial();
+                  },
+                ),
+              );
+            }
+          },
+          child: _buildFeatureBtn(
+            icon: 'ic_store.png',
+            title:
+                "Rent at just\n${Constant.currencySymbol}${showDetailsProvider.sectionDetailModel.result?.rentPrice ?? 0}",
+            multilanguage: false,
           ),
         );
       }

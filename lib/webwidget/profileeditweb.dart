@@ -52,7 +52,10 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
         }
       }
     }
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

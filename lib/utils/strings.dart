@@ -8,6 +8,7 @@ const myProfile = "My Profile";
 //BottomNavigation END
 
 //Login, Registration Strings START
+const loginWithApple = "Login with Apple";
 const pleaseWait = "Please wait...";
 const enterYourMobileNumber = "Enter your mobile number";
 const privacyPolicyCheckBoxText =

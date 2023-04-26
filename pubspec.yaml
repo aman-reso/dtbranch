@@ -60,9 +60,12 @@ dependencies:
   intl: ^0.17.0
   expandable: ^5.0.1
   webview_flutter: ^3.0.4
-  google_sign_in: ^6.0.2
-  firebase_core: ^2.8.0
-  firebase_auth: ^4.3.0
+  flutter_login_facebook: ^1.8.0
+  sign_in_with_apple: ^4.3.0
+  crypto: ^3.0.2
+  google_sign_in: ^6.1.0
+  firebase_core: ^2.10.0
+  firebase_auth: ^4.4.2
   onesignal_flutter: ^3.5.1
   intl_phone_field: ^3.1.0
   http: ^0.13.5
@@ -103,6 +106,11 @@ dependencies:
   random_string: ^2.3.1
   flutter_secure_storage: ^8.0.0
   scrollview_observer: ^1.10.1
+  flutter_pagewise: ^2.0.4
+  connectivity_plus: ^3.0.4
+  marquee: ^2.2.3
+  numeral: ^2.0.1
+  gradient_borders: ^1.0.0
 
 
 dev_dependencies:

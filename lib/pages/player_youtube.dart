@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:dtlive/provider/playerprovider.dart';
+import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -52,39 +55,56 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
     return WillPopScope(
       onWillPop: onBackPressed,
       child: Scaffold(
-        body: YoutubePlayerBuilder(
-          onEnterFullScreen: () {
-            fullScreen = true;
-          },
-          onExitFullScreen: () {
-            fullScreen = false;
-          },
-          builder: (context, player) {
-            return Column(
-              children: <Widget>[player],
-            );
-          },
-          player: YoutubePlayer(
-            controller: controller,
-            aspectRatio: 16 / 9,
-            showVideoProgressIndicator: true,
-            width: MediaQuery.of(context).size.width,
-            bottomActions: [
-              CurrentPosition(),
-              ProgressBar(isExpanded: true),
-            ],
-            onReady: () {
-              playerCPosition = controller.value.position.inMilliseconds;
-              videoDuration = controller.metadata.duration.inMilliseconds;
-              log("playerCPosition :===> $playerCPosition");
-              log("videoDuration :===> $videoDuration");
-            },
-            onEnded: (metaData) async {
-              /* Remove From Continue */
-              await playerProvider.removeFromContinue(
-                  "${widget.videoId}", "${widget.videoType}");
-            },
-          ),
+        body: Stack(
+          children: [
+            YoutubePlayerBuilder(
+              onEnterFullScreen: () {
+                fullScreen = true;
+              },
+              onExitFullScreen: () {
+                fullScreen = false;
+              },
+              builder: (context, player) {
+                return Column(
+                  children: <Widget>[player],
+                );
+              },
+              player: YoutubePlayer(
+                controller: controller,
+                aspectRatio: 16 / 9,
+                showVideoProgressIndicator: true,
+                width: MediaQuery.of(context).size.width,
+                bottomActions: [
+                  CurrentPosition(),
+                  ProgressBar(isExpanded: true),
+                ],
+                onReady: () {
+                  playerCPosition = controller.value.position.inMilliseconds;
+                  videoDuration = controller.metadata.duration.inMilliseconds;
+                  log("playerCPosition :===> $playerCPosition");
+                  log("videoDuration :===> $videoDuration");
+                },
+                onEnded: (metaData) async {
+                  /* Remove From Continue */
+                  await playerProvider.removeFromContinue(
+                      "${widget.videoId}", "${widget.videoType}");
+                },
+              ),
+            ),
+            if (!kIsWeb)
+              Positioned(
+                top: 15,
+                left: 15,
+                child: SafeArea(
+                  child: InkWell(
+                    onTap: onBackPressed,
+                    focusColor: gray.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Utils.buildBackBtnDesign(context),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -93,15 +113,14 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
   @override
   void dispose() {
     controller.dispose();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
   Future<bool> onBackPressed() async {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

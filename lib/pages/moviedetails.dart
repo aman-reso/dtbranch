@@ -99,7 +99,7 @@ class MovieDetailsState extends State<MovieDetails> {
       }
     }
 
-    Future.delayed(const Duration(seconds: 1)).then((value) {
+    Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {});
     });

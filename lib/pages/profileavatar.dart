@@ -28,7 +28,10 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
   _getData() async {
     avatarProvider = Provider.of<AvatarProvider>(context, listen: false);
     await avatarProvider.getAvatar();
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

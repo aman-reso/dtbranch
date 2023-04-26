@@ -6,7 +6,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
-import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/showdetails.dart';
@@ -37,21 +36,23 @@ class Channels extends StatefulWidget {
 }
 
 class ChannelsState extends State<Channels> {
+  late ChannelSectionProvider sectionDataProvider;
   CarouselController pageController = CarouselController();
-  HomeState? homeStateObject;
 
   @override
   void initState() {
-    homeStateObject = context.findAncestorStateOfType<HomeState>();
+    sectionDataProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
     super.initState();
     _getData();
   }
 
   _getData() async {
-    final channelSectionProvider =
-        Provider.of<ChannelSectionProvider>(context, listen: false);
-    await channelSectionProvider.getChannelSection();
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    await sectionDataProvider.getChannelSection();
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
@@ -273,8 +274,6 @@ class ChannelsState extends State<Channels> {
   }
 
   Widget _webChannelBanner(List<banner.LiveUrl>? sectionBannerList) {
-    final sectionDataProvider =
-        Provider.of<ChannelSectionProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -742,6 +741,7 @@ class ChannelsState extends State<Channels> {
               },
             ),
           );
+          debugPrint("isSubscribed ==========> $isSubscribed");
           if (isSubscribed != null && isSubscribed == true) {
             _getData();
           }

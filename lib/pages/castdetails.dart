@@ -34,7 +34,10 @@ class _CastDetailsState extends State<CastDetails> {
     castDetailsProvider =
         Provider.of<CastDetailsProvider>(context, listen: false);
     await castDetailsProvider.getCastDetails(widget.castID);
-    Future.delayed(Duration.zero).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

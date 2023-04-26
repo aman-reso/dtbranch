@@ -1,9 +1,9 @@
 class Constant {
-  // static const String baseurl =
-  //     'http://demo.divinetechs.in/apps/dtlive/public/api/';
-
   static const String baseurl =
-      'http://demo.divinetechs.com/apps/dtlive/public/api/';
+      'http://demo.divinetechs.in/apps/dtlive/public/api/';
+
+  // static const String baseurl =
+  //     'http://demo.divinetechs.com/apps/dtlive/public/api/';
 
   //  static const String baseurl =
   //     'https://divinetechs.in/dtlive-admin/public/api/';

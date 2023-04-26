@@ -51,7 +51,10 @@ class TVChannelsState extends State<TVChannels> {
     final channelSectionProvider =
         Provider.of<ChannelSectionProvider>(context, listen: false);
     await channelSectionProvider.getChannelSection();
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

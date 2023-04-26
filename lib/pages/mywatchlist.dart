@@ -63,27 +63,24 @@ class _MyWatchlistState extends State<MyWatchlist> {
             child: Consumer<WatchlistProvider>(
               builder: (context, watchlistProvider, child) {
                 if (watchlistProvider.loading) {
-                  return Expanded(
-                      child: ShimmerUtils.buildWatchlistShimmer(context, 10));
+                  return ShimmerUtils.buildWatchlistShimmer(context, 10);
                 } else {
                   if (watchlistProvider.watchlistModel.status == 200 &&
                       watchlistProvider.watchlistModel.result != null) {
                     if ((watchlistProvider.watchlistModel.result?.length ?? 0) >
                         0) {
-                      return Expanded(
-                        child: AlignedGridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 1,
-                          crossAxisSpacing: 0,
-                          mainAxisSpacing: 8,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount:
-                              watchlistProvider.watchlistModel.result?.length ??
-                                  0,
-                          itemBuilder: (BuildContext context, int position) {
-                            return _buildWatchlistItem(position);
-                          },
-                        ),
+                      return AlignedGridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 1,
+                        crossAxisSpacing: 0,
+                        mainAxisSpacing: 8,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount:
+                            watchlistProvider.watchlistModel.result?.length ??
+                                0,
+                        itemBuilder: (BuildContext context, int position) {
+                          return _buildWatchlistItem(position);
+                        },
                       );
                     } else {
                       return const NoData(
@@ -113,260 +110,261 @@ class _MyWatchlistState extends State<MyWatchlist> {
       color: lightBlack,
       child: Row(
         children: [
+          _buildImage(position),
+          _buildDetails(position),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImage(int position) {
+    return Container(
+      constraints: BoxConstraints(
+        minHeight: Dimens.heightWatchlist,
+        maxWidth: MediaQuery.of(context).size.width * 0.44,
+      ),
+      child: Stack(
+        alignment: AlignmentDirectional.bottomStart,
+        children: [
           Container(
             constraints: BoxConstraints(
               minHeight: Dimens.heightWatchlist,
-              maxWidth: MediaQuery.of(context).size.width * 0.44,
+              maxWidth: MediaQuery.of(context).size.width,
             ),
-            child: Stack(
-              alignment: AlignmentDirectional.bottomStart,
-              children: [
-                Container(
-                  constraints: BoxConstraints(
-                    minHeight: Dimens.heightWatchlist,
-                    maxWidth: MediaQuery.of(context).size.width,
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(0),
-                    onTap: () {
-                      log("Clicked on position ==> $position");
-                      if ((watchlistProvider
+            child: InkWell(
+              borderRadius: BorderRadius.circular(0),
+              onTap: () {
+                log("Clicked on position ==> $position");
+                if ((watchlistProvider
+                            .watchlistModel.result?[position].videoType ??
+                        0) ==
+                    1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return MovieDetails(
+                          watchlistProvider
+                                  .watchlistModel.result?[position].id ??
+                              0,
+                          watchlistProvider
                                   .watchlistModel.result?[position].videoType ??
-                              0) ==
-                          1) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MovieDetails(
-                                watchlistProvider
-                                        .watchlistModel.result?[position].id ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].videoType ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].typeId ??
-                                    0,
-                              );
-                            },
-                          ),
+                              0,
+                          watchlistProvider
+                                  .watchlistModel.result?[position].typeId ??
+                              0,
                         );
-                      } else if ((watchlistProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0) ==
-                          2) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ShowDetails(
-                                watchlistProvider
-                                        .watchlistModel.result?[position].id ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].videoType ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].typeId ??
-                                    0,
-                              );
-                            },
-                          ),
-                        );
-                      }
-                    },
-                    child: MyNetworkImage(
-                      imageUrl: (watchlistProvider.watchlistModel
-                                      .result?[position].landscape ??
-                                  "")
-                              .isNotEmpty
-                          ? (watchlistProvider
-                                  .watchlistModel.result?[position].landscape ??
-                              "")
-                          : (watchlistProvider
-                                  .watchlistModel.result?[position].thumbnail ??
-                              ""),
-                      fit: BoxFit.fill,
+                      },
                     ),
-                  ),
-                ),
-                ((watchlistProvider
-                                .watchlistModel.result?[position].videoType ??
-                            0) !=
-                        2)
-                    ? _buildWatchBtnWithProgress(position)
-                    : const SizedBox.shrink(),
-              ],
+                  );
+                } else if ((watchlistProvider
+                            .watchlistModel.result?[position].videoType ??
+                        0) ==
+                    2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ShowDetails(
+                          watchlistProvider
+                                  .watchlistModel.result?[position].id ??
+                              0,
+                          watchlistProvider
+                                  .watchlistModel.result?[position].videoType ??
+                              0,
+                          watchlistProvider
+                                  .watchlistModel.result?[position].typeId ??
+                              0,
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+              child: MyNetworkImage(
+                imageUrl: (watchlistProvider
+                                .watchlistModel.result?[position].landscape ??
+                            "")
+                        .isNotEmpty
+                    ? (watchlistProvider
+                            .watchlistModel.result?[position].landscape ??
+                        "")
+                    : (watchlistProvider
+                            .watchlistModel.result?[position].thumbnail ??
+                        ""),
+                fit: BoxFit.fill,
+              ),
             ),
           ),
-          Flexible(
-            child: Container(
-              constraints: BoxConstraints(
-                minHeight: Dimens.heightWatchlist,
-                maxWidth: MediaQuery.of(context).size.width * 0.66,
-              ),
-              child: Stack(
+          ((watchlistProvider.watchlistModel.result?[position].videoType ??
+                      0) !=
+                  2)
+              ? _buildWatchBtnWithProgress(position)
+              : const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetails(int position) {
+    return Flexible(
+      child: Container(
+        constraints: BoxConstraints(
+          minHeight: Dimens.heightWatchlist,
+          maxWidth: MediaQuery.of(context).size.width * 0.66,
+        ),
+        child: Stack(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        /* Title */
-                        MyText(
-                          color: white,
-                          text: watchlistProvider
-                                  .watchlistModel.result?[position].name ??
-                              "",
-                          textalign: TextAlign.start,
-                          maxline: 2,
-                          overflow: TextOverflow.ellipsis,
-                          fontsizeNormal: 13,
-                          fontweight: FontWeight.w600,
-                          fontstyle: FontStyle.normal,
-                        ),
-                        const SizedBox(height: 3),
-                        /* Release Year & Video Duration */
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            (watchlistProvider.watchlistModel.result?[position]
-                                            .releaseYear !=
-                                        null &&
-                                    (watchlistProvider
-                                                .watchlistModel
-                                                .result?[position]
-                                                .releaseYear ??
-                                            "") !=
-                                        "")
-                                ? Container(
-                                    margin: const EdgeInsets.only(right: 8),
-                                    child: MyText(
-                                      color: otherColor,
-                                      text: watchlistProvider.watchlistModel
-                                              .result?[position].releaseYear ??
-                                          "",
-                                      maxline: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textalign: TextAlign.start,
-                                      fontsizeNormal: 12,
-                                      fontweight: FontWeight.w500,
-                                      fontstyle: FontStyle.normal,
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                            (watchlistProvider.watchlistModel.result?[position]
-                                            .videoType ??
-                                        0) !=
-                                    2
-                                ? (watchlistProvider
-                                                .watchlistModel
-                                                .result?[position]
-                                                .videoDuration !=
-                                            null &&
-                                        (watchlistProvider
-                                                    .watchlistModel
-                                                    .result?[position]
-                                                    .videoDuration ??
-                                                0) >
-                                            0)
-                                    ? Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 20),
-                                        child: MyText(
-                                          color: otherColor,
-                                          text: Utils.convertInMin(
-                                              watchlistProvider
-                                                      .watchlistModel
-                                                      .result?[position]
-                                                      .videoDuration ??
-                                                  0),
-                                          textalign: TextAlign.start,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontsizeNormal: 12,
-                                          fontweight: FontWeight.w500,
-                                          fontstyle: FontStyle.normal,
-                                        ),
-                                      )
-                                    : const SizedBox.shrink()
-                                : const SizedBox.shrink(),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        /* Prime TAG  & Rent TAG */
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /* Prime TAG */
-                            (watchlistProvider.watchlistModel.result?[position]
-                                            .isPremium ??
-                                        0) ==
-                                    1
-                                ? MyText(
-                                    color: primaryColor,
-                                    text: "primetag",
-                                    multilanguage: true,
-                                    textalign: TextAlign.start,
-                                    fontsizeNormal: 10,
-                                    fontweight: FontWeight.w800,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  )
-                                : const SizedBox.shrink(),
-                            const SizedBox(height: 3),
-                            /* Rent TAG */
-                            (watchlistProvider.watchlistModel.result?[position]
-                                            .isRent ??
-                                        0) ==
-                                    1
-                                ? MyText(
-                                    color: white,
-                                    text: "renttag",
-                                    multilanguage: true,
-                                    textalign: TextAlign.start,
-                                    fontsizeNormal: 11,
-                                    fontweight: FontWeight.w500,
-                                    maxline: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
-                                  )
-                                : const SizedBox.shrink(),
-                          ],
-                        ),
-                      ],
-                    ),
+                  /* Title */
+                  MyText(
+                    color: white,
+                    text: watchlistProvider
+                            .watchlistModel.result?[position].name ??
+                        "",
+                    textalign: TextAlign.start,
+                    maxline: 2,
+                    overflow: TextOverflow.ellipsis,
+                    fontsizeNormal: 13,
+                    fontweight: FontWeight.w600,
+                    fontstyle: FontStyle.normal,
                   ),
-                  Positioned(
-                    bottom: 10,
-                    right: 10,
-                    child: InkWell(
-                      onTap: () {
-                        _buildVideoMoreDialog(position);
-                      },
-                      child: Container(
-                        width: 25,
-                        height: 25,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(6),
-                        child: MyImage(
-                          width: 18,
-                          height: 18,
-                          imagePath: "ic_more.png",
-                        ),
-                      ),
-                    ),
+                  const SizedBox(height: 3),
+                  /* Release Year & Video Duration */
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      (watchlistProvider.watchlistModel.result?[position]
+                                      .releaseYear !=
+                                  null &&
+                              (watchlistProvider.watchlistModel
+                                          .result?[position].releaseYear ??
+                                      "") !=
+                                  "")
+                          ? Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              child: MyText(
+                                color: otherColor,
+                                text: watchlistProvider.watchlistModel
+                                        .result?[position].releaseYear ??
+                                    "",
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textalign: TextAlign.start,
+                                fontsizeNormal: 12,
+                                fontweight: FontWeight.w500,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      (watchlistProvider.watchlistModel.result?[position]
+                                      .videoType ??
+                                  0) !=
+                              2
+                          ? (watchlistProvider.watchlistModel.result?[position]
+                                          .videoDuration !=
+                                      null &&
+                                  (watchlistProvider
+                                              .watchlistModel
+                                              .result?[position]
+                                              .videoDuration ??
+                                          0) >
+                                      0)
+                              ? Container(
+                                  margin: const EdgeInsets.only(right: 20),
+                                  child: MyText(
+                                    color: otherColor,
+                                    text: Utils.convertInMin(watchlistProvider
+                                            .watchlistModel
+                                            .result?[position]
+                                            .videoDuration ??
+                                        0),
+                                    textalign: TextAlign.start,
+                                    maxline: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontsizeNormal: 12,
+                                    fontweight: FontWeight.w500,
+                                    fontstyle: FontStyle.normal,
+                                  ),
+                                )
+                              : const SizedBox.shrink()
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  /* Prime TAG  & Rent TAG */
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /* Prime TAG */
+                      (watchlistProvider.watchlistModel.result?[position]
+                                      .isPremium ??
+                                  0) ==
+                              1
+                          ? MyText(
+                              color: primaryColor,
+                              text: "primetag",
+                              multilanguage: true,
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 10,
+                              fontweight: FontWeight.w800,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            )
+                          : const SizedBox.shrink(),
+                      const SizedBox(height: 3),
+                      /* Rent TAG */
+                      (watchlistProvider.watchlistModel.result?[position]
+                                      .isRent ??
+                                  0) ==
+                              1
+                          ? MyText(
+                              color: white,
+                              text: "renttag",
+                              multilanguage: true,
+                              textalign: TextAlign.start,
+                              fontsizeNormal: 11,
+                              fontweight: FontWeight.w500,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontstyle: FontStyle.normal,
+                            )
+                          : const SizedBox.shrink(),
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: InkWell(
+                onTap: () {
+                  _buildVideoMoreDialog(position);
+                },
+                child: Container(
+                  width: 25,
+                  height: 25,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(6),
+                  child: MyImage(
+                    width: 18,
+                    height: 18,
+                    imagePath: "ic_more.png",
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -425,10 +423,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
             ? Container(
                 decoration: const BoxDecoration(
                   color: black,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(4),
-                    bottomRight: Radius.circular(4),
-                  ),
                   shape: BoxShape.rectangle,
                 ),
                 width: 172,

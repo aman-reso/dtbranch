@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:dtlive/pages/bottombar.dart';
 import 'package:dtlive/pages/otpverify.dart';
 import 'package:dtlive/provider/generalprovider.dart';
@@ -15,8 +17,10 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +33,7 @@ class LoginSocial extends StatefulWidget {
 }
 
 class LoginSocialState extends State<LoginSocial> {
-   late ProgressDialog prDialog;
+  late ProgressDialog prDialog;
   SharedPre sharePref = SharedPre();
   final numberController = TextEditingController();
   String? mobileNumber, email, userName, strType;
@@ -71,14 +75,12 @@ class LoginSocialState extends State<LoginSocial> {
                   imagePath: "appicon.png",
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 25),
               MyText(
                 color: white,
                 text: "welcomeback",
-                fontsizeNormal: 25,
-                fontsizeWeb: 27,
+                fontsizeNormal: 20,
+                fontsizeWeb: 25,
                 multilanguage: true,
                 fontweight: FontWeight.bold,
                 maxline: 1,
@@ -86,24 +88,20 @@ class LoginSocialState extends State<LoginSocial> {
                 textalign: TextAlign.center,
                 fontstyle: FontStyle.normal,
               ),
-              const SizedBox(
-                height: 7,
-              ),
+              const SizedBox(height: 7),
               MyText(
                 color: otherColor,
                 text: "login_with_mobile_note",
-                fontsizeNormal: 15,
-                fontsizeWeb: 16,
+                fontsizeNormal: 14,
+                fontsizeWeb: 15,
                 multilanguage: true,
                 fontweight: FontWeight.w500,
-                maxline: 1,
+                maxline: 2,
                 overflow: TextOverflow.ellipsis,
                 textalign: TextAlign.center,
                 fontstyle: FontStyle.normal,
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 30),
 
               /* Enter Mobile Number */
               Container(
@@ -157,9 +155,7 @@ class LoginSocialState extends State<LoginSocial> {
                   },
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
+              const SizedBox(height: 25),
 
               /* Login Button */
               InkWell(
@@ -209,9 +205,7 @@ class LoginSocialState extends State<LoginSocial> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 25,
-              ),
+              const SizedBox(height: 25),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -220,9 +214,7 @@ class LoginSocialState extends State<LoginSocial> {
                     height: 1,
                     color: accentColor,
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
+                  const SizedBox(width: 15),
                   MyText(
                     color: otherColor,
                     text: "or",
@@ -235,9 +227,7 @@ class LoginSocialState extends State<LoginSocial> {
                     textalign: TextAlign.center,
                     fontstyle: FontStyle.normal,
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
+                  const SizedBox(width: 15),
                   Container(
                     width: 80,
                     height: 1,
@@ -245,26 +235,25 @@ class LoginSocialState extends State<LoginSocial> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 25,
-              ),
+              const SizedBox(height: 25),
 
               /* Google Login Button */
-              InkWell(
-                onTap: () {
-                  debugPrint("Clicked on : ====> loginWith Google");
-                  _gmailLogin();
-                },
-                borderRadius: BorderRadius.circular(18),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 52,
-                  padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
-                  decoration: BoxDecoration(
-                    color: white,
-                    borderRadius: BorderRadius.circular(26),
-                  ),
-                  alignment: Alignment.center,
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 52,
+                padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                margin: const EdgeInsets.only(bottom: 15),
+                decoration: BoxDecoration(
+                  color: white,
+                  borderRadius: BorderRadius.circular(26),
+                ),
+                alignment: Alignment.center,
+                child: InkWell(
+                  onTap: () {
+                    debugPrint("Clicked on : ====> loginWith Google");
+                    _gmailLogin();
+                  },
+                  borderRadius: BorderRadius.circular(26),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -274,9 +263,7 @@ class LoginSocialState extends State<LoginSocial> {
                         imagePath: "ic_google.png",
                         fit: BoxFit.contain,
                       ),
-                      const SizedBox(
-                        width: 30,
-                      ),
+                      const SizedBox(width: 30),
                       MyText(
                         color: black,
                         text: "loginwithgoogle",
@@ -293,6 +280,94 @@ class LoginSocialState extends State<LoginSocial> {
                   ),
                 ),
               ),
+
+              /* Apple Login Button */
+              if (Platform.isIOS)
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 52,
+                  padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                  margin: const EdgeInsets.only(bottom: 15),
+                  decoration: BoxDecoration(
+                    color: white,
+                    borderRadius: BorderRadius.circular(26),
+                  ),
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: () {
+                      debugPrint("Clicked on : ====> loginWith Apple");
+                      signInWithApple();
+                    },
+                    borderRadius: BorderRadius.circular(26),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyImage(
+                          width: 30,
+                          height: 30,
+                          imagePath: "ic_apple.png",
+                          fit: BoxFit.contain,
+                        ),
+                        const SizedBox(width: 30),
+                        MyText(
+                          color: black,
+                          text: "loginwithapple",
+                          fontsizeNormal: 14,
+                          fontsizeWeb: 16,
+                          multilanguage: true,
+                          fontweight: FontWeight.w600,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textalign: TextAlign.center,
+                          fontstyle: FontStyle.normal,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              /* Facebook Login Button */
+              // Container(
+              //   width: MediaQuery.of(context).size.width,
+              //   height: 52,
+              //   padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+              //   decoration: BoxDecoration(
+              //     color: white,
+              //     borderRadius: BorderRadius.circular(26),
+              //   ),
+              //   alignment: Alignment.center,
+              //   child: InkWell(
+              //     onTap: () {
+              //       debugPrint("Clicked on : ====> loginWith Facebook");
+              //       facebookLogin();
+              //     },
+              //     borderRadius: BorderRadius.circular(26),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         MyImage(
+              //           width: 30,
+              //           height: 30,
+              //           imagePath: "ic_facebook.png",
+              //           fit: BoxFit.contain,
+              //         ),
+              //         const SizedBox(width: 30),
+              //         MyText(
+              //           color: black,
+              //           text: "loginwithfacebook",
+              //           fontsizeNormal: 14,
+              //           fontsizeWeb: 16,
+              //           multilanguage: true,
+              //           fontweight: FontWeight.w600,
+              //           maxline: 1,
+              //           overflow: TextOverflow.ellipsis,
+              //           textalign: TextAlign.center,
+              //           fontstyle: FontStyle.normal,
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -300,77 +375,100 @@ class LoginSocialState extends State<LoginSocial> {
     );
   }
 
-  // /* Facebook Login */
-  // Future<void> facebookLogin() async {
-  //   await plugin?.logIn(permissions: [
-  //     FacebookPermission.publicProfile,
-  //     FacebookPermission.email,
-  //   ]);
+  /* Facebook Login */
+  Future<void> facebookLogin() async {
+    final fbLoginPlugin = FacebookLogin();
+    // Log in
+    final result = await fbLoginPlugin.logIn(permissions: [
+      FacebookPermission.publicProfile,
+      FacebookPermission.email,
+    ]);
 
-  //   final token = await plugin?.accessToken;
-  //   debugPrint("_getFBLoginInfo token ====> $token");
-  //   FacebookUserProfile? profile;
-  //   String? imageUrl;
+    // Check result status
+    switch (result.status) {
+      case FacebookLoginStatus.success:
+        // Logged in
 
-  //   if (token != null) {
-  //     profile = await plugin?.getUserProfile();
-  //     if (token.permissions.contains(FacebookPermission.email.name)) {
-  //       email = await plugin?.getUserEmail();
-  //     }
-  //     imageUrl = await plugin?.getProfileImageUrl(width: 100);
-  //     debugPrint("_getFBLoginInfo firstname ====> ${profile?.firstName ?? ""}");
-  //     debugPrint("_getFBLoginInfo lastname ====> ${profile?.lastName ?? ""}");
-  //     debugPrint("_getFBLoginInfo email ====> $email");
-  //     debugPrint("_getFBLoginInfo imageUrl ====> $imageUrl");
-  //     debugPrint("_getFBLoginInfo name ====> ${profile?.name ?? ""}");
-  //     strType = "1";
+        // Send access token to server for validation and auth
+        final FacebookAccessToken? fbAccessToken = result.accessToken;
+        debugPrint("_getFBLoginInfo fbAccessToken ====> $fbAccessToken");
+        debugPrint("_getFBLoginInfo Token ====> ${fbAccessToken?.token}");
 
-  //     // Login to Firebase Console
-  //     if (!mounted) return;
-  //     Utils.showProgress(context, prDialog);
+        // Get profile data
+        final profile = await fbLoginPlugin.getUserProfile();
+        debugPrint('Hello, ${profile?.name}! You ID: ${profile?.userId}');
 
-  //     UserCredential userCredential;
-  //     try {
-  //       AuthCredential credential = GoogleAuthProvider.credential(
-  //         accessToken: token.token,
-  //         idToken: token.userId,
-  //       );
+        // Get user profile image url
+        final imageUrl = await fbLoginPlugin.getProfileImageUrl(width: 100);
+        debugPrint('Your profile image: $imageUrl');
 
-  //       userCredential = await _auth.signInWithCredential(credential);
-  //       assert(await userCredential.user?.getIdToken() != null);
-  //       debugPrint("User Name: ${userCredential.user?.displayName}");
-  //       debugPrint("User Email ${userCredential.user?.email}");
-  //       debugPrint("User photoURL ${userCredential.user?.photoURL}");
-  //       debugPrint("uid ===> ${userCredential.user?.uid}");
-  //       String firebasedid = userCredential.user?.uid ?? "";
-  //       debugPrint('firebasedid :===> $firebasedid');
+        // Get email (since we request email permission)
+        final email = await fbLoginPlugin.getUserEmail();
+        // But user can decline permission
+        if (email != null) debugPrint('And your email is $email');
 
-  //       /* Save PhotoUrl in File */
-  //       mProfileImg =
-  //           await Utils.saveImageInStorage(userCredential.user?.photoURL ?? "");
-  //       debugPrint('mProfileImg :===> $mProfileImg');
+        if (fbAccessToken != null) {
+          debugPrint(
+              "_getFBLoginInfo firstname ====> ${profile?.firstName ?? ""}");
+          debugPrint(
+              "_getFBLoginInfo lastname ====> ${profile?.lastName ?? ""}");
+          debugPrint("_getFBLoginInfo email ====> $email");
+          debugPrint("_getFBLoginInfo imageUrl ====> $imageUrl");
+          debugPrint("_getFBLoginInfo name ====> ${profile?.name ?? ""}");
+          strType = "1";
 
-  //       checkAndNavigate(userCredential.user?.email ?? "",
-  //           userCredential.user?.displayName ?? "", "1");
-  //     } on FirebaseAuthException catch (e) {
-  //       debugPrint('===>Exp${e.code.toString()}');
-  //       debugPrint('===>Exp${e.message.toString()}');
-  //       if (e.code.toString() == "user-not-found") {
-  //         // registerFirebaseUser(email ?? "", profile?.name ?? "", "1");
-  //       } else if (e.code == 'wrong-password') {
-  //         // Hide Progress Dialog
-  //         await prDialog.hide();
-  //         debugPrint('Wrong password provided.');
-  //         Utils.showToast('Wrong password provided.');
-  //       } else {
-  //         // Hide Progress Dialog
-  //         await prDialog.hide();
-  //       }
-  //     }
-  //   }
-  // }
+          // Login to Firebase Console
+          if (!mounted) return;
+          Utils.showProgress(context, prDialog);
 
-  /* Google(Gmail) Login */
+          UserCredential userCredential;
+          try {
+            AuthCredential credential = FacebookAuthProvider.credential(
+              fbAccessToken.token.toString(),
+            );
+
+            userCredential = await _auth.signInWithCredential(credential);
+            assert(await userCredential.user?.getIdToken() != null);
+            debugPrint("User Name: ${userCredential.user?.displayName}");
+            debugPrint("User Email ${userCredential.user?.email}");
+            debugPrint("User photoURL ${userCredential.user?.photoURL}");
+            debugPrint("uid ===> ${userCredential.user?.uid}");
+            String firebasedid = userCredential.user?.uid ?? "";
+            debugPrint('firebasedid :===> $firebasedid');
+
+            /* Save PhotoUrl in File */
+            mProfileImg = await Utils.saveImageInStorage(
+                userCredential.user?.photoURL ?? "");
+            debugPrint('mProfileImg :===> $mProfileImg');
+
+            checkAndNavigate(userCredential.user?.email ?? "",
+                userCredential.user?.displayName ?? "", "1");
+          } on FirebaseAuthException catch (e) {
+            // Hide Progress Dialog
+            await prDialog.hide();
+            debugPrint('===>Exp${e.code.toString()}');
+            debugPrint('===>Exp${e.message.toString()}');
+            if (e.code.toString() == "user-not-found") {
+            } else if (e.code == 'wrong-password') {
+              debugPrint('Wrong password provided.');
+              Utils.showToast('Wrong password provided.');
+            } else {}
+          }
+        }
+        break;
+
+      case FacebookLoginStatus.cancel:
+        // User cancel log in
+        break;
+
+      case FacebookLoginStatus.error:
+        // Log in failed
+        debugPrint('Error while log in: ${result.error}');
+        break;
+    }
+  }
+
+  /* Google Login */
   Future<void> _gmailLogin() async {
     final googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) return;
@@ -426,41 +524,78 @@ class LoginSocialState extends State<LoginSocial> {
     }
   }
 
-  registerFirebaseUser(String mail, String displayName, String type) async {
-    debugPrint("Email : $mail and Name : $displayName");
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: mail, password: '123456')
-          .whenComplete(() {});
-      debugPrint(
-          'RegisterUser mail : ${userCredential.user?.email.toString()}');
-      debugPrint("mail ===> $mail");
-
-      debugPrint("uid ===> ${userCredential.user?.uid}");
-      String firebasedid = userCredential.user?.uid ?? "";
-      debugPrint('firebasedid :===> $firebasedid');
-
-      /* Save PhotoUrl in File */
-      mProfileImg =
-          await Utils.saveImageInStorage(userCredential.user?.photoURL ?? "");
-      debugPrint('mProfileImg :===> $mProfileImg');
-
-      checkAndNavigate(mail, displayName, type);
-    } on FirebaseAuthException catch (e) {
-      // Hide Progress Dialog
-      await prDialog.hide();
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-        Utils.showToast('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {}
-    } catch (e) {
-      // Hide Progress Dialog
-      await prDialog.hide();
-      debugPrint(e.toString());
-    }
+  /* Apple Login */
+  /// Returns the sha256 hash of [input] in hex notation.
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
-  void checkAndNavigate(String mail, String displayName, String type) async {
+  Future<User?> signInWithApple() async {
+    // To prevent replay attacks with the credential returned from Apple, we
+    // include a nonce in the credential request. When signing in in with
+    // Firebase, the nonce in the id token returned by Apple, is expected to
+    // match the sha256 hash of `rawNonce`.
+    final rawNonce = generateNonce();
+    final nonce = sha256ofString(rawNonce);
+
+    try {
+      // Request credential for the currently signed in Apple account.
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+
+      debugPrint(appleCredential.authorizationCode);
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+
+      // Sign in the user with Firebase. If the nonce we generated earlier does
+      // not match the nonce in `appleCredential.identityToken`, sign in will fail.
+      final authResult = await _auth.signInWithCredential(oauthCredential);
+
+      final displayName =
+          '${appleCredential.givenName} ${appleCredential.familyName}';
+
+      final firebaseUser = authResult.user;
+      debugPrint("=================");
+
+      final userEmail = '${firebaseUser?.email}';
+      debugPrint("userEmail =====> $userEmail");
+      debugPrint(firebaseUser?.email.toString());
+      debugPrint(firebaseUser?.displayName.toString());
+      debugPrint(firebaseUser?.photoURL.toString());
+      debugPrint(firebaseUser?.uid);
+      debugPrint("=================");
+
+      final firebasedId = firebaseUser?.uid;
+      final photoURL = firebaseUser?.photoURL;
+      debugPrint("firebasedId ===> $firebasedId");
+      debugPrint("photoURL ======> $photoURL");
+
+      await firebaseUser?.updateDisplayName(displayName);
+      await firebaseUser?.updatePhotoURL(photoURL);
+      await firebaseUser?.updateEmail(userEmail);
+
+      /* Save PhotoUrl in File */
+      mProfileImg = await Utils.saveImageInStorage(photoURL);
+
+      checkAndNavigate(userEmail, displayName.toString(), "2");
+    } catch (exception) {
+      debugPrint("Apple Login exception =====> $exception");
+    }
+    return null;
+  }
+
+  checkAndNavigate(String mail, String displayName, String type) async {
     email = mail;
     userName = displayName;
     strType = type;

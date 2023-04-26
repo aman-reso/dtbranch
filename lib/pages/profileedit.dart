@@ -44,7 +44,10 @@ class ProfileEditState extends State<ProfileEdit> {
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
     await profileProvider.getProfile();
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

@@ -49,7 +49,10 @@ class VideosByIDState extends State<VideosByID> {
     } else if (widget.layoutType == "ByLanguage") {
       await videoByIDProvider.getVideoByLanguage(widget.itemID);
     }
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

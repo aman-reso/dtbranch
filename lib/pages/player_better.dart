@@ -4,6 +4,8 @@ import 'package:better_player/better_player.dart';
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -128,6 +130,9 @@ class _PlayerBetterState extends State<PlayerBetter> {
 
   @override
   void dispose() {
+    _betterPlayerController.videoPlayerController?.dispose();
+    _betterPlayerController.dispose();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }
 
@@ -138,19 +143,37 @@ class _PlayerBetterState extends State<PlayerBetter> {
       onWillPop: onBackPressed,
       child: Scaffold(
         backgroundColor: appBgColor,
-        body: Center(
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: BetterPlayer(
-              controller: _betterPlayerController,
+        body: Stack(
+          children: [
+            Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: BetterPlayer(
+                  controller: _betterPlayerController,
+                ),
+              ),
             ),
-          ),
+            if (!kIsWeb)
+              Positioned(
+                top: 15,
+                left: 15,
+                child: SafeArea(
+                  child: InkWell(
+                    onTap: onBackPressed,
+                    focusColor: gray.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Utils.buildBackBtnDesign(context),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 
   Future<bool> onBackPressed() async {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

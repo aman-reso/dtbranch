@@ -42,6 +42,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  late SectionDataProvider sectionDataProvider;
   final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
   CarouselController pageController = CarouselController();
@@ -69,10 +70,12 @@ class HomeState extends State<Home> {
 
   @override
   void initState() {
+    sectionDataProvider =
+        Provider.of<SectionDataProvider>(context, listen: false);
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
     observerController =
         ListObserverController(controller: tabScrollController);
     currentPage = widget.pageName ?? "";
-    homeProvider = Provider.of<HomeProvider>(context, listen: false);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getData();
@@ -129,8 +132,6 @@ class HomeState extends State<Home> {
   _getData() async {
     if (!kIsWeb) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 
     await homeProvider.setLoading(true);
@@ -165,9 +166,6 @@ class HomeState extends State<Home> {
   }
 
   Future<void> setSelectedTab(int tabPos) async {
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     if (!mounted) return;
     await homeProvider.setSelectedTab(tabPos);
 
@@ -183,9 +181,6 @@ class HomeState extends State<Home> {
 
   Future<void> getTabData(
       int position, List<type.Result>? sectionTypeList) async {
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
-
     await setSelectedTab(position);
     await sectionDataProvider.setLoading(true);
     await sectionDataProvider.getSectionBanner(
@@ -509,8 +504,6 @@ class HomeState extends State<Home> {
   }
 
   Widget _mobileHomeBanner(List<banner.Result>? sectionBannerList) {
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
@@ -616,8 +609,6 @@ class HomeState extends State<Home> {
   }
 
   Widget _webHomeBanner(List<banner.Result>? sectionBannerList) {
-    final sectionDataProvider =
-        Provider.of<SectionDataProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -784,8 +775,6 @@ class HomeState extends State<Home> {
 
   Widget continueWatchingLayout(List<ContinueWatching>? continueWatchingList) {
     if ((continueWatchingList?.length ?? 0) > 0) {
-      final sectionDataProvider =
-          Provider.of<SectionDataProvider>(context, listen: false);
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -920,10 +909,8 @@ class HomeState extends State<Home> {
                                     continueWatchingList?[index].stopTime ?? 0,
                               );
                               if (isContinues != null && isContinues == true) {
-                                await sectionDataProvider.getSectionBanner(
-                                    "0", "1");
-                                await sectionDataProvider.getSectionList(
-                                    "0", "1");
+                                getTabData(
+                                    0, homeProvider.sectionTypeModel.result);
                                 Future.delayed(Duration.zero).then((value) {
                                   if (!mounted) return;
                                   setState(() {});

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -175,11 +176,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   _getDeviceInfo() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    Constant.isTV =
-        androidInfo.systemFeatures.contains('android.software.leanback');
-    log("isTV =======================> ${Constant.isTV}");
+    if (Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      Constant.isTV =
+          androidInfo.systemFeatures.contains('android.software.leanback');
+      log("isTV =======================> ${Constant.isTV}");
+    }
   }
 
   _getPackage() async {

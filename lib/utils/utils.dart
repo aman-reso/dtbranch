@@ -386,6 +386,19 @@ class Utils {
     );
   }
 
+  static Widget buildBackBtnDesign(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: MyImage(
+        height: 17,
+        width: 17,
+        imagePath: "back.png",
+        fit: BoxFit.contain,
+        color: white,
+      ),
+    );
+  }
+
   static AppBar myAppBar(
       BuildContext context, String appBarTitle, bool multilanguage) {
     return AppBar(

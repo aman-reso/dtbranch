@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
@@ -42,28 +44,51 @@ class PlayerVimeoState extends State<PlayerVimeo> {
   }
 
   @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: onBackPressed,
       child: Scaffold(
         backgroundColor: black,
         body: SafeArea(
-          child: VimeoVideoPlayer(
-            vimeoPlayerModel: VimeoPlayerModel(
-              url: vUrl ?? "",
-              systemUiOverlay: [],
-              deviceOrientation: DeviceOrientation.landscapeLeft,
-              startAt: Duration(milliseconds: widget.stopTime ?? 0),
-              onProgress: (timePoint) {
-                playerCPosition = timePoint.inMilliseconds;
-                log("playerCPosition :===> $playerCPosition");
-              },
-              onFinished: () async {
-                /* Remove From Continue */
-                await playerProvider.removeFromContinue(
-                    "${widget.videoId}", "${widget.videoType}");
-              },
-            ),
+          child: Stack(
+            children: [
+              VimeoVideoPlayer(
+                vimeoPlayerModel: VimeoPlayerModel(
+                  url: vUrl ?? "",
+                  systemUiOverlay: [],
+                  deviceOrientation: DeviceOrientation.landscapeLeft,
+                  startAt: Duration(milliseconds: widget.stopTime ?? 0),
+                  onProgress: (timePoint) {
+                    playerCPosition = timePoint.inMilliseconds;
+                    log("playerCPosition :===> $playerCPosition");
+                  },
+                  onFinished: () async {
+                    /* Remove From Continue */
+                    await playerProvider.removeFromContinue(
+                        "${widget.videoId}", "${widget.videoType}");
+                  },
+                ),
+              ),
+              if (!kIsWeb)
+                Positioned(
+                  top: 15,
+                  left: 15,
+                  child: SafeArea(
+                    child: InkWell(
+                      onTap: onBackPressed,
+                      focusColor: gray.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Utils.buildBackBtnDesign(context),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -71,6 +96,7 @@ class PlayerVimeoState extends State<PlayerVimeo> {
   }
 
   Future<bool> onBackPressed() async {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

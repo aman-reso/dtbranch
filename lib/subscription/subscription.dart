@@ -28,21 +28,24 @@ class Subscription extends StatefulWidget {
 }
 
 class SubscriptionState extends State<Subscription> {
-  // PageController pageController = PageController();
+  late SubscriptionProvider subscriptionProvider;
   CarouselController pageController = CarouselController();
   ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
+    subscriptionProvider =
+        Provider.of<SubscriptionProvider>(context, listen: false);
     super.initState();
     _getData();
   }
 
-  void _getData() async {
-    final subscriptionProvider =
-        Provider.of<SubscriptionProvider>(context, listen: false);
+  _getData() async {
     await subscriptionProvider.getPackages();
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
@@ -107,8 +110,6 @@ class SubscriptionState extends State<Subscription> {
   }
 
   Widget _buildSubscription() {
-    final subscriptionProvider =
-        Provider.of<SubscriptionProvider>(context, listen: false);
     if (subscriptionProvider.loading) {
       return ShimmerUtils.buildSubscribeShimmer(context);
     } else {

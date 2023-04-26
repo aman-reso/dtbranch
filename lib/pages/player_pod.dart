@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/provider/playerprovider.dart';
+import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -66,10 +67,16 @@ class _PlayerPodState extends State<PlayerPod> {
     );
     _controller.videoSeekTo(Duration(milliseconds: widget.stopTime ?? 0));
     if (kIsWeb || Constant.isTV) {
-      _initializeVideoPlayerFuture = _controller.initialise();
+      _initializeVideoPlayerFuture = _controller.initialise()
+        ..then((value) {
+          _controller.play();
+        });
     } else {
       _initializeVideoPlayerFuture = _controller.initialise()
-        ..then((value) => _controller.enableFullScreen());
+        ..then((value) {
+          _controller.enableFullScreen();
+          _controller.play();
+        });
     }
 
     _controller.addListener(() async {
@@ -84,6 +91,7 @@ class _PlayerPodState extends State<PlayerPod> {
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _controller.dispose();
     super.dispose();
   }
@@ -97,10 +105,27 @@ class _PlayerPodState extends State<PlayerPod> {
           if (snapshot.connectionState == ConnectionState.done) {
             return WillPopScope(
               onWillPop: onBackPressed,
-              child: PodVideoPlayer(
-                controller: _controller,
-                videoThumbnail: DecorationImage(
-                    image: NetworkImage(widget.videoThumb ?? "")),
+              child: Stack(
+                children: [
+                  PodVideoPlayer(
+                    controller: _controller,
+                    videoThumbnail: DecorationImage(
+                        image: NetworkImage(widget.videoThumb ?? "")),
+                  ),
+                  if (!kIsWeb)
+                    Positioned(
+                      top: 15,
+                      left: 15,
+                      child: SafeArea(
+                        child: InkWell(
+                          onTap: onBackPressed,
+                          focusColor: gray.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Utils.buildBackBtnDesign(context),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             );
           } else {
@@ -118,9 +143,7 @@ class _PlayerPodState extends State<PlayerPod> {
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     if (widget.playType == "Video" || widget.playType == "Show") {
       if ((playerCPosition ?? 0) > 0 &&
           (playerCPosition == videoDuration ||

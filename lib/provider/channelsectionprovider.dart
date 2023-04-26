@@ -24,6 +24,14 @@ class ChannelSectionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  updatePrimiumPurchase() {
+    if (channelSectionModel.result != null) {
+      for (var i = 0; i < (channelSectionModel.liveUrl?.length ?? 0); i++) {
+        channelSectionModel.liveUrl?[i].isBuy = 1;
+      }
+    }
+  }
+
   clearProvider() {
     log("<================ clearProvider ================>");
     channelSectionModel = ChannelSectionModel();

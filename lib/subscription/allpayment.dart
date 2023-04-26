@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dtlive/provider/channelsectionprovider.dart';
 import 'package:dtlive/provider/paymentprovider.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
@@ -135,10 +136,12 @@ class AllPaymentState extends State<AllPayment> {
   /* add_transaction API */
   Future addTransaction(
       packageId, description, amount, paymentId, currencyCode) async {
-    final VideoDetailsProvider videoDetailsProvider =
+    final videoDetailsProvider =
         Provider.of<VideoDetailsProvider>(context, listen: false);
-    final ShowDetailsProvider showDetailsProvider =
+    final showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
+    final channelSectionProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
 
     Utils.showProgress(context, prDialog);
     await paymentProvider.addTransaction(
@@ -151,6 +154,7 @@ class AllPaymentState extends State<AllPayment> {
         isPaymentDone = true;
         await videoDetailsProvider.updatePrimiumPurchase();
         await showDetailsProvider.updatePrimiumPurchase();
+        await channelSectionProvider.updatePrimiumPurchase();
         await videoDetailsProvider.updateRentPurchase();
         await showDetailsProvider.updateRentPurchase();
 
@@ -167,9 +171,9 @@ class AllPaymentState extends State<AllPayment> {
 
   /* add_rent_transaction API */
   Future addRentTransaction(videoId, amount, typeId, videoType) async {
-    final VideoDetailsProvider videoDetailsProvider =
+    final videoDetailsProvider =
         Provider.of<VideoDetailsProvider>(context, listen: false);
-    final ShowDetailsProvider showDetailsProvider =
+    final showDetailsProvider =
         Provider.of<ShowDetailsProvider>(context, listen: false);
 
     Utils.showProgress(context, prDialog);

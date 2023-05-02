@@ -16,8 +16,10 @@ import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
@@ -61,6 +63,9 @@ class AllPaymentState extends State<AllPayment> {
   String? userId, userName, userEmail, userMobileNo, paymentId;
   String? strCouponCode = "";
   bool isPaymentDone = false;
+
+  /* Paytm */
+  String paytmResult = "";
 
   /* InApp Purchase */
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
@@ -603,6 +608,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("paytm");
+                          _paytmInit();
                         },
                         child: _buildPGButton("paytm.png", "Paytm", 30, 90),
                       ),
@@ -926,6 +932,56 @@ class AllPaymentState extends State<AllPayment> {
     debugPrint("============ External Wallet Selected ============");
   }
   /* ********* Razorpay END ********* */
+
+  /* ********* Paytm START ********* */
+  Future<void> _paytmInit() async {
+    if (paymentProvider.paymentOptionModel.result?.payTm != null) {
+      var sendMap = <String, dynamic>{
+        "mid": paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "",
+        "orderId": paymentId,
+        "amount": paymentProvider.finalAmount ?? "",
+        "txnToken": "",
+        "callbackUrl":
+            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=paymentId",
+        "isStaging": true,
+        "restrictAppInvoke": false,
+        "enableAssist": true
+      };
+      print(sendMap);
+      try {
+        var response = AllInOneSdk.startTransaction(
+            paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "",
+            paymentId ?? "",
+            paymentProvider.finalAmount ?? "",
+            "",
+            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=paymentId",
+            true,
+            false,
+            true);
+        response.then((value) {
+          print(value);
+          setState(() {
+            paytmResult = value.toString();
+          });
+        }).catchError((onError) {
+          if (onError is PlatformException) {
+            setState(() {
+              paytmResult = "${onError.message} \n  ${onError.details}";
+            });
+          } else {
+            setState(() {
+              paytmResult = onError.toString();
+            });
+          }
+        });
+      } catch (err) {
+        paytmResult = err.toString();
+      }
+    } else {
+      Utils.showSnackbar(context, "", "payment_not_processed", true);
+    }
+  }
+  /* ********* Paytm END ********* */
 
   Future<bool> onBackPressed() async {
     if (!mounted) return Future.value(false);

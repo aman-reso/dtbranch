@@ -111,6 +111,7 @@ dependencies:
   marquee: ^2.2.3
   numeral: ^2.0.1
   gradient_borders: ^1.0.0
+  paytm_allinonesdk: ^1.2.1
 
 
 dev_dependencies:

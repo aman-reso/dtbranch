@@ -179,6 +179,7 @@ class ChannelsState extends State<Channels> {
         Provider.of<ChannelSectionProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return Stack(
+        fit: StackFit.passthrough,
         alignment: AlignmentDirectional.bottomCenter,
         children: [
           SizedBox(
@@ -215,6 +216,7 @@ class ChannelsState extends State<Channels> {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Stack(
+                      fit: StackFit.passthrough,
                       alignment: AlignmentDirectional.bottomCenter,
                       children: [
                         SizedBox(
@@ -310,6 +312,7 @@ class ChannelsState extends State<Channels> {
                   borderRadius: BorderRadius.circular(4),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Stack(
+                    fit: StackFit.passthrough,
                     alignment: AlignmentDirectional.centerEnd,
                     children: [
                       SizedBox(

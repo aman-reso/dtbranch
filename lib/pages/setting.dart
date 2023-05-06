@@ -422,14 +422,7 @@ class SettingState extends State<Setting> {
                   borderRadius: BorderRadius.circular(2),
                   onTap: () async {
                     debugPrint("Clicked on rateApp");
-                    try {
-                      await Utils.redirectToUrl(
-                          "market://details?id=${Constant.appPackageName}");
-                    } catch (e) {
-                      debugPrint("rateApp Exception ====> $e");
-                      await Utils.redirectToUrl(
-                          "http://play.google.com/store/apps/details?id=${Constant.appPackageName}");
-                    }
+                    await Utils.redirectToStore();
                   },
                   child: _buildSettingButton(
                     title: 'rateus',

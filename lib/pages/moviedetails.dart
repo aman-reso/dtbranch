@@ -2607,7 +2607,7 @@ class MovieDetailsState extends State<MovieDetails> {
         File? mTargetFile;
         String? localPath;
         String? mFileName =
-            '${(videoDetailsProvider.sectionDetailModel.result?.name ?? "")}'
+            '${(videoDetailsProvider.sectionDetailModel.result?.name ?? "").replaceAll(" ", "")}'
             '${(videoDetailsProvider.sectionDetailModel.result?.id ?? 0)}${(Constant.userID)}';
         try {
           localPath = await Utils.prepareSaveDir();

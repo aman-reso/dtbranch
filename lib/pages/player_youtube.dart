@@ -6,6 +6,7 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PlayerYoutube extends StatefulWidget {
@@ -36,6 +37,7 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
 
   @override
   void initState() {
+    playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     debugPrint("videourlget:===${widget.videoUrl}");
     var videoId = YoutubePlayer.convertUrlToId(widget.videoUrl ?? "");
     controller = YoutubePlayerController(

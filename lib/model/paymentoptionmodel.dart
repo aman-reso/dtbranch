@@ -42,6 +42,7 @@ class Result {
     required this.flutterWave,
     required this.payUMoney,
     required this.payTm,
+    required this.stripe,
   });
 
   PaymentGatewayData? inAppPurchage;
@@ -50,6 +51,7 @@ class Result {
   PaymentGatewayData? flutterWave;
   PaymentGatewayData? payUMoney;
   PaymentGatewayData? payTm;
+  PaymentGatewayData? stripe;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
         inAppPurchage: PaymentGatewayData.fromJson(json["inapppurchage"]),
@@ -58,6 +60,7 @@ class Result {
         flutterWave: PaymentGatewayData.fromJson(json["flutterwave"]),
         payUMoney: PaymentGatewayData.fromJson(json["payumoney"]),
         payTm: PaymentGatewayData.fromJson(json["paytm"]),
+        stripe: PaymentGatewayData.fromJson(json["stripe"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -67,6 +70,7 @@ class Result {
         "flutterwave": flutterWave?.toJson() ?? {},
         "payumoney": payUMoney?.toJson() ?? {},
         "paytm": payTm?.toJson() ?? {},
+        "stripe": stripe?.toJson() ?? {},
       };
 }
 

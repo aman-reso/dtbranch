@@ -76,23 +76,20 @@ class _MyDownloadsState extends State<MyDownloads> {
             child: Consumer<VideoDownloadProvider>(
               builder: (context, downloadProvider, child) {
                 if (downloadProvider.loading) {
-                  return Expanded(
-                      child: ShimmerUtils.buildDownloadShimmer(context, 10));
+                  return ShimmerUtils.buildDownloadShimmer(context, 10);
                 } else {
                   if (myDownloadsList != null) {
                     if ((myDownloadsList?.length ?? 0) > 0) {
-                      return Expanded(
-                        child: AlignedGridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 1,
-                          crossAxisSpacing: 0,
-                          mainAxisSpacing: 8,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: myDownloadsList?.length ?? 0,
-                          itemBuilder: (BuildContext context, int position) {
-                            return _buildDownloadItem(position);
-                          },
-                        ),
+                      return AlignedGridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 1,
+                        crossAxisSpacing: 0,
+                        mainAxisSpacing: 8,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: myDownloadsList?.length ?? 0,
+                        itemBuilder: (BuildContext context, int position) {
+                          return _buildDownloadItem(position);
+                        },
                       );
                     } else {
                       return const NoData(title: 'no_downloads', subTitle: '');

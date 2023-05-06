@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -17,6 +18,9 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
+import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:paytm_allinonesdk/paytm_allinonesdk.dart';
@@ -79,6 +83,11 @@ class AllPaymentState extends State<AllPayment> {
   bool _purchasePending = false;
   bool _loading = true;
   String? _queryProductError;
+
+  /* Paypal */
+
+  /* Stripe */
+  Map<String, dynamic>? paymentIntent;
 
   @override
   void initState() {
@@ -557,6 +566,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("paypal");
+                          _paypalInit();
                         },
                         child: _buildPGButton("paypal.png", "Paypal", 35, 130),
                       ),
@@ -638,6 +648,31 @@ class AllPaymentState extends State<AllPayment> {
                         },
                         child: _buildPGButton(
                             "flutterwave.png", "Flutterwave", 35, 130),
+                      ),
+                    )
+                  : const SizedBox.shrink()
+              : const SizedBox.shrink(),
+          const SizedBox(height: 5),
+
+          /* Stripe */
+          paymentProvider.paymentOptionModel.result?.stripe != null
+              ? paymentProvider.paymentOptionModel.result?.stripe?.visibility ==
+                      "1"
+                  ? Card(
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      elevation: 5,
+                      color: lightBlack,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () async {
+                          await paymentProvider.setCurrentPayment("stripe");
+                          _stripeInit();
+                        },
+                        child: _buildPGButton("stripe.png", "Stripe", 35, 100),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -947,7 +982,7 @@ class AllPaymentState extends State<AllPayment> {
         "restrictAppInvoke": false,
         "enableAssist": true
       };
-      print(sendMap);
+      debugPrint("sendMap ===> $sendMap");
       try {
         var response = AllInOneSdk.startTransaction(
             paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "",
@@ -959,7 +994,7 @@ class AllPaymentState extends State<AllPayment> {
             false,
             true);
         response.then((value) {
-          print(value);
+          debugPrint("value ====> $value");
           setState(() {
             paytmResult = value.toString();
           });
@@ -982,6 +1017,197 @@ class AllPaymentState extends State<AllPayment> {
     }
   }
   /* ********* Paytm END ********* */
+
+  /* ********* Paypal START ********* */
+  Future<void> _paypalInit() async {
+    if (paymentProvider.paymentOptionModel.result?.paypal != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => UsePaypal(
+              sandboxMode: (paymentProvider
+                              .paymentOptionModel.result?.paypal?.isLive ??
+                          "") ==
+                      "1"
+                  ? false
+                  : true,
+              clientId:
+                  paymentProvider.paymentOptionModel.result?.paypal?.isLive ==
+                          "1"
+                      ? paymentProvider
+                              .paymentOptionModel.result?.paypal?.liveKey1 ??
+                          ""
+                      : paymentProvider
+                              .paymentOptionModel.result?.paypal?.testKey1 ??
+                          "",
+              secretKey: paymentProvider
+                          .paymentOptionModel.result?.paypal?.isLive ==
+                      "1"
+                  ? paymentProvider
+                          .paymentOptionModel.result?.paypal?.liveKey2 ??
+                      ""
+                  : paymentProvider
+                          .paymentOptionModel.result?.paypal?.testKey2 ??
+                      "",
+              returnURL: "return.example.com",
+              cancelURL: "cancel.example.com",
+              transactions: [
+                {
+                  "amount": {
+                    "total": '${paymentProvider.finalAmount}',
+                    "currency": "USD" /* Constant.currency */,
+                    "details": {
+                      "subtotal": '${paymentProvider.finalAmount}',
+                      "shipping": '0',
+                      "shipping_discount": 0
+                    }
+                  },
+                  "description": "The payment transaction description.",
+                  "item_list": {
+                    "items": [
+                      {
+                        "name": "${widget.itemTitle}",
+                        "quantity": 1,
+                        "price": '${paymentProvider.finalAmount}',
+                        "currency": "USD" /* Constant.currency */
+                      }
+                    ],
+                  }
+                }
+              ],
+              note: "Contact us for any questions on your order.",
+              onSuccess: (params) async {
+                debugPrint("onSuccess: ${params["paymentId"]}");
+                if (widget.payType == "Package") {
+                  addTransaction(
+                      widget.itemId,
+                      widget.itemTitle,
+                      paymentProvider.finalAmount,
+                      params["paymentId"],
+                      widget.currency);
+                } else if (widget.payType == "Rent") {
+                  addRentTransaction(widget.itemId, paymentProvider.finalAmount,
+                      widget.typeId, widget.videoType);
+                }
+              },
+              onError: (params) {
+                debugPrint("onError: ${params["message"]}");
+                Utils.showSnackbar(
+                    context, "fail", params["message"].toString(), false);
+              },
+              onCancel: (params) {
+                debugPrint('cancelled: $params');
+                Utils.showSnackbar(context, "fail", params.toString(), false);
+              }),
+        ),
+      );
+    } else {
+      Utils.showSnackbar(context, "", "payment_not_processed", true);
+    }
+  }
+  /* ********* Paypal END ********* */
+
+  /* ********* Stripe START ********* */
+  Future<void> _stripeInit() async {
+    if (paymentProvider.paymentOptionModel.result?.stripe != null) {
+      stripe.Stripe.publishableKey = paymentProvider
+                  .paymentOptionModel.result?.stripe?.isLive ==
+              "1"
+          ? paymentProvider.paymentOptionModel.result?.stripe?.liveKey1 ?? ""
+          : paymentProvider.paymentOptionModel.result?.stripe?.testKey1 ?? "";
+      try {
+        //STEP 1: Create Payment Intent
+        paymentIntent = await createPaymentIntent(
+            paymentProvider.finalAmount ?? "", Constant.currency);
+
+        //STEP 2: Initialize Payment Sheet
+        await stripe.Stripe.instance
+            .initPaymentSheet(
+                paymentSheetParameters: stripe.SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntent?['client_secret'],
+              style: ThemeMode.light,
+              merchantDisplayName: Constant.appName,
+            ))
+            .then((value) {});
+
+        //STEP 3: Display Payment sheet
+        displayPaymentSheet();
+      } catch (err) {
+        throw Exception(err);
+      }
+    } else {
+      Utils.showSnackbar(context, "", "payment_not_processed", true);
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      //Request body
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+        'description': widget.itemTitle,
+      };
+
+      //Make post request to Stripe
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        headers: {
+          'Authorization':
+              'Bearer ${paymentProvider.paymentOptionModel.result?.stripe?.isLive == "1" ? paymentProvider.paymentOptionModel.result?.stripe?.liveKey2 ?? "" : paymentProvider.paymentOptionModel.result?.stripe?.testKey2 ?? ""}',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+      );
+      return json.decode(response.body);
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
+  calculateAmount(String amount) {
+    final calculatedAmout = (int.parse(amount)) * 100;
+    return calculatedAmout.toString();
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await stripe.Stripe.instance.presentPaymentSheet().then((value) {
+        Utils.showSnackbar(context, "success", "payment_success", true);
+        if (widget.payType == "Package") {
+          addTransaction(widget.itemId, widget.itemTitle,
+              paymentProvider.finalAmount, paymentId, widget.currency);
+        } else if (widget.payType == "Rent") {
+          addRentTransaction(widget.itemId, paymentProvider.finalAmount,
+              widget.typeId, widget.videoType);
+        }
+
+        paymentIntent = null;
+      }).onError((error, stackTrace) {
+        throw Exception(error);
+      });
+    } on stripe.StripeException catch (e) {
+      debugPrint('Error is:---> $e');
+      AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: const [
+                Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                ),
+                Text("Payment Failed"),
+              ],
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+  /* ********* Stripe END ********* */
 
   Future<bool> onBackPressed() async {
     if (!mounted) return Future.value(false);

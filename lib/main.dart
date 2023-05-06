@@ -44,8 +44,9 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (!kIsWeb) {
-    await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+    await FlutterDownloader.initialize();
   }
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

@@ -112,6 +112,10 @@ dependencies:
   numeral: ^2.0.1
   gradient_borders: ^1.0.0
   paytm_allinonesdk: ^1.2.1
+  flutter_stripe: ^9.2.0
+  flutter_dotenv: ^5.0.2
+  http_auth: ^1.0.1
+  flutter_paypal: ^0.0.7
 
 
 dev_dependencies:

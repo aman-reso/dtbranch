@@ -6,6 +6,7 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 class PlayerVimeo extends StatefulWidget {
@@ -35,6 +36,7 @@ class PlayerVimeoState extends State<PlayerVimeo> {
 
   @override
   void initState() {
+    playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     super.initState();
     vUrl = widget.videoUrl;
     if (!(vUrl ?? "").contains("https://vimeo.com/")) {

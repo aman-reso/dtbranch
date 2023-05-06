@@ -10,6 +10,7 @@ class Constant {
 
   static String? appName = "DTLive";
   static String? appPackageName = "com.divinetechs.dtlive";
+  static String? appleAppId = "";
   static String? appVersion = "1";
   static String? appBuildNumber = "1.0";
 
@@ -19,18 +20,24 @@ class Constant {
   /* OneSignal App ID */
   static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
 
+  static const String stripePubKey =
+      "pk_test_51HWHxdFpLEHFIa6MZDPgZSNEb2AFNN3arfZTZV2isbXtXpuvYOEtdFtxIo0bLnOaZFgNcFkhKsMQyI9aqFLMCEgq00RublRhlW";
+  static const String stripeSecretKey =
+      "sk_test_51HWHxdFpLEHFIa6MIPSVqljdOF0Oj0cHLmEmvfip9vQdLZ2y0SagHwVFWhXNXhqdbifYtswU4ghFOrBtX2CNavJQ00W6mue0jh";
+
   static String? userID;
   static String currencySymbol = "";
+  static String currency = "";
 
   static String androidAppShareUrlDesc =
-      "Let me recommend you this application\n\nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName}";
+      "Let me recommend you this application\n\n$androidAppUrl";
   static String iosAppShareUrlDesc =
-      "Let me recommend you this application\n\nhttps://apps.apple.com/us/app/${appName?.toLowerCase()}/${Constant.appPackageName}";
+      "Let me recommend you this application\n\n$iosAppUrl";
 
   static String androidAppUrl =
       "https://play.google.com/store/apps/details?id=${Constant.appPackageName}";
   static String iosAppUrl =
-      "https://apps.apple.com/us/app/${appName?.toLowerCase()}/${Constant.appPackageName}";
+      "https://apps.apple.com/us/app/id${Constant.appleAppId}";
   static String facebookUrl = "https://www.facebook.com/divinetechs";
   static String instagramUrl = "https://www.instagram.com/divinetechs/";
 

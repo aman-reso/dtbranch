@@ -71,6 +71,7 @@ class _CastDetailsState extends State<CastDetails> {
                         : (MediaQuery.of(context).size.height * 0.65),
                     alignment: Alignment.center,
                     child: Stack(
+                      fit: StackFit.passthrough,
                       alignment: Alignment.bottomCenter,
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       children: [

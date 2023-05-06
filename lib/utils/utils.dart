@@ -243,6 +243,8 @@ class Utils {
     SharedPre sharedPref = SharedPre();
     Constant.currencySymbol = await sharedPref.read("currency_code") ?? "";
     log('Constant currencySymbol ==> ${Constant.currencySymbol}');
+    Constant.currency = await sharedPref.read("currency") ?? "";
+    log('Constant currency ==> ${Constant.currency}');
   }
 
   static setUserId(userID) async {
@@ -746,7 +748,7 @@ class Utils {
     try {
       String? shareMessage, shareDesc;
       shareDesc =
-          "Hey I'm watching $videoTitle . Check it out now on ${Constant.appName}!\nhttps://play.google.com/store/apps/details?id=${Constant.appPackageName} and more.";
+          "Hey I'm watching $videoTitle . Check it out now on ${Constant.appName}! and more.";
       if (Platform.isAndroid) {
         shareMessage = "$shareDesc\n${Constant.androidAppUrl}";
       } else {
@@ -763,6 +765,25 @@ class Utils {
   }
 
   static Future<void> redirectToUrl(String url) async {
+    debugPrint("_launchUrl url ===> $url");
+    if (await canLaunchUrl(Uri.parse(url.toString()))) {
+      await launchUrl(
+        Uri.parse(url.toString()),
+        mode: LaunchMode.platformDefault,
+      );
+    } else {
+      throw "Could not launch $url";
+    }
+  }
+
+  static Future<void> redirectToStore() async {
+    final appId =
+        Platform.isAndroid ? Constant.appPackageName : Constant.appleAppId;
+    final url = Uri.parse(
+      Platform.isAndroid
+          ? "market://details?id=$appId"
+          : "https://apps.apple.com/app/id$appId",
+    );
     debugPrint("_launchUrl url ===> $url");
     if (await canLaunchUrl(Uri.parse(url.toString()))) {
       await launchUrl(

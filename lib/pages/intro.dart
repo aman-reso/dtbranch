@@ -47,6 +47,7 @@ class IntroState extends State<Intro> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
           Container(
             width: MediaQuery.of(context).size.width,

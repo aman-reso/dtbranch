@@ -7,6 +7,7 @@ import 'package:dtlive/model/avatarmodel.dart';
 import 'package:dtlive/model/castdetailmodel.dart';
 import 'package:dtlive/model/couponmodel.dart';
 import 'package:dtlive/model/historymodel.dart';
+import 'package:dtlive/model/pagesmodel.dart';
 import 'package:dtlive/model/paymentoptionmodel.dart';
 import 'package:dtlive/model/paytmmodel.dart';
 import 'package:dtlive/model/subscriptionmodel.dart';
@@ -56,6 +57,18 @@ class ApiService {
     );
     generalSettingModel = GeneralSettingModel.fromJson(response.data);
     return generalSettingModel;
+  }
+
+  // get_pages API
+  Future<PagesModel> getPages() async {
+    PagesModel pagesModel;
+    String getPagesAPI = "get_pages";
+    Response response = await dio.post(
+      '$baseUrl$getPagesAPI',
+      options: optHeaders,
+    );
+    pagesModel = PagesModel.fromJson(response.data);
+    return pagesModel;
   }
 
   /* type => 1-Facebook, 2-Google */

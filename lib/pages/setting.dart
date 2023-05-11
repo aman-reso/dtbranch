@@ -7,6 +7,7 @@ import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/pages/profileedit.dart';
 import 'package:dtlive/pages/mypurchaselist.dart';
 import 'package:dtlive/pages/mywatchlist.dart';
+import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -71,6 +72,8 @@ class SettingState extends State<Setting> {
   }
 
   void getUserData() async {
+    final generalProvider =
+        Provider.of<GeneralProvider>(context, listen: false);
     userName = await sharedPref.read("username");
     userType = await sharedPref.read("usertype");
     userMobileNo = await sharedPref.read("mobile");
@@ -78,14 +81,41 @@ class SettingState extends State<Setting> {
     log('getUserData userType ==> $userType');
     log('getUserData userMobileNo ==> $userMobileNo');
 
-    aboutUsUrl = await sharedPref.read("about-us") ?? "";
-    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
-    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
-    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
+    await generalProvider.getPages();
+    if (!generalProvider.loading) {
+      if (generalProvider.pagesModel.status == 200) {
+        if (generalProvider.pagesModel.result != null &&
+            (generalProvider.pagesModel.result?.length ?? 0) > 0) {
+          for (var i = 0;
+              i < (generalProvider.pagesModel.result?.length ?? 0);
+              i++) {
+            if (generalProvider.pagesModel.result?[i].pageName == "about-us") {
+              aboutUsUrl = generalProvider.pagesModel.result?[i].url ?? "";
+            }
+            if (generalProvider.pagesModel.result?[i].pageName ==
+                "privacy-policy") {
+              privacyUrl = generalProvider.pagesModel.result?[i].url ?? "";
+            }
+            if (generalProvider.pagesModel.result?[i].pageName ==
+                "terms-and-conditions") {
+              termsConditionUrl =
+                  generalProvider.pagesModel.result?[i].url ?? "";
+            }
+            if (generalProvider.pagesModel.result?[i].pageName ==
+                "refund-policy") {
+              refundPolicyUrl = generalProvider.pagesModel.result?[i].url ?? "";
+            }
+          }
+        }
+      }
+    }
 
     isSwitched = await sharedPref.readBool("PUSH");
     log('getUserData isSwitched ==> $isSwitched');
-    setState(() {});
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override

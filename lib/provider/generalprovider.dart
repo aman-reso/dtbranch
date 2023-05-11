@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:dtlive/model/generalsettingmodel.dart';
 import 'package:dtlive/model/loginregistermodel.dart';
+import 'package:dtlive/model/pagesmodel.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
 
 class GeneralProvider extends ChangeNotifier {
   GeneralSettingModel generalSettingModel = GeneralSettingModel();
+  PagesModel pagesModel = PagesModel();
   LoginRegisterModel loginGmailModel = LoginRegisterModel();
   LoginRegisterModel loginOTPModel = LoginRegisterModel();
 
@@ -33,6 +35,13 @@ class GeneralProvider extends ChangeNotifier {
         }
       }
     }
+  }
+
+  Future<void> getPages() async {
+    loading = true;
+    pagesModel = await ApiService().getPages();
+    debugPrint("getPages status :==> ${pagesModel.status}");
+    loading = false;
   }
 
   Future<void> loginWithSocial(email, name, type, File? profileImg) async {

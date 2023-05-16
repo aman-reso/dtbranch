@@ -40,7 +40,9 @@ class SectionByTypeState extends State<SectionByType> {
   @override
   void initState() {
     super.initState();
-    _getData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getData();
+    });
   }
 
   void _getData() async {

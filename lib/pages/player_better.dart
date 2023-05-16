@@ -30,7 +30,9 @@ class PlayerBetter extends StatefulWidget {
   State<PlayerBetter> createState() => _PlayerBetterState();
 }
 
-class _PlayerBetterState extends State<PlayerBetter> {
+class _PlayerBetterState extends State<PlayerBetter>
+    with WidgetsBindingObserver {
+  late GlobalKey _betterPlayerKey;
   late PlayerProvider playerProvider;
   int? playerCPosition, videoDuration;
   late BetterPlayerController _betterPlayerController;
@@ -66,21 +68,10 @@ class _PlayerBetterState extends State<PlayerBetter> {
     );
 
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    _betterPlayerController.addEventsListener((event) async {
-      if (event.betterPlayerEventType == BetterPlayerEventType.progress) {
-        log("Current subtitle line: ${_betterPlayerController.renderedSubtitle}");
-        playerCPosition =
-            (_betterPlayerController.videoPlayerController?.value.position)
-                    ?.inMilliseconds ??
-                0;
-        videoDuration =
-            (_betterPlayerController.videoPlayerController?.value.duration)
-                    ?.inMilliseconds ??
-                0;
-        log("playerCPosition :===> $playerCPosition");
-        log("videoDuration :===> $videoDuration");
-      }
-    });
+
+    _betterPlayerKey = GlobalKey();
+    _betterPlayerController.setBetterPlayerGlobalKey(_betterPlayerKey);
+    _betterPlayerController.addEventsListener(listener);
 
     _setupDataSource();
 
@@ -121,22 +112,39 @@ class _PlayerBetterState extends State<PlayerBetter> {
         bufferForPlaybackMs: 2500,
         bufferForPlaybackAfterRebufferMs: 5000,
       ),
-      cacheConfiguration: const BetterPlayerCacheConfiguration(
-        useCache: true,
-        maxCacheSize: 10 * 1024 * 1024,
-        maxCacheFileSize: 10 * 1024 * 1024,
-        preCacheSize: 3 * 1024 * 1024,
-      ),
     );
     _betterPlayerController.setupDataSource(dataSource);
   }
 
   @override
   void dispose() {
-    _betterPlayerController.videoPlayerController?.dispose();
     _betterPlayerController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _betterPlayerController.removeEventsListener(listener);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
+  }
+
+  Future<void> listener(BetterPlayerEvent event) async {
+    if (event.betterPlayerEventType == BetterPlayerEventType.pipStart) {
+      debugPrint('===================== pipStart =====================');
+    }
+    if (event.betterPlayerEventType == BetterPlayerEventType.pipStop) {
+      debugPrint('===================== pipStop =====================');
+    }
+    if (event.betterPlayerEventType == BetterPlayerEventType.progress) {
+      log("Current subtitle line: ${_betterPlayerController.renderedSubtitle}");
+      playerCPosition =
+          (_betterPlayerController.videoPlayerController?.value.position)
+                  ?.inMilliseconds ??
+              0;
+      videoDuration =
+          (_betterPlayerController.videoPlayerController?.value.duration)
+                  ?.inMilliseconds ??
+              0;
+      log("playerCPosition :===> $playerCPosition");
+      log("videoDuration :===> $videoDuration");
+    }
   }
 
   @override
@@ -152,6 +160,7 @@ class _PlayerBetterState extends State<PlayerBetter> {
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: BetterPlayer(
+                  key: _betterPlayerKey,
                   controller: _betterPlayerController,
                 ),
               ),

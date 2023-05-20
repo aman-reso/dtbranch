@@ -562,33 +562,32 @@ class LoginSocialState extends State<LoginSocial> {
       // not match the nonce in `appleCredential.identityToken`, sign in will fail.
       final authResult = await _auth.signInWithCredential(oauthCredential);
 
-      final displayName =
+      String? displayName =
           '${appleCredential.givenName} ${appleCredential.familyName}';
+      debugPrint("displayName ==1==> $displayName");
 
       final firebaseUser = authResult.user;
-      debugPrint("=================");
+      debugPrint("==================================");
 
-      final userEmail = '${firebaseUser?.email}';
-      debugPrint("userEmail =====> $userEmail");
-      debugPrint(firebaseUser?.email.toString());
-      debugPrint(firebaseUser?.displayName.toString());
-      debugPrint(firebaseUser?.photoURL.toString());
-      debugPrint(firebaseUser?.uid);
-      debugPrint("=================");
+      final userEmail = firebaseUser?.email.toString();
+      final firebasedId = firebaseUser?.uid.toString();
+      final photoURL = firebaseUser?.photoURL.toString();
+      displayName = firebaseUser?.displayName.toString();
+      debugPrint("userEmail =======> $userEmail");
+      debugPrint("firebasedId =====> $firebasedId");
+      debugPrint("photoURL ========> $photoURL");
+      debugPrint("displayName ==2==> $displayName");
 
-      final firebasedId = firebaseUser?.uid;
-      final photoURL = firebaseUser?.photoURL;
-      debugPrint("firebasedId ===> $firebasedId");
-      debugPrint("photoURL ======> $photoURL");
-
-      await firebaseUser?.updateDisplayName(displayName);
-      await firebaseUser?.updatePhotoURL(photoURL);
-      await firebaseUser?.updateEmail(userEmail);
+      // await firebaseUser?.updateDisplayName(displayName);
+      // await firebaseUser?.updatePhotoURL(photoURL);
+      // await firebaseUser?.updateEmail(userEmail);
 
       /* Save PhotoUrl in File */
-      mProfileImg = await Utils.saveImageInStorage(photoURL);
+      if (photoURL != null || photoURL != "") {
+        mProfileImg = await Utils.saveImageInStorage(photoURL);
+      }
 
-      checkAndNavigate(userEmail, displayName.toString(), "2");
+      checkAndNavigate(userEmail ?? "", displayName.toString(), "2");
     } catch (exception) {
       debugPrint("Apple Login exception =====> $exception");
     }

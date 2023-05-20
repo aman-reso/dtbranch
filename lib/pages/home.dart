@@ -89,10 +89,14 @@ class HomeState extends State<Home> {
   _handleNotificationOpened(OSNotificationOpenedResult result) {
     /* id, video_type, type_id */
 
-    log("setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");
-    log("setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['id']}");
-    log("setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
-    log("setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
+    debugPrint(
+        "setNotificationOpenedHandler additionalData ===> ${result.notification.additionalData.toString()}");
+    debugPrint(
+        "setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['id']}");
+    debugPrint(
+        "setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
+    debugPrint(
+        "setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
 
     if (result.notification.additionalData?['id'] != null &&
         result.notification.additionalData?['video_type'] != null &&

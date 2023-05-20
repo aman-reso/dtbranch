@@ -25,7 +25,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -62,23 +65,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB0KoOQEiQixmNx7PJfO6hjhuXhxxvYCds',
-    appId: '1:346606981660:ios:f3e24ae04c8458492fc5d9',
+    appId: '1:346606981660:ios:ceb6dbea2605e8d82fc5d9',
     messagingSenderId: '346606981660',
     projectId: 'primevideoapp-43bf6',
     storageBucket: 'primevideoapp-43bf6.appspot.com',
     androidClientId: '346606981660-150eiiccap50sdco81aaj0av5lgn59us.apps.googleusercontent.com',
-    iosClientId: '346606981660-ad22hq6bccaet69s1btivfccqoneabps.apps.googleusercontent.com',
-    iosBundleId: 'com.divinetechs.dtlive',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB0KoOQEiQixmNx7PJfO6hjhuXhxxvYCds',
-    appId: '1:346606981660:ios:f3e24ae04c8458492fc5d9',
-    messagingSenderId: '346606981660',
-    projectId: 'primevideoapp-43bf6',
-    storageBucket: 'primevideoapp-43bf6.appspot.com',
-    androidClientId: '346606981660-150eiiccap50sdco81aaj0av5lgn59us.apps.googleusercontent.com',
-    iosClientId: '346606981660-ad22hq6bccaet69s1btivfccqoneabps.apps.googleusercontent.com',
-    iosBundleId: 'com.divinetechs.dtlive',
+    iosClientId: '346606981660-rcf3siicukjvl2nlqtafb26ufs6mumc5.apps.googleusercontent.com',
+    iosBundleId: 'com.divinetechs.dtliveapp',
   );
 }

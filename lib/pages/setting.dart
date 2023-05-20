@@ -360,64 +360,65 @@ class SettingState extends State<Setting> {
                 _buildLine(16.0, 16.0),
 
                 /* Clear Cache */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () async {
-                    if (!kIsWeb) Utils.deleteCacheDir();
-                    if (!mounted) return;
-                    Utils.showSnackbar(
-                        context, "success", "cacheclearmsg", true);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    constraints: BoxConstraints(
-                      minHeight: Dimens.minHeightSettings,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MyText(
-                              color: white,
-                              text: "clearcatch",
-                              fontsizeNormal: 14,
-                              multilanguage: true,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontweight: FontWeight.w500,
-                              textalign: TextAlign.center,
-                              fontstyle: FontStyle.normal,
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            MyText(
-                              color: otherColor,
-                              text: "clearlocallycatch",
-                              fontsizeNormal: 12,
-                              maxline: 1,
-                              multilanguage: true,
-                              overflow: TextOverflow.ellipsis,
-                              fontweight: FontWeight.w500,
-                              textalign: TextAlign.center,
-                              fontstyle: FontStyle.normal,
-                            ),
-                          ],
-                        ),
-                        MyImage(
-                          width: 28,
-                          height: 28,
-                          imagePath: "ic_clear.png",
-                          color: primaryColor,
-                        ),
-                      ],
+                if (!Platform.isIOS)
+                  InkWell(
+                    borderRadius: BorderRadius.circular(2),
+                    onTap: () async {
+                      if (!kIsWeb) Utils.deleteCacheDir();
+                      if (!mounted) return;
+                      Utils.showSnackbar(
+                          context, "success", "cacheclearmsg", true);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      constraints: BoxConstraints(
+                        minHeight: Dimens.minHeightSettings,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              MyText(
+                                color: white,
+                                text: "clearcatch",
+                                fontsizeNormal: 14,
+                                multilanguage: true,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontweight: FontWeight.w500,
+                                textalign: TextAlign.center,
+                                fontstyle: FontStyle.normal,
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              MyText(
+                                color: otherColor,
+                                text: "clearlocallycatch",
+                                fontsizeNormal: 12,
+                                maxline: 1,
+                                multilanguage: true,
+                                overflow: TextOverflow.ellipsis,
+                                fontweight: FontWeight.w500,
+                                textalign: TextAlign.center,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ],
+                          ),
+                          MyImage(
+                            width: 28,
+                            height: 28,
+                            imagePath: "ic_clear.png",
+                            color: primaryColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                _buildLine(16.0, 16.0),
+                if (!Platform.isIOS) _buildLine(16.0, 16.0),
 
                 /* SignIn / SignOut */
                 InkWell(

@@ -229,6 +229,7 @@ DEPENDENCIES:
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
+  - OneSignalXCFramework (< 4.0, >= 3.4.3)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - paytm_allinonesdk (from `.symlinks/plugins/paytm_allinonesdk/ios`)
@@ -424,6 +425,6 @@ SPEC CHECKSUMS:
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
   webview_flutter_x5: 9b67e44baea7637ef21379fe581773f0c2e08b44
 
-PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
+PODFILE CHECKSUM: 0d520eff7fceb6733c0076a09d72e275f08c0896
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.12.1

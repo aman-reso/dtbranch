@@ -271,10 +271,12 @@ class Utils {
   }
 
   static Future<void> deleteCacheDir() async {
-    var tempDir = await getTemporaryDirectory();
+    if (Platform.isAndroid) {
+      var tempDir = await getTemporaryDirectory();
 
-    if (tempDir.existsSync()) {
-      tempDir.deleteSync(recursive: true);
+      if (tempDir.existsSync()) {
+        tempDir.deleteSync(recursive: true);
+      }
     }
   }
 

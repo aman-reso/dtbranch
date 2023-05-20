@@ -64,7 +64,12 @@ Future<void> main() async {
         (OSNotificationReceivedEvent event) {
       // Will be called whenever a notification is received in foreground
       // Display Notification, pass null param for not displaying the notification
-      event.complete(event.notification);
+      final notification = event.notification;
+      event.complete(notification);
+      debugPrint("this is notification title: ${notification.title}");
+      debugPrint("this is notification body:  ${notification.body}");
+      debugPrint(
+          "this is notification additional data: ${notification.additionalData}");
     });
   }
   runApp(

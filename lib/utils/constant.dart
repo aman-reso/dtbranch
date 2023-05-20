@@ -10,7 +10,7 @@ class Constant {
 
   static String? appName = "DTLive";
   static String? appPackageName = "com.divinetechs.dtlive";
-  static String? appleAppId = "";
+  static String? appleAppId = "6449380090";
   static String? appVersion = "1";
   static String? appBuildNumber = "1.0";
 

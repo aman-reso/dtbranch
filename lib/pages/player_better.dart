@@ -12,17 +12,9 @@ import 'package:provider/provider.dart';
 
 class PlayerBetter extends StatefulWidget {
   final int? videoId, videoType, typeId, stopTime;
-  final String? playType, videoUrl, vSubTitleUrl, vUploadType, videoThumb;
-  const PlayerBetter(
-      this.playType,
-      this.videoId,
-      this.videoType,
-      this.typeId,
-      this.videoUrl,
-      this.vSubTitleUrl,
-      this.stopTime,
-      this.vUploadType,
-      this.videoThumb,
+  final String? playType, videoUrl, vUploadType, videoThumb;
+  const PlayerBetter(this.playType, this.videoId, this.videoType, this.typeId,
+      this.videoUrl, this.stopTime, this.vUploadType, this.videoThumb,
       {Key? key})
       : super(key: key);
 
@@ -79,7 +71,23 @@ class _PlayerBetterState extends State<PlayerBetter>
   }
 
   void _setupDataSource() async {
-    debugPrint("vSubTitle URL =======> ${widget.vSubTitleUrl}");
+    debugPrint("sSubTitleUrls Length =======> ${Constant.subtitleUrls.length}");
+    List<BetterPlayerSubtitlesSource> subtitlesList = [];
+
+    if ((widget.playType == "Video" || widget.playType == "Show") &&
+        Constant.subtitleUrls.isNotEmpty) {
+      for (var i = 0; i < Constant.subtitleUrls.length; i++) {
+        BetterPlayerSubtitlesSource bpSubtitlesSource =
+            BetterPlayerSubtitlesSource(
+          type: BetterPlayerSubtitlesSourceType.network,
+          name: Constant.subtitleUrls[i].subtitleLang,
+          urls: [Constant.subtitleUrls[i].subtitleUrl],
+          selectedByDefault: i == 0 ? true : false,
+        );
+        subtitlesList.insert(i, bpSubtitlesSource);
+      }
+    }
+
     BetterPlayerDataSourceType dataSourceType;
     if (widget.playType == "Download") {
       dataSourceType = BetterPlayerDataSourceType.file;
@@ -95,16 +103,10 @@ class _PlayerBetterState extends State<PlayerBetter>
               ? Constant.resolutionsUrls
               : {}
           : {},
-      subtitles: (widget.vSubTitleUrl != null &&
-              (widget.vSubTitleUrl ?? "").isNotEmpty)
-          ? [
-              BetterPlayerSubtitlesSource(
-                type: BetterPlayerSubtitlesSourceType.network,
-                name: "En",
-                urls: [(widget.vSubTitleUrl ?? "")],
-                selectedByDefault: true,
-              ),
-            ]
+      subtitles: (widget.playType == "Video" || widget.playType == "Show")
+          ? subtitlesList.isNotEmpty
+              ? subtitlesList
+              : []
           : [],
       bufferingConfiguration: const BetterPlayerBufferingConfiguration(
         minBufferMs: 5000,

@@ -875,11 +875,10 @@ class ShowDetailsState extends State<ShowDetails> {
                             ],
                           ),
                         ),
-                        (showDetailsProvider
-                                        .sectionDetailModel.result?.subtitle ??
-                                    "")
-                                .isNotEmpty
-                            ? Container(
+                        Consumer<EpisodeProvider>(
+                          builder: (context, episodeProvider, child) {
+                            if (Constant.subtitleUrls.isNotEmpty) {
+                              return Container(
                                 constraints: const BoxConstraints(minHeight: 0),
                                 margin: const EdgeInsets.only(top: 10),
                                 child: Row(
@@ -896,9 +895,7 @@ class ShowDetailsState extends State<ShowDetails> {
                                       overflow: TextOverflow.ellipsis,
                                       fontstyle: FontStyle.normal,
                                     ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
+                                    const SizedBox(width: 5),
                                     MyText(
                                       color: white,
                                       text: ":",
@@ -911,9 +908,7 @@ class ShowDetailsState extends State<ShowDetails> {
                                       overflow: TextOverflow.ellipsis,
                                       fontstyle: FontStyle.normal,
                                     ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
+                                    const SizedBox(width: 5),
                                     MyText(
                                       color: white,
                                       text: "Available",
@@ -928,8 +923,12 @@ class ShowDetailsState extends State<ShowDetails> {
                                     ),
                                   ],
                                 ),
-                              )
-                            : const SizedBox.shrink(),
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -1309,12 +1308,12 @@ class ShowDetailsState extends State<ShowDetails> {
                                       ],
                                     ),
                                   ),
+
                                   /* Subtitle */
-                                  (showDetailsProvider.sectionDetailModel.result
-                                                  ?.subtitle ??
-                                              "")
-                                          .isNotEmpty
-                                      ? Container(
+                                  Consumer<EpisodeProvider>(
+                                    builder: (context, episodeProvider, child) {
+                                      if (Constant.subtitleUrls.isNotEmpty) {
+                                        return Container(
                                           constraints: const BoxConstraints(
                                               minHeight: 0),
                                           margin: const EdgeInsets.only(top: 8),
@@ -1360,8 +1359,12 @@ class ShowDetailsState extends State<ShowDetails> {
                                               ),
                                             ],
                                           ),
-                                        )
-                                      : const SizedBox.shrink(),
+                                        );
+                                      } else {
+                                        return const SizedBox.shrink();
+                                      }
+                                    },
+                                  ),
 
                                   /* Season Title */
                                   const SizedBox(height: 10),
@@ -1473,7 +1476,7 @@ class ShowDetailsState extends State<ShowDetails> {
                                         )
                                       : const SizedBox.shrink(),
 
-                                  /* Description, Languages & Subtitles */
+                                  /* Description */
                                   Expanded(
                                     child: SingleChildScrollView(
                                       child: Container(
@@ -3194,11 +3197,37 @@ class ShowDetailsState extends State<ShowDetails> {
     log("seasonList seasonID ====> ${seasonList?[position].id}");
     await episodeProvider.getEpisodeBySeason(
         seasonList?[position].id ?? 0, widget.videoId);
+
+    if (episodeProvider.episodeBySeasonModel.status == 200) {
+      if (episodeProvider.episodeBySeasonModel.result != null) {
+        /* Set-up Subtitle URLs */
+        Utils.setSubtitleURLs(
+          subtitleUrl1: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].subtitle1 ??
+              ""),
+          subtitleUrl2: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].subtitle2 ??
+              ""),
+          subtitleUrl3: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].subtitle3 ??
+              ""),
+          subtitleLang1: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].subtitleLang1 ??
+              ""),
+          subtitleLang2: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].subtitleLang2 ??
+              ""),
+          subtitleLang3: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].subtitleLang3 ??
+              ""),
+        );
+      }
+    }
   }
 
   /* ========= Open Player ========= */
   openPlayer(String playType) async {
-    if (!kIsWeb) Utils.deleteCacheDir();
+    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
 
     /* CHECK SUBSCRIPTION */
@@ -3232,9 +3261,6 @@ class ShowDetailsState extends State<ShowDetails> {
       String? epiUrl = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
           "");
-      String? vSubtitle = (episodeProvider.episodeBySeasonModel
-              .result?[showDetailsProvider.mCurrentEpiPos].subtitle ??
-          "");
       log("epiID ========> $epiID");
       log("vType ========> $vType");
       log("vTypeID ======> $vTypeID");
@@ -3242,7 +3268,22 @@ class ShowDetailsState extends State<ShowDetails> {
       log("vUploadType ==> $vUploadType");
       log("videoThumb ===> $videoThumb");
       log("epiUrl =======> $epiUrl");
-      log("vSubtitle ====> $vSubtitle");
+
+      /* Set-up Quality URLs */
+      Utils.setQualityURLs(
+        video320: (episodeProvider.episodeBySeasonModel
+                .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
+            ""),
+        video480: (episodeProvider.episodeBySeasonModel
+                .result?[showDetailsProvider.mCurrentEpiPos].video480 ??
+            ""),
+        video720: (episodeProvider.episodeBySeasonModel
+                .result?[showDetailsProvider.mCurrentEpiPos].video720 ??
+            ""),
+        video1080: (episodeProvider.episodeBySeasonModel
+                .result?[showDetailsProvider.mCurrentEpiPos].video1080 ??
+            ""),
+      );
 
       if (!mounted) return;
       dynamic isContinue = await Utils.openPlayer(
@@ -3255,7 +3296,6 @@ class ShowDetailsState extends State<ShowDetails> {
         trailerUrl: "",
         uploadType: vUploadType,
         videoThumb: videoThumb,
-        vSubtitle: vSubtitle,
         vStopTime: stopTime,
       );
 

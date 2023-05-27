@@ -63,7 +63,12 @@ class Result {
     this.video720,
     this.video1080,
     this.subtitleType,
-    this.subtitle,
+    this.subtitleLang1,
+    this.subtitleLang2,
+    this.subtitleLang3,
+    this.subtitle1,
+    this.subtitle2,
+    this.subtitle3,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -98,7 +103,12 @@ class Result {
   String? video720;
   String? video1080;
   String? subtitleType;
-  String? subtitle;
+  String? subtitleLang1;
+  String? subtitleLang2;
+  String? subtitleLang3;
+  String? subtitle1;
+  String? subtitle2;
+  String? subtitle3;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -133,7 +143,12 @@ class Result {
         video720: json["video_720"],
         video1080: json["video_1080"],
         subtitleType: json["subtitle_type"],
-        subtitle: json["subtitle"],
+        subtitleLang1: json["subtitle_lang_1"],
+        subtitleLang2: json["subtitle_lang_2"],
+        subtitleLang3: json["subtitle_lang_3"],
+        subtitle1: json["subtitle_1"],
+        subtitle2: json["subtitle_2"],
+        subtitle3: json["subtitle_3"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -169,7 +184,12 @@ class Result {
         "video_720": video720,
         "video_1080": video1080,
         "subtitle_type": subtitleType,
-        "subtitle": subtitle,
+        "subtitle_lang_1": subtitleLang1,
+        "subtitle_lang_2": subtitleLang2,
+        "subtitle_lang_3": subtitleLang3,
+        "subtitle_1": subtitle1,
+        "subtitle_2": subtitle2,
+        "subtitle_3": subtitle3,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,

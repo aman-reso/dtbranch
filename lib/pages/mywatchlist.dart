@@ -683,8 +683,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                             await Utils.openPlayer(
                                 context: context,
                                 playType: "Trailer",
-                                videoId: watchlistProvider
-                                        .watchlistModel.result?[position].id ??
+                                videoId: watchlistProvider.watchlistModel.result?[position].id ??
                                     0,
                                 videoType: watchlistProvider.watchlistModel
                                         .result?[position].videoType ??
@@ -697,11 +696,11 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                         .result?[position].trailerUrl ??
                                     "",
                                 uploadType: watchlistProvider.watchlistModel
-                                        .result?[position].videoUploadType ??
+                                        .result?[position].trailerType ??
                                     "",
-                                videoThumb:
-                                    watchlistProvider.watchlistModel.result?[position].landscape ?? "",
-                                vSubtitle: "",
+                                videoThumb: watchlistProvider.watchlistModel
+                                        .result?[position].landscape ??
+                                    "",
                                 vStopTime: 0);
                           },
                           child: _buildDialogItems(
@@ -1059,14 +1058,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
 
   /* ========= Open Player ========= */
   openPlayer(playType, position) async {
-    if (!kIsWeb) Utils.deleteCacheDir();
-    Map<String, String> qualityUrlList = <String, String>{
-      '320p': watchlistProvider.watchlistModel.result?[position].video320 ?? '',
-      '480p': watchlistProvider.watchlistModel.result?[position].video480 ?? '',
-      '720p': watchlistProvider.watchlistModel.result?[position].video720 ?? '',
-      '1080p':
-          watchlistProvider.watchlistModel.result?[position].video1080 ?? '',
-    };
+    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
 
     /* CHECK SUBSCRIPTION */
     if (playType != "Trailer") {
@@ -1076,10 +1068,37 @@ class _MyWatchlistState extends State<MyWatchlist> {
     }
     /* CHECK SUBSCRIPTION */
 
-    debugPrint("qualityUrlList ==========> ${qualityUrlList.length}");
-    Constant.resolutionsUrls = qualityUrlList;
-    debugPrint(
-        "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+    /* Set-up Quality URLs */
+    Utils.setQualityURLs(
+      video320:
+          (watchlistProvider.watchlistModel.result?[position].video320 ?? ""),
+      video480:
+          (watchlistProvider.watchlistModel.result?[position].video480 ?? ""),
+      video720:
+          (watchlistProvider.watchlistModel.result?[position].video720 ?? ""),
+      video1080:
+          (watchlistProvider.watchlistModel.result?[position].video1080 ?? ""),
+    );
+
+    /* Set-up Subtitle URLs */
+    Utils.setSubtitleURLs(
+      subtitleUrl1:
+          (watchlistProvider.watchlistModel.result?[position].subtitle1 ?? ""),
+      subtitleUrl2:
+          (watchlistProvider.watchlistModel.result?[position].subtitle2 ?? ""),
+      subtitleUrl3:
+          (watchlistProvider.watchlistModel.result?[position].subtitle3 ?? ""),
+      subtitleLang1:
+          (watchlistProvider.watchlistModel.result?[position].subtitleLang1 ??
+              ""),
+      subtitleLang2:
+          (watchlistProvider.watchlistModel.result?[position].subtitleLang2 ??
+              ""),
+      subtitleLang3:
+          (watchlistProvider.watchlistModel.result?[position].subtitleLang3 ??
+              ""),
+    );
+
     if (!mounted) return;
     var isContinues = await Utils.openPlayer(
         context: context,
@@ -1097,8 +1116,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
             "",
         videoThumb:
             watchlistProvider.watchlistModel.result?[position].landscape ?? "",
-        vSubtitle:
-            watchlistProvider.watchlistModel.result?[position].subtitle ?? "",
         vStopTime:
             watchlistProvider.watchlistModel.result?[position].stopTime ?? 0);
     if (isContinues != null && isContinues == true) {

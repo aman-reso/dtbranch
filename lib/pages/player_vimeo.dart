@@ -11,17 +11,9 @@ import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 class PlayerVimeo extends StatefulWidget {
   final int? videoId, videoType, typeId, stopTime;
-  final String? playType, videoUrl, vSubTitleUrl, vUploadType, videoThumb;
-  const PlayerVimeo(
-      this.playType,
-      this.videoId,
-      this.videoType,
-      this.typeId,
-      this.videoUrl,
-      this.vSubTitleUrl,
-      this.stopTime,
-      this.vUploadType,
-      this.videoThumb,
+  final String? playType, videoUrl, vUploadType, videoThumb;
+  const PlayerVimeo(this.playType, this.videoId, this.videoType, this.typeId,
+      this.videoUrl, this.stopTime, this.vUploadType, this.videoThumb,
       {Key? key})
       : super(key: key);
 

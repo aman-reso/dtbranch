@@ -54,27 +54,31 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
     _getData();
   }
 
-  void _getData() async {
+  _getData() async {
     Utils.getCurrencySymbol();
     await videoDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
 
     if (videoDetailsProvider.sectionDetailModel.status == 200) {
       if (videoDetailsProvider.sectionDetailModel.result != null) {
-        qualityUrlList = <String, String>{
-          '320p':
-              videoDetailsProvider.sectionDetailModel.result?.video320 ?? '',
-          '480p':
-              videoDetailsProvider.sectionDetailModel.result?.video480 ?? '',
-          '720p':
-              videoDetailsProvider.sectionDetailModel.result?.video720 ?? '',
-          '1080p':
-              videoDetailsProvider.sectionDetailModel.result?.video1080 ?? '',
-        };
-        debugPrint("qualityUrlList ==========> ${qualityUrlList.length}");
-        Constant.resolutionsUrls = qualityUrlList;
-        debugPrint(
-            "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+        /* Set-up Subtitle URLs */
+        Utils.setSubtitleURLs(
+          subtitleUrl1:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitle1 ?? ""),
+          subtitleUrl2:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitle2 ?? ""),
+          subtitleUrl3:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitle3 ?? ""),
+          subtitleLang1:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitleLang1 ??
+                  ""),
+          subtitleLang2:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitleLang2 ??
+                  ""),
+          subtitleLang3:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitleLang3 ??
+                  ""),
+        );
       }
     }
     Future.delayed(Duration.zero).then((value) {
@@ -488,10 +492,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                                     ),
                                   ),
                                   /* Subtitle */
-                                  (videoDetailsProvider.sectionDetailModel
-                                                  .result?.subtitle ??
-                                              "")
-                                          .isNotEmpty
+                                  Constant.subtitleUrls.isNotEmpty
                                       ? Container(
                                           constraints: const BoxConstraints(
                                               minHeight: 0),
@@ -1543,10 +1544,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                             ],
                           ),
                         ),
-                        (videoDetailsProvider
-                                        .sectionDetailModel.result?.subtitle ??
-                                    "")
-                                .isNotEmpty
+                        Constant.subtitleUrls.isNotEmpty
                             ? Container(
                                 constraints: const BoxConstraints(minHeight: 0),
                                 margin: const EdgeInsets.only(top: 10),
@@ -1564,9 +1562,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                                       overflow: TextOverflow.ellipsis,
                                       fontstyle: FontStyle.normal,
                                     ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
+                                    const SizedBox(width: 5),
                                     MyText(
                                       color: white,
                                       text: ":",
@@ -1579,9 +1575,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                                       overflow: TextOverflow.ellipsis,
                                       fontstyle: FontStyle.normal,
                                     ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
+                                    const SizedBox(width: 5),
                                     MyText(
                                       color: white,
                                       text: "Available",
@@ -2589,7 +2583,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
 
   /* ========= Open Player ========= */
   openPlayer(String playType) async {
-    if (!kIsWeb) Utils.deleteCacheDir();
+    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
 
     /* CHECK SUBSCRIPTION */
     if (playType != "Trailer") {
@@ -2616,17 +2610,25 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
     String? videoThumb =
         (videoDetailsProvider.sectionDetailModel.result?.landscape ?? "");
 
-    String? vUrl, vSubtitle, vUploadType;
+    String? vUrl, vUploadType;
     if (playType == "Trailer") {
+      Utils.clearQualitySubtitle();
       vUploadType =
-          (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ??
-              "");
+          (videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
       vUrl = (videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "");
-      vSubtitle = "";
     } else {
+      /* Set-up Quality URLs */
+      Utils.setQualityURLs(
+        video320:
+            (videoDetailsProvider.sectionDetailModel.result?.video320 ?? ""),
+        video480:
+            (videoDetailsProvider.sectionDetailModel.result?.video480 ?? ""),
+        video720:
+            (videoDetailsProvider.sectionDetailModel.result?.video720 ?? ""),
+        video1080:
+            (videoDetailsProvider.sectionDetailModel.result?.video1080 ?? ""),
+      );
       vUrl = (videoDetailsProvider.sectionDetailModel.result?.video320 ?? "");
-      vSubtitle =
-          (videoDetailsProvider.sectionDetailModel.result?.subtitle ?? "");
       vUploadType =
           (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ??
               "");
@@ -2655,7 +2657,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
       trailerUrl: vUrl,
       uploadType: vUploadType,
       videoThumb: videoThumb,
-      vSubtitle: vSubtitle,
       vStopTime: stopTime,
     );
 

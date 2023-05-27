@@ -93,7 +93,7 @@ class TVHomeState extends State<TVHome> {
   }
 
   _getData() async {
-    if (!kIsWeb) Utils.deleteCacheDir();
+    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 
@@ -1236,17 +1236,14 @@ class TVHomeState extends State<TVHome> {
                     borderRadius: BorderRadius.circular(4),
                     onTap: () async {
                       debugPrint("index ==========> $index");
-                      Map<String, String> qualityUrlList = <String, String>{
-                        '320p': continueWatchingList?[index].video320 ?? '',
-                        '480p': continueWatchingList?[index].video480 ?? '',
-                        '720p': continueWatchingList?[index].video720 ?? '',
-                        '1080p': continueWatchingList?[index].video1080 ?? '',
-                      };
-                      debugPrint(
-                          "qualityUrlList ==========> ${qualityUrlList.length}");
-                      Constant.resolutionsUrls = qualityUrlList;
-                      debugPrint(
-                          "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+                      /* Set-up Quality URLs */
+                      Utils.setQualityURLs(
+                        video320: (continueWatchingList?[index].video320 ?? ""),
+                        video480: (continueWatchingList?[index].video480 ?? ""),
+                        video720: (continueWatchingList?[index].video720 ?? ""),
+                        video1080:
+                            (continueWatchingList?[index].video1080 ?? ""),
+                      );
                       var isContinues = await Utils.openPlayer(
                         context: context,
                         playType:
@@ -1266,7 +1263,6 @@ class TVHomeState extends State<TVHome> {
                             continueWatchingList?[index].videoUploadType ?? "",
                         videoThumb:
                             continueWatchingList?[index].landscape ?? "",
-                        vSubtitle: continueWatchingList?[index].subtitle ?? "",
                         vStopTime: continueWatchingList?[index].stopTime ?? 0,
                       );
                       if (isContinues != null && isContinues == true) {

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as number;
 
+import 'package:dtlive/model/subtitlemodel.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/pages/player_better.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
@@ -99,18 +100,18 @@ class Utils {
   }
 
   /* ========= Open Player ========= */
-  static Future<dynamic> openPlayer(
-      {required BuildContext context,
-      required String? playType,
-      required int? videoId,
-      required int? videoType,
-      required int? typeId,
-      required String? videoUrl,
-      required String? trailerUrl,
-      required String? uploadType,
-      required String? videoThumb,
-      required String? vSubtitle,
-      required int? vStopTime}) async {
+  static Future<dynamic> openPlayer({
+    required BuildContext context,
+    required String? playType,
+    required int? videoId,
+    required int? videoType,
+    required int? typeId,
+    required String? videoUrl,
+    required String? trailerUrl,
+    required String? uploadType,
+    required String? videoThumb,
+    required int? vStopTime,
+  }) async {
     if (!(kIsWeb || Constant.isTV)) deleteCacheDir();
     dynamic isContinue;
     int? vID = (videoId ?? 0);
@@ -124,13 +125,11 @@ class Utils {
       stopTime = (vStopTime ?? 0);
     }
 
-    String? vUrl, vSubtitleFile, vUploadType;
+    String? vUrl, vUploadType;
     if (playType == "Trailer") {
       vUrl = (trailerUrl ?? "");
-      vSubtitleFile = "";
     } else {
       vUrl = (videoUrl ?? "");
-      vSubtitleFile = (vSubtitle ?? "");
     }
     vUploadType = (uploadType ?? "");
     log("stopTime ===> $stopTime");
@@ -153,7 +152,6 @@ class Utils {
               vType,
               vTypeID,
               vUrl ?? "",
-              vSubtitleFile ?? "",
               stopTime,
               vUploadType,
               videoThumb,
@@ -178,7 +176,6 @@ class Utils {
                 vType,
                 vTypeID,
                 vUrl ?? "",
-                vSubtitleFile ?? "",
                 stopTime,
                 vUploadType,
                 videoThumb,
@@ -201,7 +198,6 @@ class Utils {
                 vType,
                 vTypeID,
                 vUrl ?? "",
-                vSubtitleFile ?? "",
                 stopTime,
                 vUploadType,
                 videoThumb,
@@ -224,7 +220,6 @@ class Utils {
                 vType,
                 vTypeID,
                 vUrl ?? "",
-                vSubtitleFile ?? "",
                 stopTime,
                 vUploadType,
                 videoThumb,
@@ -238,6 +233,71 @@ class Utils {
     return isContinue;
   }
   /* ========= Open Player ========= */
+
+  /* ========= Set-up Quality URL START ========= */
+  static void setQualityURLs({
+    required String video320,
+    required String video480,
+    required String video720,
+    required String video1080,
+  }) {
+    Map<String, String> qualityUrlList = <String, String>{};
+    if (video320 != "") {
+      qualityUrlList['320p'] = video320;
+    }
+    if (video480 != "") {
+      qualityUrlList['480p'] = video480;
+    }
+    if (video720 != "") {
+      qualityUrlList['720p'] = video720;
+    }
+    if (video1080 != "") {
+      qualityUrlList['1080p'] = video1080;
+    }
+    debugPrint("qualityUrlList ==========> ${qualityUrlList.length}");
+    Constant.resolutionsUrls.clear();
+    Constant.resolutionsUrls = <String, String>{};
+    Constant.resolutionsUrls = qualityUrlList;
+    debugPrint(
+        "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+  }
+  /* ========= Set-up Quality URL END =========== */
+
+  static void clearQualitySubtitle() {
+    Constant.resolutionsUrls.clear();
+    Constant.resolutionsUrls = <String, String>{};
+    Constant.subtitleUrls.clear();
+    Constant.subtitleUrls = [];
+  }
+
+  /* ========= Set-up Subtitle URL START ========= */
+  static void setSubtitleURLs({
+    required String subtitleUrl1,
+    required String subtitleUrl2,
+    required String subtitleUrl3,
+    required String subtitleLang1,
+    required String subtitleLang2,
+    required String subtitleLang3,
+  }) {
+    Map<String, String> subtitleUrlList = <String, String>{};
+    if (subtitleUrl1 != "") {
+      subtitleUrlList[subtitleLang1] = subtitleUrl1;
+    }
+    if (subtitleUrl2 != "") {
+      subtitleUrlList[subtitleLang2] = subtitleUrl2;
+    }
+    if (subtitleUrl3 != "") {
+      subtitleUrlList[subtitleLang3] = subtitleUrl3;
+    }
+    debugPrint("subtitleUrlList========> ${subtitleUrlList.length}");
+    Constant.subtitleUrls.clear();
+    Constant.subtitleUrls = [];
+    Constant.subtitleUrls = subtitleUrlList.entries
+        .map((entry) => SubTitleModel(entry.key, entry.value))
+        .toList();
+    debugPrint("subtitleUrls ==========> ${Constant.subtitleUrls.length}");
+  }
+  /* ========= Set-up Subtitle URL END =========== */
 
   static void getCurrencySymbol() async {
     SharedPre sharedPref = SharedPre();

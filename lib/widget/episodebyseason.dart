@@ -510,7 +510,6 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       String? vUploadType = (episodeList?[epiPos].videoUploadType ?? "");
       String? videoThumb = (episodeList?[epiPos].landscape ?? "");
       String? epiUrl = (episodeList?[epiPos].video320 ?? "");
-      String? vSubtitle = (episodeList?[epiPos].subtitle ?? "");
       log("epiID ========> $epiID");
       log("vType ========> $vType");
       log("vTypeID ======> $vTypeID");
@@ -518,13 +517,28 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       log("vUploadType ==> $vUploadType");
       log("videoThumb ===> $videoThumb");
       log("epiUrl =======> $epiUrl");
-      log("vSubtitle ====> $vSubtitle");
 
       if (!mounted) return;
       if (epiUrl.isEmpty || epiUrl == "") {
         Utils.showSnackbar(context, "info", "episode_not_found", true);
         return;
       }
+
+      /* Set-up Quality URLs */
+      Utils.setQualityURLs(
+        video320:
+            (episodeProvider.episodeBySeasonModel.result?[epiPos].video320 ??
+                ""),
+        video480:
+            (episodeProvider.episodeBySeasonModel.result?[epiPos].video480 ??
+                ""),
+        video720:
+            (episodeProvider.episodeBySeasonModel.result?[epiPos].video720 ??
+                ""),
+        video1080:
+            (episodeProvider.episodeBySeasonModel.result?[epiPos].video1080 ??
+                ""),
+      );
 
       dynamic isContinue = await Utils.openPlayer(
         context: context,
@@ -536,7 +550,6 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         trailerUrl: "",
         uploadType: vUploadType,
         videoThumb: videoThumb,
-        vSubtitle: vSubtitle,
         vStopTime: stopTime,
       );
 

@@ -533,12 +533,11 @@ class _MyDownloadsState extends State<MyDownloads> {
                                 trailerUrl:
                                     myDownloadsList?[position].trailerUrl ?? "",
                                 uploadType: myDownloadsList?[position]
-                                        .videoUploadType ??
+                                        .trailerUploadType ??
                                     "",
                                 videoThumb:
                                     myDownloadsList?[position].landscapeImg ??
                                         "",
-                                vSubtitle: "",
                                 vStopTime: 0);
                           },
                           child: _buildDialogItems(
@@ -819,7 +818,6 @@ class _MyDownloadsState extends State<MyDownloads> {
       trailerUrl: myDownloadsList?[position].trailerUrl ?? "",
       uploadType: myDownloadsList?[position].videoUploadType ?? "",
       videoThumb: myDownloadsList?[position].landscapeImg ?? "",
-      vSubtitle: "",
       vStopTime: 0,
     );
   }

@@ -1,3 +1,5 @@
+import 'package:dtlive/model/subtitlemodel.dart';
+
 class Constant {
   static const String baseurl =
       'http://demo.divinetechs.in/apps/dtlive/public/api/';
@@ -5,25 +7,17 @@ class Constant {
   // static const String baseurl =
   //     'http://demo.divinetechs.com/apps/dtlive/public/api/';
 
-  //  static const String baseurl =
-  //     'https://divinetechs.in/dtlive-admin/public/api/';
-
   static String? appName = "DTLive";
   static String? appPackageName = "com.divinetechs.dtlive";
   static String? appleAppId = "6449380090";
   static String? appVersion = "1";
   static String? appBuildNumber = "1.0";
 
-  /* Constant for TV check */
-  static bool isTV = false;
-
   /* OneSignal App ID */
   static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
 
-  static const String stripePubKey =
-      "pk_test_51HWHxdFpLEHFIa6MZDPgZSNEb2AFNN3arfZTZV2isbXtXpuvYOEtdFtxIo0bLnOaZFgNcFkhKsMQyI9aqFLMCEgq00RublRhlW";
-  static const String stripeSecretKey =
-      "sk_test_51HWHxdFpLEHFIa6MIPSVqljdOF0Oj0cHLmEmvfip9vQdLZ2y0SagHwVFWhXNXhqdbifYtswU4ghFOrBtX2CNavJQ00W6mue0jh";
+  /* Constant for TV check */
+  static bool isTV = false;
 
   static String? userID;
   static String currencySymbol = "";
@@ -42,6 +36,7 @@ class Constant {
   static String instagramUrl = "https://www.instagram.com/divinetechs/";
 
   static Map<String, String> resolutionsUrls = <String, String>{};
+  static List<SubTitleModel> subtitleUrls = [];
 
   /* Download config */
   static String videoDownloadPort = 'video_downloader_send_port';

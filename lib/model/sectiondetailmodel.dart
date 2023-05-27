@@ -11,7 +11,6 @@ String sectionDetailModelToJson(SectionDetailModel data) =>
 
 class SectionDetailModel {
   SectionDetailModel({
-    this.code,
     this.status,
     this.message,
     this.result,
@@ -22,7 +21,6 @@ class SectionDetailModel {
     this.moreDetails,
   });
 
-  int? code;
   int? status;
   String? message;
   Result? result;
@@ -34,7 +32,6 @@ class SectionDetailModel {
 
   factory SectionDetailModel.fromJson(Map<String, dynamic> json) =>
       SectionDetailModel(
-        code: json["code"],
         status: json["status"],
         message: json["message"],
         result: Result.fromJson(json["result"]),
@@ -50,7 +47,6 @@ class SectionDetailModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "code": code,
         "status": status,
         "message": message,
         "result": result?.toJson(),
@@ -162,9 +158,8 @@ class Result {
     this.name,
     this.thumbnail,
     this.landscape,
-    this.webImg,
     this.videoUploadType,
-    this.video,
+    this.trailerType,
     this.trailerUrl,
     this.releaseYear,
     this.ageRestriction,
@@ -172,7 +167,6 @@ class Result {
     this.releaseTag,
     this.typeId,
     this.videoType,
-    this.videoUrl,
     this.videoExtension,
     this.isPremium,
     this.description,
@@ -181,8 +175,6 @@ class Result {
     this.view,
     this.imdbRating,
     this.download,
-    this.avgRating,
-    this.noOfRating,
     this.status,
     this.isTitle,
     this.video320,
@@ -190,7 +182,12 @@ class Result {
     this.video720,
     this.video1080,
     this.subtitleType,
-    this.subtitle,
+    this.subtitleLang1,
+    this.subtitleLang2,
+    this.subtitleLang3,
+    this.subtitle1,
+    this.subtitle2,
+    this.subtitle3,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -223,23 +220,19 @@ class Result {
   String? description;
   String? thumbnail;
   String? landscape;
-  String? webImg;
   String? videoUploadType;
-  String? video;
+  String? trailerType;
   String? trailerUrl;
   String? releaseYear;
   String? ageRestriction;
   String? maxVideoQuality;
   String? releaseTag;
-  String? videoUrl;
   String? videoExtension;
   int? videoDuration;
   int? videoSize;
   int? download;
   int? view;
   dynamic imdbRating;
-  int? avgRating;
-  int? noOfRating;
   String? status;
   String? isTitle;
   String? video320;
@@ -247,7 +240,12 @@ class Result {
   String? video720;
   String? video1080;
   String? subtitleType;
-  String? subtitle;
+  String? subtitleLang1;
+  String? subtitleLang2;
+  String? subtitleLang3;
+  String? subtitle1;
+  String? subtitle2;
+  String? subtitle3;
   int? isPremium;
   String? createdAt;
   String? updatedAt;
@@ -275,29 +273,26 @@ class Result {
         studios: json["studios"],
         contentAdvisory: json["content_advisory"],
         viewingRights: json["viewing_rights"],
-        typeId: json["type_id"],
-        videoType: json["video_type"],
         name: json["name"],
-        description: json["description"],
         thumbnail: json["thumbnail"],
         landscape: json["landscape"],
-        webImg: json["web_img"],
         videoUploadType: json["video_upload_type"],
-        video: json["video"],
+        trailerType: json["trailer_type"],
         trailerUrl: json["trailer_url"],
         releaseYear: json["release_year"],
         ageRestriction: json["age_restriction"],
         maxVideoQuality: json["max_video_quality"],
         releaseTag: json["release_tag"],
-        videoUrl: json["video_url"],
+        typeId: json["type_id"],
+        videoType: json["video_type"],
         videoExtension: json["video_extension"],
+        isPremium: json["is_premium"],
+        description: json["description"],
         videoDuration: json["video_duration"],
         videoSize: json["video_size"],
         view: json["view"],
         imdbRating: json["imdb_rating"],
         download: json["download"],
-        avgRating: json["avg_rating"],
-        noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
         video320: json["video_320"],
@@ -305,8 +300,12 @@ class Result {
         video720: json["video_720"],
         video1080: json["video_1080"],
         subtitleType: json["subtitle_type"],
-        subtitle: json["subtitle"],
-        isPremium: json["is_premium"],
+        subtitleLang1: json["subtitle_lang_1"],
+        subtitleLang2: json["subtitle_lang_2"],
+        subtitleLang3: json["subtitle_lang_3"],
+        subtitle1: json["subtitle_1"],
+        subtitle2: json["subtitle_2"],
+        subtitle3: json["subtitle_3"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -340,23 +339,18 @@ class Result {
         "description": description,
         "thumbnail": thumbnail,
         "landscape": landscape,
-        "web_img": webImg,
         "video_upload_type": videoUploadType,
-        "video": video,
         "trailer_url": trailerUrl,
         "release_year": releaseYear,
         "age_restriction": ageRestriction,
         "max_video_quality": maxVideoQuality,
         "release_tag": releaseTag,
-        "video_url": videoUrl,
         "video_extension": videoExtension,
         "is_premium": isPremium,
         "video_duration": videoDuration,
         "video_size": videoSize,
         "view": view,
         "imdb_rating": imdbRating,
-        "avg_rating": avgRating,
-        "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
         "video_320": video320,
@@ -364,7 +358,12 @@ class Result {
         "video_720": video720,
         "video_1080": video1080,
         "subtitle_type": subtitleType,
-        "subtitle": subtitle,
+        "subtitle_lang_1": subtitleLang1,
+        "subtitle_lang_2": subtitleLang2,
+        "subtitle_lang_3": subtitleLang3,
+        "subtitle_1": subtitle1,
+        "subtitle_2": subtitle2,
+        "subtitle_3": subtitle3,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,
@@ -402,20 +401,17 @@ class GetRelatedVideo {
     this.landscape,
     this.webImg,
     this.videoUploadType,
-    this.video,
     this.trailerUrl,
+    this.trailerType,
     this.releaseYear,
     this.ageRestriction,
     this.maxVideoQuality,
     this.releaseTag,
-    this.videoUrl,
     this.videoExtension,
     this.videoDuration,
     this.videoSize,
     this.view,
     this.imdbRating,
-    this.avgRating,
-    this.noOfRating,
     this.status,
     this.isTitle,
     this.video320,
@@ -423,7 +419,6 @@ class GetRelatedVideo {
     this.video720,
     this.video1080,
     this.subtitleType,
-    this.subtitle,
     this.isPremium,
     this.createdAt,
     this.updatedAt,
@@ -459,20 +454,17 @@ class GetRelatedVideo {
   String? landscape;
   String? webImg;
   String? videoUploadType;
-  String? video;
+  String? trailerType;
   String? trailerUrl;
   String? releaseYear;
   String? ageRestriction;
   String? maxVideoQuality;
   String? releaseTag;
-  String? videoUrl;
   String? videoExtension;
   int? videoDuration;
   int? videoSize;
   int? view;
   dynamic imdbRating;
-  int? avgRating;
-  int? noOfRating;
   String? status;
   String? isTitle;
   String? video320;
@@ -480,7 +472,12 @@ class GetRelatedVideo {
   String? video720;
   String? video1080;
   String? subtitleType;
-  String? subtitle;
+  String? subtitleLang1;
+  String? subtitleLang2;
+  String? subtitleLang3;
+  String? subtitle1;
+  String? subtitle2;
+  String? subtitle3;
   int? isPremium;
   String? createdAt;
   String? updatedAt;
@@ -517,20 +514,17 @@ class GetRelatedVideo {
         landscape: json["landscape"],
         webImg: json["web_img"],
         videoUploadType: json["video_upload_type"],
-        video: json["video"],
+        trailerType: json["trailer_type"],
         trailerUrl: json["trailer_url"],
         releaseYear: json["release_year"],
         ageRestriction: json["age_restriction"],
         maxVideoQuality: json["max_video_quality"],
         releaseTag: json["release_tag"],
-        videoUrl: json["video_url"],
         videoExtension: json["video_extension"],
         videoDuration: json["video_duration"],
         videoSize: json["video_size"],
         view: json["view"],
         imdbRating: json["imdb_rating"],
-        avgRating: json["avg_rating"],
-        noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
         video320: json["video_320"],
@@ -538,7 +532,6 @@ class GetRelatedVideo {
         video720: json["video_720"],
         video1080: json["video_1080"],
         subtitleType: json["subtitle_type"],
-        subtitle: json["subtitle"],
         isPremium: json["is_premium"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
@@ -575,20 +568,17 @@ class GetRelatedVideo {
         "landscape": landscape,
         "web_img": webImg,
         "video_upload_type": videoUploadType,
-        "video": video,
         "trailer_url": trailerUrl,
+        "trailer_type": trailerType,
         "release_year": releaseYear,
         "age_restriction": ageRestriction,
         "max_video_quality": maxVideoQuality,
         "release_tag": releaseTag,
-        "video_url": videoUrl,
         "video_extension": videoExtension,
         "video_duration": videoDuration,
         "video_size": videoSize,
         "view": view,
         "imdb_rating": imdbRating,
-        "avg_rating": avgRating,
-        "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
         "video_320": video320,
@@ -596,7 +586,6 @@ class GetRelatedVideo {
         "video_720": video720,
         "video_1080": video1080,
         "subtitle_type": subtitleType,
-        "subtitle": subtitle,
         "is_premium": isPremium,
         "created_at": createdAt,
         "updated_at": updatedAt,

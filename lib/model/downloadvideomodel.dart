@@ -23,6 +23,7 @@ class DownloadVideoModel {
     this.isDownload,
     this.videoDuration,
     this.videoUploadType,
+    this.trailerUploadType,
     this.trailerUrl,
     this.releaseYear,
     this.landscapeImg,
@@ -46,6 +47,7 @@ class DownloadVideoModel {
   final int? isDownload;
   final int? videoDuration;
   final String? videoUploadType;
+  final String? trailerUploadType;
   final String? trailerUrl;
   final String? releaseYear;
   final String? landscapeImg;
@@ -70,6 +72,7 @@ class DownloadVideoModel {
         isDownload: json["isDownload"],
         videoDuration: json["videoDuration"],
         videoUploadType: json["videoUploadType"],
+        trailerUploadType: json["trailerUploadType"],
         trailerUrl: json["trailerUrl"],
         releaseYear: json["releaseYear"],
         landscapeImg: json["landscapeImg"],
@@ -95,6 +98,7 @@ class DownloadVideoModel {
         "isDownload": isDownload,
         "videoDuration": videoDuration,
         "videoUploadType": videoUploadType,
+        "trailerUploadType": trailerUploadType,
         "trailerUrl": trailerUrl,
         "releaseYear": releaseYear,
         "landscapeImg": landscapeImg,
@@ -181,7 +185,12 @@ class EpisodeItem {
     this.savedDir,
     this.savedFile,
     this.subtitleType,
-    this.subtitle,
+    this.subtitleLang1,
+    this.subtitleLang2,
+    this.subtitleLang3,
+    this.subtitle1,
+    this.subtitle2,
+    this.subtitle3,
     this.isDownloaded,
     this.isBookmark,
     this.rentBuy,
@@ -210,7 +219,12 @@ class EpisodeItem {
   final String? savedDir;
   final String? savedFile;
   final String? subtitleType;
-  final String? subtitle;
+  final String? subtitleLang1;
+  final String? subtitleLang2;
+  final String? subtitleLang3;
+  final String? subtitle1;
+  final String? subtitle2;
+  final String? subtitle3;
   final int? isDownloaded;
   final int? isBookmark;
   final int? rentBuy;
@@ -239,7 +253,12 @@ class EpisodeItem {
         savedDir: json["savedDir"],
         savedFile: json["savedFile"],
         subtitleType: json["subtitle_type"],
-        subtitle: json["subtitle"],
+        subtitleLang1: json["subtitle_lang_1"],
+        subtitleLang2: json["subtitle_lang_2"],
+        subtitleLang3: json["subtitle_lang_3"],
+        subtitle1: json["subtitle_1"],
+        subtitle2: json["subtitle_2"],
+        subtitle3: json["subtitle_3"],
         isDownloaded: json["is_downloaded"],
         isBookmark: json["is_bookmark"],
         rentBuy: json["rent_buy"],
@@ -269,7 +288,12 @@ class EpisodeItem {
         "savedDir": savedDir,
         "savedFile": savedFile,
         "subtitle_type": subtitleType,
-        "subtitle": subtitle,
+        "subtitle_lang_1": subtitleLang1,
+        "subtitle_lang_2": subtitleLang2,
+        "subtitle_lang_3": subtitleLang3,
+        "subtitle_1": subtitle1,
+        "subtitle_2": subtitle2,
+        "subtitle_3": subtitle3,
         "is_downloaded": isDownloaded,
         "is_bookmark": isBookmark,
         "rent_buy": rentBuy,

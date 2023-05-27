@@ -49,7 +49,6 @@ class Result {
     this.typeId,
     this.thumbnail,
     this.landscape,
-    this.video,
     this.stopTime,
     this.isDownloaded,
     this.isBookmark,
@@ -63,8 +62,6 @@ class Result {
     this.video480,
     this.video720,
     this.video1080,
-    this.subtitleType,
-    this.subtitle,
   });
 
   String? name;
@@ -75,7 +72,6 @@ class Result {
   int? typeId;
   String? thumbnail;
   String? landscape;
-  String? video;
   int? stopTime;
   int? isDownloaded;
   int? isBookmark;
@@ -89,8 +85,6 @@ class Result {
   String? video480;
   String? video720;
   String? video1080;
-  String? subtitleType;
-  String? subtitle;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
         name: json["name"],
@@ -101,7 +95,6 @@ class Result {
         typeId: json["type_id"],
         thumbnail: json["thumbnail"],
         landscape: json["landscape"],
-        video: json["video"],
         stopTime: json["stop_time"],
         isDownloaded: json["is_downloaded"],
         isBookmark: json["is_bookmark"],
@@ -115,8 +108,6 @@ class Result {
         video480: json["video_480"],
         video720: json["video_720"],
         video1080: json["video_1080"],
-        subtitleType: json["subtitle_type"],
-        subtitle: json["subtitle"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -128,7 +119,6 @@ class Result {
         "type_id": typeId,
         "thumbnail": thumbnail,
         "landscape": landscape,
-        "video": video,
         "stop_time": stopTime,
         "is_downloaded": isDownloaded,
         "is_bookmark": isBookmark,
@@ -142,7 +132,5 @@ class Result {
         "video_480": video480,
         "video_720": video720,
         "video_1080": video1080,
-        "subtitle_type": subtitleType,
-        "subtitle": subtitle,
       };
 }

@@ -954,7 +954,6 @@ class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
       trailerUrl: "",
       uploadType: myEpisodeList?[position].videoUploadType ?? "",
       videoThumb: myEpisodeList?[position].landscape ?? "",
-      vSubtitle: "",
       vStopTime: 0,
     );
   }

@@ -364,7 +364,7 @@ class SettingState extends State<Setting> {
                   InkWell(
                     borderRadius: BorderRadius.circular(2),
                     onTap: () async {
-                      if (!kIsWeb) Utils.deleteCacheDir();
+                      if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
                       if (!mounted) return;
                       Utils.showSnackbar(
                           context, "success", "cacheclearmsg", true);

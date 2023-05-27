@@ -134,7 +134,7 @@ class HomeState extends State<Home> {
   }
 
   _getData() async {
-    if (!kIsWeb) Utils.deleteCacheDir();
+    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 
@@ -799,9 +799,7 @@ class HomeState extends State<Home> {
               fontstyle: FontStyle.normal,
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.heightContiLand,
@@ -861,23 +859,21 @@ class HomeState extends State<Home> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(20),
                             onTap: () async {
-                              Map<String, String> qualityUrlList =
-                                  <String, String>{
-                                '320p':
-                                    continueWatchingList?[index].video320 ?? '',
-                                '480p':
-                                    continueWatchingList?[index].video480 ?? '',
-                                '720p':
-                                    continueWatchingList?[index].video720 ?? '',
-                                '1080p':
-                                    continueWatchingList?[index].video1080 ??
-                                        '',
-                              };
-                              debugPrint(
-                                  "qualityUrlList ==========> ${qualityUrlList.length}");
-                              Constant.resolutionsUrls = qualityUrlList;
-                              debugPrint(
-                                  "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+                              /* Set-up Quality URLs */
+                              Utils.setQualityURLs(
+                                video320:
+                                    (continueWatchingList?[index].video320 ??
+                                        ""),
+                                video480:
+                                    (continueWatchingList?[index].video480 ??
+                                        ""),
+                                video720:
+                                    (continueWatchingList?[index].video720 ??
+                                        ""),
+                                video1080:
+                                    (continueWatchingList?[index].video1080 ??
+                                        ""),
+                              );
                               var isContinues = await Utils.openPlayer(
                                 context: context,
                                 playType:
@@ -907,8 +903,6 @@ class HomeState extends State<Home> {
                                 videoThumb:
                                     continueWatchingList?[index].landscape ??
                                         "",
-                                vSubtitle:
-                                    continueWatchingList?[index].subtitle ?? "",
                                 vStopTime:
                                     continueWatchingList?[index].stopTime ?? 0,
                               );

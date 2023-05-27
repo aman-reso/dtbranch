@@ -11,14 +11,12 @@ String sectionListModelToJson(SectionListModel data) =>
 
 class SectionListModel {
   SectionListModel({
-    this.code,
     this.status,
     this.message,
     this.result,
     this.continueWatching,
   });
 
-  int? code;
   int? status;
   String? message;
   List<Result>? result;
@@ -26,7 +24,6 @@ class SectionListModel {
 
   factory SectionListModel.fromJson(Map<String, dynamic> json) =>
       SectionListModel(
-        code: json["code"],
         status: json["status"],
         message: json["message"],
         result: List<Result>.from(
@@ -38,7 +35,6 @@ class SectionListModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "code": code,
         "status": status,
         "message": message,
         "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
@@ -51,7 +47,6 @@ class SectionListModel {
 class ContinueWatching {
   ContinueWatching({
     this.id,
-    this.showId,
     this.categoryId,
     this.languageId,
     this.castId,
@@ -64,9 +59,8 @@ class ContinueWatching {
     this.name,
     this.thumbnail,
     this.landscape,
-    this.webImg,
     this.videoUploadType,
-    this.video,
+    this.trailerType,
     this.trailerUrl,
     this.releaseYear,
     this.ageRestriction,
@@ -74,7 +68,6 @@ class ContinueWatching {
     this.releaseTag,
     this.typeId,
     this.videoType,
-    this.videoUrl,
     this.videoExtension,
     this.isPremium,
     this.description,
@@ -83,8 +76,6 @@ class ContinueWatching {
     this.view,
     this.imdbRating,
     this.download,
-    this.avgRating,
-    this.noOfRating,
     this.status,
     this.isTitle,
     this.video320,
@@ -93,6 +84,12 @@ class ContinueWatching {
     this.video1080,
     this.subtitleType,
     this.subtitle,
+    this.subtitleLang1,
+    this.subtitleLang2,
+    this.subtitleLang3,
+    this.subtitle1,
+    this.subtitle2,
+    this.subtitle3,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -104,10 +101,10 @@ class ContinueWatching {
     this.isBuy,
     this.categoryName,
     this.sessionId,
+    this.showId,
   });
 
   int? id;
-  int? showId;
   String? categoryId;
   String? languageId;
   String? castId;
@@ -120,9 +117,8 @@ class ContinueWatching {
   String? name;
   String? thumbnail;
   String? landscape;
-  String? webImg;
   String? videoUploadType;
-  String? video;
+  String? trailerType;
   String? trailerUrl;
   String? releaseYear;
   String? ageRestriction;
@@ -130,7 +126,6 @@ class ContinueWatching {
   String? releaseTag;
   int? typeId;
   int? videoType;
-  String? videoUrl;
   String? videoExtension;
   int? isPremium;
   String? description;
@@ -139,8 +134,6 @@ class ContinueWatching {
   int? view;
   dynamic imdbRating;
   int? download;
-  int? avgRating;
-  int? noOfRating;
   String? status;
   String? isTitle;
   String? video320;
@@ -149,6 +142,12 @@ class ContinueWatching {
   String? video1080;
   String? subtitleType;
   String? subtitle;
+  String? subtitleLang1;
+  String? subtitleLang2;
+  String? subtitleLang3;
+  String? subtitle1;
+  String? subtitle2;
+  String? subtitle3;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -160,11 +159,11 @@ class ContinueWatching {
   int? isBuy;
   String? categoryName;
   int? sessionId;
+  int? showId;
 
   factory ContinueWatching.fromJson(Map<String, dynamic> json) =>
       ContinueWatching(
         id: json["id"],
-        showId: json["show_id"],
         categoryId: json["category_id"],
         languageId: json["language_id"],
         castId: json["cast_id"],
@@ -177,9 +176,8 @@ class ContinueWatching {
         name: json["name"],
         thumbnail: json["thumbnail"],
         landscape: json["landscape"],
-        webImg: json["web_img"],
         videoUploadType: json["video_upload_type"],
-        video: json["video"],
+        trailerType: json["trailer_type"],
         trailerUrl: json["trailer_url"],
         releaseYear: json["release_year"],
         ageRestriction: json["age_restriction"],
@@ -187,7 +185,6 @@ class ContinueWatching {
         releaseTag: json["release_tag"],
         typeId: json["type_id"],
         videoType: json["video_type"],
-        videoUrl: json["video_url"],
         videoExtension: json["video_extension"],
         isPremium: json["is_premium"],
         description: json["description"],
@@ -196,8 +193,6 @@ class ContinueWatching {
         view: json["view"],
         imdbRating: json["imdb_rating"],
         download: json["download"],
-        avgRating: json["avg_rating"],
-        noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
         video320: json["video_320"],
@@ -206,6 +201,12 @@ class ContinueWatching {
         video1080: json["video_1080"],
         subtitleType: json["subtitle_type"],
         subtitle: json["subtitle"],
+        subtitleLang1: json["subtitle_lang_1"],
+        subtitleLang2: json["subtitle_lang_2"],
+        subtitleLang3: json["subtitle_lang_3"],
+        subtitle1: json["subtitle_1"],
+        subtitle2: json["subtitle_2"],
+        subtitle3: json["subtitle_3"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -217,11 +218,11 @@ class ContinueWatching {
         isBuy: json["is_buy"],
         categoryName: json["category_name"],
         sessionId: json["session_id"],
+        showId: json["show_id"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "show_id": showId,
         "category_id": categoryId,
         "language_id": languageId,
         "cast_id": castId,
@@ -234,9 +235,8 @@ class ContinueWatching {
         "name": name,
         "thumbnail": thumbnail,
         "landscape": landscape,
-        "web_img": webImg,
         "video_upload_type": videoUploadType,
-        "video": video,
+        "trailer_type": trailerType,
         "trailer_url": trailerUrl,
         "release_year": releaseYear,
         "age_restriction": ageRestriction,
@@ -244,7 +244,6 @@ class ContinueWatching {
         "release_tag": releaseTag,
         "type_id": typeId,
         "video_type": videoType,
-        "video_url": videoUrl,
         "video_extension": videoExtension,
         "is_premium": isPremium,
         "description": description,
@@ -253,8 +252,6 @@ class ContinueWatching {
         "view": view,
         "imdb_rating": imdbRating,
         "download": download,
-        "avg_rating": avgRating,
-        "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
         "video_320": video320,
@@ -263,6 +260,12 @@ class ContinueWatching {
         "video_1080": video1080,
         "subtitle_type": subtitleType,
         "subtitle": subtitle,
+        "subtitle_lang_1": subtitleLang1,
+        "subtitle_lang_2": subtitleLang2,
+        "subtitle_lang_3": subtitleLang3,
+        "subtitle_1": subtitle1,
+        "subtitle_2": subtitle2,
+        "subtitle_3": subtitle3,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,
@@ -274,6 +277,7 @@ class ContinueWatching {
         "is_buy": isBuy,
         "category_name": categoryName,
         "session_id": sessionId,
+        "show_id": showId,
       };
 }
 
@@ -289,8 +293,6 @@ class Result {
     this.title,
     this.videoType,
     this.screenLayout,
-    this.filderBy,
-    this.isViewAll,
     this.isHomeScreen,
     this.status,
     this.createdAt,
@@ -308,8 +310,6 @@ class Result {
   String? title;
   String? videoType;
   String? screenLayout;
-  String? filderBy;
-  int? isViewAll;
   String? isHomeScreen;
   int? status;
   String? createdAt;
@@ -327,13 +327,14 @@ class Result {
         title: json["title"],
         videoType: json["video_type"],
         screenLayout: json["screen_layout"],
-        filderBy: json["filder_by"],
-        isViewAll: json["is_view_all"],
         isHomeScreen: json["is_home_screen"],
         status: json["status"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        data: json["data"] == null
+            ? []
+            : List<Datum>.from(
+                json["data"]?.map((x) => Datum.fromJson(x)) ?? []),
       );
 
   Map<String, dynamic> toJson() => {
@@ -347,13 +348,13 @@ class Result {
         "title": title,
         "video_type": videoType,
         "screen_layout": screenLayout,
-        "filder_by": filderBy,
-        "is_view_all": isViewAll,
         "is_home_screen": isHomeScreen,
         "status": status,
         "created_at": createdAt,
         "updated_at": updatedAt,
-        "data": List<dynamic>.from(data!.map((x) => x.toJson())),
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data?.map((x) => x.toJson()) ?? []),
       };
 }
 
@@ -378,32 +379,11 @@ class Datum {
     this.description,
     this.thumbnail,
     this.landscape,
-    this.webImg,
-    this.videoUploadType,
-    this.video,
-    this.trailerUrl,
-    this.releaseYear,
-    this.ageRestriction,
-    this.maxVideoQuality,
-    this.releaseTag,
-    this.videoUrl,
-    this.videoExtension,
-    this.isPremium,
-    this.videoDuration,
-    this.videoSize,
     this.view,
     this.imdbRating,
-    this.download,
-    this.avgRating,
-    this.noOfRating,
     this.status,
     this.isTitle,
-    this.video320,
-    this.video480,
-    this.video720,
-    this.video1080,
-    this.subtitleType,
-    this.subtitle,
+    this.isPremium,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -415,9 +395,30 @@ class Datum {
     this.isBuy,
     this.categoryName,
     this.sessionId,
+    this.videoUploadType,
+    this.trailerType,
+    this.trailerUrl,
+    this.releaseYear,
+    this.ageRestriction,
+    this.maxVideoQuality,
+    this.releaseTag,
+    this.videoExtension,
+    this.videoDuration,
+    this.videoSize,
+    this.download,
+    this.video320,
+    this.video480,
+    this.video720,
+    this.video1080,
+    this.subtitleType,
+    this.subtitleLang1,
+    this.subtitleLang2,
+    this.subtitleLang3,
+    this.subtitle1,
+    this.subtitle2,
+    this.subtitle3,
     this.image,
   });
-
   int? id;
   String? categoryId;
   String? languageId;
@@ -437,32 +438,11 @@ class Datum {
   String? description;
   String? thumbnail;
   String? landscape;
-  String? webImg;
-  String? videoUploadType;
-  String? video;
-  String? trailerUrl;
-  String? releaseYear;
-  String? ageRestriction;
-  String? maxVideoQuality;
-  String? releaseTag;
-  String? videoUrl;
-  String? videoExtension;
-  int? isPremium;
-  int? videoDuration;
-  int? videoSize;
   int? view;
   dynamic imdbRating;
-  int? download;
-  int? avgRating;
-  int? noOfRating;
   String? status;
   String? isTitle;
-  String? video320;
-  String? video480;
-  String? video720;
-  String? video1080;
-  String? subtitleType;
-  String? subtitle;
+  int? isPremium;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -474,6 +454,28 @@ class Datum {
   int? isBuy;
   String? categoryName;
   String? sessionId;
+  String? videoUploadType;
+  String? trailerType;
+  String? trailerUrl;
+  String? releaseYear;
+  String? ageRestriction;
+  String? maxVideoQuality;
+  String? releaseTag;
+  String? videoExtension;
+  int? videoDuration;
+  int? videoSize;
+  int? download;
+  String? video320;
+  String? video480;
+  String? video720;
+  String? video1080;
+  String? subtitleType;
+  String? subtitleLang1;
+  String? subtitleLang2;
+  String? subtitleLang3;
+  String? subtitle1;
+  String? subtitle2;
+  String? subtitle3;
   String? image;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -496,32 +498,11 @@ class Datum {
         description: json["description"],
         thumbnail: json["thumbnail"],
         landscape: json["landscape"],
-        webImg: json["web_img"],
-        videoUploadType: json["video_upload_type"],
-        video: json["video"],
-        trailerUrl: json["trailer_url"],
-        releaseYear: json["release_year"],
-        ageRestriction: json["age_restriction"],
-        maxVideoQuality: json["max_video_quality"],
-        releaseTag: json["release_tag"],
-        videoUrl: json["video_url"],
-        videoExtension: json["video_extension"],
-        isPremium: json["is_premium"],
-        videoDuration: json["video_duration"],
-        videoSize: json["video_size"],
         view: json["view"],
         imdbRating: json["imdb_rating"],
-        download: json["download"],
-        avgRating: json["avg_rating"],
-        noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
-        video320: json["video_320"],
-        video480: json["video_480"],
-        video720: json["video_720"],
-        video1080: json["video_1080"],
-        subtitleType: json["subtitle_type"],
-        subtitle: json["subtitle"],
+        isPremium: json["is_premium"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -533,6 +514,28 @@ class Datum {
         isBuy: json["is_buy"],
         categoryName: json["category_name"],
         sessionId: json["session_id"],
+        videoUploadType: json["video_upload_type"],
+        trailerType: json["trailer_type"],
+        trailerUrl: json["trailer_url"],
+        releaseYear: json["release_year"],
+        ageRestriction: json["age_restriction"],
+        maxVideoQuality: json["max_video_quality"],
+        releaseTag: json["release_tag"],
+        videoExtension: json["video_extension"],
+        videoDuration: json["video_duration"],
+        videoSize: json["video_size"],
+        download: json["download"],
+        video320: json["video_320"],
+        video480: json["video_480"],
+        video720: json["video_720"],
+        video1080: json["video_1080"],
+        subtitleType: json["subtitle_type"],
+        subtitleLang1: json["subtitle_lang_1"],
+        subtitleLang2: json["subtitle_lang_2"],
+        subtitleLang3: json["subtitle_lang_3"],
+        subtitle1: json["subtitle_1"],
+        subtitle2: json["subtitle_2"],
+        subtitle3: json["subtitle_3"],
         image: json["image"],
       );
 
@@ -556,32 +559,11 @@ class Datum {
         "description": description,
         "thumbnail": thumbnail,
         "landscape": landscape,
-        "web_img": webImg,
-        "video_upload_type": videoUploadType,
-        "video": video,
-        "trailer_url": trailerUrl,
-        "release_year": releaseYear,
-        "age_restriction": ageRestriction,
-        "max_video_quality": maxVideoQuality,
-        "release_tag": releaseTag,
-        "video_url": videoUrl,
-        "video_extension": videoExtension,
-        "is_premium": isPremium,
-        "video_duration": videoDuration,
-        "video_size": videoSize,
         "view": view,
         "imdb_rating": imdbRating,
-        "download": download,
-        "avg_rating": avgRating,
-        "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
-        "video_320": video320,
-        "video_480": video480,
-        "video_720": video720,
-        "video_1080": video1080,
-        "subtitle_type": subtitleType,
-        "subtitle": subtitle,
+        "is_premium": isPremium,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,
@@ -593,6 +575,28 @@ class Datum {
         "is_buy": isBuy,
         "category_name": categoryName,
         "session_id": sessionId,
+        "video_upload_type": videoUploadType,
+        "trailer_type": trailerType,
+        "trailer_url": trailerUrl,
+        "release_year": releaseYear,
+        "age_restriction": ageRestriction,
+        "max_video_quality": maxVideoQuality,
+        "release_tag": releaseTag,
+        "video_extension": videoExtension,
+        "video_duration": videoDuration,
+        "video_size": videoSize,
+        "download": download,
+        "video_320": video320,
+        "video_480": video480,
+        "video_720": video720,
+        "video_1080": video1080,
+        "subtitle_type": subtitleType,
+        "subtitle_lang_1": subtitleLang1,
+        "subtitle_lang_2": subtitleLang2,
+        "subtitle_lang_3": subtitleLang3,
+        "subtitle_1": subtitle1,
+        "subtitle_2": subtitle2,
+        "subtitle_3": subtitle3,
         "image": image,
       };
 }

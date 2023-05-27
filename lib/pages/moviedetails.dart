@@ -75,27 +75,31 @@ class MovieDetailsState extends State<MovieDetails> {
     _getData();
   }
 
-  void _getData() async {
+  _getData() async {
     Utils.getCurrencySymbol();
     await videoDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId);
 
     if (videoDetailsProvider.sectionDetailModel.status == 200) {
       if (videoDetailsProvider.sectionDetailModel.result != null) {
-        qualityUrlList = <String, String>{
-          '320p':
-              videoDetailsProvider.sectionDetailModel.result?.video320 ?? '',
-          '480p':
-              videoDetailsProvider.sectionDetailModel.result?.video480 ?? '',
-          '720p':
-              videoDetailsProvider.sectionDetailModel.result?.video720 ?? '',
-          '1080p':
-              videoDetailsProvider.sectionDetailModel.result?.video1080 ?? '',
-        };
-        debugPrint("qualityUrlList ==========> ${qualityUrlList.length}");
-        Constant.resolutionsUrls = qualityUrlList;
-        debugPrint(
-            "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
+        /* Set-up Subtitle URLs */
+        Utils.setSubtitleURLs(
+          subtitleUrl1:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitle1 ?? ""),
+          subtitleUrl2:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitle2 ?? ""),
+          subtitleUrl3:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitle3 ?? ""),
+          subtitleLang1:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitleLang1 ??
+                  ""),
+          subtitleLang2:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitleLang2 ??
+                  ""),
+          subtitleLang3:
+              (videoDetailsProvider.sectionDetailModel.result?.subtitleLang3 ??
+                  ""),
+        );
       }
     }
 
@@ -906,10 +910,7 @@ class MovieDetailsState extends State<MovieDetails> {
                             ],
                           ),
                         ),
-                        (videoDetailsProvider
-                                        .sectionDetailModel.result?.subtitle ??
-                                    "")
-                                .isNotEmpty
+                        Constant.subtitleUrls.isNotEmpty
                             ? Container(
                                 constraints: const BoxConstraints(minHeight: 0),
                                 margin: const EdgeInsets.only(top: 10),
@@ -1382,10 +1383,7 @@ class MovieDetailsState extends State<MovieDetails> {
                                           ),
                                         ),
                                         /* Subtitle */
-                                        (videoDetailsProvider.sectionDetailModel
-                                                        .result?.subtitle ??
-                                                    "")
-                                                .isNotEmpty
+                                        Constant.subtitleUrls.isNotEmpty
                                             ? Container(
                                                 constraints:
                                                     const BoxConstraints(
@@ -2901,12 +2899,7 @@ class MovieDetailsState extends State<MovieDetails> {
                   ),
                   const SizedBox(height: 2),
                   MyText(
-                    text: (videoDetailsProvider
-                                    .sectionDetailModel.result?.subtitle ??
-                                "")
-                            .isNotEmpty
-                        ? "Available"
-                        : "-",
+                    text: Constant.subtitleUrls.isNotEmpty ? "Available" : "-",
                     fontsizeNormal: 16,
                     fontweight: FontWeight.w500,
                     fontsizeWeb: 17,
@@ -3185,7 +3178,7 @@ class MovieDetailsState extends State<MovieDetails> {
 
   /* ========= Open Player ========= */
   void openPlayer(String playType) async {
-    if (!kIsWeb) Utils.deleteCacheDir();
+    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
 
     /* CHECK SUBSCRIPTION */
     if (playType != "Trailer") {
@@ -3212,17 +3205,45 @@ class MovieDetailsState extends State<MovieDetails> {
     String? videoThumb =
         (videoDetailsProvider.sectionDetailModel.result?.landscape ?? "");
 
-    String? vUrl, vSubtitle, vUploadType;
+    String? vUrl, vUploadType;
     if (playType == "Trailer") {
+      Utils.clearQualitySubtitle();
       vUploadType =
-          (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ??
-              "");
+          (videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
       vUrl = (videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "");
-      vSubtitle = "";
     } else {
+      /* Set-up Quality URLs */
+      Utils.setQualityURLs(
+        video320:
+            (videoDetailsProvider.sectionDetailModel.result?.video320 ?? ""),
+        video480:
+            (videoDetailsProvider.sectionDetailModel.result?.video480 ?? ""),
+        video720:
+            (videoDetailsProvider.sectionDetailModel.result?.video720 ?? ""),
+        video1080:
+            (videoDetailsProvider.sectionDetailModel.result?.video1080 ?? ""),
+      );
+
+      /* Set-up Subtitle URLs */
+      Utils.setSubtitleURLs(
+        subtitleUrl1:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitle1 ?? ""),
+        subtitleUrl2:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitle2 ?? ""),
+        subtitleUrl3:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitle3 ?? ""),
+        subtitleLang1:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang1 ??
+                ""),
+        subtitleLang2:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang2 ??
+                ""),
+        subtitleLang3:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang3 ??
+                ""),
+      );
+
       vUrl = (videoDetailsProvider.sectionDetailModel.result?.video320 ?? "");
-      vSubtitle =
-          (videoDetailsProvider.sectionDetailModel.result?.subtitle ?? "");
       vUploadType =
           (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ??
               "");
@@ -3251,7 +3272,6 @@ class MovieDetailsState extends State<MovieDetails> {
       trailerUrl: vUrl,
       uploadType: vUploadType,
       videoThumb: videoThumb,
-      vSubtitle: vSubtitle,
       vStopTime: stopTime,
     );
 

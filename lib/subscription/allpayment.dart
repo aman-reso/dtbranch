@@ -972,25 +972,36 @@ class AllPaymentState extends State<AllPayment> {
   Future<void> _paytmInit() async {
     if (paymentProvider.paymentOptionModel.result?.payTm != null) {
       var sendMap = <String, dynamic>{
-        "mid": paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "",
+        "mid": paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
+            ? paymentProvider.paymentOptionModel.result?.payTm?.liveKey1 ?? ""
+            : paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "",
         "orderId": paymentId,
         "amount": paymentProvider.finalAmount ?? "",
         "txnToken": "",
         "callbackUrl":
-            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=paymentId",
-        "isStaging": true,
+            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=$paymentId",
+        "isStaging":
+            paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
+                ? false
+                : true,
         "restrictAppInvoke": false,
         "enableAssist": true
       };
       debugPrint("sendMap ===> $sendMap");
       try {
         var response = AllInOneSdk.startTransaction(
-            paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "",
+            paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
+                ? paymentProvider.paymentOptionModel.result?.payTm?.liveKey1 ??
+                    ""
+                : paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ??
+                    "",
             paymentId ?? "",
             paymentProvider.finalAmount ?? "",
             "",
-            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=paymentId",
-            true,
+            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=$paymentId",
+            paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
+                ? false
+                : true,
             false,
             true);
         response.then((value) {

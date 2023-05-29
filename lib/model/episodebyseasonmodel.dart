@@ -46,10 +46,8 @@ class Result {
     this.sessionId,
     this.thumbnail,
     this.landscape,
-    this.video,
     this.videoUploadType,
     this.videoType,
-    this.videoUrl,
     this.videoExtension,
     this.videoDuration,
     this.isPremium,
@@ -86,10 +84,8 @@ class Result {
   int? sessionId;
   String? thumbnail;
   String? landscape;
-  String? video;
   String? videoUploadType;
   String? videoType;
-  String? videoUrl;
   String? videoExtension;
   int? videoDuration;
   int? isPremium;
@@ -126,10 +122,8 @@ class Result {
         sessionId: json["session_id"],
         thumbnail: json["thumbnail"],
         landscape: json["landscape"],
-        video: json["video"],
         videoUploadType: json["video_upload_type"],
         videoType: json["video_type"],
-        videoUrl: json["video_url"],
         videoExtension: json["video_extension"],
         videoDuration: json["video_duration"],
         isPremium: json["is_premium"],
@@ -167,10 +161,8 @@ class Result {
         "session_id": sessionId,
         "thumbnail": thumbnail,
         "landscape": landscape,
-        "video": video,
         "video_upload_type": videoUploadType,
         "video_type": videoType,
-        "video_url": videoUrl,
         "video_extension": videoExtension,
         "video_duration": videoDuration,
         "is_premium": isPremium,

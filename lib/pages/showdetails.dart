@@ -3227,7 +3227,6 @@ class ShowDetailsState extends State<ShowDetails> {
 
   /* ========= Open Player ========= */
   openPlayer(String playType) async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     log("mCurrentEpiPos ========> ${showDetailsProvider.mCurrentEpiPos}");
 
     /* CHECK SUBSCRIPTION */

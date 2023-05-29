@@ -93,7 +93,6 @@ class TVHomeState extends State<TVHome> {
   }
 
   _getData() async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 

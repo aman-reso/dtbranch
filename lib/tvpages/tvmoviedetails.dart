@@ -2583,8 +2583,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
 
   /* ========= Open Player ========= */
   openPlayer(String playType) async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
-
     /* CHECK SUBSCRIPTION */
     if (playType != "Trailer") {
       bool? isPrimiumUser = await _checkSubsRentLogin();
@@ -2627,6 +2625,25 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
             (videoDetailsProvider.sectionDetailModel.result?.video720 ?? ""),
         video1080:
             (videoDetailsProvider.sectionDetailModel.result?.video1080 ?? ""),
+      );
+
+      /* Set-up Subtitle URLs */
+      Utils.setSubtitleURLs(
+        subtitleUrl1:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitle1 ?? ""),
+        subtitleUrl2:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitle2 ?? ""),
+        subtitleUrl3:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitle3 ?? ""),
+        subtitleLang1:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang1 ??
+                ""),
+        subtitleLang2:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang2 ??
+                ""),
+        subtitleLang3:
+            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang3 ??
+                ""),
       );
       vUrl = (videoDetailsProvider.sectionDetailModel.result?.video320 ?? "");
       vUploadType =

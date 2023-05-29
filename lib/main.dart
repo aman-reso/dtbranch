@@ -104,6 +104,9 @@ Future<void> main() async {
   );
 }
 
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -132,6 +135,7 @@ class _MyAppState extends State<MyApp> {
         builder: (locale) => MaterialApp(
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [routeObserver], //HERE
           theme: ThemeData(
             primaryColor: primaryColor,
             primaryColorDark: primaryDarkColor,

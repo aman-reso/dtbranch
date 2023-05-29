@@ -64,7 +64,6 @@ class _CommonAppBarState extends State<CommonAppBar> {
   }
 
   _getData() async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
     Utils.getCurrencySymbol();
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);

@@ -1058,8 +1058,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
 
   /* ========= Open Player ========= */
   openPlayer(playType, position) async {
-    if (!(kIsWeb || Constant.isTV)) Utils.deleteCacheDir();
-
     /* CHECK SUBSCRIPTION */
     if (playType != "Trailer") {
       bool? isPrimiumUser = await _checkSubsRentLogin(position);

@@ -112,7 +112,6 @@ class Utils {
     required String? videoThumb,
     required int? vStopTime,
   }) async {
-    if (!(kIsWeb || Constant.isTV)) deleteCacheDir();
     dynamic isContinue;
     int? vID = (videoId ?? 0);
     int? vType = (videoType ?? 0);

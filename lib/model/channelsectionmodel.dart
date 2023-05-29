@@ -102,7 +102,6 @@ class Result {
     this.typeId,
     this.categoryId,
     this.channelId,
-    this.liveUrl,
     this.videoId,
     this.tvShowId,
     this.languageId,
@@ -111,8 +110,6 @@ class Result {
     this.videoType,
     this.sectionType,
     this.screenLayout,
-    this.filderBy,
-    this.isViewAll,
     this.status,
     this.createdAt,
     this.updatedAt,
@@ -124,7 +121,6 @@ class Result {
   int? typeId;
   int? categoryId;
   String? channelId;
-  String? liveUrl;
   String? videoId;
   String? tvShowId;
   String? languageId;
@@ -133,8 +129,6 @@ class Result {
   String? videoType;
   int? sectionType;
   String? screenLayout;
-  String? filderBy;
-  int? isViewAll;
   int? status;
   String? createdAt;
   String? updatedAt;
@@ -146,7 +140,6 @@ class Result {
         typeId: json["type_id"],
         categoryId: json["category_id"],
         channelId: json["channel_id"],
-        liveUrl: json["live_url"],
         videoId: json["video_id"],
         tvShowId: json["tv_show_id"],
         languageId: json["language_id"],
@@ -155,8 +148,6 @@ class Result {
         videoType: json["video_type"],
         sectionType: json["section_type"],
         screenLayout: json["screen_layout"],
-        filderBy: json["filder_by"],
-        isViewAll: json["is_view_all"],
         status: json["status"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
@@ -169,7 +160,6 @@ class Result {
         "type_id": typeId,
         "category_id": categoryId,
         "channel_id": channelId,
-        "live_url": liveUrl,
         "video_id": videoId,
         "tv_show_id": tvShowId,
         "language_id": languageId,
@@ -178,8 +168,6 @@ class Result {
         "video_type": videoType,
         "section_type": sectionType,
         "screen_layout": screenLayout,
-        "filder_by": filderBy,
-        "is_view_all": isViewAll,
         "status": status,
         "created_at": createdAt,
         "updated_at": updatedAt,
@@ -203,9 +191,8 @@ class Datum {
     this.name,
     this.thumbnail,
     this.landscape,
-    this.webImg,
     this.videoUploadType,
-    this.video,
+    this.trailerType,
     this.trailerUrl,
     this.releaseYear,
     this.ageRestriction,
@@ -213,7 +200,6 @@ class Datum {
     this.releaseTag,
     this.typeId,
     this.videoType,
-    this.videoUrl,
     this.videoExtension,
     this.isPremium,
     this.description,
@@ -222,8 +208,6 @@ class Datum {
     this.view,
     this.imdbRating,
     this.download,
-    this.avgRating,
-    this.noOfRating,
     this.status,
     this.isTitle,
     this.video320,
@@ -232,6 +216,12 @@ class Datum {
     this.video1080,
     this.subtitleType,
     this.subtitle,
+    this.subtitleLang1,
+    this.subtitleLang2,
+    this.subtitleLang3,
+    this.subtitle1,
+    this.subtitle2,
+    this.subtitle3,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -261,9 +251,8 @@ class Datum {
   String? name;
   String? thumbnail;
   String? landscape;
-  String? webImg;
   String? videoUploadType;
-  String? video;
+  String? trailerType;
   String? trailerUrl;
   String? releaseYear;
   String? ageRestriction;
@@ -271,7 +260,6 @@ class Datum {
   String? releaseTag;
   int? typeId;
   int? videoType;
-  String? videoUrl;
   String? videoExtension;
   int? isPremium;
   String? description;
@@ -280,8 +268,6 @@ class Datum {
   int? view;
   dynamic imdbRating;
   int? download;
-  int? avgRating;
-  int? noOfRating;
   String? status;
   String? isTitle;
   String? video320;
@@ -290,6 +276,12 @@ class Datum {
   String? video1080;
   String? subtitleType;
   String? subtitle;
+  String? subtitleLang1;
+  String? subtitleLang2;
+  String? subtitleLang3;
+  String? subtitle1;
+  String? subtitle2;
+  String? subtitle3;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -319,9 +311,8 @@ class Datum {
         name: json["name"],
         thumbnail: json["thumbnail"],
         landscape: json["landscape"],
-        webImg: json["web_img"],
         videoUploadType: json["video_upload_type"],
-        video: json["video"],
+        trailerType: json["trailer_type"],
         trailerUrl: json["trailer_url"],
         releaseYear: json["release_year"],
         ageRestriction: json["age_restriction"],
@@ -329,7 +320,6 @@ class Datum {
         releaseTag: json["release_tag"],
         typeId: json["type_id"],
         videoType: json["video_type"],
-        videoUrl: json["video_url"],
         videoExtension: json["video_extension"],
         isPremium: json["is_premium"],
         description: json["description"],
@@ -338,8 +328,6 @@ class Datum {
         view: json["view"],
         imdbRating: json["imdb_rating"],
         download: json["download"],
-        avgRating: json["avg_rating"],
-        noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
         video320: json["video_320"],
@@ -348,6 +336,12 @@ class Datum {
         video1080: json["video_1080"],
         subtitleType: json["subtitle_type"],
         subtitle: json["subtitle"],
+        subtitleLang1: json["subtitle_lang_1"],
+        subtitleLang2: json["subtitle_lang_2"],
+        subtitleLang3: json["subtitle_lang_3"],
+        subtitle1: json["subtitle_1"],
+        subtitle2: json["subtitle_2"],
+        subtitle3: json["subtitle_3"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -378,9 +372,8 @@ class Datum {
         "name": name,
         "thumbnail": thumbnail,
         "landscape": landscape,
-        "web_img": webImg,
         "video_upload_type": videoUploadType,
-        "video": video,
+        "trailer_type": trailerType,
         "trailer_url": trailerUrl,
         "release_year": releaseYear,
         "age_restriction": ageRestriction,
@@ -388,7 +381,6 @@ class Datum {
         "release_tag": releaseTag,
         "type_id": typeId,
         "video_type": videoType,
-        "video_url": videoUrl,
         "video_extension": videoExtension,
         "is_premium": isPremium,
         "description": description,
@@ -397,8 +389,6 @@ class Datum {
         "view": view,
         "imdb_rating": imdbRating,
         "download": download,
-        "avg_rating": avgRating,
-        "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
         "video_320": video320,
@@ -407,6 +397,12 @@ class Datum {
         "video_1080": video1080,
         "subtitle_type": subtitleType,
         "subtitle": subtitle,
+        "subtitle_lang_1": subtitleLang1,
+        "subtitle_lang_2": subtitleLang2,
+        "subtitle_lang_3": subtitleLang3,
+        "subtitle_1": subtitle1,
+        "subtitle_2": subtitle2,
+        "subtitle_3": subtitle3,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,

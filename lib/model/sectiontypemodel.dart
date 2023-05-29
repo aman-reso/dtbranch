@@ -54,22 +54,22 @@ class Result {
   int? id;
   String? name;
   int? type;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String? createdAt;
+  String? updatedAt;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
         id: json["id"],
         name: json["name"],
         type: json["type"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "type": type,
-        "created_at": createdAt.toString(),
-        "updated_at": updatedAt.toString(),
+        "created_at": createdAt,
+        "updated_at": updatedAt,
       };
 }

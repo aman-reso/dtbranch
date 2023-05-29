@@ -256,9 +256,7 @@ class ProfileEditState extends State<ProfileEdit> {
                           overflow: TextOverflow.ellipsis,
                           fontstyle: FontStyle.normal,
                         ),
-                        const SizedBox(
-                          height: 3,
-                        ),
+                        const SizedBox(height: 3),
                         MyText(
                           color: white,
                           multilanguage: true,
@@ -273,9 +271,7 @@ class ProfileEditState extends State<ProfileEdit> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
 
                   /* Camera Pick */
                   InkWell(

@@ -67,8 +67,6 @@ class Tvshow {
     this.landscape,
     this.view,
     this.imdbRating,
-    this.avgRating,
-    this.noOfRating,
     this.status,
     this.isTitle,
     this.isPremium,
@@ -106,8 +104,6 @@ class Tvshow {
   String? landscape;
   int? view;
   dynamic imdbRating;
-  int? avgRating;
-  int? noOfRating;
   String? status;
   String? isTitle;
   int? isPremium;
@@ -145,8 +141,6 @@ class Tvshow {
         landscape: json["landscape"],
         view: json["view"],
         imdbRating: json["imdb_rating"],
-        avgRating: json["avg_rating"],
-        noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
         isPremium: json["is_premium"],
@@ -185,8 +179,6 @@ class Tvshow {
         "landscape": landscape,
         "view": view,
         "imdb_rating": imdbRating,
-        "avg_rating": avgRating,
-        "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
         "is_premium": isPremium,
@@ -219,9 +211,8 @@ class Video {
     this.name,
     this.thumbnail,
     this.landscape,
-    this.webImg,
     this.videoUploadType,
-    this.video,
+    this.trailerType,
     this.trailerUrl,
     this.releaseYear,
     this.ageRestriction,
@@ -229,7 +220,6 @@ class Video {
     this.releaseTag,
     this.typeId,
     this.videoType,
-    this.videoUrl,
     this.videoExtension,
     this.isPremium,
     this.description,
@@ -238,8 +228,6 @@ class Video {
     this.view,
     this.imdbRating,
     this.download,
-    this.avgRating,
-    this.noOfRating,
     this.status,
     this.isTitle,
     this.video320,
@@ -247,7 +235,12 @@ class Video {
     this.video720,
     this.video1080,
     this.subtitleType,
-    this.subtitle,
+    this.subtitleLang1,
+    this.subtitleLang2,
+    this.subtitleLang3,
+    this.subtitle1,
+    this.subtitle2,
+    this.subtitle3,
     this.createdAt,
     this.updatedAt,
     this.stopTime,
@@ -274,9 +267,8 @@ class Video {
   String? name;
   String? thumbnail;
   String? landscape;
-  String? webImg;
   String? videoUploadType;
-  String? video;
+  String? trailerType;
   String? trailerUrl;
   String? releaseYear;
   String? ageRestriction;
@@ -284,7 +276,6 @@ class Video {
   String? releaseTag;
   int? typeId;
   int? videoType;
-  String? videoUrl;
   String? videoExtension;
   int? isPremium;
   String? description;
@@ -293,8 +284,6 @@ class Video {
   int? view;
   dynamic imdbRating;
   int? download;
-  int? avgRating;
-  int? noOfRating;
   String? status;
   String? isTitle;
   String? video320;
@@ -302,7 +291,12 @@ class Video {
   String? video720;
   String? video1080;
   String? subtitleType;
-  String? subtitle;
+  String? subtitleLang1;
+  String? subtitleLang2;
+  String? subtitleLang3;
+  String? subtitle1;
+  String? subtitle2;
+  String? subtitle3;
   String? createdAt;
   String? updatedAt;
   int? stopTime;
@@ -329,9 +323,8 @@ class Video {
         name: json["name"],
         thumbnail: json["thumbnail"],
         landscape: json["landscape"],
-        webImg: json["web_img"],
         videoUploadType: json["video_upload_type"],
-        video: json["video"],
+        trailerType: json["trailer_type"],
         trailerUrl: json["trailer_url"],
         releaseYear: json["release_year"],
         ageRestriction: json["age_restriction"],
@@ -339,7 +332,6 @@ class Video {
         releaseTag: json["release_tag"],
         typeId: json["type_id"],
         videoType: json["video_type"],
-        videoUrl: json["video_url"],
         videoExtension: json["video_extension"],
         isPremium: json["is_premium"],
         description: json["description"],
@@ -348,8 +340,6 @@ class Video {
         view: json["view"],
         imdbRating: json["imdb_rating"],
         download: json["download"],
-        avgRating: json["avg_rating"],
-        noOfRating: json["no_of_rating"],
         status: json["status"],
         isTitle: json["is_title"],
         video320: json["video_320"],
@@ -357,7 +347,12 @@ class Video {
         video720: json["video_720"],
         video1080: json["video_1080"],
         subtitleType: json["subtitle_type"],
-        subtitle: json["subtitle"],
+        subtitleLang1: json["subtitle_lang_1"],
+        subtitleLang2: json["subtitle_lang_2"],
+        subtitleLang3: json["subtitle_lang_3"],
+        subtitle1: json["subtitle_1"],
+        subtitle2: json["subtitle_2"],
+        subtitle3: json["subtitle_3"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         stopTime: json["stop_time"],
@@ -385,9 +380,8 @@ class Video {
         "name": name,
         "thumbnail": thumbnail,
         "landscape": landscape,
-        "web_img": webImg,
         "video_upload_type": videoUploadType,
-        "video": video,
+        "trailer_type": trailerType,
         "trailer_url": trailerUrl,
         "release_year": releaseYear,
         "age_restriction": ageRestriction,
@@ -395,7 +389,6 @@ class Video {
         "release_tag": releaseTag,
         "type_id": typeId,
         "video_type": videoType,
-        "video_url": videoUrl,
         "video_extension": videoExtension,
         "is_premium": isPremium,
         "description": description,
@@ -404,8 +397,6 @@ class Video {
         "view": view,
         "imdb_rating": imdbRating,
         "download": download,
-        "avg_rating": avgRating,
-        "no_of_rating": noOfRating,
         "status": status,
         "is_title": isTitle,
         "video_320": video320,
@@ -413,7 +404,12 @@ class Video {
         "video_720": video720,
         "video_1080": video1080,
         "subtitle_type": subtitleType,
-        "subtitle": subtitle,
+        "subtitle_lang_1": subtitleLang1,
+        "subtitle_lang_2": subtitleLang2,
+        "subtitle_lang_3": subtitleLang3,
+        "subtitle_1": subtitle1,
+        "subtitle_2": subtitle2,
+        "subtitle_3": subtitle3,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "stop_time": stopTime,

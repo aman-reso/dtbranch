@@ -31,6 +31,7 @@ import 'package:dtlive/provider/watchlistprovider.dart';
 import 'package:dtlive/tvpages/tvhome.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -119,6 +120,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    if (!kIsWeb) Utils.enableScreenCapture();
     _getDeviceInfo();
     _getPackage();
     super.initState();

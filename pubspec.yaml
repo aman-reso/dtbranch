@@ -117,6 +117,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   http_auth: ^1.0.1
   flutter_paypal: ^0.0.7
+  screen_protector: ^1.2.0
 
 
 dev_dependencies:

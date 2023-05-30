@@ -2,7 +2,7 @@ import 'package:dtlive/provider/avatarprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/utils.dart';
-import 'package:dtlive/widget/mynetworkimg.dart';
+import 'package:dtlive/widget/myusernetworkimg.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -91,7 +91,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
                                       alignment: Alignment.center,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(40),
-                                        child: MyNetworkImage(
+                                        child: MyUserNetworkImage(
                                           imageUrl: avatarProvider.avatarModel
                                                   .result?[position].image
                                                   .toString() ??

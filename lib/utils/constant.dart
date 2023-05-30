@@ -2,10 +2,10 @@ import 'package:dtlive/model/subtitlemodel.dart';
 
 class Constant {
   static const String baseurl =
-      'http://demo.divinetechs.in/apps/dtlive/public/api/';
+      'http://demo.divinetechs.com/apps/dtlive/public/api/';
 
   // static const String baseurl =
-  //     'http://demo.divinetechs.com/apps/dtlive/public/api/';
+  //     'http://demo.divinetechs.in/apps/dtlive/public/api/';
 
   static String? appName = "DTLive";
   static String? appPackageName = "com.divinetechs.dtlive";

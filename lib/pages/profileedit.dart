@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dtlive/pages/profileavatar.dart';
 import 'package:dtlive/utils/dimens.dart';
+import 'package:dtlive/widget/myusernetworkimg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dtlive/provider/profileprovider.dart';
@@ -10,7 +11,6 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
-import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/widget/mytextformfield.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +100,7 @@ class ProfileEditState extends State<ProfileEdit> {
                             height: 90,
                             width: 90,
                           )
-                        : MyNetworkImage(
+                        : MyUserNetworkImage(
                             imageUrl: profileProvider.profileModel.status == 200
                                 ? profileProvider.profileModel.result != null
                                     ? (profileProvider

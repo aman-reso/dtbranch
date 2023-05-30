@@ -10,6 +10,7 @@ import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/castcrew.dart';
 import 'package:dtlive/widget/moredetails.dart';
+import 'package:dtlive/widget/myusernetworkimg.dart';
 import 'package:dtlive/widget/relatedvideoshow.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -2574,7 +2575,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                           : Dimens.widthCast,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(Dimens.cardRadius),
-                        child: MyNetworkImage(
+                        child: MyUserNetworkImage(
                           imageUrl: directorList?[0].image ?? "",
                           fit: BoxFit.cover,
                         ),

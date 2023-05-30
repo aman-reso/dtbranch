@@ -28,7 +28,6 @@ import 'package:dtlive/model/successmodel.dart';
 import 'package:dtlive/model/videobyidmodel.dart';
 import 'package:dtlive/model/watchlistmodel.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:flutter/foundation.dart';
 
 class ApiService {
   String baseUrl = Constant.baseurl;
@@ -180,31 +179,21 @@ class ApiService {
 
   // image_upload API
   Future<SuccessModel> imageUpload(File? profileImg) async {
+    log("ProfileImg Filename :==> ${profileImg?.path.split('/').last}");
+    log("profileImg Extension :==> ${profileImg?.path.split('/').last.split(".").last}");
     SuccessModel uploadImgModel;
     String uploadImage = "image_upload";
     log("imageUpload API :==> $baseUrl$uploadImage");
-    log("ProfileImg Filename :==> ${profileImg!.path.split('/').last}");
-    log("profileImg Extension :==> ${profileImg.path.split('/').last.split(".").last}");
-
-    final bytes = await profileImg.readAsBytes();
-    late MultipartFile multipartFile;
-    if (kIsWeb) {
-      multipartFile = MultipartFile.fromBytes(
-        bytes,
-        filename: profileImg.path.split('/').last,
-      );
-    } else {
-      multipartFile = await MultipartFile.fromFile(
-        profileImg.path,
-        filename: profileImg.path.split('/').last,
-      );
-    }
-
     Response response = await dio.post(
       '$baseUrl$uploadImage',
       data: FormData.fromMap({
         'id': Constant.userID,
-        'image': profileImg.path.isNotEmpty ? multipartFile : "",
+        'image': (profileImg?.path ?? "").isNotEmpty
+            ? await MultipartFile.fromFile(
+                profileImg?.path ?? "",
+                filename: (profileImg?.path ?? "").split('/').last,
+              )
+            : "",
       }),
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );

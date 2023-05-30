@@ -4,6 +4,7 @@ import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/moredetails.dart';
+import 'package:dtlive/widget/myusernetworkimg.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:dtlive/model/sectiondetailmodel.dart';
@@ -2338,7 +2339,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                           child: ClipRRect(
                             borderRadius:
                                 BorderRadius.circular(Dimens.cardRadius),
-                            child: MyNetworkImage(
+                            child: MyUserNetworkImage(
                               imageUrl: castList[position].image.toString(),
                               fit: BoxFit.cover,
                             ),
@@ -2437,7 +2438,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                         child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(Dimens.cardRadius),
-                          child: MyNetworkImage(
+                          child: MyUserNetworkImage(
                             imageUrl: directorList?[0].image ?? "",
                             fit: BoxFit.cover,
                           ),

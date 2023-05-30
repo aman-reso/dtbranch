@@ -5,8 +5,8 @@ import 'package:dtlive/pages/castdetails.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
+import 'package:dtlive/widget/myusernetworkimg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
@@ -149,7 +149,7 @@ class _CastCrewState extends State<CastCrew> {
                         child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(Dimens.cardRadius),
-                          child: MyNetworkImage(
+                          child: MyUserNetworkImage(
                             imageUrl: widget.castList?[position].image ?? "",
                             fit: BoxFit.cover,
                           ),

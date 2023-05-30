@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/provider/showdownloadprovider.dart';
 import 'package:dtlive/subscription/subscription.dart';
+import 'package:dtlive/widget/myusernetworkimg.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/model/sectiondetailmodel.dart';
@@ -2414,7 +2415,7 @@ class ShowDetailsState extends State<ShowDetails> {
                           : Dimens.widthCast,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(Dimens.cardRadius),
-                        child: MyNetworkImage(
+                        child: MyUserNetworkImage(
                           imageUrl: directorList?[0].image ?? "",
                           fit: BoxFit.cover,
                         ),

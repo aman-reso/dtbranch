@@ -19,9 +19,10 @@ import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class VideosByID extends StatefulWidget {
   final String appBarTitle, layoutType;
-  final int itemID;
+  final int itemID, typeId;
   const VideosByID(
     this.itemID,
+    this.typeId,
     this.appBarTitle,
     this.layoutType, {
     Key? key,
@@ -45,9 +46,9 @@ class VideosByIDState extends State<VideosByID> {
     final videoByIDProvider =
         Provider.of<VideoByIDProvider>(context, listen: false);
     if (widget.layoutType == "ByCategory") {
-      await videoByIDProvider.getVideoByCategory(widget.itemID);
+      await videoByIDProvider.getVideoByCategory(widget.itemID, widget.typeId);
     } else if (widget.layoutType == "ByLanguage") {
-      await videoByIDProvider.getVideoByLanguage(widget.itemID);
+      await videoByIDProvider.getVideoByLanguage(widget.itemID, widget.typeId);
     }
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;

@@ -1442,9 +1442,11 @@ class TVHomeState extends State<TVHome> {
         return landscape(sectionList?[index].data);
       }
     } else if ((sectionList?[index].videoType ?? "") == "3") {
-      return languageLayout(sectionList?[index].data);
+      return languageLayout(
+          sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else if ((sectionList?[index].videoType ?? "") == "4") {
-      return genresLayout(sectionList?[index].data);
+      return genresLayout(
+          sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
         return landscape(sectionList?[index].data);
@@ -1628,7 +1630,7 @@ class TVHomeState extends State<TVHome> {
     );
   }
 
-  Widget languageLayout(List<Datum>? sectionDataList) {
+  Widget languageLayout(int? typeId, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLangGen,
@@ -1654,6 +1656,7 @@ class TVHomeState extends State<TVHome> {
                       builder: (context) {
                         return TVVideosByID(
                           sectionDataList?[index].id ?? 0,
+                          typeId ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByLanguage",
                         );
@@ -1723,7 +1726,7 @@ class TVHomeState extends State<TVHome> {
     );
   }
 
-  Widget genresLayout(List<Datum>? sectionDataList) {
+  Widget genresLayout(int? typeId, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLangGen,
@@ -1749,6 +1752,7 @@ class TVHomeState extends State<TVHome> {
                       builder: (context) {
                         return TVVideosByID(
                           sectionDataList?[index].id ?? 0,
+                          typeId ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByCategory",
                         );

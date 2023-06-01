@@ -480,8 +480,9 @@ class ApiService {
   }
 
   // video_by_category API
-  Future<VideoByIdModel> videoByCategory(categoryID) async {
+  Future<VideoByIdModel> videoByCategory(categoryID, typeId) async {
     log('videoByCategory categoryID ==>>> $categoryID');
+    log('videoByCategory typeId ====>>>>> $typeId');
     VideoByIdModel videoByIdModel;
     String byCategory = "video_by_category";
     Response response = await dio.post(
@@ -490,6 +491,7 @@ class ApiService {
       data: {
         'user_id': Constant.userID,
         'category_id': categoryID,
+        'type_id': typeId,
       },
     );
     videoByIdModel = VideoByIdModel.fromJson(response.data);
@@ -497,8 +499,9 @@ class ApiService {
   }
 
   // video_by_language API
-  Future<VideoByIdModel> videoByLanguage(languageID) async {
+  Future<VideoByIdModel> videoByLanguage(languageID, typeId) async {
     log('videoByLanguage languageID ==>>> $languageID');
+    log('videoByLanguage typeId ====>>>>> $typeId');
     VideoByIdModel videoByIdModel;
     String byLanguage = "video_by_language";
     Response response = await dio.post(
@@ -507,6 +510,7 @@ class ApiService {
       data: {
         'user_id': Constant.userID,
         'language_id': languageID,
+        'type_id': typeId,
       },
     );
     videoByIdModel = VideoByIdModel.fromJson(response.data);

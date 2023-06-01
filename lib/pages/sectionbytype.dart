@@ -328,9 +328,11 @@ class SectionByTypeState extends State<SectionByType> {
         return landscape(sectionList?[index].data);
       }
     } else if ((sectionList?[index].videoType ?? "") == "3") {
-      return languageLayout(sectionList?[index].data);
+      return languageLayout(
+          sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else if ((sectionList?[index].videoType ?? "") == "4") {
-      return genresLayout(sectionList?[index].data);
+      return genresLayout(
+          sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
         return landscape(sectionList?[index].data);
@@ -569,7 +571,7 @@ class SectionByTypeState extends State<SectionByType> {
     );
   }
 
-  Widget languageLayout(List<Datum>? sectionDataList) {
+  Widget languageLayout(int? typeId, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLangGen,
@@ -596,6 +598,7 @@ class SectionByTypeState extends State<SectionByType> {
                       builder: (context) {
                         return VideosByID(
                           sectionDataList?[index].id ?? 0,
+                          typeId ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByLanguage",
                         );
@@ -640,7 +643,7 @@ class SectionByTypeState extends State<SectionByType> {
     );
   }
 
-  Widget genresLayout(List<Datum>? sectionDataList) {
+  Widget genresLayout(int? typeId, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLangGen,
@@ -667,6 +670,7 @@ class SectionByTypeState extends State<SectionByType> {
                       builder: (context) {
                         return VideosByID(
                           sectionDataList?[index].id ?? 0,
+                          typeId ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByCategory",
                         );

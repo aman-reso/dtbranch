@@ -292,6 +292,7 @@ class FindState extends State<Find> {
                                                           .result?[position]
                                                           .id ??
                                                       0,
+                                                  0,
                                                   findProvider
                                                           .genresModel
                                                           .result?[position]
@@ -435,6 +436,7 @@ class FindState extends State<Find> {
                                                           .result?[position]
                                                           .id ??
                                                       0,
+                                                  0,
                                                   findProvider
                                                           .langaugeModel
                                                           .result?[position]

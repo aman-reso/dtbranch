@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/sharedpre.dart';
@@ -17,7 +18,6 @@ import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/showdetails.dart';
-import 'package:dtlive/tvpages/tvvideosbyid.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -1052,9 +1052,11 @@ class HomeState extends State<Home> {
         return landscape(sectionList?[index].data);
       }
     } else if ((sectionList?[index].videoType ?? "") == "3") {
-      return languageLayout(sectionList?[index].data);
+      return languageLayout(
+          sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else if ((sectionList?[index].videoType ?? "") == "4") {
-      return genresLayout(sectionList?[index].data);
+      return genresLayout(
+          sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
         return landscape(sectionList?[index].data);
@@ -1238,7 +1240,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  Widget languageLayout(List<Datum>? sectionDataList) {
+  Widget languageLayout(int? typeId, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLangGen,
@@ -1262,8 +1264,9 @@ class HomeState extends State<Home> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return TVVideosByID(
+                        return VideosByID(
                           sectionDataList?[index].id ?? 0,
+                          typeId ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByLanguage",
                         );
@@ -1333,7 +1336,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  Widget genresLayout(List<Datum>? sectionDataList) {
+  Widget genresLayout(int? typeId, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLangGen,
@@ -1357,8 +1360,9 @@ class HomeState extends State<Home> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return TVVideosByID(
+                        return VideosByID(
                           sectionDataList?[index].id ?? 0,
+                          typeId ?? 0,
                           sectionDataList?[index].name ?? "",
                           "ByCategory",
                         );

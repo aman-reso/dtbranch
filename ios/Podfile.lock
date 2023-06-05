@@ -147,6 +147,10 @@ PODS:
     - Flutter
     - razorpay-pod
   - ReachabilitySwift (5.0.0)
+  - screen_protector (1.2.0):
+    - Flutter
+    - ScreenProtectorKit (~> 1.3.0)
+  - ScreenProtectorKit (1.3.0)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -235,6 +239,7 @@ DEPENDENCIES:
   - paytm_allinonesdk (from `.symlinks/plugins/paytm_allinonesdk/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - razorpay_flutter (from `.symlinks/plugins/razorpay_flutter/ios`)
+  - screen_protector (from `.symlinks/plugins/screen_protector/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - smart_auth (from `.symlinks/plugins/smart_auth/ios`)
@@ -274,6 +279,7 @@ SPEC REPOS:
     - PromisesObjC
     - razorpay-pod
     - ReachabilitySwift
+    - ScreenProtectorKit
     - Stripe
     - StripeApplePay
     - StripeCore
@@ -330,6 +336,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   razorpay_flutter:
     :path: ".symlinks/plugins/razorpay_flutter/ios"
+  screen_protector:
+    :path: ".symlinks/plugins/screen_protector/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
   sign_in_with_apple:
@@ -402,6 +410,8 @@ SPEC CHECKSUMS:
   razorpay-pod: 1ca021af16022084c1b368be9f030a4931f1e5f8
   razorpay_flutter: 84b3bfd206ae9c9c2a9ba585524a1b3d8102b6c1
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  screen_protector: e2bf297dd1b12760776fe7f918d96efd9e6cd823
+  ScreenProtectorKit: dd84c9635d5e4b941c5c0dedfcb910d08f532a6b
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
   smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2

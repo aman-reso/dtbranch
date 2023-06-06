@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:dio_logger/dio_logger.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:dtlive/model/avatarmodel.dart';
 import 'package:dtlive/model/castdetailmodel.dart';
 import 'package:dtlive/model/couponmodel.dart';
@@ -43,7 +43,15 @@ class ApiService {
 
   ApiService() {
     dio = Dio();
-    dio.interceptors.add(dioLoggerInterceptor);
+    dio.interceptors.add(
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        compact: false,
+      ),
+    );
   }
 
   // general_setting API

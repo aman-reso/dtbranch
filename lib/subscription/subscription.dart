@@ -204,7 +204,7 @@ class SubscriptionState extends State<Subscription> {
                               ? black
                               : primaryColor),
                           text:
-                              "${packageList?[index].price.toString() ?? ""} / ${packageList?[index].time.toString() ?? ""} ${packageList?[index].type.toString() ?? ""}",
+                              "${Constant.currencySymbol} ${packageList?[index].price.toString() ?? ""} / ${packageList?[index].time.toString() ?? ""} ${packageList?[index].type.toString() ?? ""}",
                           textalign: TextAlign.center,
                           fontsizeNormal: 16,
                           fontsizeWeb: 22,

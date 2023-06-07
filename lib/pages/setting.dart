@@ -76,7 +76,7 @@ class SettingState extends State<Setting> {
         Provider.of<GeneralProvider>(context, listen: false);
     userName = await sharedPref.read("username");
     userType = await sharedPref.read("usertype");
-    userMobileNo = await sharedPref.read("mobile");
+    userMobileNo = await sharedPref.read("usermobile");
     log('getUserData userName ==> $userName');
     log('getUserData userType ==> $userType');
     log('getUserData userMobileNo ==> $userMobileNo');
@@ -545,12 +545,7 @@ class SettingState extends State<Setting> {
                     subTitleMultilang: false,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 0.5,
-                  margin: const EdgeInsets.only(top: 8, bottom: 8),
-                  color: white,
-                ),
+                _buildLine(8.0, 8.0),
 
                 /* Refund Policy */
                 InkWell(
@@ -658,7 +653,7 @@ class SettingState extends State<Setting> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 0.5,
-      margin: const EdgeInsets.only(top: 8, bottom: 8),
+      margin: EdgeInsets.only(top: topMargin, bottom: bottomMargin),
       color: otherColor,
     );
   }

@@ -169,12 +169,13 @@ class HomeState extends State<Home> {
   }
 
   Future<void> setSelectedTab(int tabPos) async {
+    debugPrint("setSelectedTab tabPos ====> $tabPos");
     if (!mounted) return;
     await homeProvider.setSelectedTab(tabPos);
-
-    debugPrint("getTabData position ====> $tabPos");
     debugPrint(
-        "getTabData lastTabPosition ====> ${sectionDataProvider.lastTabPosition}");
+        "setSelectedTab selectedIndex ====> ${homeProvider.selectedIndex}");
+    debugPrint(
+        "setSelectedTab lastTabPosition ====> ${sectionDataProvider.lastTabPosition}");
     if (sectionDataProvider.lastTabPosition == tabPos) {
       return;
     } else {
@@ -184,6 +185,7 @@ class HomeState extends State<Home> {
 
   Future<void> getTabData(
       int position, List<type.Result>? sectionTypeList) async {
+    debugPrint("getTabData position ====> $position");
     await setSelectedTab(position);
     await sectionDataProvider.setLoading(true);
     await sectionDataProvider.getSectionBanner(

@@ -302,7 +302,8 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
 
   /* Google(Gmail) Login */
   Future<void> _gmailLogin() async {
-    final googleUser = await GoogleSignIn().signIn();
+    final googleUser = await GoogleSignIn().signIn().onError(
+        (error, stackTrace) async => await GoogleSignIn().signInSilently());
     if (googleUser == null) return;
 
     GoogleSignInAccount user = googleUser;

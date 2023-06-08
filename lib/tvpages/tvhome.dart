@@ -23,6 +23,7 @@ import 'package:dtlive/tvpages/tvvideosbyid.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/webwidget/searchweb.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -714,9 +715,13 @@ class TVHomeState extends State<TVHome> {
               type: MaterialType.transparency,
               child: InkWell(
                 autofocus: true,
-                focusColor: homeProvider.selectedIndex == index
-                    ? primaryColor
-                    : white.withOpacity(0.5),
+                focusColor: kIsWeb
+                    ? homeProvider.selectedIndex == index
+                        ? primaryColor
+                        : transparentColor
+                    : (homeProvider.selectedIndex == index
+                        ? primaryColor
+                        : white.withOpacity(0.5)),
                 borderRadius: BorderRadius.circular(25),
                 onTap: () async {
                   debugPrint("index ===========> $index");
@@ -887,6 +892,9 @@ class TVHomeState extends State<TVHome> {
               },
             ),
             const SizedBox(height: 20),
+
+            /* Web Footer */
+            kIsWeb ? const FooterWeb() : const SizedBox.shrink(),
           ],
         ),
       ),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
@@ -45,10 +43,9 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
 
   recptcha() async {
     if (kIsWeb) {
-      log("===>Web");
-
+      debugPrint("===>Web");
       ConfirmationResult confirmationResult = await _auth.signInWithPhoneNumber(
-          widget.mobileNumber!,
+          widget.mobileNumber ?? "",
           RecaptchaVerifier(
             onSuccess: () => codeSend(false),
             onError: (FirebaseAuthException error) => _onVerificationFailed,
@@ -57,8 +54,9 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
             theme: RecaptchaVerifierTheme.dark,
             auth: FirebaseAuthPlatform.instance,
           ));
+      debugPrint("verificationId ===> ${confirmationResult.verificationId}");
     } else {
-      log("===>app");
+      debugPrint("===>app");
       codeSend(false);
     }
   }
@@ -272,17 +270,17 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
   }
 
   _onVerificationCompleted(PhoneAuthCredential authCredential) async {
-    log("verification completed ${authCredential.smsCode}");
+    debugPrint("verification completed ${authCredential.smsCode}");
     setState(() {
       finalOTP = authCredential.smsCode ?? "";
       pinPutController.text = authCredential.smsCode ?? "";
-      log("finalOTP =====> $finalOTP");
+      debugPrint("finalOTP =====> $finalOTP");
     });
   }
 
   _onVerificationFailed(FirebaseAuthException exception) {
     if (exception.code == 'invalid-phone-number') {
-      log("The phone number entered is invalid!");
+      debugPrint("The phone number entered is invalid!");
       Utils.showSnackbar(context, "fail", "invalidphonenumber", true);
     }
   }
@@ -290,8 +288,8 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
   _onCodeSent(String verificationId, int? forceResendingToken) {
     this.verificationId = verificationId;
     this.forceResendingToken = forceResendingToken;
-    log("resendingToken =======> ${forceResendingToken.toString()}");
-    log("code sent");
+    debugPrint("resendingToken =======> ${forceResendingToken.toString()}");
+    debugPrint("code sent");
   }
 
   _onCodeTimeout(String timeout) {
@@ -303,21 +301,24 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
     bool error = false;
     UserCredential? userCredential;
 
-    log("_checkOTPAndLogin verificationId =====> $verificationId");
-    log("_checkOTPAndLogin smsCode =====> ${pinPutController.text}");
+    debugPrint("_checkOTPAndLogin verificationId =====> $verificationId");
+    debugPrint("_checkOTPAndLogin smsCode =====> ${pinPutController.text}");
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential? phoneAuthCredential = PhoneAuthProvider.credential(
       verificationId: verificationId ?? "",
       smsCode: pinPutController.text.toString(),
     );
 
-    log("phoneAuthCredential.smsCode        =====> ${phoneAuthCredential.smsCode}");
-    log("phoneAuthCredential.verificationId =====> ${phoneAuthCredential.verificationId}");
+    debugPrint(
+        "phoneAuthCredential.smsCode        =====> ${phoneAuthCredential.smsCode}");
+    debugPrint(
+        "phoneAuthCredential.verificationId =====> ${phoneAuthCredential.verificationId}");
     try {
       userCredential = await _auth.signInWithCredential(phoneAuthCredential);
-      log("_checkOTPAndLogin userCredential =====> ${userCredential.user?.phoneNumber ?? ""}");
+      debugPrint(
+          "_checkOTPAndLogin userCredential =====> ${userCredential.user?.phoneNumber ?? ""}");
     } on FirebaseAuthException catch (e) {
-      log("_checkOTPAndLogin error Code =====> ${e.code}");
+      debugPrint("_checkOTPAndLogin error Code =====> ${e.code}");
       if (e.code == 'invalid-verification-code' ||
           e.code == 'invalid-verification-id') {
         if (!mounted) return;
@@ -331,7 +332,8 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
         error = true;
       }
     }
-    log("Firebase Verification Complated & phoneNumber => ${userCredential?.user?.phoneNumber} and isError => $error");
+    debugPrint(
+        "Firebase Verification Complated & phoneNumber => ${userCredential?.user?.phoneNumber} and isError => $error");
     if (!error && userCredential != null) {
       _login(widget.mobileNumber.toString());
     } else {
@@ -341,7 +343,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
   }
 
   _login(String mobile) async {
-    log("click on Submit mobile => $mobile");
+    debugPrint("click on Submit mobile => $mobile");
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
@@ -352,8 +354,9 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
 
     if (!generalProvider.loading) {
       if (generalProvider.loginOTPModel.status == 200) {
-        log('loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
-        log('Login Successfull!');
+        debugPrint(
+            'loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
+        debugPrint('Login Successfull!');
         await sharePref.save(
             "userid", generalProvider.loginOTPModel.result?.id.toString());
         await sharePref.save("username",
@@ -369,7 +372,7 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
 
         // Set UserID for Next
         Constant.userID = generalProvider.loginOTPModel.result?.id.toString();
-        log('Constant userID ==>> ${Constant.userID}');
+        debugPrint('Constant userID ==>> ${Constant.userID}');
 
         if (!mounted) return;
         Navigator.pop(context);

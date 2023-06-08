@@ -50,7 +50,8 @@ Future<void> main() async {
     await FlutterDownloader.initialize();
   }
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+      name: Constant.appName, options: DefaultFirebaseOptions.currentPlatform);
   await Locales.init(['en', 'ar', 'hi']);
   if (!kIsWeb) {
     //Remove this method to stop OneSignal Debugging

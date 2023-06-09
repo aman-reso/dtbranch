@@ -28,19 +28,32 @@ class RentModel {
         code: json["code"],
         status: json["status"],
         message: json["message"],
-        result: List<dynamic>.from(json["result"].map((x) => x)),
-        video: List<Video>.from(json["video"].map((x) => Video.fromJson(x))),
-        tvshow:
-            List<Tvshow>.from(json["tvshow"].map((x) => Tvshow.fromJson(x))),
+        result: json["result"]
+            ? null
+            : List<dynamic>.from(json["result"]?.map((x) => x) ?? []),
+        video: json["video"]
+            ? null
+            : List<Video>.from(
+                json["video"]?.map((x) => Video.fromJson(x)) ?? []),
+        tvshow: json["tvshow"]
+            ? null
+            : List<Tvshow>.from(
+                json["tvshow"]?.map((x) => Tvshow.fromJson(x)) ?? []),
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
         "status": status,
         "message": message,
-        "result": List<dynamic>.from(result?.map((x) => x) ?? []),
-        "video": List<dynamic>.from(video?.map((x) => x.toJson()) ?? []),
-        "tvshow": List<dynamic>.from(tvshow?.map((x) => x.toJson()) ?? []),
+        "result": result == null
+            ? []
+            : List<dynamic>.from(result?.map((x) => x) ?? []),
+        "video": video == null
+            ? []
+            : List<dynamic>.from(video?.map((x) => x.toJson()) ?? []),
+        "tvshow": tvshow == null
+            ? []
+            : List<dynamic>.from(tvshow?.map((x) => x.toJson()) ?? []),
       };
 }
 

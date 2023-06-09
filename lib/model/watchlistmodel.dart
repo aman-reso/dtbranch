@@ -25,15 +25,19 @@ class WatchlistModel {
         code: json["code"],
         status: json["status"],
         message: json["message"],
-        result:
-            List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+        result: json["result"] == null
+            ? []
+            : List<Result>.from(
+                json["result"]?.map((x) => Result.fromJson(x)) ?? []),
       );
 
   Map<String, dynamic> toJson() => {
         "code": code,
         "status": status,
         "message": message,
-        "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
+        "result": result == null
+            ? []
+            : List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
       };
 }
 

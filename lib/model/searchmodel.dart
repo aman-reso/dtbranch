@@ -30,9 +30,14 @@ class SearchModel {
         status: json["status"],
         message: json["message"],
         result: json["result"],
-        video: List<Video>.from(json["video"].map((x) => Video.fromJson(x))),
-        tvshow:
-            List<Tvshow>.from(json["tvshow"].map((x) => Tvshow.fromJson(x))),
+        video: json["video"] == null
+            ? []
+            : List<Video>.from(
+                json["video"]?.map((x) => Video.fromJson(x)) ?? []),
+        tvshow: json["tvshow"] == null
+            ? []
+            : List<Tvshow>.from(
+                json["tvshow"]?.map((x) => Tvshow.fromJson(x)) ?? []),
       );
 
   Map<String, dynamic> toJson() => {
@@ -40,8 +45,12 @@ class SearchModel {
         "status": status,
         "message": message,
         "result": result,
-        "video": List<dynamic>.from(video?.map((x) => x.toJson()) ?? []),
-        "tvshow": List<dynamic>.from(tvshow?.map((x) => x.toJson()) ?? []),
+        "video": video == null
+            ? []
+            : List<dynamic>.from(video?.map((x) => x.toJson()) ?? []),
+        "tvshow": tvshow == null
+            ? []
+            : List<dynamic>.from(tvshow?.map((x) => x.toJson()) ?? []),
       };
 }
 

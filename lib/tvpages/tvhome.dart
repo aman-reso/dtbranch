@@ -97,6 +97,7 @@ class TVHomeState extends State<TVHome> {
     Utils.getCurrencySymbol();
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 
+    Constant.userID = await sharedPref.read("userid");
     await homeProvider.setLoading(true);
     await homeProvider.getSectionType();
 

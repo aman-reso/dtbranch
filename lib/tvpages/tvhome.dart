@@ -54,13 +54,7 @@ class TVHomeState extends State<TVHome> {
   CarouselController pageController = CarouselController();
   int? videoId, videoType, typeId;
   bool isSearchEnable = false;
-  String? currentPage,
-      langCatName,
-      aboutUsUrl,
-      privacyUrl,
-      termsConditionUrl,
-      refundPolicyUrl,
-      mSearchText;
+  String? currentPage, langCatName, mSearchText;
 
   _onItemTapped(String page) async {
     debugPrint("_onItemTapped -----------------> $page");
@@ -95,20 +89,13 @@ class TVHomeState extends State<TVHome> {
 
   _getData() async {
     Utils.getCurrencySymbol();
-    final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
+    final generalProvider =
+        Provider.of<GeneralProvider>(context, listen: false);
 
     Constant.userID = await sharedPref.read("userid");
+    debugPrint('userID ==> ${Constant.userID}');
     await homeProvider.setLoading(true);
     await homeProvider.getSectionType();
-
-    aboutUsUrl = await sharedPref.read("about-us") ?? "";
-    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
-    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
-    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
-    log('aboutUsUrl ==> $aboutUsUrl');
-    log('privacyUrl ==> $privacyUrl');
-    log('termsConditionUrl ==> $termsConditionUrl');
-    log('refundPolicyUrl ==> $refundPolicyUrl');
 
     if (!homeProvider.loading) {
       if (homeProvider.sectionTypeModel.status == 200 &&
@@ -122,11 +109,12 @@ class TVHomeState extends State<TVHome> {
         }
       }
     }
+
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {});
     });
-    generalsetting.getGeneralsetting();
+    generalProvider.getGeneralsetting();
   }
 
   Future<void> setSelectedTab(int tabPos) async {

@@ -3,10 +3,10 @@
 </h1>
 
 <p align="center">
-  <a href="https://pub.dev/packages/pod_player/score"><img src="https://badges.bar/pod_player/likes" alt="pub likes"></a>
-  <a href="https://pub.dev/packages/pod_player"><img src="https://img.shields.io/pub/v/pod_player?style=flat" alt="pub version"></a>
-  <a href="https://pub.dev/packages/pod_player/score"><img src="https://badges.bar/pod_player/popularity" alt="popularity"></a>
-  <a href="https://pub.dev/packages/pod_player/score"><img src="https://badges.bar/pod_player/pub%20points" alt="pub points"></a>
+  <a href="https://pub.dev/packages/pod_player/score"><img src="https://img.shields.io/badge/Likes-200+-yellowgreen" alt="pub likes"></a>
+    <a href="https://pub.dev/packages/pod_player"><img src="https://img.shields.io/pub/v/pod_player?style=flat" alt="pub version"></a>
+  <a href="https://pub.dev/packages/pod_player/score"><img src="https://img.shields.io/badge/score-140-critical" alt="score"></a>
+  <a href="https://pub.dev/packages/pod_player/score"><img src="https://img.shields.io/badge/popularity-97﹪-critical" alt="pub points"></a>
 
 </p>
 Video player for flutter web & mobile devices, pod player supports playing video from `Youtube` and `Vimeo`
@@ -26,8 +26,8 @@ This plugin built upon flutter's official [`video_player`](https://pub.dartlang.
 ## Features
 
 - Play `youtube` videos (using video URL or ID)
-- Play `vimeo` videos (using video ID)
-- Play `vimeo` private videos (using video ID, access token)
+- Play `vimeo` videos (using video ID [with ou without hash])
+- Play `vimeo` private videos (using video ID [with ou without hash], access token)
 - Video overlay similar to youtube
 - `Double tap` to seek video.
 - On video tap show/hide video overlay.
@@ -68,7 +68,13 @@ This plugin built upon flutter's official [`video_player`](https://pub.dartlang.
   <img src="https://user-images.githubusercontent.com/85326522/160871693-74b468de-839d-4ae3-9ef0-581066130072.gif" alt="pod_player">
 </h1>
 
+- Video player on web
+
 ---
+
+<h1 align="center">
+  <a><img src="https://user-images.githubusercontent.com/85326522/160885274-41be06af-ae6d-41f3-8cff-21767fde8dad.gif" alt="pod_player"></a>
+</h1>
 
 - Vimeo player and custom video player
 
@@ -115,12 +121,6 @@ This plugin built upon flutter's official [`video_player`](https://pub.dartlang.
 ![](https://user-images.githubusercontent.com/85326522/156824569-d1ec705d-c278-4503-81fb-84e9dcb58336.jpg)
 
 ---
-
----
-
-<h1 align="center">
-  <a><img src="https://user-images.githubusercontent.com/85326522/160885274-41be06af-ae6d-41f3-8cff-21767fde8dad.gif" alt="pod_player"></a>
-</h1>
 
 ## Usage
 
@@ -380,6 +380,49 @@ class _PlayVideoFromVimeoState extends State<PlayVideoFromVimeo> {
 }
 
 ```
+
+## How to play video from vimeo with hash
+
+---
+
+```dart
+import 'package:pod_player/pod_player.dart';
+import 'package:flutter/material.dart';
+
+class PlayVideoFromVimeo extends StatefulWidget {
+  const PlayVideoFromVimeo({Key? key}) : super(key: key);
+
+  @override
+  State<PlayVideoFromVimeo> createState() => _PlayVideoFromVimeoState();
+}
+
+class _PlayVideoFromVimeoState extends State<PlayVideoFromVimeo> {
+  late final PodPlayerController controller;
+
+  @override
+  void initState() {
+    controller = PodPlayerController(
+      playVideoFrom: PlayVideoFrom.vimeo('518228118', hash: '7cc595e1f8'),
+    )..initialise();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: PodVideoPlayer(controller: controller),
+    );
+  }
+}
+
+```
+
 ## How to play video from vimeo private videos
 
 ---
@@ -396,14 +439,14 @@ class PlayVideoFromVimeoPrivateVideo extends StatefulWidget {
           _PlayVideoFromVimeoPrivateVideoState();
 }
 
-class _PlayVideoFromVimeoPrivateVideoState 
+class _PlayVideoFromVimeoPrivateVideoState
     extends State<PlayVideoFromVimeoPrivateVideo> {
   late final PodPlayerController controller;
 
   @override
   void initState() {
-    String videoId = 'your private video id'; 
-    String token = 'your access token'; 
+    String videoId = 'your private video id';
+    String token = 'your access token';
     final Map<String, String> headers = <String, String>{};
     headers['Authorization'] = 'Bearer ${token}';
 

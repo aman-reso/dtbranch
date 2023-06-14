@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/sharedpre.dart';
@@ -8,6 +9,7 @@ import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:dtlive/webwidget/interactive_icon.dart';
 import 'package:dtlive/webwidget/interactive_text.dart';
+import 'package:provider/provider.dart';
 
 class FooterWeb extends StatefulWidget {
   const FooterWeb({super.key});
@@ -42,15 +44,41 @@ class _FooterWebState extends State<FooterWeb> {
   }
 
   _getData() async {
-    appDescription = await sharedPref.read("app_desripation") ?? "";
-    aboutUsUrl = await sharedPref.read("about-us") ?? "";
-    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
-    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
-    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
-    log('aboutUsUrl ==> $aboutUsUrl');
-    log('privacyUrl ==> $privacyUrl');
-    log('termsConditionUrl ==> $termsConditionUrl');
-    log('refundPolicyUrl ==> $refundPolicyUrl');
+    final generalProvider =
+        Provider.of<GeneralProvider>(context, listen: false);
+
+    await generalProvider.getPages();
+    if (!generalProvider.loading) {
+      if (generalProvider.pagesModel.status == 200) {
+        if (generalProvider.pagesModel.result != null &&
+            (generalProvider.pagesModel.result?.length ?? 0) > 0) {
+          for (var i = 0;
+              i < (generalProvider.pagesModel.result?.length ?? 0);
+              i++) {
+            if (generalProvider.pagesModel.result?[i].pageName == "about-us") {
+              aboutUsUrl = generalProvider.pagesModel.result?[i].url ?? "";
+            }
+            if (generalProvider.pagesModel.result?[i].pageName ==
+                "privacy-policy") {
+              privacyUrl = generalProvider.pagesModel.result?[i].url ?? "";
+            }
+            if (generalProvider.pagesModel.result?[i].pageName ==
+                "terms-and-conditions") {
+              termsConditionUrl =
+                  generalProvider.pagesModel.result?[i].url ?? "";
+            }
+            if (generalProvider.pagesModel.result?[i].pageName ==
+                "refund-policy") {
+              refundPolicyUrl = generalProvider.pagesModel.result?[i].url ?? "";
+            }
+          }
+        }
+      }
+    }
+    debugPrint('aboutUsUrl ==> $aboutUsUrl');
+    debugPrint('privacyUrl ==> $privacyUrl');
+    debugPrint('termsConditionUrl ==> $termsConditionUrl');
+    debugPrint('refundPolicyUrl ==> $refundPolicyUrl');
   }
 
   @override

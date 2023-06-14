@@ -122,8 +122,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     if (!kIsWeb) Utils.enableScreenCapture();
-    _getDeviceInfo();
-    _getPackage();
+    if (!kIsWeb) _getDeviceInfo();
+    if (!kIsWeb) _getPackage();
     super.initState();
   }
 

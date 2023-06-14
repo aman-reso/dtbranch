@@ -1,3 +1,21 @@
+## 0.1.5
+  - merged PR #103
+    - support unlisted vimeo videos
+  - upgraded dependencies 
+  - Updated Readme file
+## 0.1.4
+  - added pod player logo to pub.dev
+## 0.1.3
+  - fix: unable to find directory entry in pubspec.yaml #114
+  - merged PR #109 
+## 0.1.2
+  - fixed #82
+## 0.1.1
+  - Feature
+    - support vimeo private video [ref](https://github.com/newtaDev/pod_player#how-to-play-video-from-vimeo-private-videos)
+    - double tap ripple effect added
+  - upgraded dependencies
+  - merged PR #66 #77 #78
 ## 0.1.0
 
 - Breaking change:

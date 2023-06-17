@@ -140,15 +140,6 @@ class HomeState extends State<Home> {
     await homeProvider.setLoading(true);
     await homeProvider.getSectionType();
 
-    aboutUsUrl = await sharedPref.read("about-us") ?? "";
-    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
-    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
-    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
-    log('aboutUsUrl ==> $aboutUsUrl');
-    log('privacyUrl ==> $privacyUrl');
-    log('termsConditionUrl ==> $termsConditionUrl');
-    log('refundPolicyUrl ==> $refundPolicyUrl');
-
     if (!homeProvider.loading) {
       if (homeProvider.sectionTypeModel.status == 200 &&
           homeProvider.sectionTypeModel.result != null) {
@@ -166,6 +157,7 @@ class HomeState extends State<Home> {
       setState(() {});
     });
     generalsetting.getGeneralsetting();
+    generalsetting.getPages();
   }
 
   Future<void> setSelectedTab(int tabPos) async {

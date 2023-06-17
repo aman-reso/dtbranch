@@ -42,6 +42,18 @@ class GeneralProvider extends ChangeNotifier {
     pagesModel = await ApiService().getPages();
     debugPrint("getPages status :==> ${pagesModel.status}");
     loading = false;
+    if (pagesModel.status == 200) {
+      if (pagesModel.result != null) {
+        for (var i = 0; i < (pagesModel.result?.length ?? 0); i++) {
+          await sharedPre.save(
+            pagesModel.result?[i].pageName.toString() ?? "",
+            pagesModel.result?[i].url.toString() ?? "",
+          );
+          debugPrint(
+              '${pagesModel.result?[i].pageName.toString()} ==> ${pagesModel.result?[i].url.toString()}');
+        }
+      }
+    }
   }
 
   Future<void> loginWithSocial(email, name, type, File? profileImg) async {

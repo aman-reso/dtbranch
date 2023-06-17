@@ -36,7 +36,13 @@ class LoginSocialState extends State<LoginSocial> {
   late ProgressDialog prDialog;
   SharedPre sharePref = SharedPre();
   final numberController = TextEditingController();
-  String? mobileNumber, email, userName, strType;
+  String? mobileNumber,
+      email,
+      userName,
+      strType,
+      strPrivacyAndTNC,
+      privacyUrl,
+      termsConditionUrl;
   File? mProfileImg;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -44,6 +50,21 @@ class LoginSocialState extends State<LoginSocial> {
   void initState() {
     super.initState();
     prDialog = ProgressDialog(context);
+    _getData();
+  }
+
+  _getData() async {
+    privacyUrl = await sharePref.read("privacy-policy") ?? "";
+    termsConditionUrl = await sharePref.read("terms-and-conditions") ?? "";
+    debugPrint('privacyUrl ==> $privacyUrl');
+    debugPrint('termsConditionUrl ==> $termsConditionUrl');
+
+    strPrivacyAndTNC =
+        "<p style=color:white; > By continuing , I understand and agree with <a href=$privacyUrl>Privacy Policy</a> and <a href=$termsConditionUrl>Terms and Conditions</a> of ${Constant.appName}. </p>";
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
@@ -205,7 +226,13 @@ class LoginSocialState extends State<LoginSocial> {
                   ),
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
+
+              /* Privacy & TermsCondition link */
+              if (strPrivacyAndTNC != null) Utils.htmlTexts(strPrivacyAndTNC),
+              const SizedBox(height: 10),
+
+              /* Or */
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

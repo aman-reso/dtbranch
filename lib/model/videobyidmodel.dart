@@ -33,7 +33,9 @@ class VideoByIdModel {
         "code": code,
         "status": status,
         "message": message,
-        "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
+        "result": result == null
+            ? []
+            : List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
       };
 }
 

@@ -41,7 +41,9 @@ class ChannelSectionModel {
         "code": code,
         "status": status,
         "message": message,
-        "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
+        "result": result == null
+            ? []
+            : List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
         "live_url": liveUrl != null
             ? List<dynamic>.from(liveUrl?.map((x) => x.toJson()) ?? [])
             : [],

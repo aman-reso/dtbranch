@@ -29,7 +29,9 @@ class AvatarModel {
   Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
-        "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
+        "result": result == null
+            ? []
+            : List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
       };
 }
 

@@ -210,15 +210,15 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
     if (trailerType == "youtube") {
       var videoId = YoutubePlayer.convertUrlToId(trailerUrl ?? "");
       debugPrint("Youtube videoId =========> $videoId");
-      _trailerYoutubeController = YoutubePlayerController(
-        initialVideoId: videoId ?? "",
-        flags: const YoutubePlayerFlags(
-          hideControls: true,
-          autoPlay: true,
-          mute: false,
-          forceHD: true,
-        ),
-      );
+      // _trailerYoutubeController = YoutubePlayerController(
+      //   initialVideoId: videoId ?? "",
+      //   flags: const YoutubePlayerFlags(
+      //     hideControls: true,
+      //     autoPlay: true,
+      //     mute: false,
+      //     forceHD: true,
+      //   ),
+      // );
     } else {
       _trailerNormalController = VideoPlayerController.network(trailerUrl ?? "")
         ..initialize().then((value) {
@@ -1074,12 +1074,12 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   Widget setUpTrailerView() {
     if ((videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "") ==
         "youtube") {
-      if (_trailerYoutubeController != null) {
-        return _buildTrailerView(
-            videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
-      } else {
-        return _buildMobilePoster();
-      }
+      // if (_trailerYoutubeController != null) {
+      //   return _buildTrailerView(
+      //       videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      // } else {
+      return _buildMobilePoster();
+      // }
     } else {
       if (_trailerNormalController != null &&
           (_trailerNormalController?.value.isInitialized ?? false)) {

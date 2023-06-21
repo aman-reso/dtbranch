@@ -45,14 +45,12 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   if (!kIsWeb) {
     await FlutterDownloader.initialize();
   }
-
   await Firebase.initializeApp(
       name: Constant.appName, options: DefaultFirebaseOptions.currentPlatform);
-  await Locales.init(['en', 'ar', 'hi']);
+  await Locales.init(['en', 'ar', 'hi', 'pt']);
   if (!kIsWeb) {
     //Remove this method to stop OneSignal Debugging
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);

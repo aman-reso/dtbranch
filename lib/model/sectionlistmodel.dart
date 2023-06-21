@@ -28,10 +28,9 @@ class SectionListModel {
         message: json["message"],
         result: List<Result>.from(
             json["result"]?.map((x) => Result.fromJson(x)) ?? []),
-        continueWatching: json["continue_watching"] != null
-            ? List<ContinueWatching>.from(json["continue_watching"]
-                ?.map((x) => ContinueWatching.fromJson(x)))
-            : [],
+        continueWatching: List<ContinueWatching>.from(json["continue_watching"]
+                ?.map((x) => ContinueWatching.fromJson(x)) ??
+            []),
       );
 
   Map<String, dynamic> toJson() => {

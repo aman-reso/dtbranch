@@ -319,7 +319,7 @@ class SettingState extends State<Setting> {
                             maxline: 1,
                             overflow: TextOverflow.ellipsis,
                             fontweight: FontWeight.w500,
-                            textalign: TextAlign.center,
+                            textalign: TextAlign.start,
                             fontstyle: FontStyle.normal,
                           ),
                         ],
@@ -354,36 +354,36 @@ class SettingState extends State<Setting> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyText(
-                                color: white,
-                                text: "clearcatch",
-                                fontsizeNormal: 14,
-                                multilanguage: true,
-                                maxline: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontweight: FontWeight.w500,
-                                textalign: TextAlign.center,
-                                fontstyle: FontStyle.normal,
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              MyText(
-                                color: otherColor,
-                                text: "clearlocallycatch",
-                                fontsizeNormal: 12,
-                                maxline: 1,
-                                multilanguage: true,
-                                overflow: TextOverflow.ellipsis,
-                                fontweight: FontWeight.w500,
-                                textalign: TextAlign.center,
-                                fontstyle: FontStyle.normal,
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MyText(
+                                  color: white,
+                                  text: "clearcatch",
+                                  fontsizeNormal: 14,
+                                  multilanguage: true,
+                                  maxline: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontweight: FontWeight.w500,
+                                  textalign: TextAlign.start,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                                const SizedBox(height: 5),
+                                MyText(
+                                  color: otherColor,
+                                  text: "clearlocallycatch",
+                                  fontsizeNormal: 12,
+                                  maxline: 1,
+                                  multilanguage: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontweight: FontWeight.w500,
+                                  textalign: TextAlign.start,
+                                  fontstyle: FontStyle.normal,
+                                ),
+                              ],
+                            ),
                           ),
                           MyImage(
                             width: 28,
@@ -603,7 +603,7 @@ class SettingState extends State<Setting> {
             multilanguage: titleMultilang,
             overflow: TextOverflow.ellipsis,
             fontweight: FontWeight.w600,
-            textalign: TextAlign.center,
+            textalign: TextAlign.start,
             fontstyle: FontStyle.normal,
           ),
           SizedBox(height: subTitle.isEmpty ? 0 : 5),
@@ -618,7 +618,7 @@ class SettingState extends State<Setting> {
                   maxline: 1,
                   overflow: TextOverflow.ellipsis,
                   fontweight: FontWeight.w500,
-                  textalign: TextAlign.center,
+                  textalign: TextAlign.start,
                   fontstyle: FontStyle.normal,
                 ),
         ],
@@ -677,21 +677,19 @@ class SettingState extends State<Setting> {
                                   color: white,
                                   text: "changelanguage",
                                   multilanguage: true,
-                                  textalign: TextAlign.center,
+                                  textalign: TextAlign.start,
                                   fontsizeNormal: 16,
                                   fontweight: FontWeight.bold,
                                   maxline: 1,
                                   overflow: TextOverflow.ellipsis,
                                   fontstyle: FontStyle.normal,
                                 ),
-                                const SizedBox(
-                                  height: 3,
-                                ),
+                                const SizedBox(height: 3),
                                 MyText(
                                   color: white,
                                   text: "selectyourlanguage",
                                   multilanguage: true,
-                                  textalign: TextAlign.center,
+                                  textalign: TextAlign.start,
                                   fontsizeNormal: 12,
                                   fontweight: FontWeight.w500,
                                   maxline: 1,
@@ -818,6 +816,45 @@ class SettingState extends State<Setting> {
                               ),
                             ),
                           ),
+                          const SizedBox(height: 20),
+
+                          /* Portuguese (Brazil) */
+                          InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              state(() {});
+                              LocaleNotifier.of(context)?.change('pt');
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              constraints: BoxConstraints(
+                                minWidth: MediaQuery.of(context).size.width,
+                              ),
+                              height: 48,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: primaryLight,
+                                  width: .5,
+                                ),
+                                color: primaryDarkColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: MyText(
+                                color: white,
+                                text: "Portuguese (Brazil)",
+                                textalign: TextAlign.center,
+                                fontsizeNormal: 16,
+                                multilanguage: false,
+                                maxline: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontweight: FontWeight.w500,
+                                fontstyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -860,7 +897,7 @@ class SettingState extends State<Setting> {
                           color: white,
                           text: "confirmsognout",
                           multilanguage: true,
-                          textalign: TextAlign.center,
+                          textalign: TextAlign.start,
                           fontsizeNormal: 16,
                           fontweight: FontWeight.bold,
                           maxline: 1,
@@ -872,7 +909,7 @@ class SettingState extends State<Setting> {
                           color: white,
                           text: "areyousurewanrtosignout",
                           multilanguage: true,
-                          textalign: TextAlign.center,
+                          textalign: TextAlign.start,
                           fontsizeNormal: 12,
                           fontweight: FontWeight.w500,
                           maxline: 1,
@@ -1020,9 +1057,7 @@ class SettingState extends State<Setting> {
                           overflow: TextOverflow.ellipsis,
                           fontstyle: FontStyle.normal,
                         ),
-                        const SizedBox(
-                          height: 3,
-                        ),
+                        const SizedBox(height: 3),
                         MyText(
                           color: white,
                           text: "delete_account_msg",

@@ -27,9 +27,8 @@ class SectionTypeModel {
         code: json["code"],
         status: json["status"],
         message: json["message"],
-        result: json["result"] != null
-            ? List<Result>.from(json["result"].map((x) => Result.fromJson(x)))
-            : <Result>[],
+        result:
+            List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -37,8 +36,8 @@ class SectionTypeModel {
         "status": status,
         "message": message,
         "result": result != null
-            ? List<dynamic>.from(result!.map((x) => x.toJson()))
-            : <Result>[],
+            ? List<dynamic>.from(result?.map((x) => x.toJson()) ?? [])
+            : [],
       };
 }
 

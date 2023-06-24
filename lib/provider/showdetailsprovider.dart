@@ -106,9 +106,10 @@ class ShowDetailsProvider extends ChangeNotifier {
     debugPrint("addRemoveDownload message :==> ${successModel.message}");
   }
 
-  setSeasonPosition(int position) {
+  setSeasonPosition(int position) async {
     log("setSeasonPosition ===> $position");
     mCurrentEpiPos = -1;
+    await getLastWatchedEpisode();
     seasonPos = position;
     notifyListeners();
   }

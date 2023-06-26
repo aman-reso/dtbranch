@@ -114,7 +114,7 @@ class Tvshow {
   String? landscape;
   int? view;
   dynamic imdbRating;
-  String? status;
+  int? status;
   String? isTitle;
   int? isPremium;
   String? createdAt;
@@ -294,7 +294,7 @@ class Video {
   int? view;
   dynamic imdbRating;
   int? download;
-  String? status;
+  int? status;
   String? isTitle;
   String? video320;
   String? video480;

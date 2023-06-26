@@ -118,7 +118,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                 videoDetailsProvider.sectionDetailModel.cast?[i].personalInfo ??
                     "";
             cast.status =
-                videoDetailsProvider.sectionDetailModel.cast?[i].status ?? "";
+                videoDetailsProvider.sectionDetailModel.cast?[i].status ?? 0;
             cast.createdAt =
                 videoDetailsProvider.sectionDetailModel.cast?[i].createdAt ??
                     "";

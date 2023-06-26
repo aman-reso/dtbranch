@@ -67,7 +67,7 @@ class LiveUrl {
   String? name;
   String? image;
   String? link;
-  String? status;
+  int? status;
   int? orderNo;
   String? createdAt;
   String? updatedAt;
@@ -270,7 +270,7 @@ class Datum {
   int? view;
   dynamic imdbRating;
   int? download;
-  String? status;
+  int? status;
   String? isTitle;
   String? video320;
   String? video480;

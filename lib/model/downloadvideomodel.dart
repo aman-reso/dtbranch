@@ -126,7 +126,7 @@ class SessionItem {
   final int? showId;
   final int? sessionPosition;
   final String? name;
-  final String? status;
+  final int? status;
   final int? isDownloaded;
   final int? rentBuy;
   final int? isRent;
@@ -211,7 +211,7 @@ class EpisodeItem {
   final int? videoDuration;
   final int? isPremium;
   final String? description;
-  final String? status;
+  final int? status;
   final String? video320;
   final String? video480;
   final String? video720;

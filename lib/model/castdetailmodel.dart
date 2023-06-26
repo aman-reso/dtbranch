@@ -54,7 +54,7 @@ class Result {
   String? image;
   String? type;
   String? personalInfo;
-  String? status;
+  int? status;
   String? createdAt;
   String? updatedAt;
 

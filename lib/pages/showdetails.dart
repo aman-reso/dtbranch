@@ -173,7 +173,7 @@ class ShowDetailsState extends State<ShowDetails> {
                 showDetailsProvider.sectionDetailModel.cast?[i].personalInfo ??
                     "";
             cast.status =
-                showDetailsProvider.sectionDetailModel.cast?[i].status ?? "";
+                showDetailsProvider.sectionDetailModel.cast?[i].status ?? 0;
             cast.createdAt =
                 showDetailsProvider.sectionDetailModel.cast?[i].createdAt ?? "";
             cast.updatedAt =

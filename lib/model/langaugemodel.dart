@@ -50,7 +50,7 @@ class Result {
   int? id;
   String? name;
   String? image;
-  String? status;
+  int? status;
   String? createdAt;
   String? updatedAt;
 

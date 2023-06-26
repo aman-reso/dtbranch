@@ -132,7 +132,7 @@ class Result {
   int? view;
   dynamic imdbRating;
   int? download;
-  String? status;
+  int? status;
   String? isTitle;
   String? video320;
   String? video480;

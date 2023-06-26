@@ -77,7 +77,7 @@ class Cast {
   String? image;
   String? type;
   String? personalInfo;
-  String? status;
+  int? status;
   String? createdAt;
   String? updatedAt;
 
@@ -117,7 +117,7 @@ class Language {
   int? id;
   String? name;
   String? image;
-  String? status;
+  int? status;
   String? createdAt;
   String? updatedAt;
 
@@ -233,7 +233,7 @@ class Result {
   int? download;
   int? view;
   dynamic imdbRating;
-  String? status;
+  int? status;
   String? isTitle;
   String? video320;
   String? video480;
@@ -465,7 +465,7 @@ class GetRelatedVideo {
   int? videoSize;
   int? view;
   dynamic imdbRating;
-  String? status;
+  int? status;
   String? isTitle;
   String? video320;
   String? video480;
@@ -637,7 +637,7 @@ class Session {
 
   int? id;
   String? name;
-  String? status;
+  int? status;
   String? createdAt;
   String? updatedAt;
   int? isDownloaded;

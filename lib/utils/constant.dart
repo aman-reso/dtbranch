@@ -34,6 +34,7 @@ class Constant {
       "https://apps.apple.com/us/app/id${Constant.appleAppId}";
   static String facebookUrl = "https://www.facebook.com/divinetechs";
   static String instagramUrl = "https://www.instagram.com/divinetechs/";
+  static String youtubeUrl = "https://www.youtube.com/@divinetechs6135";
 
   static Map<String, String> resolutionsUrls = <String, String>{};
   static List<SubTitleModel> subtitleUrls = [];

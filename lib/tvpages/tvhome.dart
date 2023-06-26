@@ -1400,7 +1400,7 @@ class TVHomeState extends State<TVHome> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(
-                  sectionList?[index].videoType ?? "",
+                  sectionList?[index].videoType.toString() ?? "",
                   sectionList?[index].screenLayout ?? "",
                 ),
                 child: setSectionData(sectionList: sectionList, index: index),

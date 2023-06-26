@@ -39,7 +39,7 @@ class InteractiveIconState extends State<InteractiveIcon> {
               decoration: Utils.setBackground(
                   _hovering ? widget.bgHoverColor : widget.bgColor,
                   widget.bgRadius ?? 0),
-              padding: const EdgeInsets.all(3),
+              padding: const EdgeInsets.all(6),
               child: MyImage(
                 imagePath: widget.imagePath,
                 width: widget.width,

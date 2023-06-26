@@ -36,7 +36,9 @@ class SectionListModel {
   Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
-        "result": List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
+        "result": result != null
+            ? List<dynamic>.from(result?.map((x) => x.toJson()) ?? [])
+            : [],
         "continue_watching": continueWatching != null
             ? List<dynamic>.from(continueWatching?.map((x) => x.toJson()) ?? [])
             : [],
@@ -307,9 +309,9 @@ class Result {
   String? languageId;
   String? categoryIds;
   String? title;
-  String? videoType;
+  int? videoType;
   String? screenLayout;
-  String? isHomeScreen;
+  int? isHomeScreen;
   int? status;
   String? createdAt;
   String? updatedAt;
@@ -439,7 +441,7 @@ class Datum {
   String? landscape;
   int? view;
   dynamic imdbRating;
-  String? status;
+  int? status;
   String? isTitle;
   int? isPremium;
   String? createdAt;

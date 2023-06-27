@@ -33,14 +33,17 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 
 class ShowDetails extends StatefulWidget {
-  final int videoId, videoType, typeId;
-  const ShowDetails(this.videoId, this.videoType, this.typeId, {Key? key})
+  final int videoId, upcomingType, videoType, typeId;
+  const ShowDetails(
+      this.videoId, this.upcomingType, this.videoType, this.typeId,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -81,7 +84,7 @@ class ShowDetailsState extends State<ShowDetails> {
   Future<void> _getData() async {
     Utils.getCurrencySymbol();
     await showDetailsProvider.getSectionDetails(
-        widget.typeId, widget.videoType, widget.videoId);
+        widget.typeId, widget.videoType, widget.videoId, widget.upcomingType);
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {
@@ -503,13 +506,17 @@ class ShowDetailsState extends State<ShowDetails> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  if (widget.videoType != 5) const SizedBox(height: 15),
 
                   /* Season Title */
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: _buildSeasonBtn(),
-                  ),
+                  if (widget.videoType != 5)
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: _buildSeasonBtn(),
+                    ),
+
+                  /* Release Date */
+                  _buildReleaseDate(),
 
                   /* Prime TAG */
                   if ((showDetailsProvider
@@ -609,118 +616,123 @@ class ShowDetailsState extends State<ShowDetails> {
                   /* Subscription Button */
                   Container(
                     margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-                    child: _buildWatchNow(),
+                    child: (widget.videoType == 5)
+                        ? _buildWatchTrailer()
+                        : _buildWatchNow(),
                   ),
 
                   /* Included Features buttons */
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: (kIsWeb || Constant.isTV)
-                          ? (MediaQuery.of(context).size.width / 2)
-                          : MediaQuery.of(context).size.width,
-                      constraints: const BoxConstraints(minHeight: 0),
-                      margin: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                  if ((widget.videoType != 5))
+                    Align(
                       alignment: Alignment.center,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /* Rent Button */
-                          _buildRentBtn(),
-                          const SizedBox(width: 5),
+                      child: Container(
+                        width: (kIsWeb || Constant.isTV)
+                            ? (MediaQuery.of(context).size.width / 2)
+                            : MediaQuery.of(context).size.width,
+                        constraints: const BoxConstraints(minHeight: 0),
+                        margin: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                        alignment: Alignment.center,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /* Rent Button */
+                            _buildRentBtn(),
+                            const SizedBox(width: 5),
 
-                          /* Download */
-                          if (!(kIsWeb || Constant.isTV))
-                            Consumer<EpisodeProvider>(
-                              builder: (context, episodeProvider, child) {
-                                if ((episodeProvider.episodeBySeasonModel
-                                            .result?[0].download ??
-                                        0) ==
-                                    1) {
-                                  return _buildDownloadWithSubCheck();
-                                } else {
-                                  return const SizedBox.shrink();
-                                }
-                              },
-                            ),
-
-                          /* Watchlist */
-                          Expanded(
-                            child: InkWell(
-                              focusColor: gray.withOpacity(0.5),
-                              onTap: () async {
-                                log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                                if (Constant.userID != null) {
-                                  await showDetailsProvider.setBookMark(
-                                    context,
-                                    widget.typeId,
-                                    widget.videoType,
-                                    widget.videoId,
-                                  );
-                                } else {
-                                  if ((kIsWeb || Constant.isTV)) {
-                                    Utils.buildWebAlertDialog(
-                                        context, "login", "");
-                                    return;
+                            /* Download */
+                            if (!(kIsWeb || Constant.isTV))
+                              Consumer<EpisodeProvider>(
+                                builder: (context, episodeProvider, child) {
+                                  if ((episodeProvider.episodeBySeasonModel
+                                              .result?[0].download ??
+                                          0) ==
+                                      1) {
+                                    return _buildDownloadWithSubCheck();
+                                  } else {
+                                    return const SizedBox.shrink();
                                   }
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return const LoginSocial();
-                                      },
-                                    ),
-                                  );
-                                }
-                              },
-                              borderRadius: BorderRadius.circular(5),
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Consumer<ShowDetailsProvider>(
-                                  builder:
-                                      (context, showDetailsProvider, child) {
-                                    if ((showDetailsProvider.sectionDetailModel
-                                                .result?.isBookmark ??
-                                            0) ==
-                                        1) {
-                                      return _buildFeatureBtn(
-                                        icon: 'watchlist_remove.png',
-                                        title: 'watchlist',
-                                        multilanguage: true,
-                                      );
-                                    } else {
-                                      return _buildFeatureBtn(
-                                        icon: 'ic_plus.png',
-                                        title: 'watchlist',
-                                        multilanguage: true,
-                                      );
-                                    }
-                                  },
-                                ),
+                                },
                               ),
-                            ),
-                          ),
 
-                          /* Share */
-                          if (!(kIsWeb || Constant.isTV))
+                            /* Watchlist */
                             Expanded(
                               child: InkWell(
                                 focusColor: gray.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(5),
-                                onTap: () {
-                                  _buildShareWithDialog();
+                                onTap: () async {
+                                  log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                                  if (Constant.userID != null) {
+                                    await showDetailsProvider.setBookMark(
+                                      context,
+                                      widget.typeId,
+                                      widget.videoType,
+                                      widget.videoId,
+                                    );
+                                  } else {
+                                    if ((kIsWeb || Constant.isTV)) {
+                                      Utils.buildWebAlertDialog(
+                                          context, "login", "");
+                                      return;
+                                    }
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return const LoginSocial();
+                                        },
+                                      ),
+                                    );
+                                  }
                                 },
-                                child: _buildFeatureBtn(
-                                  icon: 'ic_share.png',
-                                  title: 'share',
-                                  multilanguage: true,
+                                borderRadius: BorderRadius.circular(5),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Consumer<ShowDetailsProvider>(
+                                    builder:
+                                        (context, showDetailsProvider, child) {
+                                      if ((showDetailsProvider
+                                                  .sectionDetailModel
+                                                  .result
+                                                  ?.isBookmark ??
+                                              0) ==
+                                          1) {
+                                        return _buildFeatureBtn(
+                                          icon: 'watchlist_remove.png',
+                                          title: 'watchlist',
+                                          multilanguage: true,
+                                        );
+                                      } else {
+                                        return _buildFeatureBtn(
+                                          icon: 'ic_plus.png',
+                                          title: 'watchlist',
+                                          multilanguage: true,
+                                        );
+                                      }
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
-                        ],
+
+                            /* Share */
+                            if (!(kIsWeb || Constant.isTV))
+                              Expanded(
+                                child: InkWell(
+                                  focusColor: gray.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(5),
+                                  onTap: () {
+                                    _buildShareWithDialog();
+                                  },
+                                  child: _buildFeatureBtn(
+                                    icon: 'ic_share.png',
+                                    title: 'share',
+                                    multilanguage: true,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
 
                   /* Description, IMDb, Languages & Subtitles */
                   Container(
@@ -1368,8 +1380,12 @@ class ShowDetailsState extends State<ShowDetails> {
                                   ),
 
                                   /* Season Title */
-                                  const SizedBox(height: 10),
-                                  _buildSeasonBtn(),
+                                  if (widget.videoType != 5)
+                                    const SizedBox(height: 10),
+                                  if (widget.videoType != 5) _buildSeasonBtn(),
+
+                                  /* Release Date */
+                                  _buildReleaseDate(),
 
                                   /* Prime TAG */
                                   (showDetailsProvider.sectionDetailModel.result
@@ -1536,71 +1552,75 @@ class ShowDetailsState extends State<ShowDetails> {
                 children: [
                   /* Continue Watching Button */
                   /* Watch Now button */
-                  _buildWatchNow(),
+                  (widget.videoType == 5)
+                      ? _buildWatchTrailer()
+                      : _buildWatchNow(),
                   const SizedBox(width: 10),
 
                   /* Rent Button */
-                  Container(
-                    constraints: const BoxConstraints(minWidth: 0),
-                    child: _buildRentBtn(),
-                  ),
-                  const SizedBox(width: 10),
+                  if (widget.videoType != 5)
+                    Container(
+                      constraints: const BoxConstraints(minWidth: 0),
+                      child: _buildRentBtn(),
+                    ),
+                  if (widget.videoType != 5) const SizedBox(width: 10),
 
                   /* Watchlist */
-                  Container(
-                    constraints: const BoxConstraints(minWidth: 50),
-                    child: InkWell(
-                      onTap: () async {
-                        log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                        if (Constant.userID != null) {
-                          await showDetailsProvider.setBookMark(
-                            context,
-                            widget.typeId,
-                            widget.videoType,
-                            widget.videoId,
-                          );
-                        } else {
-                          if ((kIsWeb || Constant.isTV)) {
-                            Utils.buildWebAlertDialog(context, "login", "");
-                            return;
-                          }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const LoginSocial();
-                              },
-                            ),
-                          );
-                        }
-                      },
-                      focusColor: gray.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Consumer<ShowDetailsProvider>(
-                          builder: (context, showDetailsProvider, child) {
-                            if ((showDetailsProvider.sectionDetailModel.result
-                                        ?.isBookmark ??
-                                    0) ==
-                                1) {
-                              return _buildFeatureBtn(
-                                icon: 'watchlist_remove.png',
-                                title: 'watchlist',
-                                multilanguage: true,
-                              );
-                            } else {
-                              return _buildFeatureBtn(
-                                icon: 'ic_plus.png',
-                                title: 'watchlist',
-                                multilanguage: true,
-                              );
+                  if (widget.videoType != 5)
+                    Container(
+                      constraints: const BoxConstraints(minWidth: 50),
+                      child: InkWell(
+                        onTap: () async {
+                          log("isBookmark ====> ${showDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                          if (Constant.userID != null) {
+                            await showDetailsProvider.setBookMark(
+                              context,
+                              widget.typeId,
+                              widget.videoType,
+                              widget.videoId,
+                            );
+                          } else {
+                            if ((kIsWeb || Constant.isTV)) {
+                              Utils.buildWebAlertDialog(context, "login", "");
+                              return;
                             }
-                          },
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return const LoginSocial();
+                                },
+                              ),
+                            );
+                          }
+                        },
+                        focusColor: gray.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(5),
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Consumer<ShowDetailsProvider>(
+                            builder: (context, showDetailsProvider, child) {
+                              if ((showDetailsProvider.sectionDetailModel.result
+                                          ?.isBookmark ??
+                                      0) ==
+                                  1) {
+                                return _buildFeatureBtn(
+                                  icon: 'watchlist_remove.png',
+                                  title: 'watchlist',
+                                  multilanguage: true,
+                                );
+                              } else {
+                                return _buildFeatureBtn(
+                                  icon: 'ic_plus.png',
+                                  title: 'watchlist',
+                                  multilanguage: true,
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -1969,6 +1989,129 @@ class ShowDetailsState extends State<ShowDetails> {
     }
   }
 
+  Widget _buildReleaseDate() {
+    if (widget.videoType == 5) {
+      if (showDetailsProvider.sectionDetailModel.result?.releaseDate != null &&
+          (showDetailsProvider.sectionDetailModel.result?.releaseDate ?? "") !=
+              "") {
+        return Container(
+          margin: EdgeInsets.fromLTRB(
+              (kIsWeb || Constant.isTV) ? 0 : 20, 20, 20, 0),
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              MyText(
+                color: white,
+                text: "release_date",
+                multilanguage: true,
+                textalign: TextAlign.start,
+                fontsizeNormal: 14,
+                fontsizeWeb: 15,
+                fontweight: FontWeight.w500,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                fontstyle: FontStyle.normal,
+              ),
+              const SizedBox(width: 5),
+              MyText(
+                color: white,
+                text: ":",
+                multilanguage: false,
+                textalign: TextAlign.start,
+                fontsizeNormal: 14,
+                fontsizeWeb: 15,
+                fontweight: FontWeight.w500,
+                maxline: 1,
+                overflow: TextOverflow.ellipsis,
+                fontstyle: FontStyle.normal,
+              ),
+              const SizedBox(width: 5),
+              Expanded(
+                child: MyText(
+                  color: complimentryColor,
+                  text: DateFormat("dd MMM, yyyy").format(DateTime.parse(
+                      showDetailsProvider
+                              .sectionDetailModel.result?.releaseDate ??
+                          "")),
+                  multilanguage: false,
+                  textalign: TextAlign.start,
+                  fontsizeNormal: 14,
+                  fontsizeWeb: 15,
+                  fontweight: FontWeight.w700,
+                  maxline: 2,
+                  overflow: TextOverflow.ellipsis,
+                  fontstyle: FontStyle.normal,
+                ),
+              ),
+            ],
+          ),
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildWatchTrailer() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: InkWell(
+        onTap: () {
+          openPlayer("Trailer");
+        },
+        focusColor: white,
+        borderRadius: BorderRadius.circular(5),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+            height: (kIsWeb || Constant.isTV) ? 40 : 55,
+            constraints: BoxConstraints(
+              maxWidth: (kIsWeb || Constant.isTV)
+                  ? 180
+                  : MediaQuery.of(context).size.width,
+            ),
+            padding: const EdgeInsets.fromLTRB(20, 2, 20, 2),
+            decoration: BoxDecoration(
+              color: primaryDark,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MyImage(
+                  width: 18,
+                  height: 18,
+                  imagePath: "ic_play.png",
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: MyText(
+                    color: white,
+                    text: "watch_trailer",
+                    multilanguage: true,
+                    textalign: TextAlign.start,
+                    fontsizeNormal: 15,
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 16,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                    fontstyle: FontStyle.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildWatchNow() {
     return Consumer<EpisodeProvider>(
       builder: (context, episodeProvider, child) {
@@ -2296,59 +2439,64 @@ class ShowDetailsState extends State<ShowDetails> {
                   child: Column(
                     children: [
                       /* Episodes */
-                      (showDetailsProvider.sectionDetailModel.session != null &&
-                              (showDetailsProvider
-                                          .sectionDetailModel.session?.length ??
-                                      0) >
-                                  0)
-                          ? Column(
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 55,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                  alignment: Alignment.bottomLeft,
-                                  child: MyText(
-                                    color: white,
-                                    text: "episodes",
-                                    multilanguage: true,
-                                    textalign: TextAlign.center,
-                                    fontsizeNormal: 15,
-                                    fontsizeWeb: 16,
-                                    maxline: 1,
-                                    fontweight: FontWeight.w600,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontstyle: FontStyle.normal,
+                      if (widget.videoType != 5)
+                        (showDetailsProvider.sectionDetailModel.session !=
+                                    null &&
+                                (showDetailsProvider.sectionDetailModel.session
+                                            ?.length ??
+                                        0) >
+                                    0)
+                            ? Column(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 55,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    alignment: Alignment.bottomLeft,
+                                    child: MyText(
+                                      color: white,
+                                      text: "episodes",
+                                      multilanguage: true,
+                                      textalign: TextAlign.center,
+                                      fontsizeNormal: 15,
+                                      fontsizeWeb: 16,
+                                      maxline: 1,
+                                      fontweight: FontWeight.w600,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontstyle: FontStyle.normal,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 12),
-                                Container(
-                                  padding: ((kIsWeb || Constant.isTV) &&
-                                          MediaQuery.of(context).size.width >
-                                              720)
-                                      ? const EdgeInsets.fromLTRB(20, 0, 20, 0)
-                                      : const EdgeInsets.all(0),
-                                  width: MediaQuery.of(context).size.width,
-                                  constraints:
-                                      const BoxConstraints(minHeight: 50),
-                                  child: Consumer<EpisodeProvider>(
-                                    builder: (context, episodeProvider, child) {
-                                      return EpisodeBySeason(
-                                        widget.videoId,
-                                        widget.typeId,
-                                        showDetailsProvider.seasonPos,
-                                        showDetailsProvider
-                                            .sectionDetailModel.session,
-                                        showDetailsProvider
-                                            .sectionDetailModel.result,
-                                      );
-                                    },
+                                  const SizedBox(height: 12),
+                                  Container(
+                                    padding: ((kIsWeb || Constant.isTV) &&
+                                            MediaQuery.of(context).size.width >
+                                                720)
+                                        ? const EdgeInsets.fromLTRB(
+                                            20, 0, 20, 0)
+                                        : const EdgeInsets.all(0),
+                                    width: MediaQuery.of(context).size.width,
+                                    constraints:
+                                        const BoxConstraints(minHeight: 50),
+                                    child: Consumer<EpisodeProvider>(
+                                      builder:
+                                          (context, episodeProvider, child) {
+                                        return EpisodeBySeason(
+                                          widget.videoId,
+                                          widget.upcomingType,
+                                          widget.typeId,
+                                          showDetailsProvider.seasonPos,
+                                          showDetailsProvider
+                                              .sectionDetailModel.session,
+                                          showDetailsProvider
+                                              .sectionDetailModel.result,
+                                        );
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                          : const SizedBox.shrink(),
+                                ],
+                              )
+                            : const SizedBox.shrink(),
 
                       /* Customers also watched */
                       RelatedVideoShow(

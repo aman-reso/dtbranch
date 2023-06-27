@@ -2,8 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/model/downloadvideomodel.dart';
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/provider/showdownloadprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -633,33 +631,13 @@ class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
                     onTap: () async {
                       Navigator.pop(context);
                       log("Clicked on position :==> $position");
-                      if (widget.videoType == 1) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MovieDetails(
-                                widget.showId,
-                                widget.videoType,
-                                widget.typeId,
-                              );
-                            },
-                          ),
-                        );
-                      } else if (widget.videoType == 2) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ShowDetails(
-                                widget.showId,
-                                widget.videoType,
-                                widget.typeId,
-                              );
-                            },
-                          ),
-                        );
-                      }
+                      Utils.openDetails(
+                        context: context,
+                        videoId: widget.showId,
+                        upcomingType: 0,
+                        videoType: widget.videoType,
+                        typeId: widget.typeId,
+                      );
                     },
                     child: Container(
                       height: Dimens.minHtDialogContent,

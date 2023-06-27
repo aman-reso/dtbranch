@@ -7,8 +7,6 @@ import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -58,36 +56,6 @@ class ChannelsState extends State<Channels> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  _openDetailPage(int? videoId, int? videoType, int? typeId) {
-    if (videoType == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return MovieDetails(
-              videoId ?? 0,
-              videoType ?? 0,
-              typeId ?? 0,
-            );
-          },
-        ),
-      );
-    } else if (videoType == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return ShowDetails(
-              videoId ?? 0,
-              videoType ?? 0,
-              typeId ?? 0,
-            );
-          },
-        ),
-      );
-    }
   }
 
   @override
@@ -440,7 +408,7 @@ class ChannelsState extends State<Channels> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: getRemainingDataHeight(
-                  sectionList?[index].videoType ?? "",
+                  sectionList?[index].videoType.toString() ?? "",
                   sectionList?[index].screenLayout ?? "",
                 ),
                 child: setSectionData(sectionList: sectionList, index: index),
@@ -458,7 +426,7 @@ class ChannelsState extends State<Channels> {
       {required List<list.Result>? sectionList, required int index}) {
     /* video_type =>  1-video,  2-show */
     /* screen_layout =>  landscape, potrait, square */
-    if ((sectionList?[index].videoType ?? "") == "1") {
+    if ((sectionList?[index].videoType ?? 0) == 1) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
         return landscape(sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
@@ -468,7 +436,7 @@ class ChannelsState extends State<Channels> {
       } else {
         return landscape(sectionList?[index].data);
       }
-    } else if ((sectionList?[index].videoType ?? "") == "2") {
+    } else if ((sectionList?[index].videoType ?? 0) == 2) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
         return landscape(sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
@@ -532,10 +500,12 @@ class ChannelsState extends State<Channels> {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              _openDetailPage(
-                sectionDataList?[index].id ?? 0,
-                sectionDataList?[index].videoType ?? 0,
-                sectionDataList?[index].typeId ?? 0,
+              Utils.openDetails(
+                videoId: sectionDataList?[index].id ?? 0,
+                upcomingType: 0,
+                videoType: sectionDataList?[index].videoType ?? 0,
+                typeId: sectionDataList?[index].typeId ?? 0,
+                context: context,
               );
             },
             focusColor: white,
@@ -580,10 +550,12 @@ class ChannelsState extends State<Channels> {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              _openDetailPage(
-                sectionDataList?[index].id ?? 0,
-                sectionDataList?[index].videoType ?? 0,
-                sectionDataList?[index].typeId ?? 0,
+              Utils.openDetails(
+                videoId: sectionDataList?[index].id ?? 0,
+                upcomingType: 0,
+                videoType: sectionDataList?[index].videoType ?? 0,
+                typeId: sectionDataList?[index].typeId ?? 0,
+                context: context,
               );
             },
             focusColor: white,
@@ -627,10 +599,12 @@ class ChannelsState extends State<Channels> {
           return InkWell(
             onTap: () {
               log("Clicked on index ==> $index");
-              _openDetailPage(
-                sectionDataList?[index].id ?? 0,
-                sectionDataList?[index].videoType ?? 0,
-                sectionDataList?[index].typeId ?? 0,
+              Utils.openDetails(
+                videoId: sectionDataList?[index].id ?? 0,
+                upcomingType: 0,
+                videoType: sectionDataList?[index].videoType ?? 0,
+                typeId: sectionDataList?[index].typeId ?? 0,
+                context: context,
               );
             },
             focusColor: white,

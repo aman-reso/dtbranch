@@ -14,13 +14,15 @@ class VideoDetailsProvider extends ChangeNotifier {
   bool loading = false;
   String tabClickedOn = "related";
 
-  Future<void> getSectionDetails(typeId, videoType, videoId) async {
-    debugPrint("getSectionDetails typeId :==> $typeId");
-    debugPrint("getSectionDetails videoType :==> $videoType");
-    debugPrint("getSectionDetails videoId :==> $videoId");
+  Future<void> getSectionDetails(
+      typeId, videoType, videoId, upcomingType) async {
+    debugPrint("getSectionDetails typeId :========> $typeId");
+    debugPrint("getSectionDetails videoType :=====> $videoType");
+    debugPrint("getSectionDetails videoId :=======> $videoId");
+    debugPrint("getSectionDetails upcomingType :==> $upcomingType");
     loading = true;
-    sectionDetailModel =
-        await ApiService().sectionDetails(typeId, videoType, videoId);
+    sectionDetailModel = await ApiService()
+        .sectionDetails(typeId, videoType, videoId, upcomingType);
     debugPrint("section_detail status :==> ${sectionDetailModel.status}");
     debugPrint("section_detail message :==> ${sectionDetailModel.message}");
     loading = false;

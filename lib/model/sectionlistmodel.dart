@@ -293,6 +293,7 @@ class Result {
     this.categoryIds,
     this.title,
     this.videoType,
+    this.upcomingType,
     this.screenLayout,
     this.isHomeScreen,
     this.status,
@@ -310,6 +311,7 @@ class Result {
   String? categoryIds;
   String? title;
   int? videoType;
+  int? upcomingType;
   String? screenLayout;
   int? isHomeScreen;
   int? status;
@@ -327,15 +329,14 @@ class Result {
         categoryIds: json["category_ids"],
         title: json["title"],
         videoType: json["video_type"],
+        upcomingType: json["upcoming_type"],
         screenLayout: json["screen_layout"],
         isHomeScreen: json["is_home_screen"],
         status: json["status"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
-        data: json["data"] == null
-            ? []
-            : List<Datum>.from(
-                json["data"]?.map((x) => Datum.fromJson(x)) ?? []),
+        data:
+            List<Datum>.from(json["data"]?.map((x) => Datum.fromJson(x)) ?? []),
       );
 
   Map<String, dynamic> toJson() => {
@@ -348,6 +349,7 @@ class Result {
         "category_ids": categoryIds,
         "title": title,
         "video_type": videoType,
+        "upcoming_type": upcomingType,
         "screen_layout": screenLayout,
         "is_home_screen": isHomeScreen,
         "status": status,
@@ -384,6 +386,7 @@ class Datum {
     this.imdbRating,
     this.status,
     this.isTitle,
+    this.releaseDate,
     this.isPremium,
     this.createdAt,
     this.updatedAt,
@@ -443,6 +446,7 @@ class Datum {
   dynamic imdbRating;
   int? status;
   String? isTitle;
+  String? releaseDate;
   int? isPremium;
   String? createdAt;
   String? updatedAt;
@@ -503,6 +507,7 @@ class Datum {
         imdbRating: json["imdb_rating"],
         status: json["status"],
         isTitle: json["is_title"],
+        releaseDate: json["release_date"],
         isPremium: json["is_premium"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
@@ -564,6 +569,7 @@ class Datum {
         "imdb_rating": imdbRating,
         "status": status,
         "is_title": isTitle,
+        "release_date": releaseDate,
         "is_premium": isPremium,
         "created_at": createdAt,
         "updated_at": updatedAt,

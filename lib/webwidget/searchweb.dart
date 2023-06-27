@@ -1,9 +1,6 @@
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
-import 'package:dtlive/tvpages/tvmoviedetails.dart';
-import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -45,59 +42,6 @@ class _SearchWebState extends State<SearchWeb> {
       final searchProvider =
           Provider.of<SearchProvider>(context, listen: false);
       await searchProvider.getSearchVideo(widget.searchText ?? "");
-    }
-  }
-
-  openDetailPage(
-      String pageName, int videoId, int videoType, int typeId) async {
-    debugPrint("pageName ==========> $pageName");
-    debugPrint("videoId ==========> $videoId");
-    debugPrint("videoType ==========> $videoType");
-    debugPrint("typeId ==========> $typeId");
-    if (videoType == 1) {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            if (kIsWeb || Constant.isTV) {
-              return TVMovieDetails(
-                videoId,
-                videoType,
-                typeId,
-              );
-            } else {
-              return MovieDetails(
-                videoId,
-                videoType,
-                typeId,
-              );
-            }
-          },
-        ),
-      );
-    } else if (videoType == 2) {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            if (kIsWeb || Constant.isTV) {
-              return TVShowDetails(
-                videoId,
-                videoType,
-                typeId,
-              );
-            } else {
-              return ShowDetails(
-                videoId,
-                videoType,
-                typeId,
-              );
-            }
-          },
-        ),
-      );
     }
   }
 
@@ -273,13 +217,16 @@ class _SearchWebState extends State<SearchWeb> {
                         borderRadius: BorderRadius.circular(4),
                         onTap: () {
                           debugPrint("Clicked on position ==> $position");
-                          openDetailPage(
-                            "videodetail",
-                            searchProvider.searchModel.video?[position].id ?? 0,
-                            searchProvider
+                          Utils.openDetails(
+                            context: context,
+                            videoId: searchProvider
+                                    .searchModel.video?[position].id ??
+                                0,
+                            upcomingType: 0,
+                            videoType: searchProvider
                                     .searchModel.video?[position].videoType ??
                                 0,
-                            searchProvider
+                            typeId: searchProvider
                                     .searchModel.video?[position].typeId ??
                                 0,
                           );
@@ -345,14 +292,16 @@ class _SearchWebState extends State<SearchWeb> {
                         focusColor: white,
                         onTap: () {
                           debugPrint("Clicked on position ==> $position");
-                          openDetailPage(
-                            "showdetail",
-                            searchProvider.searchModel.tvshow?[position].id ??
+                          Utils.openDetails(
+                            context: context,
+                            videoId: searchProvider
+                                    .searchModel.tvshow?[position].id ??
                                 0,
-                            searchProvider
+                            upcomingType: 0,
+                            videoType: searchProvider
                                     .searchModel.tvshow?[position].videoType ??
                                 0,
-                            searchProvider
+                            typeId: searchProvider
                                     .searchModel.tvshow?[position].typeId ??
                                 0,
                           );

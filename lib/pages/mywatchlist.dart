@@ -2,8 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/pages/loginsocial.dart';
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/watchlistprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -135,51 +133,19 @@ class _MyWatchlistState extends State<MyWatchlist> {
               borderRadius: BorderRadius.circular(0),
               onTap: () {
                 log("Clicked on position ==> $position");
-                if ((watchlistProvider
-                            .watchlistModel.result?[position].videoType ??
-                        0) ==
-                    1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MovieDetails(
-                          watchlistProvider
-                                  .watchlistModel.result?[position].id ??
-                              0,
-                          watchlistProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0,
-                          watchlistProvider
-                                  .watchlistModel.result?[position].typeId ??
-                              0,
-                        );
-                      },
-                    ),
-                  );
-                } else if ((watchlistProvider
-                            .watchlistModel.result?[position].videoType ??
-                        0) ==
-                    2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ShowDetails(
-                          watchlistProvider
-                                  .watchlistModel.result?[position].id ??
-                              0,
-                          watchlistProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0,
-                          watchlistProvider
-                                  .watchlistModel.result?[position].typeId ??
-                              0,
-                        );
-                      },
-                    ),
-                  );
-                }
+                Utils.openDetails(
+                  context: context,
+                  videoId:
+                      watchlistProvider.watchlistModel.result?[position].id ??
+                          0,
+                  upcomingType: 0,
+                  videoType: watchlistProvider
+                          .watchlistModel.result?[position].videoType ??
+                      0,
+                  typeId: watchlistProvider
+                          .watchlistModel.result?[position].typeId ??
+                      0,
+                );
               },
               child: MyNetworkImage(
                 imageUrl: (watchlistProvider
@@ -801,51 +767,19 @@ class _MyWatchlistState extends State<MyWatchlist> {
                     onTap: () async {
                       Navigator.pop(context);
                       log("Clicked on position :==> $position");
-                      if ((watchlistProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0) ==
-                          1) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MovieDetails(
-                                watchlistProvider
-                                        .watchlistModel.result?[position].id ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].videoType ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].typeId ??
-                                    0,
-                              );
-                            },
-                          ),
-                        );
-                      } else if ((watchlistProvider
-                                  .watchlistModel.result?[position].videoType ??
-                              0) ==
-                          2) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ShowDetails(
-                                watchlistProvider
-                                        .watchlistModel.result?[position].id ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].videoType ??
-                                    0,
-                                watchlistProvider.watchlistModel
-                                        .result?[position].typeId ??
-                                    0,
-                              );
-                            },
-                          ),
-                        );
-                      }
+                      Utils.openDetails(
+                        context: context,
+                        videoId: watchlistProvider
+                                .watchlistModel.result?[position].id ??
+                            0,
+                        upcomingType: 0,
+                        videoType: watchlistProvider
+                                .watchlistModel.result?[position].videoType ??
+                            0,
+                        typeId: watchlistProvider
+                                .watchlistModel.result?[position].typeId ??
+                            0,
+                      );
                     },
                     child: _buildDialogItems(
                       icon: "ic_info.png",

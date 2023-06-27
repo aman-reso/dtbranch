@@ -22,11 +22,11 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class EpisodeBySeason extends StatefulWidget {
-  final int? videoId, typeId, seasonPos;
+  final int? videoId, upcomingType, typeId, seasonPos;
   final List<Session>? seasonList;
   final Result? sectionDetails;
-  const EpisodeBySeason(this.videoId, this.typeId, this.seasonPos,
-      this.seasonList, this.sectionDetails,
+  const EpisodeBySeason(this.videoId, this.upcomingType, this.typeId,
+      this.seasonPos, this.seasonList, this.sectionDetails,
       {Key? key})
       : super(key: key);
 
@@ -354,10 +354,6 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
   }
 
   _onTapEpisodePlay(index) async {
-    final showDetailsProvider =
-        Provider.of<ShowDetailsProvider>(context, listen: false);
-    final episodeProvider =
-        Provider.of<EpisodeProvider>(context, listen: false);
     if (Constant.userID != null) {
       if ((showDetailsProvider.sectionDetailModel.result?.isPremium ?? 0) ==
           1) {
@@ -385,7 +381,8 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               await showDetailsProvider.getSectionDetails(
                   widget.typeId,
                   showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
-                  widget.videoId);
+                  widget.videoId,
+                  0);
               getAllEpisode();
             }
           } else {
@@ -425,7 +422,8 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
             await showDetailsProvider.getSectionDetails(
                 widget.typeId,
                 showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
-                widget.videoId);
+                widget.videoId,
+                0);
             getAllEpisode();
           }
           return false;
@@ -459,7 +457,8 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
               await showDetailsProvider.getSectionDetails(
                   widget.typeId,
                   showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
-                  widget.videoId);
+                  widget.videoId,
+                  0);
               getAllEpisode();
             }
           } else {
@@ -499,8 +498,6 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
   /* ========= Open Player ========= */
   openPlayer(
       String playType, int epiPos, List<episode.Result>? episodeList) async {
-    final showDetailsProvider =
-        Provider.of<ShowDetailsProvider>(context, listen: false);
     if ((episodeList?.length ?? 0) > 0) {
       int? epiID = (episodeList?[epiPos].id ?? 0);
       int? vType =

@@ -269,7 +269,8 @@ class ApiService {
   }
 
   // section_detail API
-  Future<SectionDetailModel> sectionDetails(typeId, videoType, videoId) async {
+  Future<SectionDetailModel> sectionDetails(
+      typeId, videoType, videoId, upcomingType) async {
     SectionDetailModel sectionDetailModel;
     String sectionList = "section_detail";
     Response response = await dio.post(
@@ -280,6 +281,7 @@ class ApiService {
         'type_id': typeId,
         'video_type': videoType,
         'video_id': videoId,
+        'upcoming_type': upcomingType,
       },
     );
     sectionDetailModel = SectionDetailModel.fromJson(response.data);

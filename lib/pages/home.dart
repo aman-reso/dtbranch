@@ -13,11 +13,9 @@ import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
-import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -94,42 +92,75 @@ class HomeState extends State<Home> {
     debugPrint(
         "setNotificationOpenedHandler video_id ===> ${result.notification.additionalData?['id']}");
     debugPrint(
+        "setNotificationOpenedHandler upcoming_type ===> ${result.notification.additionalData?['upcoming_type']}");
+    debugPrint(
         "setNotificationOpenedHandler video_type ===> ${result.notification.additionalData?['video_type']}");
     debugPrint(
         "setNotificationOpenedHandler type_id ===> ${result.notification.additionalData?['type_id']}");
 
     if (result.notification.additionalData?['id'] != null &&
+        result.notification.additionalData?['upcoming_type'] != null &&
         result.notification.additionalData?['video_type'] != null &&
         result.notification.additionalData?['type_id'] != null) {
       String? videoID =
           result.notification.additionalData?['id'].toString() ?? "";
+      String? upcomingType =
+          result.notification.additionalData?['upcoming_type'].toString() ?? "";
       String? videoType =
           result.notification.additionalData?['video_type'].toString() ?? "";
       String? typeID =
           result.notification.additionalData?['type_id'].toString() ?? "";
-      log("videoID =====> $videoID");
+      log("videoID =======> $videoID");
+      log("upcomingType ==> $upcomingType");
       log("videoType =====> $videoType");
-      log("typeID =====> $typeID");
+      log("typeID ========> $typeID");
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            if (videoType == "2") {
-              return ShowDetails(
-                int.parse(videoID),
-                int.parse(videoType),
-                int.parse(typeID),
-              );
-            } else {
-              return MovieDetails(
-                int.parse(videoID),
-                int.parse(videoType),
-                int.parse(typeID),
-              );
-            }
-          },
-        ),
+      Utils.openDetails(
+        context: context,
+        videoId: int.parse(videoID),
+        upcomingType: int.parse(upcomingType),
+        videoType: int.parse(videoType),
+        typeId: int.parse(typeID),
       );
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       if (videoType == "5") {
+      //         if (upcomingType == "2") {
+      //           return ShowDetails(
+      //             int.parse(videoID),
+      //             int.parse(upcomingType),
+      //             int.parse(videoType),
+      //             int.parse(typeID),
+      //           );
+      //         } else {
+      //           return MovieDetails(
+      //             int.parse(videoID),
+      //             int.parse(upcomingType),
+      //             int.parse(videoType),
+      //             int.parse(typeID),
+      //           );
+      //         }
+      //       } else {
+      //         if (videoType == "2") {
+      //           return ShowDetails(
+      //             int.parse(videoID),
+      //             int.parse(upcomingType),
+      //             int.parse(videoType),
+      //             int.parse(typeID),
+      //           );
+      //         } else {
+      //           return MovieDetails(
+      //             int.parse(videoID),
+      //             int.parse(upcomingType),
+      //             int.parse(videoType),
+      //             int.parse(typeID),
+      //           );
+      //         }
+      //       }
+      //     },
+      //   ),
+      // );
     }
   }
 
@@ -188,44 +219,24 @@ class HomeState extends State<Home> {
         position == 0 ? "1" : "2");
   }
 
-  openDetailPage(
-      String pageName, int videoId, int videoType, int typeId) async {
-    debugPrint("pageName ==========> $pageName");
-    debugPrint("videoId ==========> $videoId");
-    debugPrint("videoType ==========> $videoType");
-    debugPrint("typeId ==========> $typeId");
+  openDetailPage(String pageName, int videoId, int upcomingType, int videoType,
+      int typeId) async {
+    debugPrint("pageName =======> $pageName");
+    debugPrint("videoId ========> $videoId");
+    debugPrint("upcomingType ===> $upcomingType");
+    debugPrint("videoType ======> $videoType");
+    debugPrint("typeId =========> $typeId");
     if (pageName != "" && (kIsWeb || Constant.isTV)) {
       await setSelectedTab(-1);
     }
-    if (videoType == 1) {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return MovieDetails(
-              videoId,
-              videoType,
-              typeId,
-            );
-          },
-        ),
-      );
-    } else if (videoType == 2) {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return ShowDetails(
-              videoId,
-              videoType,
-              typeId,
-            );
-          },
-        ),
-      );
-    }
+    if (!mounted) return;
+    Utils.openDetails(
+      context: context,
+      videoId: videoId,
+      upcomingType: upcomingType,
+      videoType: videoType,
+      typeId: typeId,
+    );
   }
 
   @override
@@ -540,6 +551,7 @@ class HomeState extends State<Home> {
                           ? "showdetail"
                           : "videodetail",
                       sectionBannerList?[index].id ?? 0,
+                      sectionBannerList?[index].upcomingType ?? 0,
                       sectionBannerList?[index].videoType ?? 0,
                       sectionBannerList?[index].typeId ?? 0,
                     );
@@ -639,6 +651,7 @@ class HomeState extends State<Home> {
                       ? "showdetail"
                       : "videodetail",
                   sectionBannerList?[index].id ?? 0,
+                  sectionBannerList?[index].upcomingType ?? 0,
                   sectionBannerList?[index].videoType ?? 0,
                   sectionBannerList?[index].typeId ?? 0,
                 );
@@ -821,6 +834,7 @@ class HomeState extends State<Home> {
                           (continueWatchingList?[index].videoType ?? 0) == 2
                               ? (continueWatchingList?[index].showId ?? 0)
                               : (continueWatchingList?[index].id ?? 0),
+                          0,
                           continueWatchingList?[index].videoType ?? 0,
                           continueWatchingList?[index].typeId ?? 0,
                         );
@@ -1025,41 +1039,53 @@ class HomeState extends State<Home> {
       {required List<list.Result>? sectionList, required int index}) {
     /* video_type =>  1-video,  2-show,  3-language,  4-category */
     /* screen_layout =>  landscape, potrait, square */
-    if ((sectionList?[index].videoType ?? "") == "1") {
+    if ((sectionList?[index].videoType ?? 0) == 1) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
-    } else if ((sectionList?[index].videoType ?? "") == "2") {
+    } else if ((sectionList?[index].videoType ?? 0) == 2) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
-    } else if ((sectionList?[index].videoType ?? "") == "3") {
+    } else if ((sectionList?[index].videoType ?? 0) == 3) {
       return languageLayout(
           sectionList?[index].typeId ?? 0, sectionList?[index].data);
-    } else if ((sectionList?[index].videoType ?? "") == "4") {
+    } else if ((sectionList?[index].videoType ?? 0) == 4) {
       return genresLayout(
           sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
     }
   }
@@ -1090,7 +1116,7 @@ class HomeState extends State<Home> {
     }
   }
 
-  Widget landscape(List<Datum>? sectionDataList) {
+  Widget landscape(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLand,
@@ -1112,6 +1138,7 @@ class HomeState extends State<Home> {
                     ? "showdetail"
                     : "videodetail",
                 sectionDataList?[index].id ?? 0,
+                upcomingType ?? 0,
                 sectionDataList?[index].videoType ?? 0,
                 sectionDataList?[index].typeId ?? 0,
               );
@@ -1138,7 +1165,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  Widget portrait(List<Datum>? sectionDataList) {
+  Widget portrait(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightPort,
@@ -1160,6 +1187,7 @@ class HomeState extends State<Home> {
                     ? "showdetail"
                     : "videodetail",
                 sectionDataList?[index].id ?? 0,
+                upcomingType ?? 0,
                 sectionDataList?[index].videoType ?? 0,
                 sectionDataList?[index].typeId ?? 0,
               );
@@ -1186,7 +1214,7 @@ class HomeState extends State<Home> {
     );
   }
 
-  Widget square(List<Datum>? sectionDataList) {
+  Widget square(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightSquare,
@@ -1208,6 +1236,7 @@ class HomeState extends State<Home> {
                     ? "showdetail"
                     : "videodetail",
                 sectionDataList?[index].id ?? 0,
+                upcomingType ?? 0,
                 sectionDataList?[index].videoType ?? 0,
                 sectionDataList?[index].typeId ?? 0,
               );

@@ -5,8 +5,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/sectionbytypeprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -170,34 +168,13 @@ class SectionByTypeState extends State<SectionByType> {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
-                    if ((sectionBannerList?[index].videoType ?? 0) == 1) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return MovieDetails(
-                              sectionBannerList?[index].id ?? 0,
-                              sectionBannerList?[index].videoType ?? 0,
-                              sectionBannerList?[index].typeId ?? 0,
-                            );
-                          },
-                        ),
-                      );
-                    } else if ((sectionBannerList?[index].videoType ?? 0) ==
-                        2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return ShowDetails(
-                              sectionBannerList?[index].id ?? 0,
-                              sectionBannerList?[index].videoType ?? 0,
-                              sectionBannerList?[index].typeId ?? 0,
-                            );
-                          },
-                        ),
-                      );
-                    }
+                    Utils.openDetails(
+                      context: context,
+                      videoId: sectionBannerList?[index].id ?? 0,
+                      upcomingType: sectionBannerList?[index].upcomingType ?? 0,
+                      videoType: sectionBannerList?[index].videoType ?? 0,
+                      typeId: sectionBannerList?[index].typeId ?? 0,
+                    );
                   },
                   child: Stack(
                     alignment: AlignmentDirectional.bottomCenter,
@@ -307,41 +284,53 @@ class SectionByTypeState extends State<SectionByType> {
       {required List<list.Result>? sectionList, required int index}) {
     /* video_type =>  1-video,  2-show,  3-language,  4-category */
     /* screen_layout =>  landscape, potrait, square */
-    if ((sectionList?[index].videoType ?? "") == "1") {
+    if ((sectionList?[index].videoType ?? 0) == 1) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
-    } else if ((sectionList?[index].videoType ?? "") == "2") {
+    } else if ((sectionList?[index].videoType ?? 0) == 2) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
-    } else if ((sectionList?[index].videoType ?? "") == "3") {
+    } else if ((sectionList?[index].videoType ?? 0) == 3) {
       return languageLayout(
           sectionList?[index].typeId ?? 0, sectionList?[index].data);
-    } else if ((sectionList?[index].videoType ?? "") == "4") {
+    } else if ((sectionList?[index].videoType ?? 0) == 4) {
       return genresLayout(
           sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
     }
   }
@@ -372,7 +361,7 @@ class SectionByTypeState extends State<SectionByType> {
     }
   }
 
-  Widget landscape(List<Datum>? sectionDataList) {
+  Widget landscape(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLand,
@@ -388,33 +377,13 @@ class SectionByTypeState extends State<SectionByType> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              Utils.openDetails(
+                context: context,
+                videoId: sectionDataList?[index].id ?? 0,
+                upcomingType: upcomingType ?? 0,
+                videoType: sectionDataList?[index].videoType ?? 0,
+                typeId: sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthLand,
@@ -437,7 +406,7 @@ class SectionByTypeState extends State<SectionByType> {
     );
   }
 
-  Widget portrait(List<Datum>? sectionDataList) {
+  Widget portrait(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightPort,
@@ -455,33 +424,13 @@ class SectionByTypeState extends State<SectionByType> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              Utils.openDetails(
+                context: context,
+                videoId: sectionDataList?[index].id ?? 0,
+                upcomingType: upcomingType ?? 0,
+                videoType: sectionDataList?[index].videoType ?? 0,
+                typeId: sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthPort,
@@ -504,7 +453,7 @@ class SectionByTypeState extends State<SectionByType> {
     );
   }
 
-  Widget square(List<Datum>? sectionDataList) {
+  Widget square(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightSquare,
@@ -522,33 +471,13 @@ class SectionByTypeState extends State<SectionByType> {
             borderRadius: BorderRadius.circular(4),
             onTap: () {
               log("Clicked on index ==> $index");
-              if ((sectionDataList?[index].videoType ?? 0) == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MovieDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              } else if ((sectionDataList?[index].videoType ?? 0) == 2) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ShowDetails(
-                        sectionDataList?[index].id ?? 0,
-                        sectionDataList?[index].videoType ?? 0,
-                        sectionDataList?[index].typeId ?? 0,
-                      );
-                    },
-                  ),
-                );
-              }
+              Utils.openDetails(
+                context: context,
+                videoId: sectionDataList?[index].id ?? 0,
+                upcomingType: upcomingType ?? 0,
+                videoType: sectionDataList?[index].videoType ?? 0,
+                typeId: sectionDataList?[index].typeId ?? 0,
+              );
             },
             child: Container(
               width: Dimens.widthSquare,

@@ -16,11 +16,12 @@ class ShowDetailsProvider extends ChangeNotifier {
   int seasonPos = 0, mCurrentEpiPos = -1;
   String tabClickedOn = "related";
 
-  Future<void> getSectionDetails(typeId, videoType, videoId) async {
+  Future<void> getSectionDetails(
+      typeId, videoType, videoId, upcomingType) async {
     loading = true;
     sectionDetailModel = SectionDetailModel();
-    sectionDetailModel =
-        await ApiService().sectionDetails(typeId, videoType, videoId);
+    sectionDetailModel = await ApiService()
+        .sectionDetails(typeId, videoType, videoId, upcomingType);
     loading = false;
     notifyListeners();
   }

@@ -128,7 +128,7 @@ class Result {
   String? languageId;
   String? categoryIds;
   String? title;
-  String? videoType;
+  int? videoType;
   int? sectionType;
   String? screenLayout;
   int? status;

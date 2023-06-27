@@ -7,8 +7,6 @@ import 'package:dtlive/tvpages/tvchannels.dart';
 import 'package:dtlive/tvpages/tvrentstore.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
-import 'package:dtlive/tvpages/tvmoviedetails.dart';
-import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 
@@ -143,41 +141,20 @@ class TVHomeState extends State<TVHome> {
         position == 0 ? "1" : "2");
   }
 
-  openDetailPage(
-      String pageName, int videoId, int videoType, int typeId) async {
+  openDetailPage(String pageName, int videoId, int upcomingType, int videoType,
+      int typeId) async {
     debugPrint("pageName ==========> $pageName");
     debugPrint("videoId ==========> $videoId");
     debugPrint("videoType ==========> $videoType");
     debugPrint("typeId ==========> $typeId");
-    if (videoType == 1) {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return TVMovieDetails(
-              videoId,
-              videoType,
-              typeId,
-            );
-          },
-        ),
-      );
-    } else if (videoType == 2) {
-      if (!mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return TVShowDetails(
-              videoId,
-              videoType,
-              typeId,
-            );
-          },
-        ),
-      );
-    }
+    if (!mounted) return;
+    Utils.openDetails(
+      context: context,
+      videoId: videoId,
+      upcomingType: upcomingType,
+      videoType: videoType,
+      typeId: typeId,
+    );
   }
 
   @override
@@ -953,6 +930,7 @@ class TVHomeState extends State<TVHome> {
                       ? "showdetail"
                       : "videodetail",
                   sectionBannerList?[index].id ?? 0,
+                  sectionBannerList?[index].upcomingType ?? 0,
                   sectionBannerList?[index].videoType ?? 0,
                   sectionBannerList?[index].typeId ?? 0,
                 );
@@ -1124,6 +1102,7 @@ class TVHomeState extends State<TVHome> {
                           ? "showdetail"
                           : "videodetail",
                       sectionBannerList?[index].id ?? 0,
+                      sectionBannerList?[index].upcomingType ?? 0,
                       sectionBannerList?[index].videoType ?? 0,
                       sectionBannerList?[index].typeId ?? 0,
                     );
@@ -1418,41 +1397,53 @@ class TVHomeState extends State<TVHome> {
       {required List<list.Result>? sectionList, required int index}) {
     /* video_type =>  1-video,  2-show,  3-language,  4-category */
     /* screen_layout =>  landscape, potrait, square */
-    if ((sectionList?[index].videoType ?? "") == "1") {
+    if ((sectionList?[index].videoType ?? 0) == 1) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
-    } else if ((sectionList?[index].videoType ?? "") == "2") {
+    } else if ((sectionList?[index].videoType ?? 0) == 2) {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
-    } else if ((sectionList?[index].videoType ?? "") == "3") {
+    } else if ((sectionList?[index].videoType ?? 0) == 3) {
       return languageLayout(
           sectionList?[index].typeId ?? 0, sectionList?[index].data);
-    } else if ((sectionList?[index].videoType ?? "") == "4") {
+    } else if ((sectionList?[index].videoType ?? 0) == 4) {
       return genresLayout(
           sectionList?[index].typeId ?? 0, sectionList?[index].data);
     } else {
       if ((sectionList?[index].screenLayout ?? "") == "landscape") {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "potrait") {
-        return portrait(sectionList?[index].data);
+        return portrait(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else if ((sectionList?[index].screenLayout ?? "") == "square") {
-        return square(sectionList?[index].data);
+        return square(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       } else {
-        return landscape(sectionList?[index].data);
+        return landscape(
+            sectionList?[index].upcomingType, sectionList?[index].data);
       }
     }
   }
@@ -1483,7 +1474,7 @@ class TVHomeState extends State<TVHome> {
     }
   }
 
-  Widget landscape(List<Datum>? sectionDataList) {
+  Widget landscape(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightLand,
@@ -1505,6 +1496,7 @@ class TVHomeState extends State<TVHome> {
                     ? "showdetail"
                     : "videodetail",
                 sectionDataList?[index].id ?? 0,
+                upcomingType ?? 0,
                 sectionDataList?[index].videoType ?? 0,
                 sectionDataList?[index].typeId ?? 0,
               );
@@ -1531,7 +1523,7 @@ class TVHomeState extends State<TVHome> {
     );
   }
 
-  Widget portrait(List<Datum>? sectionDataList) {
+  Widget portrait(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightPort,
@@ -1553,6 +1545,7 @@ class TVHomeState extends State<TVHome> {
                     ? "showdetail"
                     : "videodetail",
                 sectionDataList?[index].id ?? 0,
+                upcomingType ?? 0,
                 sectionDataList?[index].videoType ?? 0,
                 sectionDataList?[index].typeId ?? 0,
               );
@@ -1579,7 +1572,7 @@ class TVHomeState extends State<TVHome> {
     );
   }
 
-  Widget square(List<Datum>? sectionDataList) {
+  Widget square(int? upcomingType, List<Datum>? sectionDataList) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: Dimens.heightSquare,
@@ -1601,6 +1594,7 @@ class TVHomeState extends State<TVHome> {
                     ? "showdetail"
                     : "videodetail",
                 sectionDataList?[index].id ?? 0,
+                upcomingType ?? 0,
                 sectionDataList?[index].videoType ?? 0,
                 sectionDataList?[index].typeId ?? 0,
               );

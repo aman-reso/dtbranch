@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
@@ -44,44 +42,6 @@ class RentStoreState extends State<RentStore> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  _openDetailPage(int? videoId, int? videoType, int? typeId) {
-    // if (kIsWeb) {
-    //   homeStateObject?.openDetailPage(
-    //     (videoType ?? 0) == 2 ? "showdetail" : "videodetail",
-    //     videoId ?? 0,
-    //     videoType ?? 0,
-    //     typeId ?? 0,
-    //   );
-    // }
-    if (videoType == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return MovieDetails(
-              videoId ?? 0,
-              videoType ?? 0,
-              typeId ?? 0,
-            );
-          },
-        ),
-      );
-    } else if (videoType == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return ShowDetails(
-              videoId ?? 0,
-              videoType ?? 0,
-              typeId ?? 0,
-            );
-          },
-        ),
-      );
-    }
   }
 
   @override
@@ -255,12 +215,17 @@ class RentStoreState extends State<RentStore> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on position ==> $position");
-                        _openDetailPage(
-                          rentStoreProvider.rentModel.video?[position].id ?? 0,
-                          rentStoreProvider
+                        Utils.openDetails(
+                          context: context,
+                          videoId:
+                              rentStoreProvider.rentModel.video?[position].id ??
+                                  0,
+                          upcomingType: 0,
+                          videoType: rentStoreProvider
                                   .rentModel.video?[position].videoType ??
                               0,
-                          rentStoreProvider.rentModel.video?[position].typeId ??
+                          typeId: rentStoreProvider
+                                  .rentModel.video?[position].typeId ??
                               0,
                         );
                       },
@@ -457,12 +422,16 @@ class RentStoreState extends State<RentStore> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on position ==> $position");
-                        _openDetailPage(
-                          rentStoreProvider.rentModel.tvshow?[position].id ?? 0,
-                          rentStoreProvider
+                        Utils.openDetails(
+                          context: context,
+                          videoId: rentStoreProvider
+                                  .rentModel.tvshow?[position].id ??
+                              0,
+                          upcomingType: 0,
+                          videoType: rentStoreProvider
                                   .rentModel.tvshow?[position].videoType ??
                               0,
-                          rentStoreProvider
+                          typeId: rentStoreProvider
                                   .rentModel.tvshow?[position].typeId ??
                               0,
                         );

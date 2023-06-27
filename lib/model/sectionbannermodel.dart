@@ -47,6 +47,7 @@ class Result {
     this.id,
     this.categoryId,
     this.description,
+    this.upcomingType,
     this.videoType,
     this.typeId,
     this.thumbnail,
@@ -70,6 +71,7 @@ class Result {
   int? id;
   String? categoryId;
   String? description;
+  int? upcomingType;
   int? videoType;
   int? typeId;
   String? thumbnail;
@@ -93,6 +95,7 @@ class Result {
         id: json["id"],
         categoryId: json["category_id"],
         description: json["description"],
+        upcomingType: json["upcoming_type"],
         videoType: json["video_type"],
         typeId: json["type_id"],
         thumbnail: json["thumbnail"],
@@ -117,6 +120,7 @@ class Result {
         "id": id,
         "category_id": categoryId,
         "description": description,
+        "upcoming_type": upcomingType,
         "video_type": videoType,
         "type_id": typeId,
         "thumbnail": thumbnail,

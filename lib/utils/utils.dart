@@ -3,13 +3,17 @@ import 'dart:io';
 import 'dart:math' as number;
 
 import 'package:dtlive/model/subtitlemodel.dart';
+import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/pages/player_better.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
 import 'package:dtlive/pages/player_youtube.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/subscription/allpayment.dart';
+import 'package:dtlive/tvpages/tvmoviedetails.dart';
+import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/webwidget/loginsocialweb.dart';
@@ -54,6 +58,102 @@ class Utils {
       textColor: black,
       fontSize: 16,
     );
+  }
+
+  static Future<dynamic> openDetails({
+    required BuildContext context,
+    required int videoId,
+    required int upcomingType,
+    required int videoType,
+    required int typeId,
+  }) async {
+    debugPrint("openDetails videoId ========> $videoId");
+    debugPrint("openDetails upcomingType ===> $upcomingType");
+    debugPrint("openDetails videoType ======> $videoType");
+    debugPrint("openDetails typeId =========> $typeId");
+    if (videoType == 5) {
+      if (upcomingType == 1) {
+        if (!(context.mounted)) return;
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              if (kIsWeb || Constant.isTV) {
+                return TVMovieDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              } else {
+                return MovieDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              }
+            },
+          ),
+        );
+      } else if (upcomingType == 2) {
+        if (!(context.mounted)) return;
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              if (kIsWeb || Constant.isTV) {
+                return TVShowDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              } else {
+                return ShowDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              }
+            },
+          ),
+        );
+      }
+    } else {
+      if (videoType == 1) {
+        if (!(context.mounted)) return;
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return MovieDetails(
+                videoId,
+                upcomingType,
+                videoType,
+                typeId,
+              );
+            },
+          ),
+        );
+      } else if (videoType == 2) {
+        if (!(context.mounted)) return;
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return ShowDetails(
+                videoId,
+                upcomingType,
+                videoType,
+                typeId,
+              );
+            },
+          ),
+        );
+      }
+    }
   }
 
   static Future<dynamic> paymentForRent({

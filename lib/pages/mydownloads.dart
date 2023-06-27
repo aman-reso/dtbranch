@@ -2,9 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/model/downloadvideomodel.dart';
-import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/myepisodedownloads.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/videodownloadprovider.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -594,34 +592,13 @@ class _MyDownloadsState extends State<MyDownloads> {
                     onTap: () async {
                       Navigator.pop(context);
                       log("Clicked on position :==> $position");
-                      if ((myDownloadsList?[position].videoType ?? 0) == 1) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MovieDetails(
-                                myDownloadsList?[position].id ?? 0,
-                                myDownloadsList?[position].videoType ?? 0,
-                                myDownloadsList?[position].typeId ?? 0,
-                              );
-                            },
-                          ),
-                        );
-                      } else if ((myDownloadsList?[position].videoType ?? 0) ==
-                          2) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ShowDetails(
-                                myDownloadsList?[position].id ?? 0,
-                                myDownloadsList?[position].videoType ?? 0,
-                                myDownloadsList?[position].typeId ?? 0,
-                              );
-                            },
-                          ),
-                        );
-                      }
+                      Utils.openDetails(
+                        context: context,
+                        videoId: myDownloadsList?[position].id ?? 0,
+                        upcomingType: 0,
+                        videoType: myDownloadsList?[position].videoType ?? 0,
+                        typeId: myDownloadsList?[position].typeId ?? 0,
+                      );
                     },
                     child: _buildDialogItems(
                       icon: "ic_info.png",

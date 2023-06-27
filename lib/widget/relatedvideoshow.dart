@@ -86,17 +86,6 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
           focusColor: white,
           onTap: () {
             log("Clicked on index ==> $index");
-            // if (kIsWeb) {
-            //   homeStateObject?.openDetailPage(
-            //     (relatedDataList?[index].videoType ?? 0) == 2
-            //         ? "showdetail"
-            //         : "videodetail",
-            //     relatedDataList?[index].id ?? 0,
-            //     relatedDataList?[index].videoType ?? 0,
-            //     relatedDataList?[index].typeId ?? 0,
-            //   );
-            //   return;
-            // }
             if ((relatedDataList?[index].videoType ?? 0) == 1) {
               Navigator.pushReplacement(
                 context,
@@ -104,6 +93,7 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
                   builder: (context) {
                     return MovieDetails(
                       relatedDataList?[index].id ?? 0,
+                      0,
                       relatedDataList?[index].videoType ?? 0,
                       relatedDataList?[index].typeId ?? 0,
                     );
@@ -117,6 +107,7 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
                   builder: (context) {
                     return ShowDetails(
                       relatedDataList?[index].id ?? 0,
+                      0,
                       relatedDataList?[index].videoType ?? 0,
                       relatedDataList?[index].typeId ?? 0,
                     );

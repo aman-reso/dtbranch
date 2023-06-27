@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dtlive/pages/home.dart';
-import 'package:dtlive/tvpages/tvmoviedetails.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
-import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/provider/videobyidprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -138,51 +136,19 @@ class TVVideosByIDState extends State<TVVideosByID> {
                 focusColor: white,
                 onTap: () {
                   log("Clicked on position ==> $position");
-                  if ((videoByIDProvider
-                              .videoByIdModel.result?[position].videoType ??
-                          0) ==
-                      1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return TVMovieDetails(
-                            videoByIDProvider
-                                    .videoByIdModel.result?[position].id ??
-                                0,
-                            videoByIDProvider.videoByIdModel.result?[position]
-                                    .videoType ??
-                                0,
-                            videoByIDProvider
-                                    .videoByIdModel.result?[position].typeId ??
-                                0,
-                          );
-                        },
-                      ),
-                    );
-                  } else if ((videoByIDProvider
-                              .videoByIdModel.result?[position].videoType ??
-                          0) ==
-                      2) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return TVShowDetails(
-                            videoByIDProvider
-                                    .videoByIdModel.result?[position].id ??
-                                0,
-                            videoByIDProvider.videoByIdModel.result?[position]
-                                    .videoType ??
-                                0,
-                            videoByIDProvider
-                                    .videoByIdModel.result?[position].typeId ??
-                                0,
-                          );
-                        },
-                      ),
-                    );
-                  }
+                  Utils.openDetails(
+                    context: context,
+                    videoId:
+                        videoByIDProvider.videoByIdModel.result?[position].id ??
+                            0,
+                    upcomingType: 0,
+                    videoType: videoByIDProvider
+                            .videoByIdModel.result?[position].videoType ??
+                        0,
+                    typeId: videoByIDProvider
+                            .videoByIdModel.result?[position].typeId ??
+                        0,
+                  );
                 },
                 child: Container(
                   padding: const EdgeInsets.all(2.0),

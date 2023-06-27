@@ -49,14 +49,22 @@ class SectionDetailModel {
   Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
-        "result": result?.toJson(),
-        "cast": List<dynamic>.from(cast?.map((x) => x.toJson()) ?? []),
-        "session": List<dynamic>.from(session?.map((x) => x.toJson()) ?? []),
-        "get_related_video":
-            List<dynamic>.from(getRelatedVideo?.map((x) => x.toJson()) ?? []),
-        "language": List<dynamic>.from(language?.map((x) => x.toJson()) ?? []),
-        "more_details":
-            List<dynamic>.from(moreDetails?.map((x) => x.toJson()) ?? []),
+        "result": result == null ? {} : result?.toJson(),
+        "cast": cast == null
+            ? []
+            : List<dynamic>.from(cast?.map((x) => x.toJson()) ?? []),
+        "session": session == null
+            ? []
+            : List<dynamic>.from(session?.map((x) => x.toJson()) ?? []),
+        "get_related_video": getRelatedVideo == null
+            ? []
+            : List<dynamic>.from(getRelatedVideo?.map((x) => x.toJson()) ?? []),
+        "language": language == null
+            ? []
+            : List<dynamic>.from(language?.map((x) => x.toJson()) ?? []),
+        "more_details": moreDetails == null
+            ? []
+            : List<dynamic>.from(moreDetails?.map((x) => x.toJson()) ?? []),
       };
 }
 
@@ -177,6 +185,7 @@ class Result {
     this.download,
     this.status,
     this.isTitle,
+    this.releaseDate,
     this.video320,
     this.video480,
     this.video720,
@@ -235,6 +244,7 @@ class Result {
   dynamic imdbRating;
   int? status;
   String? isTitle;
+  String? releaseDate;
   String? video320;
   String? video480;
   String? video720;
@@ -295,6 +305,7 @@ class Result {
         download: json["download"],
         status: json["status"],
         isTitle: json["is_title"],
+        releaseDate: json["release_date"],
         video320: json["video_320"],
         video480: json["video_480"],
         video720: json["video_720"],
@@ -353,6 +364,7 @@ class Result {
         "imdb_rating": imdbRating,
         "status": status,
         "is_title": isTitle,
+        "release_date": releaseDate,
         "video_320": video320,
         "video_480": video480,
         "video_720": video720,

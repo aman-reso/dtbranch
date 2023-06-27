@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/purchaselistprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
@@ -40,36 +38,6 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
   void dispose() {
     purchaselistProvider.clearProvider();
     super.dispose();
-  }
-
-  _openDetailPage(int? videoId, int? videoType, int? typeId) {
-    if (videoType == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return MovieDetails(
-              videoId ?? 0,
-              videoType ?? 0,
-              typeId ?? 0,
-            );
-          },
-        ),
-      );
-    } else if (videoType == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return ShowDetails(
-              videoId ?? 0,
-              videoType ?? 0,
-              typeId ?? 0,
-            );
-          },
-        ),
-      );
-    }
   }
 
   @override
@@ -206,12 +174,16 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                     borderRadius: BorderRadius.circular(4),
                     onTap: () {
                       log("Clicked on position ==> $position");
-                      _openDetailPage(
-                        purchaselistProvider.rentModel.video?[position].id ?? 0,
-                        purchaselistProvider
+                      Utils.openDetails(
+                        context: context,
+                        videoId: purchaselistProvider
+                                .rentModel.video?[position].id ??
+                            0,
+                        upcomingType: 0,
+                        videoType: purchaselistProvider
                                 .rentModel.video?[position].videoType ??
                             0,
-                        purchaselistProvider
+                        typeId: purchaselistProvider
                                 .rentModel.video?[position].typeId ??
                             0,
                       );
@@ -330,13 +302,16 @@ class _MyPurchaselistState extends State<MyPurchaselist> {
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
                         log("Clicked on position ==> $position");
-                        _openDetailPage(
-                          purchaselistProvider.rentModel.tvshow?[position].id ??
+                        Utils.openDetails(
+                          context: context,
+                          videoId: purchaselistProvider
+                                  .rentModel.tvshow?[position].id ??
                               0,
-                          purchaselistProvider
+                          upcomingType: 0,
+                          videoType: purchaselistProvider
                                   .rentModel.tvshow?[position].videoType ??
                               0,
-                          purchaselistProvider
+                          typeId: purchaselistProvider
                                   .rentModel.tvshow?[position].typeId ??
                               0,
                         );

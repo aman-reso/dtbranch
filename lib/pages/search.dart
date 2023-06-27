@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:dtlive/pages/moviedetails.dart';
-import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/searchprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/color.dart';
@@ -409,22 +407,17 @@ class SearchState extends State<Search> {
                     borderRadius: BorderRadius.circular(4),
                     onTap: () {
                       log("Clicked on position ==> $position");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return MovieDetails(
-                              searchProvider.searchModel.video?[position].id ??
-                                  0,
-                              searchProvider
-                                      .searchModel.video?[position].videoType ??
-                                  0,
-                              searchProvider
-                                      .searchModel.video?[position].typeId ??
-                                  0,
-                            );
-                          },
-                        ),
+                      Utils.openDetails(
+                        context: context,
+                        videoId:
+                            searchProvider.searchModel.video?[position].id ?? 0,
+                        upcomingType: 0,
+                        videoType: searchProvider
+                                .searchModel.video?[position].videoType ??
+                            0,
+                        typeId: searchProvider
+                                .searchModel.video?[position].typeId ??
+                            0,
                       );
                     },
                     child: Container(
@@ -480,22 +473,18 @@ class SearchState extends State<Search> {
                   child: InkWell(
                     onTap: () {
                       log("Clicked on position ==> $position");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return ShowDetails(
-                              searchProvider.searchModel.tvshow?[position].id ??
-                                  0,
-                              searchProvider.searchModel.tvshow?[position]
-                                      .videoType ??
-                                  0,
-                              searchProvider
-                                      .searchModel.tvshow?[position].typeId ??
-                                  0,
-                            );
-                          },
-                        ),
+                      Utils.openDetails(
+                        context: context,
+                        videoId:
+                            searchProvider.searchModel.tvshow?[position].id ??
+                                0,
+                        upcomingType: 0,
+                        videoType: searchProvider
+                                .searchModel.tvshow?[position].videoType ??
+                            0,
+                        typeId: searchProvider
+                                .searchModel.tvshow?[position].typeId ??
+                            0,
                       );
                     },
                     child: Container(

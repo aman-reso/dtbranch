@@ -83,7 +83,9 @@ class _PlayerPodState extends State<PlayerPod> {
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     _controller.dispose();
     super.dispose();
   }
@@ -135,7 +137,9 @@ class _PlayerPodState extends State<PlayerPod> {
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");
 
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     if (widget.playType == "Video" || widget.playType == "Show") {
       if ((playerCPosition ?? 0) > 0 &&
           (playerCPosition == videoDuration ||

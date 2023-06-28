@@ -2,12 +2,12 @@ import 'dart:developer';
 
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/utils.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class PlayerYoutube extends StatefulWidget {
   final int? videoId, videoType, typeId, stopTime;
@@ -29,92 +29,71 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
 
   @override
   void initState() {
-    playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    debugPrint("videourlget:===${widget.videoUrl}");
-    var videoId = YoutubePlayer.convertUrlToId(widget.videoUrl ?? "");
-    controller = YoutubePlayerController(
-      initialVideoId: videoId ?? "",
-      flags:
-          const YoutubePlayerFlags(autoPlay: true, mute: false, forceHD: true),
-    );
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+    playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+    debugPrint("videoUrl :===> ${widget.videoUrl}");
+    var videoId = YoutubePlayerController.convertUrlToId(widget.videoUrl ?? "");
+    debugPrint("videoId :====> $videoId");
+    controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId ?? '',
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        showControls: true,
+        mute: false,
+        showFullscreenButton: false,
+        loop: false,
+      ),
+    );
+
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return WillPopScope(
       onWillPop: onBackPressed,
-      child: Scaffold(
-        body: Stack(
-          children: [
-            YoutubePlayerBuilder(
-              onEnterFullScreen: () {
-                fullScreen = true;
+      child: YoutubePlayerScaffold(
+        backgroundColor: appBgColor,
+        controller: controller,
+        autoFullScreen: true,
+        defaultOrientations: const [
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ],
+        builder: (context, player) {
+          return Scaffold(
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                return player;
               },
-              onExitFullScreen: () {
-                fullScreen = false;
-              },
-              builder: (context, player) {
-                return Column(
-                  children: <Widget>[player],
-                );
-              },
-              player: YoutubePlayer(
-                controller: controller,
-                aspectRatio: 16 / 9,
-                showVideoProgressIndicator: true,
-                width: MediaQuery.of(context).size.width,
-                bottomActions: [
-                  CurrentPosition(),
-                  ProgressBar(isExpanded: true),
-                ],
-                onReady: () {
-                  playerCPosition = controller.value.position.inMilliseconds;
-                  videoDuration = controller.metadata.duration.inMilliseconds;
-                  log("playerCPosition :===> $playerCPosition");
-                  log("videoDuration :===> $videoDuration");
-                },
-                onEnded: (metaData) async {
-                  /* Remove From Continue */
-                  await playerProvider.removeFromContinue(
-                      "${widget.videoId}", "${widget.videoType}");
-                },
-              ),
             ),
-            if (!kIsWeb)
-              Positioned(
-                top: 15,
-                left: 15,
-                child: SafeArea(
-                  child: InkWell(
-                    onTap: onBackPressed,
-                    focusColor: gray.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Utils.buildBackBtnDesign(context),
-                  ),
-                ),
-              ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
   @override
   void dispose() {
-    controller.dispose();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    controller.close();
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
   Future<bool> onBackPressed() async {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

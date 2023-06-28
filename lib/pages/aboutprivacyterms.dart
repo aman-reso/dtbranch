@@ -1,39 +1,73 @@
-import 'dart:async';
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class AboutPrivacyTerms extends StatefulWidget {
   final String appBarTitle, loadURL;
 
   const AboutPrivacyTerms({
     Key? key,
-    this.cookieManager,
     required this.appBarTitle,
     required this.loadURL,
   }) : super(key: key);
 
-  final CookieManager? cookieManager;
   @override
   State<AboutPrivacyTerms> createState() => _AboutPrivacyTermsState();
 }
 
 class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
-  final _controller = Completer<WebViewController>();
+  late final WebViewController _controller;
   SharedPre sharedPref = SharedPre();
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
+    late final PlatformWebViewControllerCreationParams params;
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      );
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
     }
+    final WebViewController controller =
+        WebViewController.fromPlatformCreationParams(params);
+    controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(appBgColor)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://www.youtube.com/')) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.loadURL));
+
+    // #docregion platform_features
+    if (controller.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(true);
+      (controller.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
+    }
+    // #enddocregion platform_features
+
+    _controller = controller;
   }
 
   @override
@@ -72,45 +106,6 @@ class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
   }
 
   Widget setWebView() {
-    return WebView(
-      initialUrl: widget.loadURL,
-      javascriptMode: JavascriptMode.unrestricted,
-      onWebViewCreated: (WebViewController webViewController) {
-        _controller.complete(webViewController);
-      },
-      onProgress: (int progress) {
-        log('WebView is loading (progress : $progress%)');
-      },
-      javascriptChannels: <JavascriptChannel>{
-        _toasterJavascriptChannel(context),
-      },
-      navigationDelegate: (NavigationRequest request) {
-        if (request.url.startsWith('https://www.youtube.com/')) {
-          log('blocking navigation to $request}');
-          return NavigationDecision.prevent;
-        }
-        log('allowing navigation to $request');
-        return NavigationDecision.navigate;
-      },
-      onPageStarted: (String url) {
-        log('Page started loading: $url');
-      },
-      onPageFinished: (String url) {
-        log('Page finished loading: $url');
-      },
-      gestureNavigationEnabled: true,
-      backgroundColor: black,
-    );
-  }
-
-  JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
-    return JavascriptChannel(
-      name: 'Toaster',
-      onMessageReceived: (JavascriptMessage message) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message.message)),
-        );
-      },
-    );
+    return WebViewWidget(controller: _controller);
   }
 }

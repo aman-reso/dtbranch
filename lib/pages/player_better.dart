@@ -123,7 +123,9 @@ class _PlayerBetterState extends State<PlayerBetter>
     _betterPlayerController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _betterPlayerController.removeEventsListener(listener);
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     super.dispose();
   }
 
@@ -187,7 +189,9 @@ class _PlayerBetterState extends State<PlayerBetter>
   }
 
   Future<bool> onBackPressed() async {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

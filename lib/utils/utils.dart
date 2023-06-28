@@ -245,29 +245,53 @@ class Utils {
     log("===>vUploadType $vUploadType");
 
     if (kIsWeb) {
-      /* Pod Player */
+      /* Pod Player & Youtube Player */
       if (!context.mounted) return;
-      isContinue = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return PlayerPod(
-              playType == "Trailer"
-                  ? "Trailer"
-                  : playType == "Download"
-                      ? "Download"
-                      : (videoType == 2 ? "Show" : "Video"),
-              vID,
-              vType,
-              vTypeID,
-              vUrl ?? "",
-              stopTime,
-              vUploadType,
-              videoThumb,
-            );
-          },
-        ),
-      );
+      if (vUploadType == "youtube") {
+        isContinue = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PlayerYoutube(
+                playType == "Trailer"
+                    ? "Trailer"
+                    : playType == "Download"
+                        ? "Download"
+                        : (videoType == 2 ? "Show" : "Video"),
+                vID,
+                vType,
+                vTypeID,
+                vUrl ?? "",
+                stopTime,
+                vUploadType,
+                videoThumb,
+              );
+            },
+          ),
+        );
+      } else {
+        isContinue = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PlayerPod(
+                playType == "Trailer"
+                    ? "Trailer"
+                    : playType == "Download"
+                        ? "Download"
+                        : (videoType == 2 ? "Show" : "Video"),
+                vID,
+                vType,
+                vTypeID,
+                vUrl ?? "",
+                stopTime,
+                vUploadType,
+                videoThumb,
+              );
+            },
+          ),
+        );
+      }
     } else {
       /* Better, Youtube & Vimeo Players */
       if (vUploadType == "youtube") {

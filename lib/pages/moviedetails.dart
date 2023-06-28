@@ -37,7 +37,6 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MovieDetails extends StatefulWidget {
   final int videoId, upcomingType, videoType, typeId;
@@ -53,7 +52,6 @@ class MovieDetails extends StatefulWidget {
 class MovieDetailsState extends State<MovieDetails> with RouteAware {
   /* Trailer init */
   VideoPlayerController? _trailerNormalController;
-  YoutubePlayerController? _trailerYoutubeController;
 
   /* Download init */
   late VideoDownloadProvider downloadProvider;
@@ -104,14 +102,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   @override
   void didPopNext() {
     debugPrint("didPopNext");
-    if (videoDetailsProvider.sectionDetailModel.result?.trailerType ==
+    if (videoDetailsProvider.sectionDetailModel.result?.trailerType !=
         "youtube") {
-      if (_trailerYoutubeController == null) {
-        loadTrailer(
-            videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
-            videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
-      }
-    } else {
       if (_trailerNormalController == null) {
         loadTrailer(
             videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
@@ -133,10 +125,6 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   @override
   void didPushNext() {
     debugPrint("didPushNext");
-    if (_trailerYoutubeController != null) {
-      _trailerYoutubeController?.dispose();
-      _trailerYoutubeController = null;
-    }
     if (_trailerNormalController != null) {
       _trailerNormalController?.dispose();
       _trailerNormalController = null;
@@ -187,16 +175,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
         "trailerUrl ===========> ${videoDetailsProvider.sectionDetailModel.result?.trailerUrl}");
     debugPrint(
         "trailerType ==========> ${videoDetailsProvider.sectionDetailModel.result?.trailerType}");
-    if (videoDetailsProvider.sectionDetailModel.result?.trailerType ==
+    if (videoDetailsProvider.sectionDetailModel.result?.trailerType !=
         "youtube") {
-      if (_trailerYoutubeController == null) {
-        loadTrailer(
-            videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
-            videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
-      } else {
-        _trailerYoutubeController?.seekTo(Duration.zero);
-      }
-    } else {
       if (_trailerNormalController == null) {
         loadTrailer(
             videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
@@ -210,19 +190,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   Future<void> loadTrailer(trailerUrl, trailerType) async {
     debugPrint("loadTrailer URL ==========> $trailerUrl");
     debugPrint("loadTrailer Type =========> $trailerType");
-    if (trailerType == "youtube") {
-      var videoId = YoutubePlayer.convertUrlToId(trailerUrl ?? "");
-      debugPrint("Youtube videoId =========> $videoId");
-      // _trailerYoutubeController = YoutubePlayerController(
-      //   initialVideoId: videoId ?? "",
-      //   flags: const YoutubePlayerFlags(
-      //     hideControls: true,
-      //     autoPlay: true,
-      //     mute: false,
-      //     forceHD: true,
-      //   ),
-      // );
-    } else {
+    if (trailerType != "youtube") {
       _trailerNormalController = VideoPlayerController.network(trailerUrl ?? "")
         ..initialize().then((value) {
           if (!mounted) return;
@@ -316,10 +284,6 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
     if (!_port.isBroadcast) {
       downloadProvider.clearProvider();
       videoDetailsProvider.clearProvider();
-    }
-    if (_trailerYoutubeController != null) {
-      _trailerYoutubeController?.dispose();
-      _trailerYoutubeController = null;
     }
     if (_trailerNormalController != null) {
       _trailerNormalController?.dispose();
@@ -1150,12 +1114,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   Widget setUpTrailerView() {
     if ((videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "") ==
         "youtube") {
-      // if (_trailerYoutubeController != null) {
-      //   return _buildTrailerView(
-      //       videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
-      // } else {
       return _buildMobilePoster();
-      // }
     } else {
       if (_trailerNormalController != null &&
           (_trailerNormalController?.value.isInitialized ?? false)) {
@@ -1177,21 +1136,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
             height: (kIsWeb || Constant.isTV)
                 ? Dimens.detailWebPoster
                 : Dimens.detailPoster,
-            child: YoutubePlayerBuilder(
-              builder: (context, player) {
-                return Column(
-                  children: <Widget>[player],
-                );
-              },
-              player: YoutubePlayer(
-                controller: _trailerYoutubeController!,
-                showVideoProgressIndicator: false,
-                width: MediaQuery.of(context).size.width,
-                onReady: () {
-                  debugPrint("<================ onReady ================>");
-                },
-              ),
-            ),
+            child: Container(),
           ),
           Container(
             padding: const EdgeInsets.all(0),

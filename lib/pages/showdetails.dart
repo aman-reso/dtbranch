@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:dtlive/main.dart';
 import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/provider/showdownloadprovider.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -38,6 +39,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
+import 'package:video_player/video_player.dart';
 
 class ShowDetails extends StatefulWidget {
   final int videoId, upcomingType, videoType, typeId;
@@ -50,7 +52,10 @@ class ShowDetails extends StatefulWidget {
   State<ShowDetails> createState() => ShowDetailsState();
 }
 
-class ShowDetailsState extends State<ShowDetails> {
+class ShowDetailsState extends State<ShowDetails> with RouteAware {
+  /* Trailer init */
+  VideoPlayerController? _trailerNormalController;
+
   /* Download init */
   // late bool _permissionReady;
   late ShowDownloadProvider downloadProvider;
@@ -81,10 +86,64 @@ class ShowDetailsState extends State<ShowDetails> {
     _getData();
   }
 
+  @override
+  void didChangeDependencies() {
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    super.didChangeDependencies();
+  }
+
+  /// Called when the current route has been popped off.
+  @override
+  void didPop() {
+    debugPrint("didPop");
+    super.didPop();
+  }
+
+  /// Called when the top route has been popped off, and the current route
+  /// shows up.
+  @override
+  void didPopNext() {
+    debugPrint("didPopNext");
+    if (showDetailsProvider.sectionDetailModel.result?.trailerType !=
+        "youtube") {
+      if (_trailerNormalController == null) {
+        loadTrailer(
+            showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
+            showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      }
+    }
+    super.didPopNext();
+  }
+
+  /// Called when the current route has been pushed.
+  @override
+  void didPush() {
+    debugPrint("didPush");
+    super.didPush();
+  }
+
+  /// Called when a new route has been pushed, and the current route is no
+  /// longer visible.
+  @override
+  void didPushNext() {
+    debugPrint("didPushNext");
+    if (_trailerNormalController != null) {
+      _trailerNormalController?.dispose();
+      _trailerNormalController = null;
+    }
+    super.didPushNext();
+  }
+
   Future<void> _getData() async {
     Utils.getCurrencySymbol();
     await showDetailsProvider.getSectionDetails(
         widget.typeId, widget.videoType, widget.videoId, widget.upcomingType);
+    if (showDetailsProvider.sectionDetailModel.status == 200) {
+      if (showDetailsProvider.sectionDetailModel.result != null) {
+        /* Trailer set-up */
+        _setUpTrailer();
+      }
+    }
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {
@@ -92,6 +151,48 @@ class ShowDetailsState extends State<ShowDetails> {
       });
     });
   }
+
+  /* Trailer Set-Up & Loading START */
+  _setUpTrailer() {
+    debugPrint(
+        "trailerUrl ===========> ${showDetailsProvider.sectionDetailModel.result?.trailerUrl}");
+    debugPrint(
+        "trailerType ==========> ${showDetailsProvider.sectionDetailModel.result?.trailerType}");
+    if (showDetailsProvider.sectionDetailModel.result?.trailerType !=
+        "youtube") {
+      if (_trailerNormalController == null) {
+        loadTrailer(
+            showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
+            showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        _trailerNormalController?.seekTo(Duration.zero);
+      }
+    }
+  }
+
+  Future<void> loadTrailer(trailerUrl, trailerType) async {
+    debugPrint("loadTrailer URL ==========> $trailerUrl");
+    debugPrint("loadTrailer Type =========> $trailerType");
+    if (trailerType != "youtube") {
+      _trailerNormalController = VideoPlayerController.network(trailerUrl ?? "")
+        ..initialize().then((value) {
+          if (!mounted) return;
+          setState(() {
+            debugPrint(
+                "isPlaying =========> ${_trailerNormalController?.value.isPlaying}");
+            _trailerNormalController?.play();
+          });
+        });
+      _trailerNormalController?.setLooping(true);
+      _trailerNormalController?.addListener(() async {
+        if (_trailerNormalController?.value.hasError ?? false) {
+          debugPrint(
+              "VideoScreen errorDescription ====> ${_trailerNormalController?.value.errorDescription}");
+        }
+      });
+    }
+  }
+  /* Trailer Set-Up & Loading END */
 
   void _bindBackgroundIsolate() {
     final isSuccess = IsolateNameServer.registerPortWithName(
@@ -144,13 +245,19 @@ class ShowDetailsState extends State<ShowDetails> {
 
   @override
   void dispose() {
-    super.dispose();
     log("dispose isBroadcast ============================> ${_port.isBroadcast}");
     if (!_port.isBroadcast) {
       downloadProvider.clearProvider();
       showDetailsProvider.clearProvider();
       episodeProvider.clearProvider();
     }
+    routeObserver.unsubscribe(this);
+    log("dispose isBroadcast ============================> ${_port.isBroadcast}");
+    if (_trailerNormalController != null) {
+      _trailerNormalController?.dispose();
+      _trailerNormalController = null;
+    }
+    super.dispose();
   }
 
   @override
@@ -234,69 +341,11 @@ class ShowDetailsState extends State<ShowDetails> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            if ((kIsWeb || Constant.isTV))
-              SizedBox(height: Dimens.homeTabHeight),
-
             /* Poster */
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(0),
-                  width: MediaQuery.of(context).size.width,
-                  height: (kIsWeb || Constant.isTV)
-                      ? Dimens.detailWebPoster
-                      : Dimens.detailPoster,
-                  child: MyNetworkImage(
-                    fit: BoxFit.fill,
-                    imageUrl: showDetailsProvider
-                                .sectionDetailModel.result?.landscape !=
-                            ""
-                        ? (showDetailsProvider
-                                .sectionDetailModel.result?.landscape ??
-                            "")
-                        : (showDetailsProvider
-                                .sectionDetailModel.result?.thumbnail ??
-                            ""),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(0),
-                  width: MediaQuery.of(context).size.width,
-                  height: (kIsWeb || Constant.isTV)
-                      ? Dimens.detailWebPoster
-                      : Dimens.detailPoster,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.center,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        transparentColor,
-                        transparentColor,
-                        appBgColor,
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(30),
-                  onTap: () {
-                    openPlayer("Show");
-                  },
-                  child: MyImage(
-                    fit: BoxFit.fill,
-                    height: 60,
-                    width: 60,
-                    imagePath: "play_new.png",
-                  ),
-                ),
-                Positioned(
-                  top: 15,
-                  left: 15,
-                  child: Utils.buildBackBtn(context),
-                ),
-              ],
-            ),
+            ((showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "")
+                    .isNotEmpty)
+                ? setUpTrailerView()
+                : _buildMobilePoster(),
 
             /* Other Details */
             Container(
@@ -2055,6 +2104,179 @@ class ShowDetailsState extends State<ShowDetails> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  /* Trailer View */
+  Widget setUpTrailerView() {
+    if ((showDetailsProvider.sectionDetailModel.result?.trailerType ?? "") ==
+        "youtube") {
+      return _buildMobilePoster();
+    } else {
+      if (_trailerNormalController != null &&
+          (_trailerNormalController?.value.isInitialized ?? false)) {
+        return _buildTrailerView(
+            showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        return _buildMobilePoster();
+      }
+    }
+  }
+
+  Widget _buildTrailerView(String trailerType) {
+    if (trailerType == "youtube") {
+      return Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(0),
+            width: MediaQuery.of(context).size.width,
+            height: (kIsWeb || Constant.isTV)
+                ? Dimens.detailWebPoster
+                : Dimens.detailPoster,
+            child: Container(),
+          ),
+          Container(
+            padding: const EdgeInsets.all(0),
+            width: MediaQuery.of(context).size.width,
+            height: (kIsWeb || Constant.isTV)
+                ? Dimens.detailWebPoster
+                : Dimens.detailPoster,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  transparentColor,
+                  transparentColor,
+                  appBgColor,
+                ],
+              ),
+            ),
+          ),
+          if (!kIsWeb)
+            Positioned(
+              top: 15,
+              left: 15,
+              child: Utils.buildBackBtn(context),
+            ),
+        ],
+      );
+    } else {
+      return Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(0),
+            width: MediaQuery.of(context).size.width,
+            height: (kIsWeb || Constant.isTV)
+                ? Dimens.detailWebPoster
+                : Dimens.detailPoster,
+            child: SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _trailerNormalController?.value.size.width,
+                  height: _trailerNormalController?.value.size.height,
+                  child: AspectRatio(
+                    aspectRatio:
+                        _trailerNormalController?.value.aspectRatio ?? 16 / 9,
+                    child: VideoPlayer(_trailerNormalController!),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(0),
+            width: MediaQuery.of(context).size.width,
+            height: (kIsWeb || Constant.isTV)
+                ? Dimens.detailWebPoster
+                : Dimens.detailPoster,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  transparentColor,
+                  transparentColor,
+                  appBgColor,
+                ],
+              ),
+            ),
+          ),
+          if (!kIsWeb)
+            Positioned(
+              top: 15,
+              left: 15,
+              child: Utils.buildBackBtn(context),
+            ),
+        ],
+      );
+    }
+  }
+
+  Widget _buildMobilePoster() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        /* Poster & Trailer player */
+        Container(
+          padding: const EdgeInsets.all(0),
+          width: MediaQuery.of(context).size.width,
+          height: (kIsWeb || Constant.isTV)
+              ? Dimens.detailWebPoster
+              : Dimens.detailPoster,
+          child: MyNetworkImage(
+            fit: BoxFit.fill,
+            imageUrl: showDetailsProvider
+                        .sectionDetailModel.result?.landscape !=
+                    ""
+                ? (showDetailsProvider.sectionDetailModel.result?.landscape ??
+                    "")
+                : (showDetailsProvider.sectionDetailModel.result?.thumbnail ??
+                    ""),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(0),
+          width: MediaQuery.of(context).size.width,
+          height: (kIsWeb || Constant.isTV)
+              ? Dimens.detailWebPoster
+              : Dimens.detailPoster,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.center,
+              end: Alignment.bottomCenter,
+              colors: [
+                transparentColor,
+                transparentColor,
+                appBgColor,
+              ],
+            ),
+          ),
+        ),
+        InkWell(
+          borderRadius: BorderRadius.circular(30),
+          focusColor: white,
+          onTap: () {
+            openPlayer("Trailer");
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: MyImage(
+              fit: BoxFit.fill,
+              height: 60,
+              width: 60,
+              imagePath: "play_new.png",
+            ),
+          ),
+        ),
+        if (!kIsWeb)
+          Positioned(
+            top: 15,
+            left: 15,
+            child: Utils.buildBackBtn(context),
+          ),
+      ],
+    );
   }
 
   Widget _buildWatchTrailer() {

@@ -644,23 +644,29 @@ class TVChannelsState extends State<TVChannels> {
       if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
         if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
           if (kIsWeb) {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return PlayerPod(
-                    "Channel",
-                    0,
-                    0,
-                    0,
-                    sectionBannerList?[index].link ?? "",
-                    0,
-                    "",
-                    sectionBannerList?[index].image ?? "",
-                  );
-                },
-              ),
-            );
+            if ((sectionBannerList?[index].link ?? "").contains("youtube")) {
+              return PlayerYoutube(
+                "Channel",
+                0,
+                0,
+                0,
+                sectionBannerList?[index].link ?? "",
+                0,
+                "",
+                sectionBannerList?[index].image ?? "",
+              );
+            } else {
+              return PlayerPod(
+                "Channel",
+                0,
+                0,
+                0,
+                sectionBannerList?[index].link ?? "",
+                0,
+                "",
+                sectionBannerList?[index].image ?? "",
+              );
+            }
           } else {
             await Navigator.push(
               context,

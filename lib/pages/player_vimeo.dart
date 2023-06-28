@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,9 @@ class PlayerVimeoState extends State<PlayerVimeo> {
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     super.dispose();
   }
 
@@ -53,21 +56,22 @@ class PlayerVimeoState extends State<PlayerVimeo> {
           child: Stack(
             children: [
               VimeoVideoPlayer(
-                vimeoPlayerModel: VimeoPlayerModel(
-                  url: vUrl ?? "",
-                  systemUiOverlay: [],
-                  deviceOrientation: DeviceOrientation.landscapeLeft,
-                  startAt: Duration(milliseconds: widget.stopTime ?? 0),
-                  onProgress: (timePoint) {
-                    playerCPosition = timePoint.inMilliseconds;
-                    log("playerCPosition :===> $playerCPosition");
-                  },
-                  onFinished: () async {
-                    /* Remove From Continue */
-                    await playerProvider.removeFromContinue(
-                        "${widget.videoId}", "${widget.videoType}");
-                  },
-                ),
+                url: vUrl ?? "",
+                systemUiOverlay: const [],
+                deviceOrientation: const [
+                  DeviceOrientation.landscapeLeft,
+                  DeviceOrientation.landscapeRight,
+                ],
+                startAt: Duration(milliseconds: widget.stopTime ?? 0),
+                onProgress: (timePoint) {
+                  playerCPosition = timePoint.inMilliseconds;
+                  log("playerCPosition :===> $playerCPosition");
+                },
+                onFinished: () async {
+                  /* Remove From Continue */
+                  await playerProvider.removeFromContinue(
+                      "${widget.videoId}", "${widget.videoType}");
+                },
               ),
               if (!kIsWeb)
                 Positioned(
@@ -90,7 +94,9 @@ class PlayerVimeoState extends State<PlayerVimeo> {
   }
 
   Future<bool> onBackPressed() async {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

@@ -151,6 +151,7 @@
     "codexpiresoon": "Código expira em breve",
     "invalidphonenumber": "O número de telefone inserido é inválido!",
     "enterreceivedotp": "Insira o OTP recebido",
+    "otp_not_working": "Atualmente, o login OTP não está funcionando. Você pode continuar com outros logins.",
     "confirm": "confirme",
     "resend": "Reenviar",
     "watch_now": "Assista agora",

@@ -128,12 +128,21 @@ class Utils {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return MovieDetails(
-                videoId,
-                upcomingType,
-                videoType,
-                typeId,
-              );
+              if (kIsWeb || Constant.isTV) {
+                return TVMovieDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              } else {
+                return MovieDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              }
             },
           ),
         );
@@ -143,12 +152,21 @@ class Utils {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return ShowDetails(
-                videoId,
-                upcomingType,
-                videoType,
-                typeId,
-              );
+              if (kIsWeb || Constant.isTV) {
+                return TVShowDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              } else {
+                return ShowDetails(
+                  videoId,
+                  upcomingType,
+                  videoType,
+                  typeId,
+                );
+              }
             },
           ),
         );

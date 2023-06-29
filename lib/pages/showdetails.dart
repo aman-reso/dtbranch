@@ -40,6 +40,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class ShowDetails extends StatefulWidget {
   final int videoId, upcomingType, videoType, typeId;
@@ -55,6 +56,7 @@ class ShowDetails extends StatefulWidget {
 class ShowDetailsState extends State<ShowDetails> with RouteAware {
   /* Trailer init */
   VideoPlayerController? _trailerNormalController;
+  YoutubePlayerController? _trailerYoutubeController;
 
   /* Download init */
   // late bool _permissionReady;
@@ -104,8 +106,19 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
   @override
   void didPopNext() {
     debugPrint("didPopNext");
-    if (showDetailsProvider.sectionDetailModel.result?.trailerType !=
+    if (showDetailsProvider.sectionDetailModel.result?.trailerType ==
         "youtube") {
+      if (_trailerYoutubeController == null) {
+        loadTrailer(
+            showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
+            showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        if (_trailerYoutubeController != null) {
+          _trailerYoutubeController?.seekTo(seconds: 0.0);
+          _trailerYoutubeController?.playVideo();
+        }
+      }
+    } else {
       if (_trailerNormalController == null) {
         loadTrailer(
             showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
@@ -127,6 +140,9 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
   @override
   void didPushNext() {
     debugPrint("didPushNext");
+    if (_trailerYoutubeController != null) {
+      _trailerYoutubeController?.pauseVideo();
+    }
     if (_trailerNormalController != null) {
       _trailerNormalController?.dispose();
       _trailerNormalController = null;
@@ -158,8 +174,16 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
         "trailerUrl ===========> ${showDetailsProvider.sectionDetailModel.result?.trailerUrl}");
     debugPrint(
         "trailerType ==========> ${showDetailsProvider.sectionDetailModel.result?.trailerType}");
-    if (showDetailsProvider.sectionDetailModel.result?.trailerType !=
+    if (showDetailsProvider.sectionDetailModel.result?.trailerType ==
         "youtube") {
+      if (_trailerYoutubeController == null) {
+        loadTrailer(
+            showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
+            showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        _trailerYoutubeController?.seekTo(seconds: 0.0);
+      }
+    } else {
       if (_trailerNormalController == null) {
         loadTrailer(
             showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
@@ -173,7 +197,28 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
   Future<void> loadTrailer(trailerUrl, trailerType) async {
     debugPrint("loadTrailer URL ==========> $trailerUrl");
     debugPrint("loadTrailer Type =========> $trailerType");
-    if (trailerType != "youtube") {
+    if (trailerType == "youtube") {
+      var videoId = YoutubePlayerController.convertUrlToId(trailerUrl ?? "");
+      debugPrint("Youtube Trailer videoId :====> $videoId");
+      _trailerYoutubeController = YoutubePlayerController.fromVideoId(
+        videoId: videoId ?? '',
+        autoPlay: true,
+        startSeconds: 0,
+        params: const YoutubePlayerParams(
+          showControls: false,
+          showVideoAnnotations: false,
+          playsInline: true,
+          mute: false,
+          showFullscreenButton: false,
+          loop: true,
+        ),
+      );
+      _trailerYoutubeController?.playVideo();
+      Future.delayed(Duration.zero).then((value) {
+        if (!mounted) return;
+        setState(() {});
+      });
+    } else {
       _trailerNormalController = VideoPlayerController.network(trailerUrl ?? "")
         ..initialize().then((value) {
           if (!mounted) return;
@@ -253,6 +298,10 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
     }
     routeObserver.unsubscribe(this);
     log("dispose isBroadcast ============================> ${_port.isBroadcast}");
+    if (_trailerYoutubeController != null) {
+      _trailerYoutubeController?.close();
+      _trailerYoutubeController = null;
+    }
     if (_trailerNormalController != null) {
       _trailerNormalController?.dispose();
       _trailerNormalController = null;
@@ -680,13 +729,28 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                             : MediaQuery.of(context).size.width,
                         constraints: const BoxConstraints(minHeight: 0),
                         margin: const EdgeInsets.fromLTRB(20, 30, 20, 0),
-                        alignment: Alignment.center,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             /* Rent Button */
                             _buildRentBtn(),
                             const SizedBox(width: 5),
+
+                            /* Trailer */
+                            Expanded(
+                              child: InkWell(
+                                focusColor: gray.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(5),
+                                onTap: () {
+                                  openPlayer("Trailer");
+                                },
+                                child: _buildFeatureBtn(
+                                  icon: 'ic_borderplay.png',
+                                  title: 'trailer',
+                                  multilanguage: true,
+                                ),
+                              ),
+                            ),
 
                             /* Download */
                             if (!(kIsWeb || Constant.isTV))
@@ -733,31 +797,26 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                                   }
                                 },
                                 borderRadius: BorderRadius.circular(5),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Consumer<ShowDetailsProvider>(
-                                    builder:
-                                        (context, showDetailsProvider, child) {
-                                      if ((showDetailsProvider
-                                                  .sectionDetailModel
-                                                  .result
-                                                  ?.isBookmark ??
-                                              0) ==
-                                          1) {
-                                        return _buildFeatureBtn(
-                                          icon: 'watchlist_remove.png',
-                                          title: 'watchlist',
-                                          multilanguage: true,
-                                        );
-                                      } else {
-                                        return _buildFeatureBtn(
-                                          icon: 'ic_plus.png',
-                                          title: 'watchlist',
-                                          multilanguage: true,
-                                        );
-                                      }
-                                    },
-                                  ),
+                                child: Consumer<ShowDetailsProvider>(
+                                  builder:
+                                      (context, showDetailsProvider, child) {
+                                    if ((showDetailsProvider.sectionDetailModel
+                                                .result?.isBookmark ??
+                                            0) ==
+                                        1) {
+                                      return _buildFeatureBtn(
+                                        icon: 'watchlist_remove.png',
+                                        title: 'watchlist',
+                                        multilanguage: true,
+                                      );
+                                    } else {
+                                      return _buildFeatureBtn(
+                                        icon: 'ic_plus.png',
+                                        title: 'watchlist',
+                                        multilanguage: true,
+                                      );
+                                    }
+                                  },
                                 ),
                               ),
                             ),
@@ -1022,9 +1081,6 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            if ((kIsWeb || Constant.isTV))
-              SizedBox(height: Dimens.homeTabHeight),
-
             /* Poster */
             ClipRRect(
               borderRadius: BorderRadius.circular(0),
@@ -1328,6 +1384,8 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                                     constraints:
                                         const BoxConstraints(minHeight: 0),
                                     child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         MyText(
                                           color: whiteLight,
@@ -1355,17 +1413,19 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                                           fontstyle: FontStyle.normal,
                                         ),
                                         const SizedBox(width: 5),
-                                        MyText(
-                                          color: whiteLight,
-                                          text: audioLanguages ?? "",
-                                          textalign: TextAlign.center,
-                                          fontsizeNormal: 13,
-                                          fontweight: FontWeight.w500,
-                                          fontsizeWeb: 13,
-                                          multilanguage: false,
-                                          maxline: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontstyle: FontStyle.normal,
+                                        Expanded(
+                                          child: MyText(
+                                            color: whiteLight,
+                                            text: audioLanguages ?? "",
+                                            textalign: TextAlign.start,
+                                            fontsizeNormal: 13,
+                                            fontweight: FontWeight.w500,
+                                            fontsizeWeb: 13,
+                                            multilanguage: false,
+                                            maxline: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontstyle: FontStyle.normal,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -1380,6 +1440,8 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                                               minHeight: 0),
                                           margin: const EdgeInsets.only(top: 8),
                                           child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               MyText(
                                                 color: whiteLight,
@@ -1407,17 +1469,20 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                                                 fontstyle: FontStyle.normal,
                                               ),
                                               const SizedBox(width: 5),
-                                              MyText(
-                                                color: whiteLight,
-                                                text: "Available",
-                                                textalign: TextAlign.center,
-                                                fontsizeNormal: 13,
-                                                fontweight: FontWeight.w500,
-                                                fontsizeWeb: 13,
-                                                maxline: 1,
-                                                multilanguage: false,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontstyle: FontStyle.normal,
+                                              Expanded(
+                                                child: MyText(
+                                                  color: whiteLight,
+                                                  text: "Available",
+                                                  textalign: TextAlign.start,
+                                                  fontsizeNormal: 13,
+                                                  fontweight: FontWeight.w500,
+                                                  fontsizeWeb: 13,
+                                                  maxline: 1,
+                                                  multilanguage: false,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontstyle: FontStyle.normal,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -1611,6 +1676,25 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                     Container(
                       constraints: const BoxConstraints(minWidth: 0),
                       child: _buildRentBtn(),
+                    ),
+                  if (widget.videoType != 5) const SizedBox(width: 10),
+
+                  /* Trailer Button */
+                  if (widget.videoType != 5)
+                    Container(
+                      constraints: const BoxConstraints(minWidth: 50),
+                      child: InkWell(
+                        focusColor: gray.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(5),
+                        onTap: () {
+                          openPlayer("Trailer");
+                        },
+                        child: _buildFeatureBtn(
+                          icon: 'ic_borderplay.png',
+                          title: 'trailer',
+                          multilanguage: true,
+                        ),
+                      ),
                     ),
                   if (widget.videoType != 5) const SizedBox(width: 10),
 
@@ -2110,7 +2194,12 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
   Widget setUpTrailerView() {
     if ((showDetailsProvider.sectionDetailModel.result?.trailerType ?? "") ==
         "youtube") {
-      return _buildMobilePoster();
+      if (_trailerYoutubeController != null) {
+        return _buildTrailerView(
+            showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        return _buildMobilePoster();
+      }
     } else {
       if (_trailerNormalController != null &&
           (_trailerNormalController?.value.isInitialized ?? false)) {
@@ -2132,7 +2221,10 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
             height: (kIsWeb || Constant.isTV)
                 ? Dimens.detailWebPoster
                 : Dimens.detailPoster,
-            child: Container(),
+            child: YoutubePlayer(
+              controller: _trailerYoutubeController!,
+              enableFullScreenOnVerticalDrag: false,
+            ),
           ),
           Container(
             padding: const EdgeInsets.all(0),
@@ -3615,7 +3707,7 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
       int? vType = widget.videoType;
       int? vTypeID = widget.typeId;
       int? stopTime;
-      if (playType == "startOver") {
+      if (playType == "startOver" || playType == "Trailer") {
         stopTime = 0;
       } else {
         stopTime = (episodeProvider.episodeBySeasonModel
@@ -3625,45 +3717,65 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
       String? videoThumb = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].landscape ??
           "");
-      String? vUploadType = (episodeProvider.episodeBySeasonModel
-              .result?[showDetailsProvider.mCurrentEpiPos].videoUploadType ??
-          "");
-      String? epiUrl = (episodeProvider.episodeBySeasonModel
-              .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
-          "");
       log("epiID ========> $epiID");
       log("vType ========> $vType");
       log("vTypeID ======> $vTypeID");
       log("stopTime =====> $stopTime");
-      log("vUploadType ==> $vUploadType");
       log("videoThumb ===> $videoThumb");
-      log("epiUrl =======> $epiUrl");
 
-      /* Set-up Quality URLs */
-      Utils.setQualityURLs(
-        video320: (episodeProvider.episodeBySeasonModel
+      String? vUrl, vUploadType;
+      if (playType == "Trailer") {
+        Utils.clearQualitySubtitle();
+        vUploadType =
+            (showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+        vUrl =
+            (showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "");
+      } else {
+        /* Set-up Quality URLs */
+        Utils.setQualityURLs(
+          video320: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
+              ""),
+          video480: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video480 ??
+              ""),
+          video720: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video720 ??
+              ""),
+          video1080: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video1080 ??
+              ""),
+        );
+
+        vUrl = (episodeProvider.episodeBySeasonModel
                 .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
-            ""),
-        video480: (episodeProvider.episodeBySeasonModel
-                .result?[showDetailsProvider.mCurrentEpiPos].video480 ??
-            ""),
-        video720: (episodeProvider.episodeBySeasonModel
-                .result?[showDetailsProvider.mCurrentEpiPos].video720 ??
-            ""),
-        video1080: (episodeProvider.episodeBySeasonModel
-                .result?[showDetailsProvider.mCurrentEpiPos].video1080 ??
-            ""),
-      );
+            "");
+        vUploadType = (episodeProvider.episodeBySeasonModel
+                .result?[showDetailsProvider.mCurrentEpiPos].videoUploadType ??
+            "");
+      }
 
+      log("vUploadType ===> $vUploadType");
+      log("stopTime ===> $stopTime");
+
+      if (!mounted) return;
+      if (vUrl.isEmpty || vUrl == "") {
+        if (playType == "Trailer") {
+          Utils.showSnackbar(context, "info", "trailer_not_found", true);
+        } else {
+          Utils.showSnackbar(context, "info", "video_not_found", true);
+        }
+        return;
+      }
       if (!mounted) return;
       dynamic isContinue = await Utils.openPlayer(
         context: context,
-        playType: "Show",
+        playType: playType == "Trailer" ? "Trailer" : "Show",
         videoId: epiID,
         videoType: vType,
         typeId: vTypeID,
-        videoUrl: epiUrl,
-        trailerUrl: "",
+        videoUrl: vUrl,
+        trailerUrl: vUrl,
         uploadType: vUploadType,
         videoThumb: videoThumb,
         vStopTime: stopTime,
@@ -3676,8 +3788,45 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
             showDetailsProvider.sectionDetailModel.session);
       }
     } else {
-      if (!mounted) return;
-      Utils.showSnackbar(context, "info", "episode_not_found", true);
+      String? vUrl, vUploadType;
+      if (playType == "Trailer") {
+        int? stopTime = 0;
+        String? videoThumb =
+            (showDetailsProvider.sectionDetailModel.result?.landscape ?? "");
+        log("stopTime =====> $stopTime");
+        log("videoThumb ===> $videoThumb");
+        Utils.clearQualitySubtitle();
+        vUploadType =
+            (showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+        vUrl =
+            (showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "");
+
+        log("vUploadType ===> $vUploadType");
+        log("stopTime ===> $stopTime");
+
+        if (!mounted) return;
+        if (vUrl.isEmpty || vUrl == "") {
+          Utils.showSnackbar(context, "info", "trailer_not_found", true);
+          return;
+        }
+
+        if (!mounted) return;
+        await Utils.openPlayer(
+          context: context,
+          playType: "Trailer",
+          videoId: 0,
+          videoType: 0,
+          typeId: 0,
+          videoUrl: vUrl,
+          trailerUrl: vUrl,
+          uploadType: vUploadType,
+          videoThumb: videoThumb,
+          vStopTime: stopTime,
+        );
+      } else {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "info", "episode_not_found", true);
+      }
     }
   }
   /* ========= Open Player ========= */

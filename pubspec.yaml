@@ -64,7 +64,7 @@ dependencies:
   expandable: ^5.0.1
   webview_flutter: ^4.2.2
   webview_flutter_android: ^3.6.0
-  webview_flutter_wkwebview: ^3.4.0
+  webview_flutter_wkwebview: ^3.6.0
   flutter_login_facebook: ^1.8.0
   sign_in_with_apple: ^4.3.0
   crypto: ^3.0.2
@@ -124,6 +124,9 @@ dependencies:
   gradient_borders: ^1.0.0
   screen_protector: ^1.2.0
   pretty_dio_logger: ^1.2.0-beta-1
+
+dependency_overrides:
+  webview_flutter_wkwebview: '3.5.0'
 
 dev_dependencies:
   flutter_test:

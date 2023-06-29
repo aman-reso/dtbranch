@@ -156,20 +156,26 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
   }
 
   Widget _buildUIWithAppBar() {
-    return (videoDetailsProvider.loading)
-        ? SingleChildScrollView(
-            child: ((kIsWeb || Constant.isTV) &&
-                    MediaQuery.of(context).size.width > 720)
-                ? ShimmerUtils.buildDetailWebShimmer(context, "video")
-                : ShimmerUtils.buildDetailMobileShimmer(context, "video"),
-          )
-        : (videoDetailsProvider.sectionDetailModel.status == 200 &&
-                videoDetailsProvider.sectionDetailModel.result != null)
-            ? (((kIsWeb || Constant.isTV) &&
-                    MediaQuery.of(context).size.width > 720)
-                ? _buildTVWebData()
-                : _buildMobileData())
-            : const NoData(title: '', subTitle: '');
+    if (videoDetailsProvider.loading) {
+      return SingleChildScrollView(
+        child: ((kIsWeb || Constant.isTV) &&
+                MediaQuery.of(context).size.width > 720)
+            ? ShimmerUtils.buildDetailWebShimmer(context, "video")
+            : ShimmerUtils.buildDetailMobileShimmer(context, "video"),
+      );
+    } else {
+      if (videoDetailsProvider.sectionDetailModel.status == 200 &&
+          videoDetailsProvider.sectionDetailModel.result != null) {
+        if ((kIsWeb || Constant.isTV) &&
+            MediaQuery.of(context).size.width > 720) {
+          return _buildTVWebData();
+        } else {
+          return _buildMobileData();
+        }
+      } else {
+        return const NoData(title: '', subTitle: '');
+      }
+    }
   }
 
   Widget _buildTVWebData() {
@@ -449,6 +455,8 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                                         const BoxConstraints(minHeight: 0),
                                     margin: const EdgeInsets.only(top: 5),
                                     child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         MyText(
                                           color: whiteLight,
@@ -693,153 +701,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                               ),
                             ),
                           ),
-
-                          /* WatchNow & Feature buttons */
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            constraints:
-                                const BoxConstraints(minHeight: 0, minWidth: 0),
-                            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  /* WatchNow & ContinueWatching */
-                                  (widget.videoType == 5)
-                                      ? _buildWatchTrailer()
-                                      : _buildWatchNow(),
-                                  if (widget.videoType != 5)
-                                    const SizedBox(width: 10),
-
-                                  /* Rent Button */
-                                  if (widget.videoType != 5)
-                                    Container(
-                                      constraints:
-                                          const BoxConstraints(minWidth: 0),
-                                      child: _buildRentBtn(),
-                                    ),
-                                  if (widget.videoType != 5)
-                                    const SizedBox(width: 10),
-
-                                  /* Trailer & StartOver Button */
-                                  if (widget.videoType != 5)
-                                    Container(
-                                      constraints:
-                                          const BoxConstraints(minWidth: 50),
-                                      child: Consumer<VideoDetailsProvider>(
-                                        builder: (context, videoDetailsProvider,
-                                            child) {
-                                          if ((videoDetailsProvider
-                                                          .sectionDetailModel
-                                                          .result
-                                                          ?.stopTime ??
-                                                      0) >
-                                                  0 &&
-                                              videoDetailsProvider
-                                                      .sectionDetailModel
-                                                      .result
-                                                      ?.videoDuration !=
-                                                  null) {
-                                            /* Start Over */
-                                            return InkWell(
-                                              focusColor: gray.withOpacity(0.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              onTap: () async {
-                                                openPlayer("startOver");
-                                              },
-                                              child: _buildFeatureBtn(
-                                                icon: 'ic_restart.png',
-                                                title: 'startover',
-                                                multilanguage: true,
-                                              ),
-                                            );
-                                          } else {
-                                            /* Trailer */
-                                            return InkWell(
-                                              focusColor: gray.withOpacity(0.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              onTap: () {
-                                                openPlayer("Trailer");
-                                              },
-                                              child: _buildFeatureBtn(
-                                                icon: 'ic_borderplay.png',
-                                                title: 'trailer',
-                                                multilanguage: true,
-                                              ),
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  const SizedBox(width: 10),
-
-                                  /* Watchlist */
-                                  if (widget.videoType != 5)
-                                    Container(
-                                      constraints:
-                                          const BoxConstraints(minWidth: 50),
-                                      child: InkWell(
-                                        focusColor: gray.withOpacity(0.5),
-                                        onTap: () async {
-                                          log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
-                                          if (Constant.userID != null) {
-                                            await videoDetailsProvider
-                                                .setBookMark(
-                                              context,
-                                              widget.typeId,
-                                              widget.videoType,
-                                              widget.videoId,
-                                            );
-                                          } else {
-                                            if ((kIsWeb || Constant.isTV)) {
-                                              Utils.buildWebAlertDialog(
-                                                  context, "login", "");
-                                              return;
-                                            }
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return const LoginSocial();
-                                                },
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: Consumer<VideoDetailsProvider>(
-                                          builder: (context,
-                                              videoDetailsProvider, child) {
-                                            if ((videoDetailsProvider
-                                                        .sectionDetailModel
-                                                        .result
-                                                        ?.isBookmark ??
-                                                    0) ==
-                                                1) {
-                                              return _buildFeatureBtn(
-                                                icon: 'watchlist_remove.png',
-                                                title: 'watchlist',
-                                                multilanguage: true,
-                                              );
-                                            } else {
-                                              return _buildFeatureBtn(
-                                                icon: 'ic_plus.png',
-                                                title: 'watchlist',
-                                                multilanguage: true,
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -913,6 +774,135 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
               ),
             ),
             const SizedBox(height: 10),
+
+            /* WatchNow & Feature buttons */
+            Container(
+              alignment: Alignment.centerLeft,
+              constraints: const BoxConstraints(minHeight: 0, minWidth: 0),
+              margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    /* WatchNow & ContinueWatching */
+                    (widget.videoType == 5)
+                        ? _buildWatchTrailer()
+                        : _buildWatchNow(),
+                    if (widget.videoType != 5) const SizedBox(width: 10),
+
+                    /* Rent Button */
+                    if (widget.videoType != 5)
+                      Container(
+                        constraints: const BoxConstraints(minWidth: 0),
+                        child: _buildRentBtn(),
+                      ),
+                    if (widget.videoType != 5) const SizedBox(width: 10),
+
+                    /* Trailer & StartOver Button */
+                    if (widget.videoType != 5)
+                      Container(
+                        constraints: const BoxConstraints(minWidth: 50),
+                        child: Consumer<VideoDetailsProvider>(
+                          builder: (context, videoDetailsProvider, child) {
+                            if ((videoDetailsProvider.sectionDetailModel.result
+                                            ?.stopTime ??
+                                        0) >
+                                    0 &&
+                                videoDetailsProvider.sectionDetailModel.result
+                                        ?.videoDuration !=
+                                    null) {
+                              /* Start Over */
+                              return InkWell(
+                                focusColor: gray.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(5),
+                                onTap: () async {
+                                  openPlayer("startOver");
+                                },
+                                child: _buildFeatureBtn(
+                                  icon: 'ic_restart.png',
+                                  title: 'startover',
+                                  multilanguage: true,
+                                ),
+                              );
+                            } else {
+                              /* Trailer */
+                              return InkWell(
+                                focusColor: gray.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(5),
+                                onTap: () {
+                                  openPlayer("Trailer");
+                                },
+                                child: _buildFeatureBtn(
+                                  icon: 'ic_borderplay.png',
+                                  title: 'trailer',
+                                  multilanguage: true,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    const SizedBox(width: 10),
+
+                    /* Watchlist */
+                    if (widget.videoType != 5)
+                      Container(
+                        constraints: const BoxConstraints(minWidth: 50),
+                        child: InkWell(
+                          focusColor: gray.withOpacity(0.5),
+                          onTap: () async {
+                            log("isBookmark ====> ${videoDetailsProvider.sectionDetailModel.result?.isBookmark ?? 0}");
+                            if (Constant.userID != null) {
+                              await videoDetailsProvider.setBookMark(
+                                context,
+                                widget.typeId,
+                                widget.videoType,
+                                widget.videoId,
+                              );
+                            } else {
+                              if ((kIsWeb || Constant.isTV)) {
+                                Utils.buildWebAlertDialog(context, "login", "");
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return const LoginSocial();
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(5),
+                          child: Consumer<VideoDetailsProvider>(
+                            builder: (context, videoDetailsProvider, child) {
+                              if ((videoDetailsProvider.sectionDetailModel
+                                          .result?.isBookmark ??
+                                      0) ==
+                                  1) {
+                                return _buildFeatureBtn(
+                                  icon: 'watchlist_remove.png',
+                                  title: 'watchlist',
+                                  multilanguage: true,
+                                );
+                              } else {
+                                return _buildFeatureBtn(
+                                  icon: 'ic_plus.png',
+                                  title: 'watchlist',
+                                  multilanguage: true,
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
 
             /* Other Details */
             /* Related ~ More Details */
@@ -2773,24 +2763,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
             (videoDetailsProvider.sectionDetailModel.result?.video1080 ?? ""),
       );
 
-      /* Set-up Subtitle URLs */
-      Utils.setSubtitleURLs(
-        subtitleUrl1:
-            (videoDetailsProvider.sectionDetailModel.result?.subtitle1 ?? ""),
-        subtitleUrl2:
-            (videoDetailsProvider.sectionDetailModel.result?.subtitle2 ?? ""),
-        subtitleUrl3:
-            (videoDetailsProvider.sectionDetailModel.result?.subtitle3 ?? ""),
-        subtitleLang1:
-            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang1 ??
-                ""),
-        subtitleLang2:
-            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang2 ??
-                ""),
-        subtitleLang3:
-            (videoDetailsProvider.sectionDetailModel.result?.subtitleLang3 ??
-                ""),
-      );
       vUrl = (videoDetailsProvider.sectionDetailModel.result?.video320 ?? "");
       vUploadType =
           (videoDetailsProvider.sectionDetailModel.result?.videoUploadType ??

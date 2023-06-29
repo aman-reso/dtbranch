@@ -21,12 +21,14 @@ class AboutPrivacyTerms extends StatefulWidget {
 }
 
 class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
+  var loadingPercentage = 0;
   late final WebViewController _controller;
   SharedPre sharedPref = SharedPre();
 
   @override
   void initState() {
     super.initState();
+    debugPrint("loadURL ========> ${widget.loadURL}");
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
@@ -43,11 +45,21 @@ class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
       ..setBackgroundColor(appBgColor)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
+          onPageStarted: (url) {
+            setState(() {
+              loadingPercentage = 0;
+            });
           },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
+          onProgress: (progress) {
+            setState(() {
+              loadingPercentage = progress;
+            });
+          },
+          onPageFinished: (url) {
+            setState(() {
+              loadingPercentage = 100;
+            });
+          },
           onWebResourceError: (WebResourceError error) {},
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.startsWith('https://www.youtube.com/')) {
@@ -106,6 +118,18 @@ class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
   }
 
   Widget setWebView() {
-    return WebViewWidget(controller: _controller);
+    return Stack(
+      children: [
+        WebViewWidget(
+          controller: _controller,
+        ),
+        if (loadingPercentage < 100)
+          LinearProgressIndicator(
+            color: complimentryColor,
+            backgroundColor: appBgColor,
+            value: loadingPercentage / 100.0,
+          ),
+      ],
+    );
   }
 }

@@ -161,25 +161,35 @@ class TVShowDetailsState extends State<TVShowDetails> {
       key: widget.key,
       backgroundColor: appBgColor,
       body: SafeArea(
-        child: (showDetailsProvider.loading)
-            ? SingleChildScrollView(
-                child: ((kIsWeb || Constant.isTV) &&
-                        MediaQuery.of(context).size.width > 720)
-                    ? ShimmerUtils.buildDetailWebShimmer(context, "show")
-                    : ShimmerUtils.buildDetailMobileShimmer(context, "show"),
-              )
-            : (showDetailsProvider.sectionDetailModel.status == 200 &&
-                    showDetailsProvider.sectionDetailModel.result != null)
-                ? (((kIsWeb || Constant.isTV) &&
-                        MediaQuery.of(context).size.width > 720)
-                    ? _buildUI()
-                    : _buildMobileData())
-                : const NoData(title: '', subTitle: ''),
+        child: _buildUIWithAppBar(),
       ),
     );
   }
 
-  Widget _buildUI() {
+  Widget _buildUIWithAppBar() {
+    if (showDetailsProvider.loading) {
+      return SingleChildScrollView(
+        child: ((kIsWeb || Constant.isTV) &&
+                MediaQuery.of(context).size.width > 720)
+            ? ShimmerUtils.buildDetailWebShimmer(context, "video")
+            : ShimmerUtils.buildDetailMobileShimmer(context, "video"),
+      );
+    } else {
+      if (showDetailsProvider.sectionDetailModel.status == 200 &&
+          showDetailsProvider.sectionDetailModel.result != null) {
+        if ((kIsWeb || Constant.isTV) &&
+            MediaQuery.of(context).size.width > 720) {
+          return _buildTVWebData();
+        } else {
+          return _buildMobileData();
+        }
+      } else {
+        return const NoData(title: '', subTitle: '');
+      }
+    }
+  }
+
+  Widget _buildTVWebData() {
     return Container(
       width: MediaQuery.of(context).size.width,
       constraints: const BoxConstraints.expand(),
@@ -190,9 +200,11 @@ class TVShowDetailsState extends State<TVShowDetails> {
           child: Column(
             children: [
               /* Poster */
-              SizedBox(
-                height: Dimens.detailWebPoster,
-                width: MediaQuery.of(context).size.width,
+              Container(
+                constraints: BoxConstraints(
+                  minHeight: Dimens.detailWebPoster,
+                  minWidth: MediaQuery.of(context).size.width,
+                ),
                 child: Row(
                   children: [
                     /* Details */
@@ -461,6 +473,8 @@ class TVShowDetailsState extends State<TVShowDetails> {
                                           const BoxConstraints(minHeight: 0),
                                       margin: const EdgeInsets.only(top: 5),
                                       child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           MyText(
                                             color: whiteLight,
@@ -488,17 +502,19 @@ class TVShowDetailsState extends State<TVShowDetails> {
                                             fontstyle: FontStyle.normal,
                                           ),
                                           const SizedBox(width: 5),
-                                          MyText(
-                                            color: whiteLight,
-                                            text: audioLanguages ?? "",
-                                            textalign: TextAlign.center,
-                                            fontsizeNormal: 13,
-                                            fontweight: FontWeight.w600,
-                                            fontsizeWeb: 13,
-                                            multilanguage: false,
-                                            maxline: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontstyle: FontStyle.normal,
+                                          Expanded(
+                                            child: MyText(
+                                              color: whiteLight,
+                                              text: audioLanguages ?? "",
+                                              textalign: TextAlign.start,
+                                              fontsizeNormal: 13,
+                                              fontweight: FontWeight.w600,
+                                              fontsizeWeb: 13,
+                                              multilanguage: false,
+                                              maxline: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              fontstyle: FontStyle.normal,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -514,6 +530,8 @@ class TVShowDetailsState extends State<TVShowDetails> {
                                             margin:
                                                 const EdgeInsets.only(top: 8),
                                             child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 MyText(
                                                   color: whiteLight,
@@ -543,18 +561,20 @@ class TVShowDetailsState extends State<TVShowDetails> {
                                                   fontstyle: FontStyle.normal,
                                                 ),
                                                 const SizedBox(width: 5),
-                                                MyText(
-                                                  color: whiteLight,
-                                                  text: "Available",
-                                                  textalign: TextAlign.center,
-                                                  fontsizeNormal: 13,
-                                                  fontweight: FontWeight.w600,
-                                                  fontsizeWeb: 13,
-                                                  maxline: 1,
-                                                  multilanguage: false,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  fontstyle: FontStyle.normal,
+                                                Expanded(
+                                                  child: MyText(
+                                                    color: whiteLight,
+                                                    text: "Available",
+                                                    textalign: TextAlign.start,
+                                                    fontsizeNormal: 13,
+                                                    fontweight: FontWeight.w600,
+                                                    fontsizeWeb: 13,
+                                                    maxline: 1,
+                                                    multilanguage: false,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontstyle: FontStyle.normal,
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -796,6 +816,7 @@ class TVShowDetailsState extends State<TVShowDetails> {
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
 
               /* Included Features buttons */
               Container(
@@ -2917,7 +2938,7 @@ class TVShowDetailsState extends State<TVShowDetails> {
       int? vType = widget.videoType;
       int? vTypeID = widget.typeId;
       int? stopTime;
-      if (playType == "startOver") {
+      if (playType == "startOver" || playType == "Trailer") {
         stopTime = 0;
       } else {
         stopTime = (episodeProvider.episodeBySeasonModel
@@ -2927,45 +2948,66 @@ class TVShowDetailsState extends State<TVShowDetails> {
       String? videoThumb = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].landscape ??
           "");
-      String? vUploadType = (episodeProvider.episodeBySeasonModel
-              .result?[showDetailsProvider.mCurrentEpiPos].videoUploadType ??
-          "");
-      String? epiUrl = (episodeProvider.episodeBySeasonModel
-              .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
-          "");
       log("epiID ========> $epiID");
       log("vType ========> $vType");
       log("vTypeID ======> $vTypeID");
       log("stopTime =====> $stopTime");
-      log("vUploadType ==> $vUploadType");
       log("videoThumb ===> $videoThumb");
-      log("epiUrl =======> $epiUrl");
 
-      /* Set-up Quality URLs */
-      Utils.setQualityURLs(
-        video320: (episodeProvider.episodeBySeasonModel
+      String? vUrl, vUploadType;
+      if (playType == "Trailer") {
+        Utils.clearQualitySubtitle();
+        vUploadType =
+            (showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+        vUrl =
+            (showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "");
+      } else {
+        /* Set-up Quality URLs */
+        Utils.setQualityURLs(
+          video320: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
+              ""),
+          video480: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video480 ??
+              ""),
+          video720: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video720 ??
+              ""),
+          video1080: (episodeProvider.episodeBySeasonModel
+                  .result?[showDetailsProvider.mCurrentEpiPos].video1080 ??
+              ""),
+        );
+
+        vUrl = (episodeProvider.episodeBySeasonModel
                 .result?[showDetailsProvider.mCurrentEpiPos].video320 ??
-            ""),
-        video480: (episodeProvider.episodeBySeasonModel
-                .result?[showDetailsProvider.mCurrentEpiPos].video480 ??
-            ""),
-        video720: (episodeProvider.episodeBySeasonModel
-                .result?[showDetailsProvider.mCurrentEpiPos].video720 ??
-            ""),
-        video1080: (episodeProvider.episodeBySeasonModel
-                .result?[showDetailsProvider.mCurrentEpiPos].video1080 ??
-            ""),
-      );
+            "");
+        vUploadType = (episodeProvider.episodeBySeasonModel
+                .result?[showDetailsProvider.mCurrentEpiPos].videoUploadType ??
+            "");
+      }
+
+      log("vUploadType ===> $vUploadType");
+      log("stopTime ===> $stopTime");
+
+      if (!mounted) return;
+      if (vUrl.isEmpty || vUrl == "") {
+        if (playType == "Trailer") {
+          Utils.showSnackbar(context, "info", "trailer_not_found", true);
+        } else {
+          Utils.showSnackbar(context, "info", "video_not_found", true);
+        }
+        return;
+      }
 
       if (!mounted) return;
       dynamic isContinue = await Utils.openPlayer(
         context: context,
-        playType: "Show",
+        playType: playType == "Trailer" ? "Trailer" : "Show",
         videoId: epiID,
         videoType: vType,
         typeId: vTypeID,
-        videoUrl: epiUrl,
-        trailerUrl: "",
+        videoUrl: vUrl,
+        trailerUrl: vUrl,
         uploadType: vUploadType,
         videoThumb: videoThumb,
         vStopTime: stopTime,
@@ -2978,8 +3020,45 @@ class TVShowDetailsState extends State<TVShowDetails> {
             showDetailsProvider.sectionDetailModel.session);
       }
     } else {
-      if (!mounted) return;
-      Utils.showSnackbar(context, "info", "episode_not_found", true);
+      String? vUrl, vUploadType;
+      if (playType == "Trailer") {
+        int? stopTime = 0;
+        String? videoThumb =
+            (showDetailsProvider.sectionDetailModel.result?.landscape ?? "");
+        log("stopTime =====> $stopTime");
+        log("videoThumb ===> $videoThumb");
+        Utils.clearQualitySubtitle();
+        vUploadType =
+            (showDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+        vUrl =
+            (showDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "");
+
+        log("vUploadType ===> $vUploadType");
+        log("stopTime ===> $stopTime");
+
+        if (!mounted) return;
+        if (vUrl.isEmpty || vUrl == "") {
+          Utils.showSnackbar(context, "info", "trailer_not_found", true);
+          return;
+        }
+
+        if (!mounted) return;
+        await Utils.openPlayer(
+          context: context,
+          playType: "Trailer",
+          videoId: 0,
+          videoType: 0,
+          typeId: 0,
+          videoUrl: vUrl,
+          trailerUrl: vUrl,
+          uploadType: vUploadType,
+          videoThumb: videoThumb,
+          vStopTime: stopTime,
+        );
+      } else {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "info", "episode_not_found", true);
+      }
     }
   }
   /* ========= Open Player ========= */

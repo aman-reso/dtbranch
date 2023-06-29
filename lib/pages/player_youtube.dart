@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,7 +43,7 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
       params: const YoutubePlayerParams(
         showControls: true,
         mute: false,
-        showFullscreenButton: false,
+        showFullscreenButton: true,
         loop: false,
       ),
     );
@@ -58,23 +59,46 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return WillPopScope(
       onWillPop: onBackPressed,
-      child: YoutubePlayerScaffold(
-        backgroundColor: appBgColor,
-        controller: controller,
-        autoFullScreen: true,
-        defaultOrientations: const [
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-        ],
-        builder: (context, player) {
-          return Scaffold(
-            body: LayoutBuilder(
-              builder: (context, constraints) {
-                return player;
-              },
-            ),
-          );
-        },
+      child: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              YoutubePlayerScaffold(
+                backgroundColor: appBgColor,
+                controller: controller,
+                autoFullScreen: true,
+                defaultOrientations: const [
+                  DeviceOrientation.landscapeLeft,
+                  DeviceOrientation.landscapeRight,
+                ],
+                builder: (context, player) {
+                  return Scaffold(
+                    body: Center(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return player;
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+              if (!kIsWeb)
+                Positioned(
+                  top: 15,
+                  left: 15,
+                  child: SafeArea(
+                    child: InkWell(
+                      onTap: onBackPressed,
+                      focusColor: gray.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Utils.buildBackBtnDesign(context),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

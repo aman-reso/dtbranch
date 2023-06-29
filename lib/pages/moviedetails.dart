@@ -13,6 +13,7 @@ import 'package:dtlive/widget/moredetails.dart';
 import 'package:dtlive/widget/myusernetworkimg.dart';
 import 'package:dtlive/widget/relatedvideoshow.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
@@ -37,6 +38,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class MovieDetails extends StatefulWidget {
   final int videoId, upcomingType, videoType, typeId;
@@ -52,6 +54,7 @@ class MovieDetails extends StatefulWidget {
 class MovieDetailsState extends State<MovieDetails> with RouteAware {
   /* Trailer init */
   VideoPlayerController? _trailerNormalController;
+  YoutubePlayerController? _trailerYoutubeController;
 
   /* Download init */
   late VideoDownloadProvider downloadProvider;
@@ -102,12 +105,27 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   @override
   void didPopNext() {
     debugPrint("didPopNext");
-    if (videoDetailsProvider.sectionDetailModel.result?.trailerType !=
+    if (videoDetailsProvider.sectionDetailModel.result?.trailerType ==
         "youtube") {
+      if (_trailerYoutubeController == null) {
+        loadTrailer(
+            videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
+            videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        if (_trailerYoutubeController != null) {
+          _trailerYoutubeController?.seekTo(seconds: 0.0);
+          _trailerYoutubeController?.playVideo();
+        }
+      }
+    } else {
       if (_trailerNormalController == null) {
         loadTrailer(
             videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
             videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        if (_trailerNormalController != null) {
+          _trailerNormalController?.play();
+        }
       }
     }
     super.didPopNext();
@@ -125,6 +143,9 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   @override
   void didPushNext() {
     debugPrint("didPushNext");
+    if (_trailerYoutubeController != null) {
+      _trailerYoutubeController?.pauseVideo();
+    }
     if (_trailerNormalController != null) {
       _trailerNormalController?.dispose();
       _trailerNormalController = null;
@@ -175,8 +196,16 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
         "trailerUrl ===========> ${videoDetailsProvider.sectionDetailModel.result?.trailerUrl}");
     debugPrint(
         "trailerType ==========> ${videoDetailsProvider.sectionDetailModel.result?.trailerType}");
-    if (videoDetailsProvider.sectionDetailModel.result?.trailerType !=
+    if (videoDetailsProvider.sectionDetailModel.result?.trailerType ==
         "youtube") {
+      if (_trailerYoutubeController == null) {
+        loadTrailer(
+            videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
+            videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        _trailerYoutubeController?.seekTo(seconds: 0.0);
+      }
+    } else {
       if (_trailerNormalController == null) {
         loadTrailer(
             videoDetailsProvider.sectionDetailModel.result?.trailerUrl ?? "",
@@ -190,7 +219,27 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   Future<void> loadTrailer(trailerUrl, trailerType) async {
     debugPrint("loadTrailer URL ==========> $trailerUrl");
     debugPrint("loadTrailer Type =========> $trailerType");
-    if (trailerType != "youtube") {
+    if (trailerType == "youtube") {
+      var videoId = YoutubePlayerController.convertUrlToId(trailerUrl ?? "");
+      debugPrint("Youtube Trailer videoId :====> $videoId");
+      _trailerYoutubeController = YoutubePlayerController.fromVideoId(
+        videoId: videoId ?? '',
+        autoPlay: true,
+        params: const YoutubePlayerParams(
+          showControls: false,
+          showVideoAnnotations: false,
+          playsInline: false,
+          mute: false,
+          showFullscreenButton: false,
+          loop: false,
+        ),
+      );
+      _trailerYoutubeController?.playVideo();
+      Future.delayed(Duration.zero).then((value) {
+        if (!mounted) return;
+        setState(() {});
+      });
+    } else {
       _trailerNormalController = VideoPlayerController.network(trailerUrl ?? "")
         ..initialize().then((value) {
           if (!mounted) return;
@@ -279,11 +328,20 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
+    if (!(kIsWeb || Constant.isTV)) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
     routeObserver.unsubscribe(this);
     log("dispose isBroadcast ============================> ${_port.isBroadcast}");
     if (!_port.isBroadcast) {
       downloadProvider.clearProvider();
       videoDetailsProvider.clearProvider();
+    }
+    if (_trailerYoutubeController != null) {
+      _trailerYoutubeController?.close();
+      _trailerYoutubeController = null;
     }
     if (_trailerNormalController != null) {
       _trailerNormalController?.dispose();
@@ -1114,7 +1172,12 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   Widget setUpTrailerView() {
     if ((videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "") ==
         "youtube") {
-      return _buildMobilePoster();
+      if (_trailerYoutubeController != null) {
+        return _buildTrailerView(
+            videoDetailsProvider.sectionDetailModel.result?.trailerType ?? "");
+      } else {
+        return _buildMobilePoster();
+      }
     } else {
       if (_trailerNormalController != null &&
           (_trailerNormalController?.value.isInitialized ?? false)) {
@@ -1136,7 +1199,10 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
             height: (kIsWeb || Constant.isTV)
                 ? Dimens.detailWebPoster
                 : Dimens.detailPoster,
-            child: Container(),
+            child: YoutubePlayer(
+              controller: _trailerYoutubeController!,
+              enableFullScreenOnVerticalDrag: false,
+            ),
           ),
           Container(
             padding: const EdgeInsets.all(0),
@@ -1630,6 +1696,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                                           constraints: const BoxConstraints(
                                               minHeight: 0),
                                           child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               MyText(
                                                 color: whiteLight,
@@ -1675,6 +1743,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                                             ],
                                           ),
                                         ),
+
                                         /* Subtitle */
                                         Constant.subtitleUrls.isNotEmpty
                                             ? Container(
@@ -1684,6 +1753,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                                                 margin: const EdgeInsets.only(
                                                     top: 8),
                                                 child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     MyText(
                                                       color: whiteLight,
@@ -1719,21 +1790,23 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                                                           FontStyle.normal,
                                                     ),
                                                     const SizedBox(width: 5),
-                                                    MyText(
-                                                      color: whiteLight,
-                                                      text: "Available",
-                                                      textalign:
-                                                          TextAlign.center,
-                                                      fontsizeNormal: 13,
-                                                      fontweight:
-                                                          FontWeight.w500,
-                                                      fontsizeWeb: 13,
-                                                      maxline: 1,
-                                                      multilanguage: false,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      fontstyle:
-                                                          FontStyle.normal,
+                                                    Expanded(
+                                                      child: MyText(
+                                                        color: whiteLight,
+                                                        text: "Available",
+                                                        textalign:
+                                                            TextAlign.start,
+                                                        fontsizeNormal: 13,
+                                                        fontweight:
+                                                            FontWeight.w500,
+                                                        fontsizeWeb: 13,
+                                                        maxline: 1,
+                                                        multilanguage: false,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        fontstyle:
+                                                            FontStyle.normal,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),

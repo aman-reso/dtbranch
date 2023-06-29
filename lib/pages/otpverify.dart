@@ -157,6 +157,11 @@ class OTPVerifyState extends State<OTPVerify> {
                       Utils.showSnackbar(
                           context, "info", "enterreceivedotp", true);
                     } else {
+                      if (verificationId == null || verificationId == "") {
+                        Utils.showSnackbar(
+                            context, "info", "otp_not_working", true);
+                        return;
+                      }
                       Utils.showProgress(context, prDialog);
                       _checkOTPAndLogin();
                     }
@@ -260,6 +265,10 @@ class OTPVerifyState extends State<OTPVerify> {
   _onCodeSent(String verificationId, int? forceResendingToken) {
     this.verificationId = verificationId;
     this.forceResendingToken = forceResendingToken;
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
     log("verificationId =======> $verificationId");
     log("resendingToken =======> ${forceResendingToken.toString()}");
     log("code sent");
@@ -279,6 +288,7 @@ class OTPVerifyState extends State<OTPVerify> {
 
     log("_checkOTPAndLogin verificationId =====> $verificationId");
     log("_checkOTPAndLogin smsCode =====> ${pinPutController.text}");
+
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential? phoneAuthCredential = PhoneAuthProvider.credential(
       verificationId: verificationId ?? "",

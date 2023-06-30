@@ -50,6 +50,9 @@ class Dimens {
   static double channelWebBanner = 290;
   static double rentBanner = 103;
 
+  static double widthPackage = 130;
+  static double widthPackageWeb = 200;
+
   static double minHeightSettings = 45;
   static double heightHistory = 70;
 

@@ -55,7 +55,6 @@ class _SearchWebState extends State<SearchWeb> {
           color: appBgColor,
           child: Column(
             children: [
-              if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
               /* Searched Data */
               Expanded(
                 child: Consumer<SearchProvider>(

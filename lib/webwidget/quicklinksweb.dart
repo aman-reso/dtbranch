@@ -1,5 +1,4 @@
 import 'package:dtlive/utils/color.dart';
-import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,6 @@ class _QuickLinksWebState extends State<QuickLinksWeb> {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: Dimens.homeTabHeight),
           Padding(
             padding: const EdgeInsets.only(left: 40, right: 40),
             child: Row(

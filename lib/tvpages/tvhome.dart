@@ -266,7 +266,7 @@ class TVHomeState extends State<TVHome> {
                           },
                           dropdownStyleData: DropdownStyleData(
                             width: 180,
-                            isFullScreen: true,
+                            useSafeArea: true,
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             decoration: Utils.setBackground(lightBlack, 5),
                             elevation: 8,
@@ -1210,43 +1210,7 @@ class TVHomeState extends State<TVHome> {
                     focusColor: white,
                     borderRadius: BorderRadius.circular(4),
                     onTap: () async {
-                      debugPrint("index ==========> $index");
-                      /* Set-up Quality URLs */
-                      Utils.setQualityURLs(
-                        video320: (continueWatchingList?[index].video320 ?? ""),
-                        video480: (continueWatchingList?[index].video480 ?? ""),
-                        video720: (continueWatchingList?[index].video720 ?? ""),
-                        video1080:
-                            (continueWatchingList?[index].video1080 ?? ""),
-                      );
-                      var isContinues = await Utils.openPlayer(
-                        context: context,
-                        playType:
-                            (continueWatchingList?[index].videoType ?? 0) == 2
-                                ? "Show"
-                                : "Video",
-                        videoId:
-                            (continueWatchingList?[index].videoType ?? 0) == 2
-                                ? (continueWatchingList?[index].showId ?? 0)
-                                : (continueWatchingList?[index].id ?? 0),
-                        videoType: continueWatchingList?[index].videoType ?? 0,
-                        typeId: continueWatchingList?[index].typeId ?? 0,
-                        videoUrl: continueWatchingList?[index].video320 ?? "",
-                        trailerUrl:
-                            continueWatchingList?[index].trailerUrl ?? "",
-                        uploadType:
-                            continueWatchingList?[index].videoUploadType ?? "",
-                        videoThumb:
-                            continueWatchingList?[index].landscape ?? "",
-                        vStopTime: continueWatchingList?[index].stopTime ?? 0,
-                      );
-                      if (isContinues != null && isContinues == true) {
-                        getTabData(0, homeProvider.sectionTypeModel.result);
-                        Future.delayed(Duration.zero).then((value) {
-                          if (!mounted) return;
-                          setState(() {});
-                        });
-                      }
+                      openPlayer("ContinueWatch", index, continueWatchingList);
                     },
                     child: Stack(
                       alignment: AlignmentDirectional.bottomStart,
@@ -1971,4 +1935,41 @@ class TVHomeState extends State<TVHome> {
       },
     );
   }
+
+  /* ========= Open Player ========= */
+  openPlayer(String playType, int index,
+      List<ContinueWatching>? continueWatchingList) async {
+    debugPrint("index ==========> $index");
+    /* Set-up Quality URLs */
+    Utils.setQualityURLs(
+      video320: (continueWatchingList?[index].video320 ?? ""),
+      video480: (continueWatchingList?[index].video480 ?? ""),
+      video720: (continueWatchingList?[index].video720 ?? ""),
+      video1080: (continueWatchingList?[index].video1080 ?? ""),
+    );
+    var isContinues = await Utils.openPlayer(
+      context: context,
+      playType:
+          (continueWatchingList?[index].videoType ?? 0) == 2 ? "Show" : "Video",
+      videoId: (continueWatchingList?[index].id ?? 0),
+      videoType: continueWatchingList?[index].videoType ?? 0,
+      typeId: continueWatchingList?[index].typeId ?? 0,
+      otherId: (continueWatchingList?[index].videoType ?? 0) == 2
+          ? (continueWatchingList?[index].showId ?? 0)
+          : 0,
+      videoUrl: continueWatchingList?[index].video320 ?? "",
+      trailerUrl: continueWatchingList?[index].trailerUrl ?? "",
+      uploadType: continueWatchingList?[index].videoUploadType ?? "",
+      videoThumb: continueWatchingList?[index].landscape ?? "",
+      vStopTime: continueWatchingList?[index].stopTime ?? 0,
+    );
+    if (isContinues != null && isContinues == true) {
+      getTabData(0, homeProvider.sectionTypeModel.result);
+      Future.delayed(Duration.zero).then((value) {
+        if (!mounted) return;
+        setState(() {});
+      });
+    }
+  }
+  /* ========= Open Player ========= */
 }

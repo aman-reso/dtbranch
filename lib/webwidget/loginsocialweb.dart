@@ -367,24 +367,26 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
     log('checkAndNavigate loading ==>> ${generalProvider.loading}');
 
     if (!generalProvider.loading) {
-      if (generalProvider.loginGmailModel.status == 200) {
-        log('loginGmailModel ==>> ${generalProvider.loginGmailModel.toString()}');
+      if (generalProvider.loginSocialModel.status == 200) {
         log('Login Successfull!');
-        await sharedPref.save(
-            "userid", generalProvider.loginGmailModel.result?.id.toString());
+        await sharedPref.save("userid",
+            generalProvider.loginSocialModel.result?[0].id.toString());
         await sharedPref.save("username",
-            generalProvider.loginGmailModel.result?.name.toString() ?? "");
+            generalProvider.loginSocialModel.result?[0].name.toString() ?? "");
         await sharedPref.save("userimage",
-            generalProvider.loginGmailModel.result?.image.toString() ?? "");
+            generalProvider.loginSocialModel.result?[0].image.toString() ?? "");
         await sharedPref.save("useremail",
-            generalProvider.loginGmailModel.result?.email.toString() ?? "");
-        await sharedPref.save("usermobile",
-            generalProvider.loginGmailModel.result?.mobile.toString() ?? "");
+            generalProvider.loginSocialModel.result?[0].email.toString() ?? "");
+        await sharedPref.save(
+            "usermobile",
+            generalProvider.loginSocialModel.result?[0].mobile.toString() ??
+                "");
         await sharedPref.save("usertype",
-            generalProvider.loginGmailModel.result?.type.toString() ?? "");
+            generalProvider.loginSocialModel.result?[0].type.toString() ?? "");
 
         // Set UserID for Next
-        Constant.userID = generalProvider.loginGmailModel.result?.id.toString();
+        Constant.userID =
+            generalProvider.loginSocialModel.result?[0].id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
         if (!mounted) return;
@@ -397,7 +399,7 @@ class _LoginSocialWebState extends State<LoginSocialWeb> {
         // Hide Progress Dialog
         if (!mounted) return;
         Utils.showSnackbar(context, "fail",
-            "${generalProvider.loginGmailModel.message}", false);
+            "${generalProvider.loginSocialModel.message}", false);
       }
     }
   }

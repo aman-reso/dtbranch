@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dtlive/pages/aboutprivacyterms.dart';
+import 'package:dtlive/pages/activetv.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/pages/profileedit.dart';
@@ -52,7 +53,7 @@ class SettingState extends State<Setting> {
     super.initState();
   }
 
-  void toggleSwitch(bool value) async {
+  toggleSwitch(bool value) async {
     if (isSwitched == false) {
       setState(() {
         isSwitched = true;
@@ -70,7 +71,7 @@ class SettingState extends State<Setting> {
     }
   }
 
-  void getUserData() async {
+  getUserData() async {
     userName = await sharedPref.read("username");
     userType = await sharedPref.read("usertype");
     userMobileNo = await sharedPref.read("usermobile");
@@ -128,6 +129,33 @@ class SettingState extends State<Setting> {
                   child: _buildSettingButton(
                     title: 'accountdetails',
                     subTitle: 'manageprofile',
+                    titleMultilang: true,
+                    subTitleMultilang: true,
+                  ),
+                ),
+                _buildLine(16.0, 16.0),
+
+                /* Active TV */
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    if (Constant.userID != null) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ActiveTV(),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginSocial(),
+                        ),
+                      );
+                    }
+                  },
+                  child: _buildSettingButton(
+                    title: 'activetv',
+                    subTitle: 'activetv_desc',
                     titleMultilang: true,
                     subTitleMultilang: true,
                   ),
@@ -615,7 +643,7 @@ class SettingState extends State<Setting> {
                   fontsizeNormal: 12,
                   fontsizeWeb: 14,
                   multilanguage: subTitleMultilang,
-                  maxline: 1,
+                  maxline: 2,
                   overflow: TextOverflow.ellipsis,
                   fontweight: FontWeight.w500,
                   textalign: TextAlign.start,
@@ -868,7 +896,7 @@ class SettingState extends State<Setting> {
     );
   }
 
-  void logoutConfirmDialog() {
+  logoutConfirmDialog() {
     showModalBottomSheet(
       context: context,
       backgroundColor: lightBlack,
@@ -1021,7 +1049,7 @@ class SettingState extends State<Setting> {
     );
   }
 
-  void deleteConfirmDialog() {
+  deleteConfirmDialog() {
     showModalBottomSheet(
       context: context,
       backgroundColor: lightBlack,

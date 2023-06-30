@@ -274,7 +274,7 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
   @pragma('vm:entry-point')
   static void downloadCallback(
     String id,
-    DownloadTaskStatus status,
+    int status,
     int progress,
   ) {
     log(
@@ -284,7 +284,7 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
 
     if (!kIsWeb) {
       IsolateNameServer.lookupPortByName(Constant.showDownloadPort)
-          ?.send([id, status.value, progress]);
+          ?.send([id, status, progress]);
     }
   }
 
@@ -1822,7 +1822,7 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                 ),
                 dropdownStyleData: DropdownStyleData(
                   width: 180,
-                  isFullScreen: true,
+                  useSafeArea: true,
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   decoration: Utils.setBackground(lightBlack, 5),
                   elevation: 8,
@@ -2001,11 +2001,6 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
             borderRadius: BorderRadius.circular(5),
             onTap: () async {
               if (Constant.userID != null) {
-                if ((kIsWeb || Constant.isTV)) {
-                  Utils.showSnackbar(
-                      context, "info", webPaymentNotAvailable, false);
-                  return;
-                }
                 dynamic isRented = await Utils.paymentForRent(
                   context: context,
                   videoId: showDetailsProvider.sectionDetailModel.result?.id
@@ -2065,11 +2060,6 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
             borderRadius: BorderRadius.circular(5),
             onTap: () async {
               if (Constant.userID != null) {
-                if ((kIsWeb || Constant.isTV)) {
-                  Utils.showSnackbar(
-                      context, "info", webPaymentNotAvailable, false);
-                  return;
-                }
                 dynamic isRented = await Utils.paymentForRent(
                   context: context,
                   videoId: showDetailsProvider.sectionDetailModel.result?.id
@@ -3704,6 +3694,9 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
       int? epiID = (episodeProvider.episodeBySeasonModel
               .result?[showDetailsProvider.mCurrentEpiPos].id ??
           0);
+      int? showID = (episodeProvider.episodeBySeasonModel
+              .result?[showDetailsProvider.mCurrentEpiPos].showId ??
+          0);
       int? vType = widget.videoType;
       int? vTypeID = widget.typeId;
       int? stopTime;
@@ -3774,6 +3767,7 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
         videoId: epiID,
         videoType: vType,
         typeId: vTypeID,
+        otherId: showID,
         videoUrl: vUrl,
         trailerUrl: vUrl,
         uploadType: vUploadType,
@@ -3817,6 +3811,7 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
           videoId: 0,
           videoType: 0,
           typeId: 0,
+          otherId: 0,
           videoUrl: vUrl,
           trailerUrl: vUrl,
           uploadType: vUploadType,
@@ -3841,10 +3836,6 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -3864,10 +3855,6 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
         if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -3888,10 +3875,6 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
                 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isRented = await Utils.paymentForRent(
             context: context,
             videoId:

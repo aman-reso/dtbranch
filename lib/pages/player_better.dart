@@ -11,10 +11,18 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class PlayerBetter extends StatefulWidget {
-  final int? videoId, videoType, typeId, stopTime;
+  final int? videoId, videoType, typeId, otherId, stopTime;
   final String? playType, videoUrl, vUploadType, videoThumb;
-  const PlayerBetter(this.playType, this.videoId, this.videoType, this.typeId,
-      this.videoUrl, this.stopTime, this.vUploadType, this.videoThumb,
+  const PlayerBetter(
+      this.playType,
+      this.videoId,
+      this.videoType,
+      this.typeId,
+      this.otherId,
+      this.videoUrl,
+      this.stopTime,
+      this.vUploadType,
+      this.videoThumb,
       {Key? key})
       : super(key: key);
 
@@ -70,7 +78,11 @@ class _PlayerBetterState extends State<PlayerBetter>
     super.initState();
   }
 
-  void _setupDataSource() async {
+  _setupDataSource() async {
+    /* Add Video view */
+    await playerProvider.addVideoView(widget.videoId.toString(),
+        widget.videoType.toString(), widget.otherId.toString());
+
     debugPrint("sSubTitleUrls Length =======> ${Constant.subtitleUrls.length}");
     List<BetterPlayerSubtitlesSource> subtitlesList = [];
 

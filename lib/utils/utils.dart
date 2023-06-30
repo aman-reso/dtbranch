@@ -234,6 +234,7 @@ class Utils {
     required int? videoId,
     required int? videoType,
     required int? typeId,
+    required int? otherId,
     required String? videoUrl,
     required String? trailerUrl,
     required String? uploadType,
@@ -244,6 +245,9 @@ class Utils {
     int? vID = (videoId ?? 0);
     int? vType = (videoType ?? 0);
     int? vTypeID = (typeId ?? 0);
+    int? vOtherID = (otherId ?? 0);
+    log("vID ========> $vID");
+    log("vOtherID ===> $vOtherID");
 
     int? stopTime;
     if (playType == "startOver") {
@@ -279,6 +283,7 @@ class Utils {
                 vID,
                 vType,
                 vTypeID,
+                vOtherID,
                 vUrl ?? "",
                 stopTime,
                 vUploadType,
@@ -301,6 +306,7 @@ class Utils {
                 vID,
                 vType,
                 vTypeID,
+                vOtherID,
                 vUrl ?? "",
                 stopTime,
                 vUploadType,
@@ -326,6 +332,7 @@ class Utils {
                 vID,
                 vType,
                 vTypeID,
+                vOtherID,
                 vUrl ?? "",
                 stopTime,
                 vUploadType,
@@ -348,6 +355,7 @@ class Utils {
                 vID,
                 vType,
                 vTypeID,
+                vOtherID,
                 vUrl ?? "",
                 stopTime,
                 vUploadType,
@@ -370,6 +378,7 @@ class Utils {
                 vID,
                 vType,
                 vTypeID,
+                vOtherID,
                 vUrl ?? "",
                 stopTime,
                 vUploadType,
@@ -456,6 +465,34 @@ class Utils {
     log('Constant currencySymbol ==> ${Constant.currencySymbol}');
     Constant.currency = await sharedPref.read("currency") ?? "";
     log('Constant currency ==> ${Constant.currency}');
+  }
+
+  static saveUserCreds({
+    required userID,
+    required userName,
+    required userEmail,
+    required userMobile,
+    required userImage,
+    required userType,
+  }) async {
+    SharedPre sharedPref = SharedPre();
+    if (userID != null) {
+      await sharedPref.save("userid", userID);
+      await sharedPref.save("username", userName);
+      await sharedPref.save("useremail", userEmail);
+      await sharedPref.save("usermobile", userMobile);
+      await sharedPref.save("userimage", userImage);
+      await sharedPref.save("usertype", userType);
+    } else {
+      await sharedPref.remove("userid");
+      await sharedPref.remove("username");
+      await sharedPref.remove("userimage");
+      await sharedPref.remove("useremail");
+      await sharedPref.remove("usermobile");
+      await sharedPref.remove("usertype");
+    }
+    Constant.userID = await sharedPref.read("userid");
+    log('setUserId userID ==> ${Constant.userID}');
   }
 
   static setUserId(userID) async {
@@ -943,7 +980,7 @@ class Utils {
           fontWeight: FontWeight.w500,
         ),
       },
-      onLinkTap: (url, _, __, ___) async {
+      onLinkTap: (url, _, ___) async {
         if (await canLaunchUrl(Uri.parse(url!))) {
           await launchUrl(
             Uri.parse(url),

@@ -928,6 +928,7 @@ class _MyEpisodeDownloadsState extends State<MyEpisodeDownloads> {
       videoId: myEpisodeList?[position].id ?? 0,
       videoType: int.parse(myEpisodeList?[position].videoType.toString() ?? ""),
       typeId: 4,
+      otherId: myEpisodeList?[position].showId ?? 0,
       videoUrl: myEpisodeList?[position].savedFile ?? "",
       trailerUrl: "",
       uploadType: myEpisodeList?[position].videoUploadType ?? "",

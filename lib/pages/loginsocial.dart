@@ -538,7 +538,6 @@ class LoginSocialState extends State<LoginSocial> {
       debugPrint('===>Exp${e.code.toString()}');
       debugPrint('===>Exp${e.message.toString()}');
       if (e.code.toString() == "user-not-found") {
-        // registerFirebaseUser(user.email, user.displayName ?? "", "2");
       } else if (e.code == 'wrong-password') {
         // Hide Progress Dialog
         await prDialog.hide();
@@ -596,25 +595,25 @@ class LoginSocialState extends State<LoginSocial> {
       final firebaseUser = authResult.user;
       debugPrint("==================================");
 
-      final userEmail = firebaseUser?.email.toString();
-      final firebasedId = firebaseUser?.uid.toString();
-      final photoURL = firebaseUser?.photoURL.toString();
-      displayName = firebaseUser?.displayName.toString();
+      final userEmail = firebaseUser?.email;
+      final firebasedId = firebaseUser?.uid;
+      final photoURL = firebaseUser?.photoURL;
+      displayName = firebaseUser?.displayName;
       debugPrint("userEmail =======> $userEmail");
       debugPrint("firebasedId =====> $firebasedId");
       debugPrint("photoURL ========> $photoURL");
       debugPrint("displayName ==2==> $displayName");
 
-      // await firebaseUser?.updateDisplayName(displayName);
-      // await firebaseUser?.updatePhotoURL(photoURL);
-      // await firebaseUser?.updateEmail(userEmail);
+      await firebaseUser?.updateDisplayName(displayName);
+      await firebaseUser?.updatePhotoURL(photoURL);
+      await firebaseUser?.updateEmail(userEmail ?? "");
 
       /* Save PhotoUrl in File */
       if (photoURL != null || photoURL != "") {
         mProfileImg = await Utils.saveImageInStorage(photoURL);
       }
 
-      checkAndNavigate(userEmail ?? "", displayName.toString(), "2");
+      checkAndNavigate(userEmail ?? "", displayName ?? "", "5");
     } catch (exception) {
       debugPrint("Apple Login exception =====> $exception");
     }
@@ -642,24 +641,23 @@ class LoginSocialState extends State<LoginSocial> {
     log('checkAndNavigate loading ==>> ${generalProvider.loading}');
 
     if (!generalProvider.loading) {
-      if (generalProvider.loginGmailModel.status == 200) {
-        log('loginGmailModel ==>> ${generalProvider.loginGmailModel.toString()}');
+      if (generalProvider.loginSocialModel.status == 200) {
         log('Login Successfull!');
-        await sharePref.save(
-            "userid", generalProvider.loginGmailModel.result?.id.toString());
-        await sharePref.save("username",
-            generalProvider.loginGmailModel.result?.name.toString() ?? "");
-        await sharePref.save("userimage",
-            generalProvider.loginGmailModel.result?.image.toString() ?? "");
-        await sharePref.save("useremail",
-            generalProvider.loginGmailModel.result?.email.toString() ?? "");
-        await sharePref.save("usermobile",
-            generalProvider.loginGmailModel.result?.mobile.toString() ?? "");
-        await sharePref.save("usertype",
-            generalProvider.loginGmailModel.result?.type.toString() ?? "");
+        Utils.saveUserCreds(
+          userID: generalProvider.loginSocialModel.result?[0].id.toString(),
+          userName: generalProvider.loginSocialModel.result?[0].name.toString(),
+          userEmail:
+              generalProvider.loginSocialModel.result?[0].email.toString(),
+          userMobile:
+              generalProvider.loginSocialModel.result?[0].mobile.toString(),
+          userImage:
+              generalProvider.loginSocialModel.result?[0].image.toString(),
+          userType: generalProvider.loginSocialModel.result?[0].type.toString(),
+        );
 
         // Set UserID for Next
-        Constant.userID = generalProvider.loginGmailModel.result?.id.toString();
+        Constant.userID =
+            generalProvider.loginSocialModel.result?[0].id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
         await homeProvider.setSelectedTab(0);
@@ -669,17 +667,18 @@ class LoginSocialState extends State<LoginSocial> {
         // Hide Progress Dialog
         await prDialog.hide();
         if (!mounted) return;
-        Navigator.of(context).pushReplacement(
+        Navigator.pushAndRemoveUntil(
+          context,
           MaterialPageRoute(
-            builder: (context) => const Bottombar(),
-          ),
+              builder: (BuildContext context) => const Bottombar()),
+          (Route<dynamic> route) => false,
         );
       } else {
         // Hide Progress Dialog
         await prDialog.hide();
         if (!mounted) return;
         Utils.showSnackbar(context, "fail",
-            "${generalProvider.loginGmailModel.message}", false);
+            "${generalProvider.loginSocialModel.message}", false);
       }
     }
   }

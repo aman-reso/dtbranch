@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dtlive/model/couponmodel.dart';
 import 'package:dtlive/model/paymentoptionmodel.dart';
+import 'package:dtlive/model/paytmmodel.dart';
 import 'package:dtlive/model/successmodel.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/webservice/apiservices.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 
 class PaymentProvider extends ChangeNotifier {
   PaymentOptionModel paymentOptionModel = PaymentOptionModel();
+  PayTmModel payTmModel = PayTmModel();
   SuccessModel successModel = SuccessModel();
   CouponModel couponModel = CouponModel();
 
@@ -54,6 +56,25 @@ class PaymentProvider extends ChangeNotifier {
   setFinalAmount(String? amount) {
     finalAmount = amount;
     debugPrint("setFinalAmount finalAmount :==> $finalAmount");
+    notifyListeners();
+  }
+
+  Future<void> getPaytmToken(merchantID, orderId, custmoreID, channelID,
+      txnAmount, website, callbackURL, industryTypeID) async {
+    debugPrint("getPaytmToken merchantID :=======> $merchantID");
+    debugPrint("getPaytmToken orderId :==========> $orderId");
+    debugPrint("getPaytmToken custmoreID :=======> $custmoreID");
+    debugPrint("getPaytmToken channelID :========> $channelID");
+    debugPrint("getPaytmToken txnAmount :========> $txnAmount");
+    debugPrint("getPaytmToken website :==========> $merchantID");
+    debugPrint("getPaytmToken callbackURL :======> $merchantID");
+    debugPrint("getPaytmToken industryTypeID :===> $industryTypeID");
+    loading = true;
+    payTmModel = await ApiService().getPaytmToken(merchantID, orderId,
+        custmoreID, channelID, txnAmount, website, callbackURL, industryTypeID);
+    debugPrint("getPaytmToken status :===> ${payTmModel.status}");
+    debugPrint("getPaytmToken message :==> ${payTmModel.message}");
+    loading = false;
     notifyListeners();
   }
 

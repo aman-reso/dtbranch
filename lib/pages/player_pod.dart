@@ -12,10 +12,18 @@ import 'package:pod_player/pod_player.dart';
 import 'package:provider/provider.dart';
 
 class PlayerPod extends StatefulWidget {
-  final int? videoId, videoType, typeId, stopTime;
+  final int? videoId, videoType, typeId, otherId, stopTime;
   final String? playType, videoUrl, vUploadType, videoThumb;
-  const PlayerPod(this.playType, this.videoId, this.videoType, this.typeId,
-      this.videoUrl, this.stopTime, this.vUploadType, this.videoThumb,
+  const PlayerPod(
+      this.playType,
+      this.videoId,
+      this.videoType,
+      this.typeId,
+      this.otherId,
+      this.videoUrl,
+      this.stopTime,
+      this.vUploadType,
+      this.videoThumb,
       {Key? key})
       : super(key: key);
 
@@ -40,6 +48,10 @@ class _PlayerPodState extends State<PlayerPod> {
   }
 
   _playerInit() async {
+    /* Add Video view */
+    await playerProvider.addVideoView(widget.videoId.toString(),
+        widget.videoType.toString(), widget.otherId.toString());
+
     if (widget.vUploadType == "youtube") {
       playVideoFrom = PlayVideoFrom.youtube(widget.videoUrl ?? "");
     } else if (widget.vUploadType == "vimeo") {

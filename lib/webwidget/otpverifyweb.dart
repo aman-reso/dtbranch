@@ -359,20 +359,21 @@ class _OTPVerifyWebState extends State<OTPVerifyWeb> {
             'loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
         debugPrint('Login Successfull!');
         await sharePref.save(
-            "userid", generalProvider.loginOTPModel.result?.id.toString());
+            "userid", generalProvider.loginOTPModel.result?[0].id.toString());
         await sharePref.save("username",
-            generalProvider.loginOTPModel.result?.name.toString() ?? "");
+            generalProvider.loginOTPModel.result?[0].name.toString() ?? "");
         await sharePref.save("userimage",
-            generalProvider.loginOTPModel.result?.image.toString() ?? "");
+            generalProvider.loginOTPModel.result?[0].image.toString() ?? "");
         await sharePref.save("useremail",
-            generalProvider.loginOTPModel.result?.email.toString() ?? "");
+            generalProvider.loginOTPModel.result?[0].email.toString() ?? "");
         await sharePref.save("usermobile",
-            generalProvider.loginOTPModel.result?.mobile.toString() ?? "");
+            generalProvider.loginOTPModel.result?[0].mobile.toString() ?? "");
         await sharePref.save("usertype",
-            generalProvider.loginOTPModel.result?.type.toString() ?? "");
+            generalProvider.loginOTPModel.result?[0].type.toString() ?? "");
 
         // Set UserID for Next
-        Constant.userID = generalProvider.loginOTPModel.result?.id.toString();
+        Constant.userID =
+            generalProvider.loginOTPModel.result?[0].id.toString();
         debugPrint('Constant userID ==>> ${Constant.userID}');
 
         if (!mounted) return;

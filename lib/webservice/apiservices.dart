@@ -27,6 +27,7 @@ import 'package:dtlive/model/successmodel.dart';
 import 'package:dtlive/model/videobyidmodel.dart';
 import 'package:dtlive/model/watchlistmodel.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:flutter/material.dart';
 
 class ApiService {
   String baseUrl = Constant.baseurl;
@@ -74,7 +75,7 @@ class ApiService {
     return pagesModel;
   }
 
-  /* type => 1-Facebook, 2-Google */
+  /* type => 1-Facebook, 2-Google, 4-Google */
   // login API
   Future<LoginRegisterModel> loginWithSocial(
       email, name, type, File? profileImg) async {
@@ -143,9 +144,29 @@ class ApiService {
     return successModel;
   }
 
+  // tv_login API
+  Future<LoginRegisterModel> tvLogin(uniqueCode) async {
+    debugPrint("tvLogin userID :======> ${Constant.userID}");
+    debugPrint("tvLogin uniqueCode :==> $uniqueCode");
+
+    LoginRegisterModel loginModel;
+    String tvLoginAPI = "tv_login";
+    Response response = await dio.post(
+      '$baseUrl$tvLoginAPI',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'unique_code': uniqueCode,
+      },
+    );
+
+    loginModel = LoginRegisterModel.fromJson(response.data);
+    return loginModel;
+  }
+
   // get_profile API
   Future<ProfileModel> profile() async {
-    log("profile userID :==> ${Constant.userID}");
+    debugPrint("profile userID :==> ${Constant.userID}");
 
     ProfileModel profileModel;
     String doctorLogin = "get_profile";
@@ -286,6 +307,27 @@ class ApiService {
     );
     sectionDetailModel = SectionDetailModel.fromJson(response.data);
     return sectionDetailModel;
+  }
+
+  // video_view API
+  Future<SuccessModel> videoView(videoId, videoType, otherId) async {
+    debugPrint('videoView videoId ====>>> $videoId');
+    debugPrint('videoView videoType ==>>> $videoType');
+    debugPrint('videoView otherId ====>>> $otherId');
+    SuccessModel successModel;
+    String sectionList = "video_view";
+    Response response = await dio.post(
+      '$baseUrl$sectionList',
+      options: optHeaders,
+      data: {
+        'user_id': Constant.userID,
+        'video_id': videoId,
+        'video_type': videoType,
+        'other_id': otherId,
+      },
+    );
+    successModel = SuccessModel.fromJson(response.data);
+    return successModel;
   }
 
   // add_remove_bookmark API

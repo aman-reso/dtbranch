@@ -6,8 +6,21 @@ import 'package:flutter/material.dart';
 
 class PlayerProvider extends ChangeNotifier {
   SuccessModel successModel = SuccessModel();
+  SuccessModel videoViewSuccessModel = SuccessModel();
 
   bool loading = false;
+
+  Future<void> addVideoView(videoId, videoType, otherId) async {
+    debugPrint("addVideoView videoId :====> $videoId");
+    debugPrint("addVideoView otherId :====> $otherId");
+    debugPrint("addVideoView videoType :==> $videoType");
+    loading = true;
+    videoViewSuccessModel =
+        await ApiService().videoView(videoId, videoType, otherId);
+    debugPrint("addVideoView message :==> ${videoViewSuccessModel.message}");
+    loading = false;
+    notifyListeners();
+  }
 
   Future<void> addToContinue(videoId, videoType, stopTime) async {
     debugPrint("addToContinue stopTime :==> $stopTime");
@@ -16,7 +29,7 @@ class PlayerProvider extends ChangeNotifier {
     loading = true;
     successModel =
         await ApiService().addContinueWatching(videoId, videoType, stopTime);
-    debugPrint("add_continue_watching message :==> ${successModel.message}");
+    debugPrint("addToContinue message :==> ${successModel.message}");
     loading = false;
     notifyListeners();
   }
@@ -35,5 +48,6 @@ class PlayerProvider extends ChangeNotifier {
   clearProvider() {
     log("<================ clearProvider ================>");
     successModel = SuccessModel();
+    videoViewSuccessModel = SuccessModel();
   }
 }

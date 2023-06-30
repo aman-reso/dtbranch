@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'package:dtlive/pages/moviedetails.dart';
+import 'package:dtlive/pages/showdetails.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/tvpages/tvshowdetails.dart';
@@ -1975,11 +1977,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
           borderRadius: BorderRadius.circular(5),
           onTap: () async {
             if (Constant.userID != null) {
-              if ((kIsWeb || Constant.isTV)) {
-                Utils.showSnackbar(
-                    context, "info", webPaymentNotAvailable, false);
-                return;
-              }
               dynamic isRented = await Utils.paymentForRent(
                 context: context,
                 videoId: videoDetailsProvider.sectionDetailModel.result?.id
@@ -2036,11 +2033,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
           borderRadius: BorderRadius.circular(5),
           onTap: () async {
             if (Constant.userID != null) {
-              if ((kIsWeb || Constant.isTV)) {
-                Utils.showSnackbar(
-                    context, "info", webPaymentNotAvailable, false);
-                return;
-              }
               dynamic isRented = await Utils.paymentForRent(
                 context: context,
                 videoId: videoDetailsProvider.sectionDetailModel.result?.id
@@ -2368,36 +2360,108 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
             child: InkWell(
               borderRadius: BorderRadius.circular(4),
               focusColor: white,
-              onTap: () {
+              onTap: () async {
                 log("Clicked on index ==> $index");
-                if ((relatedDataList?[index].videoType ?? 0) == 1) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return TVMovieDetails(
-                          relatedDataList?[index].id ?? 0,
-                          0,
-                          relatedDataList?[index].videoType ?? 0,
-                          relatedDataList?[index].typeId ?? 0,
-                        );
-                      },
-                    ),
-                  );
-                } else if ((relatedDataList?[index].videoType ?? 0) == 2) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return TVShowDetails(
-                          relatedDataList?[index].id ?? 0,
-                          0,
-                          relatedDataList?[index].videoType ?? 0,
-                          relatedDataList?[index].typeId ?? 0,
-                        );
-                      },
-                    ),
-                  );
+                if ((relatedDataList?[index].videoType ?? 0) == 5) {
+                  if ((relatedDataList?[index].upcomingType ?? 0) == 1) {
+                    if (!(context.mounted)) return;
+                    await Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          if (kIsWeb || Constant.isTV) {
+                            return TVMovieDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          } else {
+                            return MovieDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          }
+                        },
+                      ),
+                    );
+                  } else if ((relatedDataList?[index].upcomingType ?? 0) == 2) {
+                    if (!(context.mounted)) return;
+                    await Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          if (kIsWeb || Constant.isTV) {
+                            return TVShowDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          } else {
+                            return ShowDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          }
+                        },
+                      ),
+                    );
+                  }
+                } else {
+                  if ((relatedDataList?[index].videoType ?? 0) == 1) {
+                    if (!(context.mounted)) return;
+                    await Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          if (kIsWeb || Constant.isTV) {
+                            return TVMovieDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          } else {
+                            return MovieDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          }
+                        },
+                      ),
+                    );
+                  } else if ((relatedDataList?[index].videoType ?? 0) == 2) {
+                    if (!(context.mounted)) return;
+                    await Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          if (kIsWeb || Constant.isTV) {
+                            return TVShowDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          } else {
+                            return ShowDetails(
+                              relatedDataList?[index].id ?? 0,
+                              relatedDataList?[index].upcomingType ?? 0,
+                              relatedDataList?[index].videoType ?? 0,
+                              relatedDataList?[index].typeId ?? 0,
+                            );
+                          }
+                        },
+                      ),
+                    );
+                  }
                 }
               },
               child: Container(
@@ -2788,6 +2852,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
       videoId: vID,
       videoType: vType,
       typeId: vTypeID,
+      otherId: 0,
       videoUrl: vUrl,
       trailerUrl: vUrl,
       uploadType: vUploadType,
@@ -2812,10 +2877,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -2835,10 +2896,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
         if ((videoDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -2860,10 +2917,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isRented = await Utils.paymentForRent(
             context: context,
             videoId:

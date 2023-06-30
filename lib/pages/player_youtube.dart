@@ -11,10 +11,18 @@ import 'package:provider/provider.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class PlayerYoutube extends StatefulWidget {
-  final int? videoId, videoType, typeId, stopTime;
+  final int? videoId, videoType, typeId, otherId, stopTime;
   final String? playType, videoUrl, vUploadType, videoThumb;
-  const PlayerYoutube(this.playType, this.videoId, this.videoType, this.typeId,
-      this.videoUrl, this.stopTime, this.vUploadType, this.videoThumb,
+  const PlayerYoutube(
+      this.playType,
+      this.videoId,
+      this.videoType,
+      this.typeId,
+      this.otherId,
+      this.videoUrl,
+      this.stopTime,
+      this.vUploadType,
+      this.videoThumb,
       {Key? key})
       : super(key: key);
 
@@ -34,6 +42,14 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+    _initPlayer();
+  }
+
+  _initPlayer() async {
+    /* Add Video view */
+    await playerProvider.addVideoView(widget.videoId.toString(),
+        widget.videoType.toString(), widget.otherId.toString());
+
     debugPrint("videoUrl :===> ${widget.videoUrl}");
     var videoId = YoutubePlayerController.convertUrlToId(widget.videoUrl ?? "");
     debugPrint("videoId :====> $videoId");

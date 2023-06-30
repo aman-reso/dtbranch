@@ -12,7 +12,6 @@ import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
@@ -645,6 +644,7 @@ class ChannelsState extends State<Channels> {
                 0,
                 0,
                 0,
+                0,
                 sectionBannerList?[index].link ?? "",
                 0,
                 "",
@@ -653,6 +653,7 @@ class ChannelsState extends State<Channels> {
             } else {
               return PlayerPod(
                 "Channel",
+                0,
                 0,
                 0,
                 0,
@@ -674,6 +675,7 @@ class ChannelsState extends State<Channels> {
                       0,
                       0,
                       0,
+                      0,
                       sectionBannerList?[index].link ?? "",
                       0,
                       "",
@@ -683,6 +685,7 @@ class ChannelsState extends State<Channels> {
                       .contains("vimeo")) {
                     return PlayerVimeo(
                       "Channel",
+                      0,
                       0,
                       0,
                       0,
@@ -697,6 +700,7 @@ class ChannelsState extends State<Channels> {
                       0,
                       0,
                       0,
+                      0,
                       sectionBannerList?[index].link ?? "",
                       0,
                       "",
@@ -708,10 +712,6 @@ class ChannelsState extends State<Channels> {
             );
           }
         } else {
-          if (kIsWeb) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(

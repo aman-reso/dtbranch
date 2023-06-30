@@ -209,5 +209,12 @@
     "expired": "Expired",
     "plans": "PLANS",
     "myplans": "My Plans",
-    "uploads": "Uploads"
+    "uploads": "Uploads",
+    "activetv": "Activate your TV",
+    "activetv_desc": "Activate your TV app by adding TV app code here.",
+    "tv_login_success": "Successfully login into your Tv.",
+    "verify_tvcode": "Verify your Tv code",
+    "tvcode_desc": "Enter your Tv Code and login into Tv app.",
+    "no_payment": "Methods Not Found.",
+    "no_payment_desc": "Payments methods not available."
 }

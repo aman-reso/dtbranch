@@ -10,7 +10,6 @@ import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -363,41 +362,21 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
           openPlayer(
               "Show", index, episodeProvider.episodeBySeasonModel.result);
         } else {
-          if (Constant.userID != null) {
-            if (kIsWeb || Constant.isTV) {
-              Utils.showSnackbar(
-                  context, "info", webPaymentNotAvailable, false);
-              return;
-            }
-            dynamic isSubscribed = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return const Subscription();
-                },
-              ),
-            );
-            if (isSubscribed != null && isSubscribed == true) {
-              await showDetailsProvider.getSectionDetails(
-                  widget.typeId,
-                  showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
-                  widget.videoId,
-                  0);
-              getAllEpisode();
-            }
-          } else {
-            if (kIsWeb || Constant.isTV) {
-              Utils.buildWebAlertDialog(context, "login", "");
-              return false;
-            }
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return const LoginSocial();
-                },
-              ),
-            );
+          dynamic isSubscribed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const Subscription();
+              },
+            ),
+          );
+          if (isSubscribed != null && isSubscribed == true) {
+            await showDetailsProvider.getSectionDetails(
+                widget.typeId,
+                showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
+                widget.videoId,
+                0);
+            getAllEpisode();
           }
         }
       } else if ((showDetailsProvider.sectionDetailModel.result?.isPremium ??
@@ -406,10 +385,6 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         if ((showDetailsProvider.sectionDetailModel.result?.isBuy ?? 0) == 1) {
           return true;
         } else {
-          if (kIsWeb || Constant.isTV) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -436,44 +411,24 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
           openPlayer(
               "Show", index, episodeProvider.episodeBySeasonModel.result);
         } else {
-          if (Constant.userID != null) {
-            if (kIsWeb || Constant.isTV) {
-              Utils.showSnackbar(
-                  context, "info", webPaymentNotAvailable, false);
-              return;
-            }
-            dynamic isRented = await Utils.paymentForRent(
-                context: context,
-                videoId: widget.videoId.toString(),
-                vTitle: showDetailsProvider.sectionDetailModel.result?.name
-                    .toString(),
-                vType: showDetailsProvider.sectionDetailModel.result?.videoType
-                    .toString(),
-                typeId: widget.typeId.toString(),
-                rentPrice: showDetailsProvider
-                    .sectionDetailModel.result?.rentPrice
-                    .toString());
-            if (isRented != null && isRented == true) {
-              await showDetailsProvider.getSectionDetails(
-                  widget.typeId,
-                  showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
-                  widget.videoId,
-                  0);
-              getAllEpisode();
-            }
-          } else {
-            if (kIsWeb || Constant.isTV) {
-              Utils.buildWebAlertDialog(context, "login", "");
-              return false;
-            }
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return const LoginSocial();
-                },
-              ),
-            );
+          dynamic isRented = await Utils.paymentForRent(
+              context: context,
+              videoId: widget.videoId.toString(),
+              vTitle: showDetailsProvider.sectionDetailModel.result?.name
+                  .toString(),
+              vType: showDetailsProvider.sectionDetailModel.result?.videoType
+                  .toString(),
+              typeId: widget.typeId.toString(),
+              rentPrice: showDetailsProvider
+                  .sectionDetailModel.result?.rentPrice
+                  .toString());
+          if (isRented != null && isRented == true) {
+            await showDetailsProvider.getSectionDetails(
+                widget.typeId,
+                showDetailsProvider.sectionDetailModel.result?.videoType ?? 0,
+                widget.videoId,
+                0);
+            getAllEpisode();
           }
         }
       } else {
@@ -500,6 +455,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       String playType, int epiPos, List<episode.Result>? episodeList) async {
     if ((episodeList?.length ?? 0) > 0) {
       int? epiID = (episodeList?[epiPos].id ?? 0);
+      int? showID = (episodeList?[epiPos].showId ?? 0);
       int? vType =
           (showDetailsProvider.sectionDetailModel.result?.videoType ?? 0);
       int? vTypeID = widget.typeId;
@@ -508,6 +464,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       String? videoThumb = (episodeList?[epiPos].landscape ?? "");
       String? epiUrl = (episodeList?[epiPos].video320 ?? "");
       log("epiID ========> $epiID");
+      log("showID =======> $showID");
       log("vType ========> $vType");
       log("vTypeID ======> $vTypeID");
       log("stopTime =====> $stopTime");
@@ -543,6 +500,7 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
         videoId: epiID,
         videoType: vType,
         typeId: vTypeID,
+        otherId: showID,
         videoUrl: epiUrl,
         trailerUrl: "",
         uploadType: vUploadType,

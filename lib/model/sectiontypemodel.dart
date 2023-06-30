@@ -11,20 +11,17 @@ String sectionTypeModelToJson(SectionTypeModel data) =>
 
 class SectionTypeModel {
   SectionTypeModel({
-    this.code,
     this.status,
     this.message,
     this.result,
   });
 
-  int? code;
   int? status;
   String? message;
   List<Result>? result;
 
   factory SectionTypeModel.fromJson(Map<String, dynamic> json) =>
       SectionTypeModel(
-        code: json["code"],
         status: json["status"],
         message: json["message"],
         result:
@@ -32,7 +29,6 @@ class SectionTypeModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "code": code,
         "status": status,
         "message": message,
         "result": result != null

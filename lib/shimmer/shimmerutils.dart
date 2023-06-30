@@ -1988,7 +1988,6 @@ class ShimmerUtils {
   static Widget buildSubscribeShimmer(context) {
     return Column(
       children: [
-        if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
         const SizedBox(height: 12),
         Container(
           width: MediaQuery.of(context).size.width,
@@ -2017,119 +2016,640 @@ class ShimmerUtils {
         ),
         const SizedBox(height: 12),
         /* Remaining Data */
-        Flexible(
-          child: PageView.builder(
-            itemCount: 3,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.all(10),
-                child: Wrap(
-                  children: [
-                    Card(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      elevation: 5,
-                      color: black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Card(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            elevation: 5,
+            color: black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.only(left: 18, right: 18),
+                  constraints: const BoxConstraints(minHeight: 55),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      ShimmerWidget.roundrectborder(
+                        height: 18,
+                        width: 120,
+                        shimmerBgColor: shimmerItemColor,
+                        shapeBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
                       ),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            padding: const EdgeInsets.only(left: 18, right: 18),
-                            constraints: const BoxConstraints(minHeight: 55),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                ShimmerWidget.roundrectborder(
-                                  height: 18,
-                                  width: 120,
-                                  shimmerBgColor: shimmerItemColor,
-                                  shapeBorder: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(5))),
-                                ),
-                                ShimmerWidget.roundrectborder(
-                                  height: 16,
-                                  width: 80,
-                                  shimmerBgColor: shimmerItemColor,
-                                  shapeBorder: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(5))),
-                                ),
-                              ],
+                      ShimmerWidget.roundrectborder(
+                        height: 16,
+                        width: 80,
+                        shimmerBgColor: shimmerItemColor,
+                        shapeBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 0.5,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  color: shimmerItemColor,
+                ),
+                AlignedGridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  itemCount: 7,
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (BuildContext context, int position) {
+                    return Container(
+                      constraints: const BoxConstraints(minHeight: 30),
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        children: const [
+                          Expanded(
+                            child: ShimmerWidget.roundrectborder(
+                              height: 18,
+                              width: 100,
+                              shimmerBgColor: shimmerItemColor,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
                             ),
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 0.5,
-                            margin: const EdgeInsets.only(bottom: 12),
-                            color: shimmerItemColor,
+                          SizedBox(width: 20),
+                          ShimmerWidget.circular(
+                            height: 30,
+                            width: 30,
+                            shimmerBgColor: shimmerItemColor,
                           ),
-                          AlignedGridView.count(
-                            shrinkWrap: true,
-                            crossAxisCount: 1,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                            itemCount: 7,
-                            padding: const EdgeInsets.only(left: 20, right: 20),
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (BuildContext context, int position) {
-                              return Container(
-                                constraints:
-                                    const BoxConstraints(minHeight: 30),
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: const [
-                                    Expanded(
-                                      child: ShimmerWidget.roundrectborder(
-                                        height: 18,
-                                        width: 100,
-                                        shimmerBgColor: shimmerItemColor,
-                                        shapeBorder: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5))),
-                                      ),
-                                    ),
-                                    SizedBox(width: 20),
-                                    ShimmerWidget.circular(
-                                      height: 30,
-                                      width: 30,
-                                      shimmerBgColor: shimmerItemColor,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
 
-                          /* Choose Plan */
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                /* Choose Plan */
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: ShimmerWidget.roundrectborder(
+                      height: 52,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      shimmerBgColor: shimmerItemColor,
+                      shapeBorder: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  static Widget buildSubscribeWebShimmer(context) {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          alignment: Alignment.center,
+          child: ShimmerWidget.roundrectborder(
+            height: 20,
+            width: MediaQuery.of(context).size.width,
+            shimmerBgColor: black,
+            shapeBorder: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+          ),
+        ),
+        const SizedBox(height: 2),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          alignment: Alignment.center,
+          child: ShimmerWidget.roundrectborder(
+            height: 20,
+            width: MediaQuery.of(context).size.width,
+            shimmerBgColor: black,
+            shapeBorder: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+          ),
+        ),
+        const SizedBox(height: 12),
+        /* Remaining Data */
+        Container(
+          height: 350,
+          padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  elevation: 5,
+                  color: black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(left: 18, right: 18),
+                        constraints: const BoxConstraints(minHeight: 55),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            ShimmerWidget.roundrectborder(
+                              height: 18,
+                              width: 120,
+                              shimmerBgColor: shimmerItemColor,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                            ),
+                            ShimmerWidget.roundrectborder(
+                              height: 16,
+                              width: 80,
+                              shimmerBgColor: shimmerItemColor,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 0.5,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        color: shimmerItemColor,
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
                               child: ShimmerWidget.roundrectborder(
-                                height: 52,
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                height: 18,
+                                width: 100,
                                 shimmerBgColor: shimmerItemColor,
-                                shapeBorder: const RoundedRectangleBorder(
+                                shapeBorder: RoundedRectangleBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(5))),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      /* Choose Plan */
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: ShimmerWidget.roundrectborder(
+                            height: 52,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            shimmerBgColor: shimmerItemColor,
+                            shapeBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
-              );
-            },
+              ),
+              Expanded(
+                child: Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  elevation: 5,
+                  color: black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(left: 18, right: 18),
+                        constraints: const BoxConstraints(minHeight: 55),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            ShimmerWidget.roundrectborder(
+                              height: 18,
+                              width: 120,
+                              shimmerBgColor: shimmerItemColor,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                            ),
+                            ShimmerWidget.roundrectborder(
+                              height: 16,
+                              width: 80,
+                              shimmerBgColor: shimmerItemColor,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 0.5,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        color: shimmerItemColor,
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      /* Choose Plan */
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: ShimmerWidget.roundrectborder(
+                            height: 52,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            shimmerBgColor: shimmerItemColor,
+                            shapeBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  elevation: 5,
+                  color: black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(left: 18, right: 18),
+                        constraints: const BoxConstraints(minHeight: 55),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            ShimmerWidget.roundrectborder(
+                              height: 18,
+                              width: 120,
+                              shimmerBgColor: shimmerItemColor,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                            ),
+                            ShimmerWidget.roundrectborder(
+                              height: 16,
+                              width: 80,
+                              shimmerBgColor: shimmerItemColor,
+                              shapeBorder: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5))),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 0.5,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        color: shimmerItemColor,
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: const [
+                            Expanded(
+                              child: ShimmerWidget.roundrectborder(
+                                height: 18,
+                                width: 100,
+                                shimmerBgColor: shimmerItemColor,
+                                shapeBorder: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5))),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            ShimmerWidget.circular(
+                              height: 30,
+                              width: 30,
+                              shimmerBgColor: shimmerItemColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      /* Choose Plan */
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: ShimmerWidget.roundrectborder(
+                            height: 52,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            shimmerBgColor: shimmerItemColor,
+                            shapeBorder: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 20),

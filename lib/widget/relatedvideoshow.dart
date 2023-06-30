@@ -4,10 +4,14 @@ import 'package:dtlive/model/sectiondetailmodel.dart';
 import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/moviedetails.dart';
 import 'package:dtlive/pages/showdetails.dart';
+import 'package:dtlive/tvpages/tvmoviedetails.dart';
+import 'package:dtlive/tvpages/tvshowdetails.dart';
 import 'package:dtlive/utils/color.dart';
+import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:dtlive/widget/mytext.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RelatedVideoShow extends StatefulWidget {
@@ -84,36 +88,108 @@ class _RelatedVideoShowState extends State<RelatedVideoShow> {
         return InkWell(
           borderRadius: BorderRadius.circular(4),
           focusColor: white,
-          onTap: () {
+          onTap: () async {
             log("Clicked on index ==> $index");
-            if ((relatedDataList?[index].videoType ?? 0) == 1) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return MovieDetails(
-                      relatedDataList?[index].id ?? 0,
-                      0,
-                      relatedDataList?[index].videoType ?? 0,
-                      relatedDataList?[index].typeId ?? 0,
-                    );
-                  },
-                ),
-              );
-            } else if ((relatedDataList?[index].videoType ?? 0) == 2) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return ShowDetails(
-                      relatedDataList?[index].id ?? 0,
-                      0,
-                      relatedDataList?[index].videoType ?? 0,
-                      relatedDataList?[index].typeId ?? 0,
-                    );
-                  },
-                ),
-              );
+            if ((relatedDataList?[index].videoType ?? 0) == 5) {
+              if ((relatedDataList?[index].upcomingType ?? 0) == 1) {
+                if (!(context.mounted)) return;
+                await Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      if (kIsWeb || Constant.isTV) {
+                        return TVMovieDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      } else {
+                        return MovieDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      }
+                    },
+                  ),
+                );
+              } else if ((relatedDataList?[index].upcomingType ?? 0) == 2) {
+                if (!(context.mounted)) return;
+                await Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      if (kIsWeb || Constant.isTV) {
+                        return TVShowDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      } else {
+                        return ShowDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      }
+                    },
+                  ),
+                );
+              }
+            } else {
+              if ((relatedDataList?[index].videoType ?? 0) == 1) {
+                if (!(context.mounted)) return;
+                await Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      if (kIsWeb || Constant.isTV) {
+                        return TVMovieDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      } else {
+                        return MovieDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      }
+                    },
+                  ),
+                );
+              } else if ((relatedDataList?[index].videoType ?? 0) == 2) {
+                if (!(context.mounted)) return;
+                await Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      if (kIsWeb || Constant.isTV) {
+                        return TVShowDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      } else {
+                        return ShowDetails(
+                          relatedDataList?[index].id ?? 0,
+                          relatedDataList?[index].upcomingType ?? 0,
+                          relatedDataList?[index].videoType ?? 0,
+                          relatedDataList?[index].typeId ?? 0,
+                        );
+                      }
+                    },
+                  ),
+                );
+              }
             }
           },
           child: Container(

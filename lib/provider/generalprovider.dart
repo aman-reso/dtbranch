@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 class GeneralProvider extends ChangeNotifier {
   GeneralSettingModel generalSettingModel = GeneralSettingModel();
   PagesModel pagesModel = PagesModel();
-  LoginRegisterModel loginGmailModel = LoginRegisterModel();
+  LoginRegisterModel loginSocialModel = LoginRegisterModel();
   LoginRegisterModel loginOTPModel = LoginRegisterModel();
+  LoginRegisterModel loginTVModel = LoginRegisterModel();
 
   bool loading = false;
 
@@ -63,10 +64,10 @@ class GeneralProvider extends ChangeNotifier {
     debugPrint("loginWithSocial profileImg :==> ${profileImg?.path}");
 
     loading = true;
-    loginGmailModel =
+    loginSocialModel =
         await ApiService().loginWithSocial(email, name, type, profileImg);
-    debugPrint("login status :==> ${loginGmailModel.status}");
-    debugPrint("login message :==> ${loginGmailModel.message}");
+    debugPrint("loginWithSocial status :==> ${loginSocialModel.status}");
+    debugPrint("loginWithSocial message :==> ${loginSocialModel.message}");
     loading = false;
     notifyListeners();
   }
@@ -78,6 +79,17 @@ class GeneralProvider extends ChangeNotifier {
     loginOTPModel = await ApiService().loginWithOTP(mobile);
     debugPrint("login status :==> ${loginOTPModel.status}");
     debugPrint("login message :==> ${loginOTPModel.message}");
+    loading = false;
+    notifyListeners();
+  }
+
+  Future<void> loginWithTV(strOTP) async {
+    debugPrint("loginWithTV strOTP :==> $strOTP");
+
+    loading = true;
+    loginTVModel = await ApiService().tvLogin(strOTP);
+    debugPrint("loginWithTV status :===> ${loginTVModel.status}");
+    debugPrint("loginWithTV message :==> ${loginTVModel.message}");
     loading = false;
     notifyListeners();
   }

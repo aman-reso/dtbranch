@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:dtlive/pages/profileavatar.dart';
 import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/widget/myusernetworkimg.dart';
-import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dtlive/provider/profileprovider.dart';
 import 'package:dtlive/utils/color.dart';
@@ -63,12 +62,12 @@ class ProfileEditState extends State<ProfileEdit> {
     if (!profileProvider.loading) {
       if (profileProvider.profileModel.status == 200) {
         if (profileProvider.profileModel.result != null) {
-          log("User Name ==> ${(profileProvider.profileModel.result?.name ?? "")}");
-          log("User ID ==> ${(profileProvider.profileModel.result?.id ?? 0)}");
+          log("User Name ==> ${(profileProvider.profileModel.result?[0].name ?? "")}");
+          log("User ID ==> ${(profileProvider.profileModel.result?[0].id ?? 0)}");
           if (nameController.text.toString() == "") {
-            if ((profileProvider.profileModel.result?.name ?? "") != "") {
+            if ((profileProvider.profileModel.result?[0].name ?? "") != "") {
               nameController.text =
-                  profileProvider.profileModel.result?.name ?? "";
+                  profileProvider.profileModel.result?[0].name ?? "";
             }
           }
         }
@@ -86,7 +85,6 @@ class ProfileEditState extends State<ProfileEdit> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (kIsWeb) SizedBox(height: Dimens.homeTabHeight),
               /* Profile Image */
               Consumer<ProfileProvider>(
                 builder: (context, value, child) {
@@ -104,7 +102,7 @@ class ProfileEditState extends State<ProfileEdit> {
                             imageUrl: profileProvider.profileModel.status == 200
                                 ? profileProvider.profileModel.result != null
                                     ? (profileProvider
-                                            .profileModel.result?.image ??
+                                            .profileModel.result?[0].image ??
                                         "")
                                     : ""
                                 : "",

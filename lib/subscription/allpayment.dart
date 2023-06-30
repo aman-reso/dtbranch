@@ -16,6 +16,7 @@ import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/widget/nodata.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
@@ -29,7 +30,7 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:provider/provider.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:razorpay_web/razorpay_web.dart';
 
 final bool _kAutoConsume = Platform.isIOS || true;
 String _kConsumableId = 'android.test.purchased';
@@ -84,28 +85,30 @@ class AllPaymentState extends State<AllPayment> {
   bool _loading = true;
   String? _queryProductError;
 
-  /* Paypal */
-
   /* Stripe */
   Map<String, dynamic>? paymentIntent;
 
   @override
   void initState() {
-    _kProductIds = <String>[androidPackageID];
     prDialog = ProgressDialog(context);
     _getData();
-    final Stream<List<PurchaseDetails>> purchaseUpdated =
-        _inAppPurchase.purchaseStream;
-    _subscription =
-        purchaseUpdated.listen((List<PurchaseDetails> purchaseDetailsList) {
-      _listenToPurchaseUpdated(purchaseDetailsList);
-    }, onDone: () {
-      _subscription.cancel();
-    }, onError: (Object error) {
-      // handle error here.
-      log("onError ============> ${error.toString()}");
-    });
-    initStoreInfo();
+
+    /* In-App Purchase */
+    if (!kIsWeb) {
+      _kProductIds = <String>[androidPackageID];
+      final Stream<List<PurchaseDetails>> purchaseUpdated =
+          _inAppPurchase.purchaseStream;
+      _subscription =
+          purchaseUpdated.listen((List<PurchaseDetails> purchaseDetailsList) {
+        _listenToPurchaseUpdated(purchaseDetailsList);
+      }, onDone: () {
+        _subscription.cancel();
+      }, onError: (Object error) {
+        // handle error here.
+        log("onError ============> ${error.toString()}");
+      });
+      initStoreInfo();
+    }
     super.initState();
   }
 
@@ -136,13 +139,15 @@ class AllPaymentState extends State<AllPayment> {
   @override
   void dispose() {
     paymentProvider.clearProvider();
-    if (Platform.isIOS) {
-      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
-          _inAppPurchase
-              .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
-      iosPlatformAddition.setDelegate(null);
+    if (!kIsWeb) {
+      if (Platform.isIOS) {
+        final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+            _inAppPurchase
+                .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        iosPlatformAddition.setDelegate(null);
+      }
+      _subscription.cancel();
     }
-    _subscription.cancel();
     couponController.dispose();
     super.dispose();
   }
@@ -277,105 +282,222 @@ class AllPaymentState extends State<AllPayment> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: onBackPressed,
-      child: Scaffold(
-        backgroundColor: appBgColor,
-        appBar: Utils.myAppBarWithBack(context, "payment_details", true),
-        body: SafeArea(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                /* Coupon Code Box & Total Amount */
-                Container(
-                  margin: const EdgeInsets.all(8.0),
-                  child: Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    elevation: 5,
-                    color: lightBlack,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      constraints: const BoxConstraints(minHeight: 50),
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        children: [
-                          _buildCouponBox(),
-                          const SizedBox(height: 20),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            constraints: const BoxConstraints(minHeight: 50),
-                            decoration: Utils.setBackground(primaryColor, 0),
-                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                            alignment: Alignment.centerLeft,
-                            child: Consumer<PaymentProvider>(
-                              builder: (context, paymentProvider, child) {
-                                return RichText(
-                                  textAlign: TextAlign.start,
-                                  text: TextSpan(
-                                    text: payableAmountIs,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: const TextStyle(
-                                        color: lightBlack,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text:
-                                            "${Constant.currencySymbol}${paymentProvider.finalAmount ?? ""}",
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: const TextStyle(
-                                            color: black,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: 0.2,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+      child: _buildPage(),
+    );
+  }
 
-                /* PGs */
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: paymentProvider.loading
-                        ? Container(
-                            height: 230,
-                            padding: const EdgeInsets.all(20),
-                            child: Utils.pageLoader(),
-                          )
-                        : paymentProvider.paymentOptionModel.status == 200
-                            ? paymentProvider.paymentOptionModel.result != null
-                                ? _buildPaymentPage()
-                                : const NoData(title: '', subTitle: '')
-                            : const NoData(title: '', subTitle: ''),
-                  ),
-                ),
-              ],
-            ),
-          ),
+  Widget _buildPage() {
+    return Scaffold(
+      backgroundColor: appBgColor,
+      appBar: (kIsWeb || Constant.isTV)
+          ? null
+          : Utils.myAppBarWithBack(context, "payment_details", true),
+      body: SafeArea(
+        child: Center(
+          child: _buildMobilePage(),
         ),
       ),
     );
   }
+
+  Widget _buildMobilePage() {
+    return Container(
+      width:
+          ((kIsWeb || Constant.isTV) && MediaQuery.of(context).size.width > 720)
+              ? MediaQuery.of(context).size.width * 0.5
+              : MediaQuery.of(context).size.width,
+      margin: (kIsWeb || Constant.isTV)
+          ? const EdgeInsets.fromLTRB(50, 0, 50, 50)
+          : const EdgeInsets.all(0),
+      alignment: Alignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: (kIsWeb || Constant.isTV) ? 40 : 0),
+          /* Coupon Code Box & Total Amount */
+          Container(
+            margin: const EdgeInsets.all(8.0),
+            child: Card(
+              semanticContainer: true,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              elevation: 5,
+              color: lightBlack,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                constraints: const BoxConstraints(minHeight: 50),
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  children: [
+                    _buildCouponBox(),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      constraints: const BoxConstraints(minHeight: 50),
+                      decoration: Utils.setBackground(primaryColor, 0),
+                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Consumer<PaymentProvider>(
+                        builder: (context, paymentProvider, child) {
+                          return RichText(
+                            textAlign: TextAlign.start,
+                            text: TextSpan(
+                              text: payableAmountIs,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: lightBlack,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text:
+                                      "${Constant.currencySymbol}${paymentProvider.finalAmount ?? ""}",
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      color: black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          /* PGs */
+          Expanded(
+            child: SingleChildScrollView(
+              child: paymentProvider.loading
+                  ? Container(
+                      height: 230,
+                      padding: const EdgeInsets.all(20),
+                      child: Utils.pageLoader(),
+                    )
+                  : paymentProvider.paymentOptionModel.status == 200
+                      ? paymentProvider.paymentOptionModel.result != null
+                          ? ((kIsWeb) ? _buildWebPayments() : _buildPayments())
+                          : const NoData(
+                              title: 'no_payment', subTitle: 'no_payment_desc')
+                      : const NoData(
+                          title: 'no_payment', subTitle: 'no_payment_desc'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /* NOT USED */
+  Widget buildWebTVPage() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        /* Coupon Code Box & Total Amount */
+        Container(
+          margin: const EdgeInsets.all(8.0),
+          width: MediaQuery.of(context).size.height * 0.7,
+          constraints: const BoxConstraints(minHeight: 0),
+          child: Card(
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            elevation: 5,
+            color: lightBlack,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              constraints: const BoxConstraints(minHeight: 50),
+              alignment: Alignment.centerLeft,
+              child: Column(
+                children: [
+                  _buildCouponBox(),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    constraints: const BoxConstraints(minHeight: 50),
+                    decoration: Utils.setBackground(primaryColor, 0),
+                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    alignment: Alignment.centerLeft,
+                    child: Consumer<PaymentProvider>(
+                      builder: (context, paymentProvider, child) {
+                        return RichText(
+                          textAlign: TextAlign.start,
+                          text: TextSpan(
+                            text: payableAmountIs,
+                            style: GoogleFonts.montserrat(
+                              textStyle: const TextStyle(
+                                color: lightBlack,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text:
+                                    "${Constant.currencySymbol}${paymentProvider.finalAmount ?? ""}",
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    color: black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        /* PGs */
+        Expanded(
+          child: SingleChildScrollView(
+            child: paymentProvider.loading
+                ? Container(
+                    height: 230,
+                    padding: const EdgeInsets.all(20),
+                    child: Utils.pageLoader(),
+                  )
+                : paymentProvider.paymentOptionModel.status == 200
+                    ? paymentProvider.paymentOptionModel.result != null
+                        ? ((kIsWeb) ? _buildWebPayments() : _buildPayments())
+                        : const NoData(
+                            title: 'no_payment', subTitle: 'no_payment_desc')
+                    : const NoData(
+                        title: 'no_payment', subTitle: 'no_payment_desc'),
+          ),
+        ),
+      ],
+    );
+  }
+  /* NOT USED */
 
   Widget _buildCouponBox() {
     return Container(
@@ -463,6 +585,7 @@ class AllPaymentState extends State<AllPayment> {
                 text: "apply",
                 multilanguage: true,
                 fontsizeNormal: 13,
+                fontsizeWeb: 14,
                 maxline: 1,
                 overflow: TextOverflow.ellipsis,
                 fontweight: FontWeight.w600,
@@ -476,7 +599,7 @@ class AllPaymentState extends State<AllPayment> {
     );
   }
 
-  Widget _buildPaymentPage() {
+  Widget _buildPayments() {
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
       child: Column(
@@ -708,6 +831,83 @@ class AllPaymentState extends State<AllPayment> {
     );
   }
 
+  Widget _buildWebPayments() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          MyText(
+            color: whiteLight,
+            text: "payment_methods",
+            fontsizeNormal: 15,
+            fontsizeWeb: 17,
+            maxline: 1,
+            multilanguage: true,
+            overflow: TextOverflow.ellipsis,
+            fontweight: FontWeight.w600,
+            textalign: TextAlign.center,
+            fontstyle: FontStyle.normal,
+          ),
+          const SizedBox(height: 5),
+          MyText(
+            color: otherColor,
+            text: "choose_a_payment_methods_to_pay",
+            multilanguage: true,
+            fontsizeNormal: 13,
+            fontsizeWeb: 15,
+            maxline: 2,
+            overflow: TextOverflow.ellipsis,
+            fontweight: FontWeight.w500,
+            textalign: TextAlign.center,
+            fontstyle: FontStyle.normal,
+          ),
+          const SizedBox(height: 15),
+          MyText(
+            color: complimentryColor,
+            text: "pay_with",
+            multilanguage: true,
+            fontsizeNormal: 16,
+            fontsizeWeb: 16,
+            maxline: 1,
+            overflow: TextOverflow.ellipsis,
+            fontweight: FontWeight.w700,
+            textalign: TextAlign.center,
+            fontstyle: FontStyle.normal,
+          ),
+          const SizedBox(height: 20),
+
+          /* Razorpay */
+          paymentProvider.paymentOptionModel.result?.razorpay != null
+              ? paymentProvider
+                          .paymentOptionModel.result?.razorpay?.visibility ==
+                      "1"
+                  ? Card(
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      elevation: 5,
+                      color: lightBlack,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () async {
+                          await paymentProvider.setCurrentPayment("razorpay");
+                          _initializeRazorpay();
+                        },
+                        child:
+                            _buildPGButton("razorpay.png", "Razorpay", 35, 130),
+                      ),
+                    )
+                  : const SizedBox.shrink()
+              : const NoData(title: 'no_payment', subTitle: 'no_payment_desc'),
+          const SizedBox(height: 5),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPGButton(
       String imageName, String pgName, double imgHeight, double imgWidth) {
     return Container(
@@ -730,6 +930,7 @@ class AllPaymentState extends State<AllPayment> {
               text: pgName,
               multilanguage: false,
               fontsizeNormal: 14,
+              fontsizeWeb: 15,
               maxline: 2,
               overflow: TextOverflow.ellipsis,
               fontweight: FontWeight.w600,
@@ -922,12 +1123,19 @@ class AllPaymentState extends State<AllPayment> {
         'retry': {'enabled': true, 'max_count': 1},
         'send_sms_hash': true,
         'prefill': {'contact': userMobileNo, 'email': userEmail},
-        'external': {'wallets': []}
+        'external': {
+          'wallets': ['paytm']
+        }
       };
       razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentErrorResponse);
       razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccessResponse);
       razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWalletSelected);
-      razorpay.open(options);
+
+      try {
+        razorpay.open(options);
+      } catch (e) {
+        debugPrint('Razorpay Error :=========> $e');
+      }
     } else {
       Utils.showSnackbar(context, "", "payment_not_processed", true);
     }
@@ -971,57 +1179,102 @@ class AllPaymentState extends State<AllPayment> {
   /* ********* Paytm START ********* */
   Future<void> _paytmInit() async {
     if (paymentProvider.paymentOptionModel.result?.payTm != null) {
+      bool payTmIsStaging;
+      String payTmMerchantID,
+          payTmOrderId,
+          payTmCustmoreID,
+          payTmChannelID,
+          payTmTxnAmount,
+          payTmWebsite,
+          payTmCallbackURL,
+          payTmIndustryTypeID;
+
+      payTmOrderId = paymentId ?? "";
+      payTmCustmoreID = "${Constant.userID}_$paymentId";
+      payTmChannelID = "WAP";
+      payTmTxnAmount = "${(paymentProvider.finalAmount ?? "")}.00";
+      payTmIndustryTypeID = "Retail";
+
+      if (paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1") {
+        payTmMerchantID =
+            paymentProvider.paymentOptionModel.result?.payTm?.liveKey1 ?? "";
+        payTmIsStaging = false;
+        payTmWebsite = "DEFAULT";
+        payTmCallbackURL =
+            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=$payTmOrderId";
+      } else {
+        payTmMerchantID =
+            paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "";
+        payTmIsStaging = true;
+        payTmWebsite = "WEBSTAGING";
+        payTmCallbackURL =
+            "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=$payTmOrderId";
+      }
       var sendMap = <String, dynamic>{
-        "mid": paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
-            ? paymentProvider.paymentOptionModel.result?.payTm?.liveKey1 ?? ""
-            : paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ?? "",
-        "orderId": paymentId,
-        "amount": paymentProvider.finalAmount ?? "",
-        "txnToken": "",
-        "callbackUrl":
-            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=$paymentId",
-        "isStaging":
-            paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
-                ? false
-                : true,
-        "restrictAppInvoke": false,
-        "enableAssist": true
+        "mid": payTmMerchantID,
+        "orderId": payTmOrderId,
+        "amount": payTmTxnAmount,
+        "txnToken": paymentProvider.payTmModel.result?.paytmChecksum ?? "",
+        "callbackUrl": payTmCallbackURL,
+        "isStaging": payTmIsStaging,
+        "restrictAppInvoke": true,
+        "enableAssist": true,
       };
       debugPrint("sendMap ===> $sendMap");
-      try {
-        var response = AllInOneSdk.startTransaction(
-            paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
-                ? paymentProvider.paymentOptionModel.result?.payTm?.liveKey1 ??
-                    ""
-                : paymentProvider.paymentOptionModel.result?.payTm?.testKey1 ??
-                    "",
-            paymentId ?? "",
-            paymentProvider.finalAmount ?? "",
-            "",
-            "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=$paymentId",
-            paymentProvider.paymentOptionModel.result?.payTm?.isLive == "1"
-                ? false
-                : true,
-            false,
-            true);
-        response.then((value) {
-          debugPrint("value ====> $value");
-          setState(() {
-            paytmResult = value.toString();
-          });
-        }).catchError((onError) {
-          if (onError is PlatformException) {
-            setState(() {
-              paytmResult = "${onError.message} \n  ${onError.details}";
-            });
+
+      /* Generate CheckSum from Backend */
+      await paymentProvider.getPaytmToken(
+        payTmMerchantID,
+        payTmOrderId,
+        payTmCustmoreID,
+        payTmChannelID,
+        payTmTxnAmount,
+        payTmWebsite,
+        payTmCallbackURL,
+        payTmIndustryTypeID,
+      );
+
+      if (!paymentProvider.loading) {
+        if (paymentProvider.payTmModel.result != null) {
+          if (paymentProvider.payTmModel.result?.paytmChecksum != null) {
+            try {
+              var response = AllInOneSdk.startTransaction(
+                payTmMerchantID,
+                payTmOrderId,
+                payTmTxnAmount,
+                paymentProvider.payTmModel.result?.paytmChecksum ?? "",
+                payTmCallbackURL,
+                payTmIsStaging,
+                true,
+                true,
+              );
+              response.then((value) {
+                debugPrint("value ====> $value");
+                setState(() {
+                  paytmResult = value.toString();
+                });
+              }).catchError((onError) {
+                if (onError is PlatformException) {
+                  setState(() {
+                    paytmResult = "${onError.message} \n  ${onError.details}";
+                  });
+                } else {
+                  setState(() {
+                    paytmResult = onError.toString();
+                  });
+                }
+              });
+            } catch (err) {
+              paytmResult = err.toString();
+            }
           } else {
-            setState(() {
-              paytmResult = onError.toString();
-            });
+            if (!mounted) return;
+            Utils.showSnackbar(context, "", "payment_not_processed", true);
           }
-        });
-      } catch (err) {
-        paytmResult = err.toString();
+        } else {
+          if (!mounted) return;
+          Utils.showSnackbar(context, "", "payment_not_processed", true);
+        }
       }
     } else {
       Utils.showSnackbar(context, "", "payment_not_processed", true);

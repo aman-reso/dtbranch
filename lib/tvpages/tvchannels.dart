@@ -13,7 +13,6 @@ import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 import 'package:dtlive/widget/nodata.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
@@ -644,29 +643,39 @@ class TVChannelsState extends State<TVChannels> {
       if ((sectionBannerList?[index].link ?? "").isNotEmpty) {
         if ((sectionBannerList?[index].isBuy ?? 0) == 1) {
           if (kIsWeb) {
-            if ((sectionBannerList?[index].link ?? "").contains("youtube")) {
-              return PlayerYoutube(
-                "Channel",
-                0,
-                0,
-                0,
-                sectionBannerList?[index].link ?? "",
-                0,
-                "",
-                sectionBannerList?[index].image ?? "",
-              );
-            } else {
-              return PlayerPod(
-                "Channel",
-                0,
-                0,
-                0,
-                sectionBannerList?[index].link ?? "",
-                0,
-                "",
-                sectionBannerList?[index].image ?? "",
-              );
-            }
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  if ((sectionBannerList?[index].link ?? "")
+                      .contains("youtube")) {
+                    return PlayerYoutube(
+                      "Channel",
+                      0,
+                      0,
+                      0,
+                      0,
+                      sectionBannerList?[index].link ?? "",
+                      0,
+                      "",
+                      sectionBannerList?[index].image ?? "",
+                    );
+                  } else {
+                    return PlayerPod(
+                      "Channel",
+                      0,
+                      0,
+                      0,
+                      0,
+                      sectionBannerList?[index].link ?? "",
+                      0,
+                      "",
+                      sectionBannerList?[index].image ?? "",
+                    );
+                  }
+                },
+              ),
+            );
           } else {
             await Navigator.push(
               context,
@@ -676,6 +685,7 @@ class TVChannelsState extends State<TVChannels> {
                       .contains("youtube")) {
                     return PlayerYoutube(
                       "Channel",
+                      0,
                       0,
                       0,
                       0,
@@ -691,6 +701,7 @@ class TVChannelsState extends State<TVChannels> {
                       0,
                       0,
                       0,
+                      0,
                       sectionBannerList?[index].link ?? "",
                       0,
                       "",
@@ -699,6 +710,7 @@ class TVChannelsState extends State<TVChannels> {
                   } else {
                     return PlayerPod(
                       "Channel",
+                      0,
                       0,
                       0,
                       0,
@@ -713,10 +725,6 @@ class TVChannelsState extends State<TVChannels> {
             );
           }
         } else {
-          if (kIsWeb) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(

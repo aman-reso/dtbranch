@@ -234,7 +234,7 @@ class _CommonAppBarState extends State<CommonAppBar> {
                           },
                           dropdownStyleData: DropdownStyleData(
                             width: 180,
-                            isFullScreen: true,
+                            useSafeArea: true,
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             decoration: Utils.setBackground(lightBlack, 5),
                             elevation: 8,

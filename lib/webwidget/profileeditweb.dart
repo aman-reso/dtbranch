@@ -44,9 +44,9 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
       if (profileProvider.profileModel.status == 200) {
         if (profileProvider.profileModel.result != null) {
           if (nameController.text.toString() == "") {
-            if ((profileProvider.profileModel.result?.name ?? "") != "") {
+            if ((profileProvider.profileModel.result?[0].name ?? "") != "") {
               nameController.text =
-                  profileProvider.profileModel.result?.name ?? "";
+                  profileProvider.profileModel.result?[0].name ?? "";
             }
           }
         }
@@ -110,7 +110,7 @@ class _ProfileEditWebState extends State<ProfileEditWeb> {
                           imageUrl: profileProvider.profileModel.status == 200
                               ? profileProvider.profileModel.result != null
                                   ? (profileProvider
-                                          .profileModel.result?.image ??
+                                          .profileModel.result?[0].image ??
                                       "")
                                   : ""
                               : "",

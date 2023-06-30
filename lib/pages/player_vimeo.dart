@@ -11,10 +11,18 @@ import 'package:provider/provider.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 class PlayerVimeo extends StatefulWidget {
-  final int? videoId, videoType, typeId, stopTime;
+  final int? videoId, videoType, typeId, otherId, stopTime;
   final String? playType, videoUrl, vUploadType, videoThumb;
-  const PlayerVimeo(this.playType, this.videoId, this.videoType, this.typeId,
-      this.videoUrl, this.stopTime, this.vUploadType, this.videoThumb,
+  const PlayerVimeo(
+      this.playType,
+      this.videoId,
+      this.videoType,
+      this.typeId,
+      this.otherId,
+      this.videoUrl,
+      this.stopTime,
+      this.vUploadType,
+      this.videoThumb,
       {Key? key})
       : super(key: key);
 
@@ -36,6 +44,14 @@ class PlayerVimeoState extends State<PlayerVimeo> {
       vUrl = "https://vimeo.com/$vUrl";
     }
     log("vUrl===> $vUrl");
+
+    _addVideoView();
+  }
+
+  _addVideoView() async {
+    /* Add Video view */
+    await playerProvider.addVideoView(widget.videoId.toString(),
+        widget.videoType.toString(), widget.otherId.toString());
   }
 
   @override

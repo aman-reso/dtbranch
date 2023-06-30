@@ -8,7 +8,6 @@ import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mynetworkimg.dart';
@@ -657,6 +656,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
                                 typeId: watchlistProvider.watchlistModel
                                         .result?[position].typeId ??
                                     0,
+                                otherId: 0,
                                 videoUrl: "",
                                 trailerUrl: watchlistProvider.watchlistModel
                                         .result?[position].trailerUrl ??
@@ -1039,6 +1039,7 @@ class _MyWatchlistState extends State<MyWatchlist> {
         videoType:
             watchlistProvider.watchlistModel.result?[position].videoType ?? 0,
         typeId: watchlistProvider.watchlistModel.result?[position].typeId ?? 0,
+        otherId: 0,
         videoUrl:
             watchlistProvider.watchlistModel.result?[position].video320 ?? "",
         trailerUrl:
@@ -1068,10 +1069,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
                 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -1093,10 +1090,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
             1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isSubscribed = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -1119,10 +1112,6 @@ class _MyWatchlistState extends State<MyWatchlist> {
                 1) {
           return true;
         } else {
-          if ((kIsWeb || Constant.isTV)) {
-            Utils.showSnackbar(context, "info", webPaymentNotAvailable, false);
-            return false;
-          }
           dynamic isRented = await Utils.paymentForRent(
             context: context,
             videoId: watchlistProvider.watchlistModel.result?[position].id

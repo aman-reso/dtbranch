@@ -3,9 +3,7 @@ import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class AboutPrivacyTerms extends StatefulWidget {
   final String appBarTitle, loadURL;
@@ -22,64 +20,31 @@ class AboutPrivacyTerms extends StatefulWidget {
 
 class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
   var loadingPercentage = 0;
-  late final WebViewController _controller;
+  InAppWebViewController? webViewController;
+  PullToRefreshController? pullToRefreshController;
   SharedPre sharedPref = SharedPre();
 
   @override
   void initState() {
     super.initState();
     debugPrint("loadURL ========> ${widget.loadURL}");
-    late final PlatformWebViewControllerCreationParams params;
-    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
-    }
-    final WebViewController controller =
-        WebViewController.fromPlatformCreationParams(params);
-    controller
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(appBgColor)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (url) {
-            setState(() {
-              loadingPercentage = 0;
-            });
-          },
-          onProgress: (progress) {
-            setState(() {
-              loadingPercentage = progress;
-            });
-          },
-          onPageFinished: (url) {
-            setState(() {
-              loadingPercentage = 100;
-            });
-          },
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.loadURL));
-
-    // #docregion platform_features
-    if (controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
-    }
-    // #enddocregion platform_features
-
-    _controller = controller;
+    pullToRefreshController = (kIsWeb) ||
+            ![TargetPlatform.iOS, TargetPlatform.android]
+                .contains(defaultTargetPlatform)
+        ? null
+        : PullToRefreshController(
+            options: PullToRefreshOptions(color: complimentryColor),
+            onRefresh: () async {
+              if (defaultTargetPlatform == TargetPlatform.android) {
+                webViewController?.reload();
+              } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+                  defaultTargetPlatform == TargetPlatform.macOS) {
+                webViewController?.loadUrl(
+                    urlRequest:
+                        URLRequest(url: await webViewController?.getUrl()));
+              }
+            },
+          );
   }
 
   @override
@@ -120,8 +85,36 @@ class _AboutPrivacyTermsState extends State<AboutPrivacyTerms> {
   Widget setWebView() {
     return Stack(
       children: [
-        WebViewWidget(
-          controller: _controller,
+        InAppWebView(
+          initialUrlRequest: URLRequest(url: Uri.parse(widget.loadURL)),
+          pullToRefreshController: pullToRefreshController,
+          onWebViewCreated: (controller) async {
+            webViewController = controller;
+          },
+          onLoadStart: (controller, url) async {
+            setState(() {
+              loadingPercentage = 0;
+            });
+          },
+          shouldOverrideUrlLoading: (controller, navigationAction) async {
+            return NavigationActionPolicy.ALLOW;
+          },
+          onLoadStop: (controller, url) async {
+            setState(() {
+              loadingPercentage = 100;
+            });
+          },
+          onProgressChanged: (controller, progress) {
+            setState(() {
+              loadingPercentage = progress;
+            });
+          },
+          onUpdateVisitedHistory: (controller, url, isReload) {
+            debugPrint("onUpdateVisitedHistory url =========> $url");
+          },
+          onConsoleMessage: (controller, consoleMessage) {
+            debugPrint("consoleMessage =========> $consoleMessage");
+          },
         ),
         if (loadingPercentage < 100)
           LinearProgressIndicator(

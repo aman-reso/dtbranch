@@ -341,21 +341,19 @@ class OTPVerifyState extends State<OTPVerify> {
       if (generalProvider.loginOTPModel.status == 200) {
         log('loginOTPModel ==>> ${generalProvider.loginOTPModel.toString()}');
         log('Login Successfull!');
-        await sharePref.save(
-            "userid", generalProvider.loginOTPModel.result?.id.toString());
-        await sharePref.save("username",
-            generalProvider.loginOTPModel.result?.name.toString() ?? "");
-        await sharePref.save("userimage",
-            generalProvider.loginOTPModel.result?.image.toString() ?? "");
-        await sharePref.save("useremail",
-            generalProvider.loginOTPModel.result?.email.toString() ?? "");
-        await sharePref.save("usermobile",
-            generalProvider.loginOTPModel.result?.mobile.toString() ?? "");
-        await sharePref.save("usertype",
-            generalProvider.loginOTPModel.result?.type.toString() ?? "");
+        Utils.saveUserCreds(
+          userID: generalProvider.loginOTPModel.result?[0].id.toString(),
+          userName: generalProvider.loginOTPModel.result?[0].name.toString(),
+          userEmail: generalProvider.loginOTPModel.result?[0].email.toString(),
+          userMobile:
+              generalProvider.loginOTPModel.result?[0].mobile.toString(),
+          userImage: generalProvider.loginOTPModel.result?[0].image.toString(),
+          userType: generalProvider.loginOTPModel.result?[0].type.toString(),
+        );
 
         // Set UserID for Next
-        Constant.userID = generalProvider.loginOTPModel.result?.id.toString();
+        Constant.userID =
+            generalProvider.loginOTPModel.result?[0].id.toString();
         log('Constant userID ==>> ${Constant.userID}');
 
         await homeProvider.setLoading(true);
@@ -364,10 +362,11 @@ class OTPVerifyState extends State<OTPVerify> {
 
         await prDialog.hide();
         if (!mounted) return;
-        Navigator.of(context).pushReplacement(
+        Navigator.pushAndRemoveUntil(
+          context,
           MaterialPageRoute(
-            builder: (context) => const Bottombar(),
-          ),
+              builder: (BuildContext context) => const Bottombar()),
+          (Route<dynamic> route) => false,
         );
       } else {
         await prDialog.hide();

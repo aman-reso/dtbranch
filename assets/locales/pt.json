@@ -209,5 +209,12 @@
     "expired": "Expirado",
     "plans": "PLANOS",
     "myplans": "Meus planos",
-    "uploads": "uploads"
+    "uploads": "uploads",
+    "activetv": "Ative sua TV",
+    "activetv_desc": "Ative seu aplicativo de TV adicionando o código do aplicativo de TV aqui.",
+    "tv_login_success": "Faça o login com sucesso em sua TV.",
+    "verify_tvcode": "Verifique o código da sua TV",
+    "tvcode_desc": "Digite seu código de TV e faça o login no aplicativo de TV.",
+    "no_payment": "Métodos não encontrados.",
+    "no_payment_desc": "Métodos de pagamento não disponíveis."
 }

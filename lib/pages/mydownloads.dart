@@ -527,6 +527,7 @@ class _MyDownloadsState extends State<MyDownloads> {
                                 videoType:
                                     myDownloadsList?[position].videoType ?? 0,
                                 typeId: myDownloadsList?[position].typeId ?? 0,
+                                otherId: 0,
                                 videoUrl: "",
                                 trailerUrl:
                                     myDownloadsList?[position].trailerUrl ?? "",
@@ -791,6 +792,7 @@ class _MyDownloadsState extends State<MyDownloads> {
       videoId: myDownloadsList?[position].id ?? 0,
       videoType: myDownloadsList?[position].videoType ?? 0,
       typeId: myDownloadsList?[position].typeId ?? 0,
+      otherId: 0,
       videoUrl: myDownloadsList?[position].savedFile ?? "",
       trailerUrl: myDownloadsList?[position].trailerUrl ?? "",
       uploadType: myDownloadsList?[position].videoUploadType ?? "",

@@ -518,6 +518,18 @@ class Utils {
     log('setFirstTime seen ==> $seenValue');
   }
 
+  static Future<String> getPrivacyTandCText(
+      String privacyUrl, String termsConditionUrl) async {
+    debugPrint('privacyUrl ==> $privacyUrl');
+    debugPrint('T&C Url =====> $termsConditionUrl');
+
+    String strPrivacyAndTNC =
+        "<p style=color:white; > By continuing , I understand and agree with <a href=$privacyUrl>Privacy Policy</a> and <a href=$termsConditionUrl>Terms and Conditions</a> of ${Constant.appName}. </p>";
+
+    debugPrint('strPrivacyAndTNC =====> $strPrivacyAndTNC');
+    return strPrivacyAndTNC;
+  }
+
   static Future<void> deleteCacheDir() async {
     if (Platform.isAndroid) {
       var tempDir = await getTemporaryDirectory();

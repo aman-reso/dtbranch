@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dtlive/model/generalsettingmodel.dart';
 import 'package:dtlive/model/loginregistermodel.dart';
 import 'package:dtlive/model/pagesmodel.dart';
+import 'package:dtlive/model/sociallinkmodel.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 class GeneralProvider extends ChangeNotifier {
   GeneralSettingModel generalSettingModel = GeneralSettingModel();
   PagesModel pagesModel = PagesModel();
+  SocialLinkModel socialLinkModel = SocialLinkModel();
   LoginRegisterModel loginSocialModel = LoginRegisterModel();
   LoginRegisterModel loginOTPModel = LoginRegisterModel();
   LoginRegisterModel loginTVModel = LoginRegisterModel();
@@ -43,18 +45,15 @@ class GeneralProvider extends ChangeNotifier {
     pagesModel = await ApiService().getPages();
     debugPrint("getPages status :==> ${pagesModel.status}");
     loading = false;
-    if (pagesModel.status == 200) {
-      if (pagesModel.result != null) {
-        for (var i = 0; i < (pagesModel.result?.length ?? 0); i++) {
-          await sharedPre.save(
-            pagesModel.result?[i].pageName.toString() ?? "",
-            pagesModel.result?[i].url.toString() ?? "",
-          );
-          debugPrint(
-              '${pagesModel.result?[i].pageName.toString()} ==> ${pagesModel.result?[i].url.toString()}');
-        }
-      }
-    }
+    notifyListeners();
+  }
+
+  Future<void> getSocialLinks() async {
+    loading = true;
+    socialLinkModel = await ApiService().getSocialLink();
+    debugPrint("getSocialLinks status :==> ${socialLinkModel.status}");
+    loading = false;
+    notifyListeners();
   }
 
   Future<void> loginWithSocial(email, name, type, File? profileImg) async {

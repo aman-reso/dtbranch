@@ -11,7 +11,6 @@ import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/dimens.dart';
-import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/utils/utils.dart';
 import 'package:dtlive/webwidget/searchweb.dart';
@@ -32,17 +31,11 @@ class CommonAppBar extends StatefulWidget {
 
 class _CommonAppBarState extends State<CommonAppBar> {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  SharedPre sharedPref = SharedPre();
   final TextEditingController searchController = TextEditingController();
   late HomeProvider homeProvider;
   late SearchProvider searchProvider;
   int? videoId, videoType, typeId;
-  String? langCatName,
-      aboutUsUrl,
-      privacyUrl,
-      termsConditionUrl,
-      refundPolicyUrl,
-      mSearchText;
+  String? langCatName, mSearchText;
 
   _onItemTapped(String page) async {
     debugPrint("_onItemTapped page -----------------> $page");
@@ -68,15 +61,6 @@ class _CommonAppBarState extends State<CommonAppBar> {
     final sectionDataProvider =
         Provider.of<SectionDataProvider>(context, listen: false);
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-
-    aboutUsUrl = await sharedPref.read("about-us") ?? "";
-    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
-    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
-    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
-    log('aboutUsUrl ==> $aboutUsUrl');
-    log('privacyUrl ==> $privacyUrl');
-    log('termsConditionUrl ==> $termsConditionUrl');
-    log('refundPolicyUrl ==> $refundPolicyUrl');
 
     if (!homeProvider.loading) {
       if (homeProvider.sectionTypeModel.status == 200 &&

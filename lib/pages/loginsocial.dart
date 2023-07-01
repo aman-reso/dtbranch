@@ -10,7 +10,6 @@ import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
-import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
@@ -34,33 +33,50 @@ class LoginSocial extends StatefulWidget {
 
 class LoginSocialState extends State<LoginSocial> {
   late ProgressDialog prDialog;
-  SharedPre sharePref = SharedPre();
+  late GeneralProvider generalProvider;
+
   final numberController = TextEditingController();
-  String? mobileNumber,
-      email,
-      userName,
-      strType,
-      strPrivacyAndTNC,
-      privacyUrl,
-      termsConditionUrl;
+  String? mobileNumber, email, userName, strType, strPrivacyAndTNC;
   File? mProfileImg;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
+    generalProvider = Provider.of<GeneralProvider>(context, listen: false);
     super.initState();
     prDialog = ProgressDialog(context);
     _getData();
   }
 
   _getData() async {
-    privacyUrl = await sharePref.read("privacy-policy") ?? "";
-    termsConditionUrl = await sharePref.read("terms-and-conditions") ?? "";
+    String? privacyUrl, termsConditionUrl;
+    await generalProvider.getPages();
+    if (!generalProvider.loading) {
+      if (generalProvider.pagesModel.status == 200 &&
+          generalProvider.pagesModel.result != null) {
+        if ((generalProvider.pagesModel.result?.length ?? 0) > 0) {
+          for (var i = 0;
+              i < (generalProvider.pagesModel.result?.length ?? 0);
+              i++) {
+            if ((generalProvider.pagesModel.result?[i].pageName ?? "")
+                .toLowerCase()
+                .contains("privacy")) {
+              privacyUrl = generalProvider.pagesModel.result?[i].url;
+            }
+            if ((generalProvider.pagesModel.result?[i].pageName ?? "")
+                .toLowerCase()
+                .contains("terms")) {
+              termsConditionUrl = generalProvider.pagesModel.result?[i].url;
+            }
+          }
+        }
+      }
+    }
     debugPrint('privacyUrl ==> $privacyUrl');
     debugPrint('termsConditionUrl ==> $termsConditionUrl');
 
-    strPrivacyAndTNC =
-        "<p style=color:white; > By continuing , I understand and agree with <a href=$privacyUrl>Privacy Policy</a> and <a href=$termsConditionUrl>Terms and Conditions</a> of ${Constant.appName}. </p>";
+    strPrivacyAndTNC = await Utils.getPrivacyTandCText(
+        privacyUrl ?? "", termsConditionUrl ?? "");
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {});

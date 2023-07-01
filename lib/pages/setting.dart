@@ -8,6 +8,7 @@ import 'package:dtlive/pages/mydownloads.dart';
 import 'package:dtlive/pages/profileedit.dart';
 import 'package:dtlive/pages/mypurchaselist.dart';
 import 'package:dtlive/pages/mywatchlist.dart';
+import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/provider/homeprovider.dart';
 import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/subscription/subscription.dart';
@@ -24,6 +25,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
@@ -37,18 +39,14 @@ class Setting extends StatefulWidget {
 
 class SettingState extends State<Setting> {
   bool? isSwitched;
-  String? userName,
-      userType,
-      userMobileNo,
-      aboutUsUrl,
-      privacyUrl,
-      termsConditionUrl,
-      refundPolicyUrl;
+  String? userName, userType, userMobileNo;
+  late GeneralProvider generalProvider;
   SharedPre sharedPref = SharedPre();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
+    generalProvider = Provider.of<GeneralProvider>(context, listen: false);
     getUserData();
     super.initState();
   }
@@ -79,14 +77,7 @@ class SettingState extends State<Setting> {
     log('getUserData userType ==> $userType');
     log('getUserData userMobileNo ==> $userMobileNo');
 
-    aboutUsUrl = await sharedPref.read("about-us") ?? "";
-    privacyUrl = await sharedPref.read("privacy-policy") ?? "";
-    termsConditionUrl = await sharedPref.read("terms-and-conditions") ?? "";
-    refundPolicyUrl = await sharedPref.read("refund-policy") ?? "";
-    debugPrint('aboutUsUrl ==> $aboutUsUrl');
-    debugPrint('privacyUrl ==> $privacyUrl');
-    debugPrint('termsConditionUrl ==> $termsConditionUrl');
-    debugPrint('refundPolicyUrl ==> $refundPolicyUrl');
+    await generalProvider.getPages();
 
     isSwitched = await sharedPref.readBool("PUSH");
     log('getUserData isSwitched ==> $isSwitched');
@@ -486,94 +477,6 @@ class SettingState extends State<Setting> {
                 ),
                 _buildLine(16.0, 16.0),
 
-                /* About Us */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: "aboutus",
-                          loadURL: aboutUsUrl ?? "",
-                        ),
-                      ),
-                    );
-                  },
-                  child: _buildSettingButton(
-                    title: 'aboutus',
-                    subTitle: 'Version ${Constant.appVersion}',
-                    titleMultilang: true,
-                    subTitleMultilang: false,
-                  ),
-                ),
-                _buildLine(16.0, 8.0),
-
-                /* Privacy Policy */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: "privacypolicy",
-                          loadURL: privacyUrl ?? "",
-                        ),
-                      ),
-                    );
-                  },
-                  child: _buildSettingButton(
-                    title: 'privacypolicy',
-                    subTitle: '',
-                    titleMultilang: true,
-                    subTitleMultilang: false,
-                  ),
-                ),
-                _buildLine(8.0, 8.0),
-
-                /* Terms & Conditions */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: "termcondition",
-                          loadURL: termsConditionUrl ?? "",
-                        ),
-                      ),
-                    );
-                  },
-                  child: _buildSettingButton(
-                    title: 'termcondition',
-                    subTitle: '',
-                    titleMultilang: true,
-                    subTitleMultilang: false,
-                  ),
-                ),
-                _buildLine(8.0, 8.0),
-
-                /* Refund Policy */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => AboutPrivacyTerms(
-                          appBarTitle: "refundpolicy",
-                          loadURL: refundPolicyUrl ?? "",
-                        ),
-                      ),
-                    );
-                  },
-                  child: _buildSettingButton(
-                    title: 'refundpolicy',
-                    subTitle: '',
-                    titleMultilang: true,
-                    subTitleMultilang: false,
-                  ),
-                ),
-                _buildLine(8.0, 8.0),
-
                 /* Delete Account */
                 if (Constant.userID != null)
                   InkWell(
@@ -598,12 +501,68 @@ class SettingState extends State<Setting> {
                     ),
                   ),
                 if (Constant.userID != null) _buildLine(8.0, 8.0),
+
+                /* Pages */
+                _buildPages(),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildPages() {
+    if (generalProvider.loading) {
+      return const SizedBox.shrink();
+    } else {
+      if (generalProvider.pagesModel.status == 200 &&
+          generalProvider.pagesModel.result != null) {
+        return AlignedGridView.count(
+          shrinkWrap: true,
+          crossAxisCount: 1,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          itemCount: (generalProvider.pagesModel.result?.length ?? 0),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int position) {
+            return Column(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(2),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AboutPrivacyTerms(
+                          appBarTitle: generalProvider
+                                  .pagesModel.result?[position].pageName ??
+                              '',
+                          loadURL: generalProvider
+                                  .pagesModel.result?[position].url ??
+                              '',
+                        ),
+                      ),
+                    );
+                  },
+                  child: _buildSettingButton(
+                    title:
+                        generalProvider.pagesModel.result?[position].pageName ??
+                            '',
+                    subTitle: '',
+                    titleMultilang: false,
+                    subTitleMultilang: false,
+                  ),
+                ),
+                _buildLine(8.0, 0.0),
+              ],
+            );
+          },
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    }
   }
 
   Widget _buildSettingButton({

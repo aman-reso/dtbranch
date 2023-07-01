@@ -122,45 +122,6 @@ class HomeState extends State<Home> {
         videoType: int.parse(videoType),
         typeId: int.parse(typeID),
       );
-      // Navigator.of(context).push(
-      //   MaterialPageRoute(
-      //     builder: (context) {
-      //       if (videoType == "5") {
-      //         if (upcomingType == "2") {
-      //           return ShowDetails(
-      //             int.parse(videoID),
-      //             int.parse(upcomingType),
-      //             int.parse(videoType),
-      //             int.parse(typeID),
-      //           );
-      //         } else {
-      //           return MovieDetails(
-      //             int.parse(videoID),
-      //             int.parse(upcomingType),
-      //             int.parse(videoType),
-      //             int.parse(typeID),
-      //           );
-      //         }
-      //       } else {
-      //         if (videoType == "2") {
-      //           return ShowDetails(
-      //             int.parse(videoID),
-      //             int.parse(upcomingType),
-      //             int.parse(videoType),
-      //             int.parse(typeID),
-      //           );
-      //         } else {
-      //           return MovieDetails(
-      //             int.parse(videoID),
-      //             int.parse(upcomingType),
-      //             int.parse(videoType),
-      //             int.parse(typeID),
-      //           );
-      //         }
-      //       }
-      //     },
-      //   ),
-      // );
     }
   }
 

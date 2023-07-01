@@ -9,6 +9,7 @@ import 'package:dtlive/model/historymodel.dart';
 import 'package:dtlive/model/pagesmodel.dart';
 import 'package:dtlive/model/paymentoptionmodel.dart';
 import 'package:dtlive/model/paytmmodel.dart';
+import 'package:dtlive/model/sociallinkmodel.dart';
 import 'package:dtlive/model/subscriptionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/episodebyseasonmodel.dart';
@@ -73,6 +74,18 @@ class ApiService {
     );
     pagesModel = PagesModel.fromJson(response.data);
     return pagesModel;
+  }
+
+  // get_social_link API
+  Future<SocialLinkModel> getSocialLink() async {
+    SocialLinkModel socialLinkModel;
+    String socialLinkAPI = "get_social_link";
+    Response response = await dio.post(
+      '$baseUrl$socialLinkAPI',
+      options: optHeaders,
+    );
+    socialLinkModel = SocialLinkModel.fromJson(response.data);
+    return socialLinkModel;
   }
 
   /* type => 1-Facebook, 2-Google, 4-Google */

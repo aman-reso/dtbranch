@@ -1,13 +1,16 @@
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
+import 'package:dtlive/utils/dimens.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/web_js/js_helper.dart';
+import 'package:dtlive/webwidget/interactive_networkicon.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/material.dart';
 import 'package:dtlive/webwidget/interactive_icon.dart';
 import 'package:dtlive/webwidget/interactive_text.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 class FooterWeb extends StatefulWidget {
@@ -20,6 +23,7 @@ class FooterWeb extends StatefulWidget {
 class _FooterWebState extends State<FooterWeb> {
   final JSHelper _jsHelper = JSHelper();
   SharedPre sharedPref = SharedPre();
+  late GeneralProvider generalProvider;
   String? appDescription,
       aboutUsUrl,
       privacyUrl,
@@ -43,43 +47,11 @@ class _FooterWebState extends State<FooterWeb> {
   }
 
   _getData() async {
-    final generalProvider =
-        Provider.of<GeneralProvider>(context, listen: false);
+    generalProvider = Provider.of<GeneralProvider>(context, listen: false);
     appDescription = await sharedPref.read("app_desripation") ?? "";
 
     await generalProvider.getPages();
-    if (!generalProvider.loading) {
-      if (generalProvider.pagesModel.status == 200) {
-        if (generalProvider.pagesModel.result != null &&
-            (generalProvider.pagesModel.result?.length ?? 0) > 0) {
-          for (var i = 0;
-              i < (generalProvider.pagesModel.result?.length ?? 0);
-              i++) {
-            if (generalProvider.pagesModel.result?[i].pageName == "about-us") {
-              aboutUsUrl = generalProvider.pagesModel.result?[i].url ?? "";
-            }
-            if (generalProvider.pagesModel.result?[i].pageName ==
-                "privacy-policy") {
-              privacyUrl = generalProvider.pagesModel.result?[i].url ?? "";
-            }
-            if (generalProvider.pagesModel.result?[i].pageName ==
-                "terms-and-conditions") {
-              termsConditionUrl =
-                  generalProvider.pagesModel.result?[i].url ?? "";
-            }
-            if (generalProvider.pagesModel.result?[i].pageName ==
-                "refund-policy") {
-              refundPolicyUrl = generalProvider.pagesModel.result?[i].url ?? "";
-            }
-          }
-        }
-      }
-    }
-    debugPrint('appDescription =====> $appDescription');
-    debugPrint('aboutUsUrl =========> $aboutUsUrl');
-    debugPrint('privacyUrl =========> $privacyUrl');
-    debugPrint('termsConditionUrl ==> $termsConditionUrl');
-    debugPrint('refundPolicyUrl ====> $refundPolicyUrl');
+    await generalProvider.getSocialLinks();
 
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
@@ -128,7 +100,7 @@ class _FooterWebState extends State<FooterWeb> {
                 fontsizeNormal: 12,
                 textalign: TextAlign.start,
                 fontstyle: FontStyle.normal,
-                maxline: 50,
+                maxline: 5,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
@@ -138,39 +110,7 @@ class _FooterWebState extends State<FooterWeb> {
 
         /* Quick Links */
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildQuickLinkText(
-                pageName: "aboutus",
-                onClick: () {
-                  _redirectToUrl(aboutUsUrl ?? "");
-                },
-              ),
-              const SizedBox(height: 10),
-              _buildQuickLinkText(
-                pageName: "privacypolicy",
-                onClick: () {
-                  _redirectToUrl(privacyUrl ?? "");
-                },
-              ),
-              const SizedBox(height: 10),
-              _buildQuickLinkText(
-                pageName: "termcondition",
-                onClick: () {
-                  _redirectToUrl(termsConditionUrl ?? "");
-                },
-              ),
-              const SizedBox(height: 10),
-              _buildQuickLinkText(
-                pageName: "refundpolicy",
-                onClick: () {
-                  _redirectToUrl(refundPolicyUrl ?? "");
-                },
-              ),
-            ],
-          ),
+          child: _buildPages(),
         ),
         const SizedBox(width: 30),
 
@@ -180,79 +120,26 @@ class _FooterWebState extends State<FooterWeb> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(
-                color: white,
-                multilanguage: true,
-                text: "connect_with_us",
-                fontweight: FontWeight.w600,
-                fontsizeWeb: 13,
-                fontsizeNormal: 13,
-                textalign: TextAlign.start,
-                fontstyle: FontStyle.normal,
-                maxline: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 10),
               /* Social Icons */
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(3.0),
-                    onTap: () {
-                      _redirectToUrl(Constant.facebookUrl);
-                    },
-                    child: InteractiveIcon(
-                      height: 20,
-                      width: 20,
-                      iconColor: white,
-                      iconColorHover: black,
-                      imagePath: "ic_facebook.png",
-                      withBG: true,
-                      bgRadius: 3.0,
-                      bgColor: lightBlack,
-                      bgHoverColor: primaryColor,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  InkWell(
-                    onTap: () {
-                      _redirectToUrl(Constant.instagramUrl);
-                    },
-                    borderRadius: BorderRadius.circular(3.0),
-                    child: InteractiveIcon(
-                      height: 20,
-                      width: 20,
-                      iconColor: white,
-                      iconColorHover: black,
-                      imagePath: "ic_insta.png",
-                      withBG: true,
-                      bgRadius: 3.0,
-                      bgColor: lightBlack,
-                      bgHoverColor: primaryColor,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  InkWell(
-                    onTap: () {
-                      _redirectToUrl(Constant.youtubeUrl);
-                    },
-                    borderRadius: BorderRadius.circular(3.0),
-                    child: InteractiveIcon(
-                      height: 20,
-                      width: 20,
-                      iconColor: white,
-                      iconColorHover: black,
-                      imagePath: "ic_youtube.png",
-                      withBG: true,
-                      bgRadius: 3.0,
-                      bgColor: lightBlack,
-                      bgHoverColor: primaryColor,
-                    ),
-                  ),
-                ],
-              ),
+              (generalProvider.socialLinkModel.status == 200 &&
+                      generalProvider.socialLinkModel.result != null)
+                  ? ((generalProvider.socialLinkModel.result?.length ?? 0) > 0)
+                      ? MyText(
+                          color: white,
+                          multilanguage: true,
+                          text: "connect_with_us",
+                          fontweight: FontWeight.w600,
+                          fontsizeWeb: 13,
+                          fontsizeNormal: 13,
+                          textalign: TextAlign.start,
+                          fontstyle: FontStyle.normal,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : const SizedBox.shrink()
+                  : const SizedBox.shrink(),
+              /* Social Icons */
+              _buildSocialLink(),
               const SizedBox(height: 20),
 
               /* Available On */
@@ -341,115 +228,35 @@ class _FooterWebState extends State<FooterWeb> {
           fontsizeNormal: 12,
           textalign: TextAlign.start,
           fontstyle: FontStyle.normal,
-          maxline: 50,
+          maxline: 5,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 30),
 
         /* Quick Links */
-        _buildQuickLinkText(
-          pageName: "aboutus",
-          onClick: () {
-            _redirectToUrl(aboutUsUrl ?? "");
-          },
-        ),
-        const SizedBox(height: 10),
-        _buildQuickLinkText(
-          pageName: "privacypolicy",
-          onClick: () {
-            _redirectToUrl(privacyUrl ?? "");
-          },
-        ),
-        const SizedBox(height: 10),
-        _buildQuickLinkText(
-          pageName: "termcondition",
-          onClick: () {
-            _redirectToUrl(termsConditionUrl ?? "");
-          },
-        ),
-        const SizedBox(height: 10),
-        _buildQuickLinkText(
-          pageName: "refundpolicy",
-          onClick: () {
-            _redirectToUrl(refundPolicyUrl ?? "");
-          },
-        ),
+        _buildPages(),
         const SizedBox(height: 30),
 
         /* Contact With us & Store Icons */
-        MyText(
-          color: white,
-          multilanguage: true,
-          text: "connect_with_us",
-          fontweight: FontWeight.w600,
-          fontsizeWeb: 13,
-          fontsizeNormal: 13,
-          textalign: TextAlign.start,
-          fontstyle: FontStyle.normal,
-          maxline: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 10),
+        (generalProvider.socialLinkModel.status == 200 &&
+                generalProvider.socialLinkModel.result != null)
+            ? ((generalProvider.socialLinkModel.result?.length ?? 0) > 0)
+                ? MyText(
+                    color: white,
+                    multilanguage: true,
+                    text: "connect_with_us",
+                    fontweight: FontWeight.w600,
+                    fontsizeWeb: 13,
+                    fontsizeNormal: 13,
+                    textalign: TextAlign.start,
+                    fontstyle: FontStyle.normal,
+                    maxline: 1,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : const SizedBox.shrink()
+            : const SizedBox.shrink(),
         /* Social Icons */
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InkWell(
-              borderRadius: BorderRadius.circular(3.0),
-              onTap: () {
-                _redirectToUrl(Constant.facebookUrl);
-              },
-              child: InteractiveIcon(
-                height: 20,
-                width: 20,
-                iconColor: white,
-                iconColorHover: black,
-                imagePath: "ic_facebook.png",
-                withBG: true,
-                bgRadius: 3.0,
-                bgColor: lightBlack,
-                bgHoverColor: primaryColor,
-              ),
-            ),
-            const SizedBox(width: 10),
-            InkWell(
-              onTap: () {
-                _redirectToUrl(Constant.instagramUrl);
-              },
-              borderRadius: BorderRadius.circular(3.0),
-              child: InteractiveIcon(
-                height: 20,
-                width: 20,
-                iconColor: white,
-                iconColorHover: black,
-                imagePath: "ic_insta.png",
-                withBG: true,
-                bgRadius: 3.0,
-                bgColor: lightBlack,
-                bgHoverColor: primaryColor,
-              ),
-            ),
-            const SizedBox(width: 10),
-            InkWell(
-              onTap: () {
-                _redirectToUrl(Constant.youtubeUrl);
-              },
-              borderRadius: BorderRadius.circular(3.0),
-              child: InteractiveIcon(
-                height: 20,
-                width: 20,
-                iconColor: white,
-                iconColorHover: black,
-                imagePath: "ic_youtube.png",
-                withBG: true,
-                bgRadius: 3.0,
-                bgColor: lightBlack,
-                bgHoverColor: primaryColor,
-              ),
-            ),
-          ],
-        ),
+        _buildSocialLink(),
         const SizedBox(height: 20),
 
         /* Available On */
@@ -506,136 +313,42 @@ class _FooterWebState extends State<FooterWeb> {
             ),
           ],
         ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   crossAxisAlignment: CrossAxisAlignment.center,
-        //   children: [
-        //     Column(
-        //       mainAxisAlignment: MainAxisAlignment.start,
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         MyText(
-        //           color: white,
-        //           multilanguage: true,
-        //           text: "connect_with_us",
-        //           fontweight: FontWeight.w600,
-        //           fontsizeWeb: 14,
-        //           fontsizeNormal: 14,
-        //           textalign: TextAlign.center,
-        //           fontstyle: FontStyle.normal,
-        //           maxline: 1,
-        //           overflow: TextOverflow.ellipsis,
-        //         ),
-        //         const SizedBox(height: 5),
-        //         /* Social Icons */
-        //         Row(
-        //           mainAxisAlignment: MainAxisAlignment.start,
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           children: [
-        //             InkWell(
-        //               borderRadius: BorderRadius.circular(30),
-        //               onTap: () {
-        //                 _redirectToUrl(Constant.facebookUrl);
-        //               },
-        //               child: InteractiveIcon(
-        //                 width: 18,
-        //                 height: 18,
-        //                 imagePath: "ic_facebook.png",
-        //                 withBG: true,
-        //                 iconColor: otherColor,
-        //                 iconColorHover: black,
-        //                 bgRadius: 3,
-        //                 bgColor: lightBlack,
-        //                 bgHoverColor: primaryColor,
-        //               ),
-        //             ),
-        //             const SizedBox(width: 3),
-        //             InkWell(
-        //               onTap: () {
-        //                 _redirectToUrl(Constant.instagramUrl);
-        //               },
-        //               borderRadius: BorderRadius.circular(30),
-        //               child: InteractiveIcon(
-        //                 width: 18,
-        //                 height: 18,
-        //                 imagePath: "ic_insta.png",
-        //                 withBG: true,
-        //                 iconColor: otherColor,
-        //                 iconColorHover: black,
-        //                 bgRadius: 3,
-        //                 bgColor: lightBlack,
-        //                 bgHoverColor: primaryColor,
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ],
-        //     ),
-        //     const SizedBox(width: 30),
-        //     Column(
-        //       mainAxisAlignment: MainAxisAlignment.start,
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         MyText(
-        //           color: white,
-        //           multilanguage: false,
-        //           text: Constant.appName ?? "",
-        //           fontweight: FontWeight.w600,
-        //           fontsizeWeb: 14,
-        //           fontsizeNormal: 14,
-        //           textalign: TextAlign.center,
-        //           fontstyle: FontStyle.normal,
-        //           maxline: 1,
-        //           overflow: TextOverflow.ellipsis,
-        //         ),
-        //         const SizedBox(height: 5),
-        //         /* Social Icons */
-        //         Row(
-        //           mainAxisAlignment: MainAxisAlignment.start,
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           children: [
-        //             InkWell(
-        //               onTap: () {
-        //                 _redirectToUrl(Constant.androidAppUrl);
-        //               },
-        //               borderRadius: BorderRadius.circular(3),
-        //               child: InteractiveIcon(
-        //                 imagePath: "playstore.png",
-        //                 height: 23,
-        //                 width: 60,
-        //                 withBG: true,
-        //                 bgRadius: 3,
-        //                 bgColor: lightBlack,
-        //                 bgHoverColor: primaryColor,
-        //               ),
-        //             ),
-        //             const SizedBox(width: 3),
-        //             InkWell(
-        //               onTap: () {
-        //                 _redirectToUrl(Constant.iosAppUrl);
-        //               },
-        //               borderRadius: BorderRadius.circular(3),
-        //               child: InteractiveIcon(
-        //                 height: 23,
-        //                 width: 60,
-        //                 imagePath: "applestore.png",
-        //                 withBG: true,
-        //                 bgRadius: 3,
-        //                 bgColor: lightBlack,
-        //                 bgHoverColor: primaryColor,
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ],
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
 
-  Widget _buildQuickLinkText({
+  Widget _buildPages() {
+    if (generalProvider.loading) {
+      return const SizedBox.shrink();
+    } else {
+      if (generalProvider.pagesModel.status == 200 &&
+          generalProvider.pagesModel.result != null) {
+        return AlignedGridView.count(
+          shrinkWrap: true,
+          crossAxisCount: 1,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          itemCount: (generalProvider.pagesModel.result?.length ?? 0),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int position) {
+            return _buildPageItem(
+              pageName:
+                  generalProvider.pagesModel.result?[position].pageName ?? "",
+              onClick: () {
+                _redirectToUrl(
+                    generalProvider.pagesModel.result?[position].url ?? "");
+              },
+            );
+          },
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    }
+  }
+
+  Widget _buildPageItem({
     required String pageName,
     required Function() onClick,
   }) {
@@ -643,12 +356,73 @@ class _FooterWebState extends State<FooterWeb> {
       onTap: onClick,
       child: InteractiveText(
         text: pageName,
-        multilanguage: true,
+        multilanguage: false,
         maxline: 2,
         textalign: TextAlign.justify,
         fontstyle: FontStyle.normal,
         fontsizeWeb: 14,
         fontweight: FontWeight.w600,
+      ),
+    );
+  }
+
+  Widget _buildSocialLink() {
+    if (generalProvider.loading) {
+      return const SizedBox.shrink();
+    } else {
+      if (generalProvider.socialLinkModel.status == 200 &&
+          generalProvider.socialLinkModel.result != null) {
+        return AlignedGridView.count(
+          shrinkWrap: true,
+          crossAxisCount: 6,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          itemCount: (generalProvider.socialLinkModel.result?.length ?? 0),
+          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int position) {
+            return Wrap(
+              children: [
+                _buildSocialIcon(
+                  iconUrl:
+                      generalProvider.socialLinkModel.result?[position].image ??
+                          "",
+                  onClick: () {
+                    _redirectToUrl(
+                        generalProvider.socialLinkModel.result?[position].url ??
+                            "");
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        return const SizedBox.shrink();
+      }
+    }
+  }
+
+  Widget _buildSocialIcon({
+    required String iconUrl,
+    required Function() onClick,
+  }) {
+    return SizedBox(
+      height: Dimens.heightSocialBtn,
+      width: Dimens.widthSocialBtn,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(3.0),
+        onTap: onClick,
+        child: InteractiveNetworkIcon(
+          height: 20,
+          width: 20,
+          iconFit: BoxFit.contain,
+          imagePath: iconUrl,
+          withBG: true,
+          bgRadius: 3.0,
+          bgColor: lightBlack,
+          bgHoverColor: primaryColor,
+        ),
       ),
     );
   }

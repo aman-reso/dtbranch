@@ -7,8 +7,6 @@ import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
 
-import 'package:carousel_indicator/carousel_indicator.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
@@ -30,6 +28,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatefulWidget {
   final String? pageName;
@@ -43,7 +42,7 @@ class HomeState extends State<Home> {
   late SectionDataProvider sectionDataProvider;
   final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
-  CarouselController pageController = CarouselController();
+  PageController pageController = PageController(initialPage: 0);
   final tabScrollController = ScrollController();
   late ListObserverController observerController;
   late HomeProvider homeProvider;
@@ -126,7 +125,6 @@ class HomeState extends State<Home> {
   }
 
   _getData() async {
-    Utils.getCurrencySymbol();
     final generalsetting = Provider.of<GeneralProvider>(context, listen: false);
 
     await homeProvider.setLoading(true);
@@ -150,6 +148,24 @@ class HomeState extends State<Home> {
     });
     generalsetting.getGeneralsetting();
     generalsetting.getPages();
+    Utils.getCurrencySymbol();
+  }
+
+  void animateBanner() {
+    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
+      int nextPage = (pageController.page?.round() ?? 0) + 1;
+
+      if (nextPage ==
+          (sectionDataProvider.sectionBannerModel.result?.length ?? 0)) {
+        nextPage = 0;
+      }
+
+      pageController
+          .animateToPage(nextPage,
+              duration: Duration(milliseconds: Constant.animationDuration),
+              curve: Curves.linear)
+          .then((_) => animateBanner());
+    });
   }
 
   Future<void> setSelectedTab(int tabPos) async {
@@ -178,6 +194,9 @@ class HomeState extends State<Home> {
     await sectionDataProvider.getSectionList(
         position == 0 ? "0" : (sectionTypeList?[position - 1].id),
         position == 0 ? "1" : "2");
+
+    /* Banner & Dots Sliding */
+    animateBanner();
   }
 
   openDetailPage(String pageName, int videoId, int upcomingType, int videoType,
@@ -481,27 +500,11 @@ class HomeState extends State<Home> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.homeBanner,
-            child: CarouselSlider.builder(
+            child: PageView.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              carouselController: pageController,
-              options: CarouselOptions(
-                initialPage: 0,
-                height: Dimens.homeBanner,
-                enlargeCenterPage: false,
-                autoPlay: true,
-                autoPlayCurve: Curves.easeInOutQuart,
-                enableInfiniteScroll: true,
-                autoPlayInterval:
-                    Duration(milliseconds: Constant.bannerDuration),
-                autoPlayAnimationDuration:
-                    Duration(milliseconds: Constant.animationDuration),
-                viewportFraction: 1.0,
-                onPageChanged: (val, _) async {
-                  await sectionDataProvider.setCurrentBanner(val);
-                },
-              ),
-              itemBuilder:
-                  (BuildContext context, int index, int pageViewIndex) {
+              controller: pageController,
+              allowImplicitScrolling: true,
+              itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   focusColor: white,
                   borderRadius: BorderRadius.circular(0),
@@ -558,15 +561,17 @@ class HomeState extends State<Home> {
             bottom: 0,
             child: Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
-                return CarouselIndicator(
+                return SmoothPageIndicator(
                   count: (sectionBannerList?.length ?? 0),
-                  index: sectionDataProvider.cBannerIndex,
-                  space: 8,
-                  height: 8,
-                  width: 8,
-                  cornerRadius: 4,
-                  color: dotsDefaultColor,
-                  activeColor: dotsActiveColor,
+                  controller: pageController,
+                  effect: const ScrollingDotsEffect(
+                    spacing: 8,
+                    radius: 4,
+                    activeDotColor: dotsActiveColor,
+                    dotColor: dotsDefaultColor,
+                    dotHeight: 8,
+                    dotWidth: 8,
+                  ),
                 );
               },
             ),
@@ -583,25 +588,11 @@ class HomeState extends State<Home> {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: Dimens.homeWebBanner,
-        child: CarouselSlider.builder(
+        child: PageView.builder(
           itemCount: (sectionBannerList?.length ?? 0),
-          carouselController: pageController,
-          options: CarouselOptions(
-            initialPage: 0,
-            height: Dimens.homeWebBanner,
-            enlargeCenterPage: false,
-            autoPlay: true,
-            autoPlayCurve: Curves.easeInOutQuart,
-            enableInfiniteScroll: true,
-            autoPlayInterval: Duration(milliseconds: Constant.bannerDuration),
-            autoPlayAnimationDuration:
-                Duration(milliseconds: Constant.animationDuration),
-            viewportFraction: 0.95,
-            onPageChanged: (val, _) async {
-              await sectionDataProvider.setCurrentBanner(val);
-            },
-          ),
-          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
+          controller: pageController,
+          allowImplicitScrolling: true,
+          itemBuilder: (BuildContext context, int index) {
             return InkWell(
               focusColor: white,
               borderRadius: BorderRadius.circular(4),

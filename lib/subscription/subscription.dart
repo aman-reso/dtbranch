@@ -42,6 +42,7 @@ class SubscriptionState extends State<Subscription> {
   }
 
   _getData() async {
+    Utils.getCurrencySymbol();
     await subscriptionProvider.getPackages();
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;

@@ -216,5 +216,6 @@
     "verify_tvcode": "Verify your Tv code",
     "tvcode_desc": "Enter your Tv Code and login into Tv app.",
     "no_payment": "Methods Not Found.",
-    "no_payment_desc": "Payments methods not available."
+    "no_payment_desc": "Payments methods not available.",
+    "cash_payment_msg": "Thank you for choosing Cash payment. Contact your administrator."
 }

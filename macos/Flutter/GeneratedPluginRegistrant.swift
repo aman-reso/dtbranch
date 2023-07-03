@@ -13,7 +13,7 @@ import firebase_core
 import flutter_local_notifications
 import flutter_secure_storage_macos
 import in_app_purchase_storekit
-import package_info_plus_macos
+import package_info_plus
 import path_provider_foundation
 import shared_preferences_foundation
 import sign_in_with_apple

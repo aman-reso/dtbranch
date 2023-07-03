@@ -666,7 +666,7 @@ class AllPaymentState extends State<AllPayment> {
                           _initInAppPurchase();
                         },
                         child: _buildPGButton(
-                            "inapp.png", "InApp Purchase", 35, 110),
+                            "pg_inapp.png", "InApp Purchase", 35, 110),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -691,7 +691,8 @@ class AllPaymentState extends State<AllPayment> {
                           await paymentProvider.setCurrentPayment("paypal");
                           _paypalInit();
                         },
-                        child: _buildPGButton("paypal.png", "Paypal", 35, 130),
+                        child:
+                            _buildPGButton("pg_paypal.png", "Paypal", 35, 130),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -717,8 +718,8 @@ class AllPaymentState extends State<AllPayment> {
                           await paymentProvider.setCurrentPayment("razorpay");
                           _initializeRazorpay();
                         },
-                        child:
-                            _buildPGButton("razorpay.png", "Razorpay", 35, 130),
+                        child: _buildPGButton(
+                            "pg_razorpay.png", "Razorpay", 35, 130),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -743,7 +744,7 @@ class AllPaymentState extends State<AllPayment> {
                           await paymentProvider.setCurrentPayment("paytm");
                           _paytmInit();
                         },
-                        child: _buildPGButton("paytm.png", "Paytm", 30, 90),
+                        child: _buildPGButton("pg_paytm.png", "Paytm", 30, 90),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -770,7 +771,7 @@ class AllPaymentState extends State<AllPayment> {
                               .setCurrentPayment("flutterwave");
                         },
                         child: _buildPGButton(
-                            "flutterwave.png", "Flutterwave", 35, 130),
+                            "pg_flutterwave.png", "Flutterwave", 35, 130),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -795,7 +796,8 @@ class AllPaymentState extends State<AllPayment> {
                           await paymentProvider.setCurrentPayment("stripe");
                           _stripeInit();
                         },
-                        child: _buildPGButton("stripe.png", "Stripe", 35, 100),
+                        child:
+                            _buildPGButton("pg_stripe.png", "Stripe", 35, 100),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -821,7 +823,33 @@ class AllPaymentState extends State<AllPayment> {
                           await paymentProvider.setCurrentPayment("payumoney");
                         },
                         child: _buildPGButton(
-                            "payumoney.png", "PayU Money", 35, 130),
+                            "pg_payumoney.png", "PayU Money", 35, 130),
+                      ),
+                    )
+                  : const SizedBox.shrink()
+              : const SizedBox.shrink(),
+
+          /* Cash */
+          paymentProvider.paymentOptionModel.result?.cash != null
+              ? paymentProvider.paymentOptionModel.result?.cash?.visibility ==
+                      "1"
+                  ? Card(
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      elevation: 5,
+                      color: lightBlack,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () async {
+                          await paymentProvider.setCurrentPayment("cash");
+                          if (!mounted) return;
+                          Utils.showSnackbar(
+                              context, "info", "cash_payment_msg", true);
+                        },
+                        child: _buildPGButton("pg_cash.png", "Cash", 50, 50),
                       ),
                     )
                   : const SizedBox.shrink()
@@ -896,8 +924,8 @@ class AllPaymentState extends State<AllPayment> {
                           await paymentProvider.setCurrentPayment("razorpay");
                           _initializeRazorpay();
                         },
-                        child:
-                            _buildPGButton("razorpay.png", "Razorpay", 35, 130),
+                        child: _buildPGButton(
+                            "pg_razorpay.png", "Razorpay", 35, 130),
                       ),
                     )
                   : const SizedBox.shrink()

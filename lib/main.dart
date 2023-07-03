@@ -39,7 +39,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -120,7 +119,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     if (!kIsWeb) Utils.enableScreenCapture();
     if (!kIsWeb) _getDeviceInfo();
-    if (!kIsWeb) _getPackage();
     super.initState();
   }
 
@@ -193,17 +191,5 @@ class _MyAppState extends State<MyApp> {
           androidInfo.systemFeatures.contains('android.software.leanback');
       log("isTV =======================> ${Constant.isTV}");
     }
-  }
-
-  _getPackage() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String packageName = packageInfo.packageName;
-    String appVersion = packageInfo.version;
-    String appBuildNumber = packageInfo.buildNumber;
-
-    Constant.appPackageName = packageName;
-    Constant.appVersion = appVersion;
-    Constant.appBuildNumber = appBuildNumber;
-    log("App Package Name : $packageName, App Version : $appVersion, App build Number : $appBuildNumber");
   }
 }

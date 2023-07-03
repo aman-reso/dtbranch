@@ -216,5 +216,6 @@
     "verify_tvcode": "Verifique o código da sua TV",
     "tvcode_desc": "Digite seu código de TV e faça o login no aplicativo de TV.",
     "no_payment": "Métodos não encontrados.",
-    "no_payment_desc": "Métodos de pagamento não disponíveis."
+    "no_payment_desc": "Métodos de pagamento não disponíveis.",
+    "cash_payment_msg": "Obrigado por escolher o pagamento em dinheiro. Entre em contato com seu administrador."
 }

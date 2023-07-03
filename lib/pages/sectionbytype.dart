@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:carousel_indicator/carousel_indicator.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
@@ -33,25 +32,46 @@ class SectionByType extends StatefulWidget {
 }
 
 class SectionByTypeState extends State<SectionByType> {
-  CarouselController pageController = CarouselController();
+  late SectionByTypeProvider sectionByTypeProvider;
+  PageController pageController = PageController();
 
   @override
   void initState() {
+    sectionByTypeProvider =
+        Provider.of<SectionByTypeProvider>(context, listen: false);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getData();
     });
   }
 
-  void _getData() async {
+  _getData() async {
     Utils.getCurrencySymbol();
-    final sectionByTypeProvider =
-        Provider.of<SectionByTypeProvider>(context, listen: false);
     await sectionByTypeProvider.setLoading(true);
     await sectionByTypeProvider.getSectionBanner(
         widget.typeId.toString(), widget.isHomePage.toString());
     await sectionByTypeProvider.getSectionList(
         widget.typeId.toString(), widget.isHomePage.toString());
+
+    /* Banner & Dots Sliding */
+    animateBanner();
+  }
+
+  void animateBanner() {
+    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
+      int nextPage = (pageController.page?.round() ?? 0) + 1;
+
+      if (nextPage ==
+          (sectionByTypeProvider.sectionBannerModel.result?.length ?? 0)) {
+        nextPage = 0;
+      }
+
+      pageController
+          .animateToPage(nextPage,
+              duration: Duration(milliseconds: Constant.animationDuration),
+              curve: Curves.linear)
+          .then((_) => animateBanner());
+    });
   }
 
   @override
@@ -138,8 +158,6 @@ class SectionByTypeState extends State<SectionByType> {
   }
 
   Widget homebanner(List<banner.Result>? sectionBannerList) {
-    final sectionByTypeProvider =
-        Provider.of<SectionByTypeProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
@@ -147,24 +165,11 @@ class SectionByTypeState extends State<SectionByType> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.homeBanner,
-            child: CarouselSlider.builder(
+            child: PageView.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              carouselController: pageController,
-              options: CarouselOptions(
-                initialPage: 0,
-                height: Dimens.homeBanner,
-                enlargeCenterPage: false,
-                autoPlay: true,
-                autoPlayCurve: Curves.fastOutSlowIn,
-                enableInfiniteScroll: true,
-                autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                viewportFraction: 1.0,
-                onPageChanged: (val, _) async {
-                  await sectionByTypeProvider.setCurrentBanner(val);
-                },
-              ),
-              itemBuilder:
-                  (BuildContext context, int index, int pageViewIndex) {
+              controller: pageController,
+              allowImplicitScrolling: true,
+              itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");

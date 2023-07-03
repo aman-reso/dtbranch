@@ -48,6 +48,26 @@ class Utils {
     }
   }
 
+  static void animateBanner({
+    required PageController pageController,
+    required int pageCount,
+  }) {
+    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
+      int nextPage = (pageController.page?.round() ?? 0) + 1;
+
+      if (nextPage == pageCount) {
+        nextPage = 0;
+      }
+
+      pageController
+          .animateToPage(nextPage,
+              duration: Duration(milliseconds: Constant.animationDuration),
+              curve: Curves.linear)
+          .then((_) => animateBanner(
+              pageController: pageController, pageCount: pageCount));
+    });
+  }
+
   static showToast(String msg) {
     Fluttertoast.showToast(
       msg: msg,

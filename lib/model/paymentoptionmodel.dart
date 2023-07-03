@@ -30,19 +30,20 @@ class PaymentOptionModel {
   Map<String, dynamic> toJson() => {
         "status": status,
         "message": message,
-        "result": result?.toJson() ?? {},
+        "result": result == null ? {} : result?.toJson() ?? {},
       };
 }
 
 class Result {
   Result({
-    required this.inAppPurchage,
-    required this.paypal,
-    required this.razorpay,
-    required this.flutterWave,
-    required this.payUMoney,
-    required this.payTm,
-    required this.stripe,
+    this.inAppPurchage,
+    this.paypal,
+    this.razorpay,
+    this.flutterWave,
+    this.payUMoney,
+    this.payTm,
+    this.stripe,
+    this.cash,
   });
 
   PaymentGatewayData? inAppPurchage;
@@ -52,6 +53,7 @@ class Result {
   PaymentGatewayData? payUMoney;
   PaymentGatewayData? payTm;
   PaymentGatewayData? stripe;
+  PaymentGatewayData? cash;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
         inAppPurchage: PaymentGatewayData.fromJson(json["inapppurchage"]),
@@ -61,33 +63,36 @@ class Result {
         payUMoney: PaymentGatewayData.fromJson(json["payumoney"]),
         payTm: PaymentGatewayData.fromJson(json["paytm"]),
         stripe: PaymentGatewayData.fromJson(json["stripe"]),
+        cash: PaymentGatewayData.fromJson(json["cash"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "inapppurchage": inAppPurchage?.toJson() ?? {},
-        "paypal": paypal?.toJson() ?? {},
-        "razorpay": razorpay?.toJson() ?? {},
-        "flutterwave": flutterWave?.toJson() ?? {},
-        "payumoney": payUMoney?.toJson() ?? {},
-        "paytm": payTm?.toJson() ?? {},
-        "stripe": stripe?.toJson() ?? {},
+        "inapppurchage":
+            inAppPurchage == null ? {} : inAppPurchage?.toJson() ?? {},
+        "paypal": paypal == null ? {} : paypal?.toJson() ?? {},
+        "razorpay": razorpay == null ? {} : razorpay?.toJson() ?? {},
+        "flutterwave": flutterWave == null ? {} : flutterWave?.toJson() ?? {},
+        "payumoney": payUMoney == null ? {} : payUMoney?.toJson() ?? {},
+        "paytm": payTm == null ? {} : payTm?.toJson() ?? {},
+        "stripe": stripe == null ? {} : stripe?.toJson() ?? {},
+        "cash": cash == null ? {} : cash?.toJson() ?? {},
       };
 }
 
 class PaymentGatewayData {
   PaymentGatewayData({
-    required this.id,
-    required this.name,
-    required this.visibility,
-    required this.isLive,
-    required this.liveKey1,
-    required this.liveKey2,
-    required this.liveKey3,
-    required this.testKey1,
-    required this.testKey2,
-    required this.testKey3,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.name,
+    this.visibility,
+    this.isLive,
+    this.liveKey1,
+    this.liveKey2,
+    this.liveKey3,
+    this.testKey1,
+    this.testKey2,
+    this.testKey3,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int? id;

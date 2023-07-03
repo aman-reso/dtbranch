@@ -219,15 +219,16 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
         setState(() {});
       });
     } else {
-      _trailerNormalController = VideoPlayerController.network(trailerUrl ?? "")
-        ..initialize().then((value) {
-          if (!mounted) return;
-          setState(() {
-            debugPrint(
-                "isPlaying =========> ${_trailerNormalController?.value.isPlaying}");
-            _trailerNormalController?.play();
-          });
-        });
+      _trailerNormalController =
+          VideoPlayerController.networkUrl(Uri.parse(trailerUrl ?? ""))
+            ..initialize().then((value) {
+              if (!mounted) return;
+              setState(() {
+                debugPrint(
+                    "isPlaying =========> ${_trailerNormalController?.value.isPlaying}");
+                _trailerNormalController?.play();
+              });
+            });
       _trailerNormalController?.setLooping(true);
       _trailerNormalController?.addListener(() async {
         if (_trailerNormalController?.value.hasError ?? false) {

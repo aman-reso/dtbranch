@@ -28,7 +28,7 @@ class NotificationService {
   void createNotification(int count, int i, int id) {
     //show the notifications.
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '$id', 'progress channel', 'progress channel description',
+        '$id', 'progress channel',
         channelShowBadge: false,
         importance: Importance.max,
         priority: Priority.high,

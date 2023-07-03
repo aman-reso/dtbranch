@@ -33,7 +33,6 @@ import 'package:provider/provider.dart';
 import 'package:razorpay_web/razorpay_web.dart';
 
 final bool _kAutoConsume = Platform.isIOS || true;
-String _kConsumableId = 'android.test.purchased';
 
 class AllPayment extends StatefulWidget {
   final String? payType,
@@ -275,6 +274,36 @@ class AllPaymentState extends State<AllPayment> {
       }
     } else {
       await prDialog.hide();
+    }
+  }
+
+  openPayment({required String pgName}) async {
+    debugPrint("finalAmount =============> ${paymentProvider.finalAmount}");
+    if (paymentProvider.finalAmount != "0") {
+      if (pgName == "inapppurchage") {
+        _initInAppPurchase();
+      } else if (pgName == "paypal") {
+        _paypalInit();
+      } else if (pgName == "razorpay") {
+        _initializeRazorpay();
+      } else if (pgName == "flutterwave") {
+      } else if (pgName == "payumoney") {
+      } else if (pgName == "paytm") {
+        _paytmInit();
+      } else if (pgName == "stripe") {
+        _stripeInit();
+      } else if (pgName == "cash") {
+        if (!mounted) return;
+        Utils.showSnackbar(context, "info", "cash_payment_msg", true);
+      }
+    } else {
+      if (widget.payType == "Package") {
+        addTransaction(widget.itemId, widget.itemTitle,
+            paymentProvider.finalAmount, paymentId, widget.currency);
+      } else if (widget.payType == "Rent") {
+        addRentTransaction(widget.itemId, paymentProvider.finalAmount,
+            widget.typeId, widget.videoType);
+      }
     }
   }
 
@@ -663,7 +692,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("inapp");
-                          _initInAppPurchase();
+                          openPayment(pgName: "inapppurchage");
                         },
                         child: _buildPGButton(
                             "pg_inapp.png", "InApp Purchase", 35, 110),
@@ -689,7 +718,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("paypal");
-                          _paypalInit();
+                          openPayment(pgName: "paypal");
                         },
                         child:
                             _buildPGButton("pg_paypal.png", "Paypal", 35, 130),
@@ -716,7 +745,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("razorpay");
-                          _initializeRazorpay();
+                          openPayment(pgName: "razorpay");
                         },
                         child: _buildPGButton(
                             "pg_razorpay.png", "Razorpay", 35, 130),
@@ -742,7 +771,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("paytm");
-                          _paytmInit();
+                          openPayment(pgName: "paytm");
                         },
                         child: _buildPGButton("pg_paytm.png", "Paytm", 30, 90),
                       ),
@@ -769,6 +798,7 @@ class AllPaymentState extends State<AllPayment> {
                         onTap: () async {
                           await paymentProvider
                               .setCurrentPayment("flutterwave");
+                          openPayment(pgName: "flutterwave");
                         },
                         child: _buildPGButton(
                             "pg_flutterwave.png", "Flutterwave", 35, 130),
@@ -794,7 +824,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("stripe");
-                          _stripeInit();
+                          openPayment(pgName: "stripe");
                         },
                         child:
                             _buildPGButton("pg_stripe.png", "Stripe", 35, 100),
@@ -821,6 +851,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("payumoney");
+                          openPayment(pgName: "payumoney");
                         },
                         child: _buildPGButton(
                             "pg_payumoney.png", "PayU Money", 35, 130),
@@ -845,9 +876,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("cash");
-                          if (!mounted) return;
-                          Utils.showSnackbar(
-                              context, "info", "cash_payment_msg", true);
+                          openPayment(pgName: "cash");
                         },
                         child: _buildPGButton("pg_cash.png", "Cash", 50, 50),
                       ),
@@ -922,7 +951,7 @@ class AllPaymentState extends State<AllPayment> {
                         borderRadius: BorderRadius.circular(8),
                         onTap: () async {
                           await paymentProvider.setCurrentPayment("razorpay");
-                          _initializeRazorpay();
+                          openPayment(pgName: "razorpay");
                         },
                         child: _buildPGButton(
                             "pg_razorpay.png", "Razorpay", 35, 130),
@@ -1479,12 +1508,12 @@ class AllPaymentState extends State<AllPayment> {
       });
     } on stripe.StripeException catch (e) {
       debugPrint('Error is:---> $e');
-      AlertDialog(
+      const AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              children: const [
+              children: [
                 Icon(
                   Icons.cancel,
                   color: Colors.red,

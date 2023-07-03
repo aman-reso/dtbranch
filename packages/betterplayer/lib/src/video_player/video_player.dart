@@ -204,7 +204,9 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     );
     _creatingCompleter.complete(null);
 
+    // ignore: sdk_version_since
     unawaited(_applyLooping());
+    // ignore: sdk_version_since
     unawaited(_applyVolume());
 
     void eventListener(VideoEvent event) {

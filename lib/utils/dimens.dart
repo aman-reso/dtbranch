@@ -34,7 +34,7 @@ class Dimens {
   static double heightWatchlist = 100;
 
   static double homeBanner = 250;
-  static double homeWebBanner = 300;
+  static double homeWebBanner = 350;
   static double webBannerImgPr = 0.59; // Should be less than 1.0
   static double detailPoster = 250;
   static double detailWebPoster = 360;
@@ -47,7 +47,7 @@ class Dimens {
   static double castCrewPoster = 525;
   static double channelPoster = 222;
   static double channelBanner = 250;
-  static double channelWebBanner = 290;
+  static double channelWebBanner = 350;
   static double rentBanner = 103;
 
   static double widthPackage = 130;

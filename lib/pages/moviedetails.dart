@@ -144,7 +144,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   void didPushNext() {
     debugPrint("didPushNext");
     if (_trailerYoutubeController != null) {
-      _trailerYoutubeController?.pauseVideo();
+      _trailerYoutubeController?.close();
+      _trailerYoutubeController = null;
     }
     if (_trailerNormalController != null) {
       _trailerNormalController?.dispose();

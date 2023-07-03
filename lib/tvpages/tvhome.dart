@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:carousel_indicator/carousel_indicator.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/tvpages/tvchannels.dart';
@@ -10,7 +10,6 @@ import 'package:dtlive/shimmer/shimmerutils.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/utils/strings.dart';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectiontypemodel.dart' as type;
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
@@ -33,6 +32,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class TVHome extends StatefulWidget {
   final String? pageName;
@@ -49,7 +49,8 @@ class TVHomeState extends State<TVHome> {
   final TextEditingController searchController = TextEditingController();
   late HomeProvider homeProvider;
   late SearchProvider searchProvider;
-  CarouselController pageController = CarouselController();
+  PageController pageController = PageController(initialPage: 0);
+  CarouselController carouselController = CarouselController();
   int? videoId, videoType, typeId;
   bool isSearchEnable = false;
   String? currentPage, langCatName, mSearchText;
@@ -139,6 +140,26 @@ class TVHomeState extends State<TVHome> {
     await sectionDataProvider.getSectionList(
         position == 0 ? "0" : (sectionTypeList?[position - 1].id),
         position == 0 ? "1" : "2");
+
+    /* Banner & Dots Sliding */
+    animateBanner();
+  }
+
+  void animateBanner() {
+    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
+      int nextPage = (pageController.page?.round() ?? 0) + 1;
+
+      if (nextPage ==
+          (sectionDataProvider.sectionBannerModel.result?.length ?? 0)) {
+        nextPage = 0;
+      }
+
+      pageController
+          .animateToPage(nextPage,
+              duration: Duration(milliseconds: Constant.animationDuration),
+              curve: Curves.linear)
+          .then((_) => animateBanner());
+    });
   }
 
   openDetailPage(String pageName, int videoId, int upcomingType, int videoType,
@@ -159,6 +180,7 @@ class TVHomeState extends State<TVHome> {
 
   @override
   void dispose() {
+    pageController.dispose();
     super.dispose();
   }
 
@@ -903,7 +925,7 @@ class TVHomeState extends State<TVHome> {
         height: Dimens.homeWebBanner,
         child: CarouselSlider.builder(
           itemCount: (sectionBannerList?.length ?? 0),
-          carouselController: pageController,
+          carouselController: carouselController,
           options: CarouselOptions(
             initialPage: 0,
             height: Dimens.homeWebBanner,
@@ -1071,27 +1093,11 @@ class TVHomeState extends State<TVHome> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.homeBanner,
-            child: CarouselSlider.builder(
+            child: PageView.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              carouselController: pageController,
-              options: CarouselOptions(
-                initialPage: 0,
-                height: Dimens.homeBanner,
-                enlargeCenterPage: false,
-                autoPlay: true,
-                autoPlayCurve: Curves.easeInOutQuart,
-                enableInfiniteScroll: true,
-                autoPlayInterval:
-                    Duration(milliseconds: Constant.bannerDuration),
-                autoPlayAnimationDuration:
-                    Duration(milliseconds: Constant.animationDuration),
-                viewportFraction: 1.0,
-                onPageChanged: (val, _) async {
-                  await sectionDataProvider.setCurrentBanner(val);
-                },
-              ),
-              itemBuilder:
-                  (BuildContext context, int index, int pageViewIndex) {
+              controller: pageController,
+              allowImplicitScrolling: true,
+              itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   focusColor: white,
                   borderRadius: BorderRadius.circular(0),
@@ -1148,15 +1154,17 @@ class TVHomeState extends State<TVHome> {
             bottom: 0,
             child: Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
-                return CarouselIndicator(
+                return SmoothPageIndicator(
                   count: (sectionBannerList?.length ?? 0),
-                  index: sectionDataProvider.cBannerIndex,
-                  space: 8,
-                  height: 8,
-                  width: 8,
-                  cornerRadius: 4,
-                  color: dotsDefaultColor,
-                  activeColor: dotsActiveColor,
+                  controller: pageController,
+                  effect: const ScrollingDotsEffect(
+                    spacing: 8,
+                    radius: 4,
+                    activeDotColor: dotsActiveColor,
+                    dotColor: dotsDefaultColor,
+                    dotHeight: 8,
+                    dotWidth: 8,
+                  ),
                 );
               },
             ),

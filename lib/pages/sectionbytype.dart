@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
@@ -16,6 +15,7 @@ import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class SectionByType extends StatefulWidget {
   final String appBarTitle, isHomePage;
@@ -33,7 +33,7 @@ class SectionByType extends StatefulWidget {
 
 class SectionByTypeState extends State<SectionByType> {
   late SectionByTypeProvider sectionByTypeProvider;
-  PageController pageController = PageController();
+  PageController pageController = PageController(initialPage: 0);
 
   @override
   void initState() {
@@ -76,6 +76,7 @@ class SectionByTypeState extends State<SectionByType> {
 
   @override
   void dispose() {
+    pageController.dispose();
     super.dispose();
   }
 
@@ -219,15 +220,17 @@ class SectionByTypeState extends State<SectionByType> {
             bottom: 0,
             child: Consumer<SectionByTypeProvider>(
               builder: (context, sectionByTypeProvider, child) {
-                return CarouselIndicator(
+                return SmoothPageIndicator(
                   count: (sectionBannerList?.length ?? 0),
-                  index: sectionByTypeProvider.cBannerIndex,
-                  space: 8,
-                  height: 8,
-                  width: 8,
-                  cornerRadius: 4,
-                  color: dotsDefaultColor,
-                  activeColor: dotsActiveColor,
+                  controller: pageController,
+                  effect: const ScrollingDotsEffect(
+                    spacing: 8,
+                    radius: 4,
+                    activeDotColor: dotsActiveColor,
+                    dotColor: dotsDefaultColor,
+                    dotHeight: 8,
+                    dotWidth: 8,
+                  ),
                 );
               },
             ),

@@ -85,8 +85,8 @@ class PodGetXVideoController extends _PodGesturesController {
       case PodVideoPlayerType.network:
 
         ///
-        _videoCtr = VideoPlayerController.network(
-          playVideoFrom.dataSource!,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(playVideoFrom.dataSource!),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
@@ -101,8 +101,8 @@ class PodGetXVideoController extends _PodGesturesController {
         );
 
         ///
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(_url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
@@ -122,8 +122,8 @@ class PodGetXVideoController extends _PodGesturesController {
         );
 
         ///
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(_url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
@@ -142,8 +142,8 @@ class PodGetXVideoController extends _PodGesturesController {
           videoUrls: vimeoOrVideoUrls,
         );
 
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(_url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,
@@ -187,8 +187,8 @@ class PodGetXVideoController extends _PodGesturesController {
           videoUrls: vimeoOrVideoUrls,
         );
 
-        _videoCtr = VideoPlayerController.network(
-          _url,
+        _videoCtr = VideoPlayerController.networkUrl(
+          Uri.parse(_url),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,

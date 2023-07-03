@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -43,6 +44,7 @@ class HomeState extends State<Home> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
   PageController pageController = PageController(initialPage: 0);
+  CarouselController carouselController = CarouselController();
   final tabScrollController = ScrollController();
   late ListObserverController observerController;
   late HomeProvider homeProvider;
@@ -151,23 +153,6 @@ class HomeState extends State<Home> {
     Utils.getCurrencySymbol();
   }
 
-  void animateBanner() {
-    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
-      int nextPage = (pageController.page?.round() ?? 0) + 1;
-
-      if (nextPage ==
-          (sectionDataProvider.sectionBannerModel.result?.length ?? 0)) {
-        nextPage = 0;
-      }
-
-      pageController
-          .animateToPage(nextPage,
-              duration: Duration(milliseconds: Constant.animationDuration),
-              curve: Curves.linear)
-          .then((_) => animateBanner());
-    });
-  }
-
   Future<void> setSelectedTab(int tabPos) async {
     debugPrint("setSelectedTab tabPos ====> $tabPos");
     if (!mounted) return;
@@ -199,6 +184,23 @@ class HomeState extends State<Home> {
     animateBanner();
   }
 
+  void animateBanner() {
+    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
+      int nextPage = (pageController.page?.round() ?? 0) + 1;
+
+      if (nextPage ==
+          (sectionDataProvider.sectionBannerModel.result?.length ?? 0)) {
+        nextPage = 0;
+      }
+
+      pageController
+          .animateToPage(nextPage,
+              duration: Duration(milliseconds: Constant.animationDuration),
+              curve: Curves.linear)
+          .then((_) => animateBanner());
+    });
+  }
+
   openDetailPage(String pageName, int videoId, int upcomingType, int videoType,
       int typeId) async {
     debugPrint("pageName =======> $pageName");
@@ -221,6 +223,7 @@ class HomeState extends State<Home> {
 
   @override
   void dispose() {
+    pageController.dispose();
     super.dispose();
   }
 
@@ -588,11 +591,25 @@ class HomeState extends State<Home> {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: Dimens.homeWebBanner,
-        child: PageView.builder(
+        child: CarouselSlider.builder(
           itemCount: (sectionBannerList?.length ?? 0),
-          controller: pageController,
-          allowImplicitScrolling: true,
-          itemBuilder: (BuildContext context, int index) {
+          carouselController: carouselController,
+          options: CarouselOptions(
+            initialPage: 0,
+            height: Dimens.homeWebBanner,
+            enlargeCenterPage: false,
+            autoPlay: true,
+            autoPlayCurve: Curves.easeInOutQuart,
+            enableInfiniteScroll: true,
+            autoPlayInterval: Duration(milliseconds: Constant.bannerDuration),
+            autoPlayAnimationDuration:
+                Duration(milliseconds: Constant.animationDuration),
+            viewportFraction: 0.95,
+            onPageChanged: (val, _) async {
+              await sectionDataProvider.setCurrentBanner(val);
+            },
+          ),
+          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
             return InkWell(
               focusColor: white,
               borderRadius: BorderRadius.circular(4),

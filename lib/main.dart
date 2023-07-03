@@ -155,17 +155,14 @@ class _MyAppState extends State<MyApp> {
             return locale;
           },
           builder: (context, child) {
-            return ResponsiveWrapper.builder(
-              BouncingScrollWrapper.builder(context, child!),
-              minWidth: 360,
-              defaultScale: true,
+            return ResponsiveBreakpoints.builder(
+              child: child!,
               breakpoints: [
-                const ResponsiveBreakpoint.resize(360, name: MOBILE),
-                const ResponsiveBreakpoint.autoScale(800, name: TABLET),
-                const ResponsiveBreakpoint.autoScale(1000, name: DESKTOP),
-                const ResponsiveBreakpoint.autoScale(1250, name: "4K"),
+                const Breakpoint(start: 0, end: 360, name: MOBILE),
+                const Breakpoint(start: 361, end: 800, name: TABLET),
+                const Breakpoint(start: 801, end: 1000, name: DESKTOP),
+                const Breakpoint(start: 1001, end: double.infinity, name: '4K'),
               ],
-              background: Container(color: appBgColor),
             );
           },
           home: (kIsWeb) ? const TVHome(pageName: "") : const Splash(),

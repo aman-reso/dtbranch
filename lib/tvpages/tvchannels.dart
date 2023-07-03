@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:carousel_indicator/carousel_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
-import 'package:dtlive/pages/home.dart';
 import 'package:dtlive/pages/loginsocial.dart';
 import 'package:dtlive/pages/player_pod.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
@@ -25,6 +23,7 @@ import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class TVChannels extends StatefulWidget {
   const TVChannels({Key? key}) : super(key: key);
@@ -34,28 +33,49 @@ class TVChannels extends StatefulWidget {
 }
 
 class TVChannelsState extends State<TVChannels> {
-  CarouselController pageController = CarouselController();
-  HomeState? homeStateObject;
+  late ChannelSectionProvider channelSectionProvider;
+  PageController pageController = PageController(initialPage: 0);
+  CarouselController carouselController = CarouselController();
 
   @override
   void initState() {
-    homeStateObject = context.findAncestorStateOfType<HomeState>();
+    channelSectionProvider =
+        Provider.of<ChannelSectionProvider>(context, listen: false);
     super.initState();
     _getData();
   }
 
   _getData() async {
-    final channelSectionProvider =
-        Provider.of<ChannelSectionProvider>(context, listen: false);
     await channelSectionProvider.getChannelSection();
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
       setState(() {});
     });
+
+    /* Banner & Dots Sliding */
+    animateBanner();
+  }
+
+  void animateBanner() {
+    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
+      int nextPage = (pageController.page?.round() ?? 0) + 1;
+
+      if (nextPage ==
+          (channelSectionProvider.channelSectionModel.liveUrl?.length ?? 0)) {
+        nextPage = 0;
+      }
+
+      pageController
+          .animateToPage(nextPage,
+              duration: Duration(milliseconds: Constant.animationDuration),
+              curve: Curves.linear)
+          .then((_) => animateBanner());
+    });
   }
 
   @override
   void dispose() {
+    pageController.dispose();
     super.dispose();
   }
 
@@ -70,8 +90,6 @@ class TVChannelsState extends State<TVChannels> {
   }
 
   Widget _buildChannelPage() {
-    final channelSectionProvider =
-        Provider.of<ChannelSectionProvider>(context, listen: false);
     if (channelSectionProvider.loading) {
       return SingleChildScrollView(
         child: channelShimmer(),
@@ -144,8 +162,6 @@ class TVChannelsState extends State<TVChannels> {
   }
 
   Widget _mobileChannelBanner(List<banner.LiveUrl>? sectionBannerList) {
-    final channelSectionProvider =
-        Provider.of<ChannelSectionProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return Stack(
         alignment: AlignmentDirectional.bottomCenter,
@@ -153,27 +169,11 @@ class TVChannelsState extends State<TVChannels> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.channelBanner,
-            child: CarouselSlider.builder(
+            child: PageView.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              carouselController: pageController,
-              options: CarouselOptions(
-                initialPage: 0,
-                height: Dimens.channelBanner,
-                enlargeCenterPage: false,
-                autoPlay: true,
-                autoPlayCurve: Curves.easeInOutQuart,
-                enableInfiniteScroll: true,
-                autoPlayInterval:
-                    Duration(milliseconds: Constant.bannerDuration),
-                autoPlayAnimationDuration:
-                    Duration(milliseconds: Constant.animationDuration),
-                viewportFraction: 1.0,
-                onPageChanged: (val, _) async {
-                  await channelSectionProvider.setCurrentBanner(val);
-                },
-              ),
-              itemBuilder:
-                  (BuildContext context, int index, int pageViewIndex) {
+              controller: pageController,
+              allowImplicitScrolling: true,
+              itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   focusColor: white,
                   borderRadius: BorderRadius.circular(0),
@@ -222,15 +222,17 @@ class TVChannelsState extends State<TVChannels> {
             bottom: 0,
             child: Consumer<ChannelSectionProvider>(
               builder: (context, channelSectionProvider, child) {
-                return CarouselIndicator(
+                return SmoothPageIndicator(
                   count: (sectionBannerList?.length ?? 0),
-                  index: channelSectionProvider.cBannerIndex,
-                  space: 8,
-                  height: 8,
-                  width: 8,
-                  cornerRadius: 4,
-                  color: dotsDefaultColor,
-                  activeColor: dotsActiveColor,
+                  controller: pageController,
+                  effect: const ScrollingDotsEffect(
+                    spacing: 8,
+                    radius: 4,
+                    activeDotColor: dotsActiveColor,
+                    dotColor: dotsDefaultColor,
+                    dotHeight: 8,
+                    dotWidth: 8,
+                  ),
                 );
               },
             ),
@@ -243,15 +245,13 @@ class TVChannelsState extends State<TVChannels> {
   }
 
   Widget _webChannelBanner(List<banner.LiveUrl>? sectionBannerList) {
-    final sectionDataProvider =
-        Provider.of<ChannelSectionProvider>(context, listen: false);
     if ((sectionBannerList?.length ?? 0) > 0) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: Dimens.channelWebBanner,
         child: CarouselSlider.builder(
           itemCount: (sectionBannerList?.length ?? 0),
-          carouselController: pageController,
+          carouselController: carouselController,
           options: CarouselOptions(
             initialPage: 0,
             height: Dimens.channelWebBanner,
@@ -264,7 +264,7 @@ class TVChannelsState extends State<TVChannels> {
                 Duration(milliseconds: Constant.animationDuration),
             viewportFraction: 0.95,
             onPageChanged: (val, _) async {
-              await sectionDataProvider.setCurrentBanner(val);
+              await channelSectionProvider.setCurrentBanner(val);
             },
           ),
           itemBuilder: (BuildContext context, int index, int pageViewIndex) {

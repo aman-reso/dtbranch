@@ -31,7 +31,7 @@ class PlayerYoutube extends StatefulWidget {
 }
 
 class PlayerYoutubeState extends State<PlayerYoutube> {
-  late YoutubePlayerController controller;
+  YoutubePlayerController? controller;
   bool fullScreen = false;
   late PlayerProvider playerProvider;
   int? playerCPosition, videoDuration;
@@ -50,6 +50,14 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
     await playerProvider.addVideoView(widget.videoId.toString(),
         widget.videoType.toString(), widget.otherId.toString());
 
+    controller = YoutubePlayerController(
+      params: const YoutubePlayerParams(
+        showControls: true,
+        mute: false,
+        showFullscreenButton: true,
+        loop: false,
+      ),
+    );
     debugPrint("videoUrl :===> ${widget.videoUrl}");
     var videoId = YoutubePlayerController.convertUrlToId(widget.videoUrl ?? "");
     debugPrint("videoId :====> $videoId");
@@ -79,26 +87,7 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
         body: SafeArea(
           child: Stack(
             children: [
-              YoutubePlayerScaffold(
-                backgroundColor: appBgColor,
-                controller: controller,
-                autoFullScreen: true,
-                defaultOrientations: const [
-                  DeviceOrientation.landscapeLeft,
-                  DeviceOrientation.landscapeRight,
-                ],
-                builder: (context, player) {
-                  return Scaffold(
-                    body: Center(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return player;
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
+              _buildPlayer(),
               if (!kIsWeb)
                 Positioned(
                   top: 15,
@@ -119,9 +108,36 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
     );
   }
 
+  Widget _buildPlayer() {
+    if (controller == null) {
+      return Utils.pageLoader();
+    } else {
+      return YoutubePlayerScaffold(
+        backgroundColor: appBgColor,
+        controller: controller!,
+        autoFullScreen: true,
+        defaultOrientations: const [
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ],
+        builder: (context, player) {
+          return Scaffold(
+            body: Center(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return player;
+                },
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
+
   @override
   void dispose() {
-    controller.close();
+    controller?.close();
     if (!(kIsWeb || Constant.isTV)) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }

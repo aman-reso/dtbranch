@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/model/channelsectionmodel.dart' as list;
 import 'package:dtlive/model/channelsectionmodel.dart' as banner;
@@ -34,6 +35,7 @@ class Channels extends StatefulWidget {
 class ChannelsState extends State<Channels> {
   PageController pageController = PageController(initialPage: 0);
   late ChannelSectionProvider channelSectionProvider;
+  CarouselController carouselController = CarouselController();
 
   @override
   void initState() {
@@ -74,6 +76,7 @@ class ChannelsState extends State<Channels> {
 
   @override
   void dispose() {
+    pageController.dispose();
     channelSectionProvider.clearProvider();
     super.dispose();
   }
@@ -248,11 +251,25 @@ class ChannelsState extends State<Channels> {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: Dimens.channelWebBanner,
-        child: PageView.builder(
+        child: CarouselSlider.builder(
           itemCount: (sectionBannerList?.length ?? 0),
-          controller: pageController,
-          allowImplicitScrolling: true,
-          itemBuilder: (BuildContext context, int index) {
+          carouselController: carouselController,
+          options: CarouselOptions(
+            initialPage: 0,
+            height: Dimens.channelWebBanner,
+            enlargeCenterPage: false,
+            autoPlay: true,
+            autoPlayCurve: Curves.easeInOutQuart,
+            enableInfiniteScroll: true,
+            autoPlayInterval: Duration(milliseconds: Constant.bannerDuration),
+            autoPlayAnimationDuration:
+                Duration(milliseconds: Constant.animationDuration),
+            viewportFraction: 0.95,
+            onPageChanged: (val, _) async {
+              await channelSectionProvider.setCurrentBanner(val);
+            },
+          ),
+          itemBuilder: (BuildContext context, int index, int pageViewIndex) {
             return InkWell(
               focusColor: white,
               borderRadius: BorderRadius.circular(4),

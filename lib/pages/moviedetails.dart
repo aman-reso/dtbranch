@@ -2089,7 +2089,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                             );
                           } else {
                             if ((kIsWeb || Constant.isTV)) {
-                              Utils.buildWebAlertDialog(context, "login", "");
+                              Utils.buildWebAlertDialog(context, "login", "")
+                                  .then((value) => _getData());
                               return;
                             }
                             Navigator.push(
@@ -2453,7 +2454,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                 }
               } else {
                 if ((kIsWeb || Constant.isTV)) {
-                  Utils.buildWebAlertDialog(context, "login", "");
+                  Utils.buildWebAlertDialog(context, "login", "")
+                      .then((value) => _getData());
                   return;
                 }
                 Navigator.push(
@@ -2512,7 +2514,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                 }
               } else {
                 if ((kIsWeb || Constant.isTV)) {
-                  Utils.buildWebAlertDialog(context, "login", "");
+                  Utils.buildWebAlertDialog(context, "login", "")
+                      .then((value) => _getData());
                   return;
                 }
                 Navigator.push(
@@ -2916,7 +2919,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
               }
             } else {
               if ((kIsWeb || Constant.isTV)) {
-                Utils.buildWebAlertDialog(context, "login", "");
+                Utils.buildWebAlertDialog(context, "login", "")
+                    .then((value) => _getData());
                 return;
               }
               Navigator.push(
@@ -3117,7 +3121,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                         setState(() {});
                       } else {
                         if ((kIsWeb || Constant.isTV)) {
-                          Utils.buildWebAlertDialog(context, "login", "");
+                          Utils.buildWebAlertDialog(context, "login", "")
+                              .then((value) => _getData());
                           return;
                         }
                         Navigator.of(context).push(
@@ -3760,7 +3765,8 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
       }
     } else {
       if ((kIsWeb || Constant.isTV)) {
-        Utils.buildWebAlertDialog(context, "login", "");
+        Utils.buildWebAlertDialog(context, "login", "")
+            .then((value) => _getData());
         return false;
       }
       Navigator.push(

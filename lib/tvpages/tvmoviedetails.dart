@@ -865,7 +865,8 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                               );
                             } else {
                               if ((kIsWeb || Constant.isTV)) {
-                                Utils.buildWebAlertDialog(context, "login", "");
+                                Utils.buildWebAlertDialog(context, "login", "")
+                                    .then((value) => _getData());
                                 return;
                               }
                               Navigator.push(
@@ -2001,7 +2002,8 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
               }
             } else {
               if ((kIsWeb || Constant.isTV)) {
-                Utils.buildWebAlertDialog(context, "login", "");
+                Utils.buildWebAlertDialog(context, "login", "")
+                    .then((value) => _getData());
                 return;
               }
               Navigator.push(
@@ -2057,7 +2059,8 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
               }
             } else {
               if ((kIsWeb || Constant.isTV)) {
-                Utils.buildWebAlertDialog(context, "login", "");
+                Utils.buildWebAlertDialog(context, "login", "")
+                    .then((value) => _getData());
                 return;
               }
               Navigator.push(
@@ -2945,7 +2948,8 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
       }
     } else {
       if ((kIsWeb || Constant.isTV)) {
-        Utils.buildWebAlertDialog(context, "login", "");
+        Utils.buildWebAlertDialog(context, "login", "")
+            .then((value) => _getData());
         return false;
       }
       Navigator.push(

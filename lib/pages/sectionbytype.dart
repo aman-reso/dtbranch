@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dtlive/model/sectionlistmodel.dart';
 import 'package:dtlive/model/sectionlistmodel.dart' as list;
 import 'package:dtlive/model/sectionbannermodel.dart' as banner;
@@ -33,7 +34,7 @@ class SectionByType extends StatefulWidget {
 
 class SectionByTypeState extends State<SectionByType> {
   late SectionByTypeProvider sectionByTypeProvider;
-  PageController pageController = PageController(initialPage: 0);
+  CarouselController carouselController = CarouselController();
 
   @override
   void initState() {
@@ -52,31 +53,10 @@ class SectionByTypeState extends State<SectionByType> {
         widget.typeId.toString(), widget.isHomePage.toString());
     await sectionByTypeProvider.getSectionList(
         widget.typeId.toString(), widget.isHomePage.toString());
-
-    /* Banner & Dots Sliding */
-    animateBanner();
-  }
-
-  void animateBanner() {
-    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
-      int nextPage = (pageController.page?.round() ?? 0) + 1;
-
-      if (nextPage ==
-          (sectionByTypeProvider.sectionBannerModel.result?.length ?? 0)) {
-        nextPage = 0;
-      }
-
-      pageController
-          .animateToPage(nextPage,
-              duration: Duration(milliseconds: Constant.animationDuration),
-              curve: Curves.linear)
-          .then((_) => animateBanner());
-    });
   }
 
   @override
   void dispose() {
-    pageController.dispose();
     super.dispose();
   }
 
@@ -166,11 +146,27 @@ class SectionByTypeState extends State<SectionByType> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.homeBanner,
-            child: PageView.builder(
+            child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              controller: pageController,
-              allowImplicitScrolling: true,
-              itemBuilder: (BuildContext context, int index) {
+              carouselController: carouselController,
+              options: CarouselOptions(
+                initialPage: 0,
+                height: Dimens.homeBanner,
+                enlargeCenterPage: false,
+                autoPlay: true,
+                autoPlayCurve: Curves.linear,
+                enableInfiniteScroll: true,
+                autoPlayInterval:
+                    Duration(milliseconds: Constant.bannerDuration),
+                autoPlayAnimationDuration:
+                    Duration(milliseconds: Constant.animationDuration),
+                viewportFraction: 1.0,
+                onPageChanged: (val, _) async {
+                  await sectionByTypeProvider.setCurrentBanner(val);
+                },
+              ),
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
                   onTap: () {
                     log("Clicked on index ==> $index");
@@ -220,9 +216,9 @@ class SectionByTypeState extends State<SectionByType> {
             bottom: 0,
             child: Consumer<SectionByTypeProvider>(
               builder: (context, sectionByTypeProvider, child) {
-                return SmoothPageIndicator(
+                return AnimatedSmoothIndicator(
                   count: (sectionBannerList?.length ?? 0),
-                  controller: pageController,
+                  activeIndex: sectionByTypeProvider.cBannerIndex ?? 0,
                   effect: const ScrollingDotsEffect(
                     spacing: 8,
                     radius: 4,

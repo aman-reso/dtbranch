@@ -86,7 +86,7 @@ class PodGetXVideoController extends _PodGesturesController {
 
         ///
         _videoCtr = VideoPlayerController.networkUrl(
-          Uri.parse(playVideoFrom.dataSource!),
+          Uri.parse(playVideoFrom.dataSource ?? ''),
           closedCaptionFile: playVideoFrom.closedCaptionFile,
           formatHint: playVideoFrom.formatHint,
           videoPlayerOptions: playVideoFrom.videoPlayerOptions,

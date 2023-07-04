@@ -436,7 +436,8 @@ class _EpisodeBySeasonState extends State<EpisodeBySeason> {
       }
     } else {
       if (kIsWeb || Constant.isTV) {
-        Utils.buildWebAlertDialog(context, "login", "");
+        Utils.buildWebAlertDialog(context, "login", "")
+            .then((value) => getAllEpisode());
         return false;
       }
       Navigator.push(

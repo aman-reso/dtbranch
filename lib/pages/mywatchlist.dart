@@ -699,7 +699,8 @@ class _MyWatchlistState extends State<MyWatchlist> {
                         );
                       } else {
                         if ((kIsWeb || Constant.isTV)) {
-                          Utils.buildWebAlertDialog(context, "login", "");
+                          Utils.buildWebAlertDialog(context, "login", "")
+                              .then((value) => _getData());
                           return;
                         }
                         Navigator.push(
@@ -1141,7 +1142,8 @@ class _MyWatchlistState extends State<MyWatchlist> {
       }
     } else {
       if ((kIsWeb || Constant.isTV)) {
-        Utils.buildWebAlertDialog(context, "login", "");
+        Utils.buildWebAlertDialog(context, "login", "")
+            .then((value) => _getData());
         return false;
       }
       Navigator.push(

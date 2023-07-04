@@ -33,7 +33,6 @@ class Channels extends StatefulWidget {
 }
 
 class ChannelsState extends State<Channels> {
-  PageController pageController = PageController(initialPage: 0);
   late ChannelSectionProvider channelSectionProvider;
   CarouselController carouselController = CarouselController();
 
@@ -51,32 +50,10 @@ class ChannelsState extends State<Channels> {
       if (!mounted) return;
       setState(() {});
     });
-
-    /* Banner & Dots Sliding */
-    animateBanner();
-  }
-
-  void animateBanner() {
-    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
-      if (pageController.page == null) return;
-      int nextPage = (pageController.page?.round() ?? 0) + 1;
-
-      if (nextPage ==
-          (channelSectionProvider.channelSectionModel.liveUrl?.length ?? 0)) {
-        nextPage = 0;
-      }
-
-      pageController
-          .animateToPage(nextPage,
-              duration: Duration(milliseconds: Constant.animationDuration),
-              curve: Curves.linear)
-          .then((_) => animateBanner());
-    });
   }
 
   @override
   void dispose() {
-    pageController.dispose();
     channelSectionProvider.clearProvider();
     super.dispose();
   }
@@ -170,11 +147,27 @@ class ChannelsState extends State<Channels> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.channelBanner,
-            child: PageView.builder(
+            child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              controller: pageController,
-              allowImplicitScrolling: true,
-              itemBuilder: (BuildContext context, int index) {
+              carouselController: carouselController,
+              options: CarouselOptions(
+                initialPage: 0,
+                height: Dimens.channelBanner,
+                enlargeCenterPage: false,
+                autoPlay: true,
+                autoPlayCurve: Curves.linear,
+                enableInfiniteScroll: true,
+                autoPlayInterval:
+                    Duration(milliseconds: Constant.bannerDuration),
+                autoPlayAnimationDuration:
+                    Duration(milliseconds: Constant.animationDuration),
+                viewportFraction: 1.0,
+                onPageChanged: (val, _) async {
+                  await channelSectionProvider.setCurrentBanner(val);
+                },
+              ),
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
                   focusColor: white,
                   borderRadius: BorderRadius.circular(0),
@@ -224,9 +217,9 @@ class ChannelsState extends State<Channels> {
             bottom: 0,
             child: Consumer<ChannelSectionProvider>(
               builder: (context, channelSectionProvider, child) {
-                return SmoothPageIndicator(
+                return AnimatedSmoothIndicator(
                   count: (sectionBannerList?.length ?? 0),
-                  controller: pageController,
+                  activeIndex: channelSectionProvider.cBannerIndex ?? 0,
                   effect: const ScrollingDotsEffect(
                     spacing: 8,
                     radius: 4,
@@ -735,7 +728,8 @@ class ChannelsState extends State<Channels> {
       }
     } else {
       if ((kIsWeb || Constant.isTV)) {
-        Utils.buildWebAlertDialog(context, "login", "");
+        Utils.buildWebAlertDialog(context, "login", "")
+            .then((value) => _getData());
         return;
       }
       Navigator.push(

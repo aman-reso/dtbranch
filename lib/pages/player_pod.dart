@@ -48,10 +48,6 @@ class _PlayerPodState extends State<PlayerPod> {
   }
 
   _playerInit() async {
-    /* Add Video view */
-    await playerProvider.addVideoView(widget.videoId.toString(),
-        widget.videoType.toString(), widget.otherId.toString());
-
     if (widget.vUploadType == "youtube") {
       playVideoFrom = PlayVideoFrom.youtube(widget.videoUrl ?? "");
     } else if (widget.vUploadType == "vimeo") {
@@ -66,20 +62,26 @@ class _PlayerPodState extends State<PlayerPod> {
       podPlayerConfig: const PodPlayerConfig(
         autoPlay: true,
         isLooping: false,
-        videoQualityPriority: [2160, 1440, 1080, 720, 480, 360, 240, 144],
+        videoQualityPriority: [1080, 720, 360],
       ),
     );
     _controller.videoSeekTo(Duration(milliseconds: widget.stopTime ?? 0));
     if (kIsWeb || Constant.isTV) {
       _initializeVideoPlayerFuture = _controller.initialise()
         ..then((value) {
-          _controller.play();
+          if (!mounted) return;
+          setState(() {
+            _controller.play();
+          });
         });
     } else {
       _initializeVideoPlayerFuture = _controller.initialise()
         ..then((value) {
-          _controller.enableFullScreen();
-          _controller.play();
+          if (!mounted) return;
+          setState(() {
+            _controller.enableFullScreen();
+            _controller.play();
+          });
         });
     }
 
@@ -91,6 +93,12 @@ class _PlayerPodState extends State<PlayerPod> {
       log("playerCPosition :===> $playerCPosition");
       log("videoDuration :===> $videoDuration");
     });
+
+    if (widget.playType == "Video" || widget.playType != "Show") {
+      /* Add Video view */
+      await playerProvider.addVideoView(widget.videoId.toString(),
+          widget.videoType.toString(), widget.otherId.toString());
+    }
   }
 
   @override
@@ -98,6 +106,8 @@ class _PlayerPodState extends State<PlayerPod> {
     if (!(kIsWeb || Constant.isTV)) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     _controller.dispose();
     super.dispose();
   }
@@ -108,16 +118,14 @@ class _PlayerPodState extends State<PlayerPod> {
       body: FutureBuilder(
         future: _initializeVideoPlayerFuture,
         builder: (context, snapshot) {
+          debugPrint(
+              "connectionState ===========> ${snapshot.connectionState}");
           if (snapshot.connectionState == ConnectionState.done) {
             return WillPopScope(
               onWillPop: onBackPressed,
               child: Stack(
                 children: [
-                  PodVideoPlayer(
-                    controller: _controller,
-                    videoThumbnail: DecorationImage(
-                        image: NetworkImage(widget.videoThumb ?? "")),
-                  ),
+                  _buildPlayer(),
                   if (!kIsWeb)
                     Positioned(
                       top: 15,
@@ -144,6 +152,22 @@ class _PlayerPodState extends State<PlayerPod> {
     );
   }
 
+  Widget _buildPlayer() {
+    if (_controller.isInitialised) {
+      return PodVideoPlayer(
+        controller: _controller,
+        videoThumbnail: DecorationImage(
+          image: NetworkImage(widget.videoThumb ?? ""),
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      return Center(
+        child: Utils.pageLoader(),
+      );
+    }
+  }
+
   Future<bool> onBackPressed() async {
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
@@ -152,6 +176,8 @@ class _PlayerPodState extends State<PlayerPod> {
     if (!(kIsWeb || Constant.isTV)) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     if (widget.playType == "Video" || widget.playType == "Show") {
       if ((playerCPosition ?? 0) > 0 &&
           (playerCPosition == videoDuration ||

@@ -49,9 +49,11 @@ class PlayerVimeoState extends State<PlayerVimeo> {
   }
 
   _addVideoView() async {
-    /* Add Video view */
-    await playerProvider.addVideoView(widget.videoId.toString(),
-        widget.videoType.toString(), widget.otherId.toString());
+    if (widget.playType == "Video" || widget.playType != "Show") {
+      /* Add Video view */
+      await playerProvider.addVideoView(widget.videoId.toString(),
+          widget.videoType.toString(), widget.otherId.toString());
+    }
   }
 
   @override
@@ -59,6 +61,8 @@ class PlayerVimeoState extends State<PlayerVimeo> {
     if (!(kIsWeb || Constant.isTV)) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
@@ -113,6 +117,8 @@ class PlayerVimeoState extends State<PlayerVimeo> {
     if (!(kIsWeb || Constant.isTV)) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

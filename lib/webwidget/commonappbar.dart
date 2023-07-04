@@ -472,7 +472,8 @@ class _CommonAppBarState extends State<CommonAppBar> {
               if (Constant.userID != null) {
                 Utils.buildWebAlertDialog(context, "profile", "");
               } else {
-                Utils.buildWebAlertDialog(context, "login", "");
+                Utils.buildWebAlertDialog(context, "login", "")
+                    .then((value) => _getData());
               }
             },
             borderRadius: BorderRadius.circular(8),

@@ -43,7 +43,6 @@ class HomeState extends State<Home> {
   late SectionDataProvider sectionDataProvider;
   final FirebaseAuth auth = FirebaseAuth.instance;
   SharedPre sharedPref = SharedPre();
-  PageController pageController = PageController(initialPage: 0);
   CarouselController carouselController = CarouselController();
   final tabScrollController = ScrollController();
   late ListObserverController observerController;
@@ -179,26 +178,6 @@ class HomeState extends State<Home> {
     await sectionDataProvider.getSectionList(
         position == 0 ? "0" : (sectionTypeList?[position - 1].id),
         position == 0 ? "1" : "2");
-
-    /* Banner & Dots Sliding */
-    animateBanner();
-  }
-
-  void animateBanner() {
-    Future.delayed(Duration(milliseconds: Constant.bannerDuration)).then((_) {
-      int nextPage = (pageController.page?.round() ?? 0) + 1;
-
-      if (nextPage ==
-          (sectionDataProvider.sectionBannerModel.result?.length ?? 0)) {
-        nextPage = 0;
-      }
-
-      pageController
-          .animateToPage(nextPage,
-              duration: Duration(milliseconds: Constant.animationDuration),
-              curve: Curves.linear)
-          .then((_) => animateBanner());
-    });
   }
 
   openDetailPage(String pageName, int videoId, int upcomingType, int videoType,
@@ -223,7 +202,6 @@ class HomeState extends State<Home> {
 
   @override
   void dispose() {
-    pageController.dispose();
     super.dispose();
   }
 
@@ -503,11 +481,27 @@ class HomeState extends State<Home> {
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: Dimens.homeBanner,
-            child: PageView.builder(
+            child: CarouselSlider.builder(
               itemCount: (sectionBannerList?.length ?? 0),
-              controller: pageController,
-              allowImplicitScrolling: true,
-              itemBuilder: (BuildContext context, int index) {
+              carouselController: carouselController,
+              options: CarouselOptions(
+                initialPage: 0,
+                height: Dimens.homeBanner,
+                enlargeCenterPage: false,
+                autoPlay: true,
+                autoPlayCurve: Curves.linear,
+                enableInfiniteScroll: true,
+                autoPlayInterval:
+                    Duration(milliseconds: Constant.bannerDuration),
+                autoPlayAnimationDuration:
+                    Duration(milliseconds: Constant.animationDuration),
+                viewportFraction: 1.0,
+                onPageChanged: (val, _) async {
+                  await sectionDataProvider.setCurrentBanner(val);
+                },
+              ),
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
                 return InkWell(
                   focusColor: white,
                   borderRadius: BorderRadius.circular(0),
@@ -564,9 +558,9 @@ class HomeState extends State<Home> {
             bottom: 0,
             child: Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
-                return SmoothPageIndicator(
+                return AnimatedSmoothIndicator(
                   count: (sectionBannerList?.length ?? 0),
-                  controller: pageController,
+                  activeIndex: sectionDataProvider.cBannerIndex ?? 0,
                   effect: const ScrollingDotsEffect(
                     spacing: 8,
                     radius: 4,

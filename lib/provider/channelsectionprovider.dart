@@ -19,6 +19,10 @@ class ChannelSectionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  channelNotifyProvider() {
+    notifyListeners();
+  }
+
   setCurrentBanner(index) {
     cBannerIndex = index;
     notifyListeners();

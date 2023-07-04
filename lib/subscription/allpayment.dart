@@ -1174,6 +1174,7 @@ class AllPaymentState extends State<AllPayment> {
                 : paymentProvider
                         .paymentOptionModel.result?.razorpay?.testKey1 ??
                     "",
+        'currency': Constant.currency,
         'amount': (double.parse(paymentProvider.finalAmount ?? "") * 100),
         'name': widget.itemTitle ?? "",
         'description': widget.itemTitle ?? "",

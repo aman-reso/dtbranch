@@ -46,10 +46,6 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
   }
 
   _initPlayer() async {
-    /* Add Video view */
-    await playerProvider.addVideoView(widget.videoId.toString(),
-        widget.videoType.toString(), widget.otherId.toString());
-
     controller = YoutubePlayerController(
       params: const YoutubePlayerParams(
         showControls: true,
@@ -76,6 +72,11 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
       if (!mounted) return;
       setState(() {});
     });
+    if (widget.playType == "Video" || widget.playType != "Show") {
+      /* Add Video view */
+      await playerProvider.addVideoView(widget.videoId.toString(),
+          widget.videoType.toString(), widget.otherId.toString());
+    }
   }
 
   @override
@@ -150,6 +151,8 @@ class PlayerYoutubeState extends State<PlayerYoutube> {
     if (!(kIsWeb || Constant.isTV)) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     log("onBackPressed playerCPosition :===> $playerCPosition");
     log("onBackPressed videoDuration :===> $videoDuration");
     log("onBackPressed playType :===> ${widget.playType}");

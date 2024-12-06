@@ -40,10 +40,9 @@
         android:required="false"/>
 
    <application
-        android:label="DTLive"
+        android:label="Sant Mehi"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:banner="@drawable/banner"
+        android:icon="@drawable/icon"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:largeHeap="true"

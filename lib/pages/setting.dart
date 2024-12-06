@@ -126,33 +126,6 @@ class SettingState extends State<Setting> {
                 ),
                 _buildLine(16.0, 16.0),
 
-                /* Active TV */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    if (Constant.userID != null) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ActiveTV(),
-                        ),
-                      );
-                    } else {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LoginSocial(),
-                        ),
-                      );
-                    }
-                  },
-                  child: _buildSettingButton(
-                    title: 'activetv',
-                    subTitle: 'activetv_desc',
-                    titleMultilang: true,
-                    subTitleMultilang: true,
-                  ),
-                ),
-                _buildLine(16.0, 16.0),
-
                 /* Watchlist */
                 InkWell(
                   borderRadius: BorderRadius.circular(2),
@@ -261,48 +234,6 @@ class SettingState extends State<Setting> {
                 ),
                 _buildLine(16.0, 8.0),
 
-                /* Transactions */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    if (Constant.userID != null) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const SubscriptionHistory(),
-                        ),
-                      );
-                    } else {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LoginSocial(),
-                        ),
-                      );
-                    }
-                  },
-                  child: _buildSettingButton(
-                    title: 'transactions',
-                    subTitle: 'transactions_notes',
-                    titleMultilang: true,
-                    subTitleMultilang: true,
-                  ),
-                ),
-                _buildLine(16.0, 8.0),
-
-                /* MaltiLanguage */
-                InkWell(
-                  borderRadius: BorderRadius.circular(2),
-                  onTap: () {
-                    _languageChangeDialog();
-                  },
-                  child: _buildSettingButton(
-                    title: 'language_',
-                    subTitle: '',
-                    titleMultilang: true,
-                    subTitleMultilang: false,
-                  ),
-                ),
-                _buildLine(8.0, 8.0),
-
                 /* Push Notification enable/disable */
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -345,7 +276,7 @@ class SettingState extends State<Setting> {
                       ),
                       Switch(
                         activeColor: primaryDark,
-                        activeTrackColor: primaryLight,
+                        activeTrackColor: primaryDarkColor,
                         inactiveTrackColor: gray,
                         value: isSwitched ?? true,
                         onChanged: toggleSwitch,
@@ -404,7 +335,7 @@ class SettingState extends State<Setting> {
                               ],
                             ),
                           ),
-                          MyImage(
+                          const MyImage(
                             width: 28,
                             height: 28,
                             imagePath: "ic_clear.png",
@@ -1160,4 +1091,5 @@ class SettingState extends State<Setting> {
       },
     );
   }
+
 }

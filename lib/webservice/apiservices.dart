@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dtlive/model/avatarmodel.dart';
+import 'package:dtlive/model/banner.dart';
 import 'package:dtlive/model/castdetailmodel.dart';
 import 'package:dtlive/model/couponmodel.dart';
 import 'package:dtlive/model/historymodel.dart';
@@ -29,6 +31,10 @@ import 'package:dtlive/model/videobyidmodel.dart';
 import 'package:dtlive/model/watchlistmodel.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+import '../pages/book_satsang.dart';
+import '../pages/donation_page.dart';
 
 class ApiService {
   String baseUrl = Constant.baseurl;
@@ -41,15 +47,15 @@ class ApiService {
 
   ApiService() {
     dio = Dio();
-    // dio.interceptors.add(
-    //   PrettyDioLogger(
-    //     requestHeader: true,
-    //     requestBody: true,
-    //     responseBody: true,
-    //     responseHeader: false,
-    //     compact: false,
-    //   ),
-    // );
+    dio.interceptors.add(
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        compact: false,
+      ),
+    );
   }
 
   // general_setting API
@@ -765,5 +771,38 @@ class ApiService {
     );
     historyModel = HistoryModel.fromJson(response.data);
     return historyModel;
+  }
+
+  Future<DonationResponse> createDonation(String amount) async {
+    String apiUrl = 'http://159.65.148.219:8888/api/donation/create';
+    var body = {
+      'userId': Constant.userID,
+      'amount': int.tryParse(amount),
+      'isPaid': true,
+    };
+    Response response = await dio.post(
+      apiUrl,
+      data: body,
+    );
+    return DonationResponse.fromJson(response.data);
+  }
+
+  Future<dynamic> bookSatsang(Map<String, dynamic> body) async {
+    String apiUrl = 'http://159.65.148.219:8888/api/bookedsatsang/create';
+    var response = await dio.post(apiUrl, data: body);
+    print(response);
+    return response;
+  }
+
+  Future<List<AppBanner>> getBanners() async {
+    String apiUrl = "http://159.65.148.219/public/api/get_banner";
+    var response = await dio.post(apiUrl);
+    return parseBanners(response);
+  }
+
+
+  List<AppBanner> parseBanners(dynamic responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<Banner>((json) => AppBanner.fromJson(json)).toList();
   }
 }

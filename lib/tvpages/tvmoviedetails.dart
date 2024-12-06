@@ -2280,21 +2280,6 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                     children: [
                       Container(
                         margin: const EdgeInsets.only(right: 10),
-                        child: MyText(
-                          color: otherColor,
-                          text: "detailsfrom",
-                          multilanguage: true,
-                          textalign: TextAlign.center,
-                          fontsizeNormal: 12,
-                          fontweight: FontWeight.w500,
-                          fontsizeWeb: 14,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontstyle: FontStyle.normal,
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(right: 10),
                         padding: const EdgeInsets.fromLTRB(5, 1, 5, 1),
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -2303,19 +2288,7 @@ class TVMovieDetailsState extends State<TVMovieDetails> {
                           ),
                           borderRadius: BorderRadius.circular(4),
                           shape: BoxShape.rectangle,
-                        ),
-                        child: MyText(
-                          color: otherColor,
-                          text: "IMDb",
-                          multilanguage: false,
-                          textalign: TextAlign.center,
-                          fontsizeNormal: 12,
-                          fontweight: FontWeight.w700,
-                          fontsizeWeb: 13,
-                          maxline: 1,
-                          overflow: TextOverflow.ellipsis,
-                          fontstyle: FontStyle.normal,
-                        ),
+                        )
                       ),
                     ],
                   ),

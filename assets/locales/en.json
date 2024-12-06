@@ -9,9 +9,9 @@
     "intro4title": "Upgrade to get more out of your subscription.",
     "bottomview1": "Home",
     "bottomview2": "Find",
-    "bottomview3": "Channels",
-    "bottomview4": "Store",
-    "bottomview5": "My Stuff",
+    "bottomview3": "Videos",
+    "bottomview4": "Ebooks",
+    "bottomview5": "Profile",
     "exit_warning": "Press again to exit the app.",
     "language_": "Language",
     "category": "Category",
@@ -49,7 +49,7 @@
     "rentshow": "Rent Shows",
     "showsmall": "shows",
     "browsby": "Browse by",
-    "genres": "Genres",
+    "genres": "Category",
     "movies": "Movies",
     "tvshow": "Tv Shows",
     "kids": "Kids",
@@ -86,7 +86,7 @@
     "audios": "Audio",
     "subtitle": "Subtitles",
     "languagechangenote": "Language can be changed while the video is playing.",
-    "welcomeback": "Welcome back!",
+    "welcomeback": "The Inward Journey of the Soul",
     "login": "Login",
     "login_with_mobile_note": "Enter your mobile number to login",
     "or": "Or",
@@ -217,5 +217,6 @@
     "tvcode_desc": "Enter your Tv Code and login into Tv app.",
     "no_payment": "Methods Not Found.",
     "no_payment_desc": "Payments methods not available.",
-    "cash_payment_msg": "Thank you for choosing Cash payment. Contact your administrator."
+    "cash_payment_msg": "Thank you for choosing Cash payment. Contact your administrator.",
+    "read_now": "Read now"
 }

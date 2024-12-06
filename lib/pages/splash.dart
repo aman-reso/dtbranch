@@ -8,6 +8,7 @@ import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/utils/sharedpre.dart';
+import 'package:dtlive/widget/mytext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,10 +49,30 @@ class SplashState extends State<Splash> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         alignment: Alignment.center,
-        color: appBgColor,
-        child: MyImage(
-          imagePath: (kIsWeb || Constant.isTV) ? "appicon.png" : "splash.png",
-          fit: (kIsWeb || Constant.isTV) ? BoxFit.contain : BoxFit.cover,
+        color: primaryColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MyImage(
+              imagePath:
+                  (kIsWeb || Constant.isTV) ? "appicon.png" : "appicon.png",
+              fit: (kIsWeb || Constant.isTV) ? BoxFit.contain : BoxFit.cover,
+              height: 150,
+              width: 150,
+            ),
+            MyText(
+              color: black,
+              text: 'The inward Journey of the Soul',
+              fontsizeNormal: 15,
+              fontsizeWeb: 17,
+              maxline: 1,
+              multilanguage: false,
+              overflow: TextOverflow.ellipsis,
+              fontweight: FontWeight.w600,
+              textalign: TextAlign.center,
+              fontstyle: FontStyle.normal,
+            )
+          ],
         ),
       ),
     );
@@ -81,7 +102,7 @@ class SplashState extends State<Splash> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return const Bottombar();
+              return const  Bottombar();
             },
           ),
         );

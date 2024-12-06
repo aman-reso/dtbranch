@@ -166,7 +166,7 @@ class _CommonAppBarState extends State<CommonAppBar> {
       width: MediaQuery.of(context).size.width,
       height: Dimens.homeTabHeight,
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-      color: black.withOpacity(0.75),
+      color: accentColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -658,7 +658,7 @@ class _CommonAppBarState extends State<CommonAppBar> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           insetPadding: const EdgeInsets.fromLTRB(100, 25, 100, 25),
           clipBehavior: Clip.antiAliasWithSaveLayer,
-          backgroundColor: lightBlack,
+          backgroundColor: accentColor,
           child: Container(
             padding: const EdgeInsets.all(25),
             constraints: const BoxConstraints(

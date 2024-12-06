@@ -41,54 +41,6 @@ class _CastCrewState extends State<CastCrew> {
             fontstyle: FontStyle.normal,
           ),
         ),
-        const SizedBox(height: 2),
-        Container(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: MyText(
-                  color: otherColor,
-                  text: "detailsfrom",
-                  multilanguage: true,
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 12,
-                  fontweight: FontWeight.w500,
-                  fontsizeWeb: 14,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                padding: const EdgeInsets.fromLTRB(5, 1, 5, 1),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: otherColor,
-                    width: .7,
-                  ),
-                  borderRadius: BorderRadius.circular(4),
-                  shape: BoxShape.rectangle,
-                ),
-                child: MyText(
-                  color: otherColor,
-                  text: "IMDb",
-                  multilanguage: false,
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 12,
-                  fontweight: FontWeight.w700,
-                  fontsizeWeb: 13,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ),
-            ],
-          ),
-        ),
         const SizedBox(height: 12),
         _buildCAndCLayout(),
         Container(

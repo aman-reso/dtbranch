@@ -103,14 +103,14 @@ class SubscriptionState extends State<Subscription> {
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return Scaffold(
-        backgroundColor: subscriptionBG,
+        backgroundColor: accentColor,
         body: SingleChildScrollView(
           child: _buildSubscription(),
         ),
       );
     } else {
       return Scaffold(
-        backgroundColor: subscriptionBG,
+        backgroundColor: accentColor,
         appBar: Utils.myAppBarWithBack(context, "subsciption", true),
         body: SingleChildScrollView(
           child: _buildSubscription(),
@@ -204,7 +204,7 @@ class SubscriptionState extends State<Subscription> {
               Card(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 elevation: 3,
-                color: (packageList[index].isBuy == 1 ? primaryColor : black),
+                color: (packageList[index].isBuy == 1 ? primaryColor : whiteLight1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -289,7 +289,7 @@ class SubscriptionState extends State<Subscription> {
                           child: Consumer<SubscriptionProvider>(
                             builder: (context, subscriptionProvider, child) {
                               return MyText(
-                                color: black,
+                                color: accentColor,
                                 text: (packageList[index].isBuy == 1)
                                     ? "current"
                                     : "chooseplan",
@@ -482,7 +482,7 @@ class SubscriptionState extends State<Subscription> {
                   child: MyText(
                     color: (packageList?[index ?? 0].isBuy == 1
                         ? black
-                        : otherColor),
+                        : black),
                     text: packageList?[index ?? 0].data?[position].packageKey ??
                         "",
                     textalign: TextAlign.start,
@@ -527,7 +527,7 @@ class SubscriptionState extends State<Subscription> {
                     : MyText(
                         color: (packageList?[index ?? 0].isBuy == 1
                             ? black
-                            : otherColor),
+                            : black),
                         text: packageList?[index ?? 0]
                                 .data?[position]
                                 .packageValue ??

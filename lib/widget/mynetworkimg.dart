@@ -4,17 +4,20 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class MyNetworkImage extends StatelessWidget {
-  String imageUrl;
-  double? imgHeight, imgWidth;
-  dynamic fit;
+  final String imageUrl;
+  final double? imgHeight;
+  final double? imgWidth;
+  final dynamic fit;
+  final bool circular; // New parameter for circular image
 
-  MyNetworkImage(
-      {Key? key,
-      required this.imageUrl,
-      required this.fit,
-      this.imgHeight,
-      this.imgWidth})
-      : super(key: key);
+  const MyNetworkImage({
+    Key? key,
+    required this.imageUrl,
+    required this.fit,
+    this.imgHeight,
+    this.imgWidth,
+    this.circular = false
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class MyNetworkImage extends StatelessWidget {
         fit: fit,
         imageBuilder: (context, imageProvider) => Container(
           decoration: BoxDecoration(
+            shape: circular ? BoxShape.circle : BoxShape.rectangle, // Apply circular shape if circular is true
             image: DecorationImage(
               image: imageProvider,
               fit: fit,
@@ -40,6 +44,7 @@ class MyNetworkImage extends StatelessWidget {
                 ? "no_image_land.png"
                 : "no_image_port.png",
             fit: BoxFit.cover,
+            circular: circular, // Pass circular parameter to MyImage widget
           );
         },
         errorWidget: (context, url, error) {
@@ -50,9 +55,11 @@ class MyNetworkImage extends StatelessWidget {
                 ? "no_image_land.png"
                 : "no_image_port.png",
             fit: BoxFit.cover,
+            circular: circular, // Pass circular parameter to MyImage widget
           );
         },
       ),
     );
   }
 }
+

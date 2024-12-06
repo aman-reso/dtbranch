@@ -3,38 +3,41 @@
 
 import 'dart:convert';
 
-SectionBannerModel sectionBannerModelFromJson(String str) =>
-    SectionBannerModel.fromJson(json.decode(str));
+import 'package:dtlive/model/banner.dart';
 
-String sectionBannerModelToJson(SectionBannerModel data) =>
-    json.encode(data.toJson());
 
 class SectionBannerModel {
   SectionBannerModel({
     this.status,
     this.message,
     this.result,
+    this.banners
   });
 
   int? status;
   String? message;
   List<Result>? result;
+  final List<AppBanner>? banners;
+  factory SectionBannerModel.fromJson(Map<String, dynamic> json) {
+    List<AppBanner> banners = [];
+    if (json['result'] != null && json['result']['banner'] != null) {
+      banners = List<AppBanner>.from(json['result']['banner']
+          .map((bannerJson) => AppBanner.fromJson(bannerJson)));
+    }
 
-  factory SectionBannerModel.fromJson(Map<String, dynamic> json) =>
-      SectionBannerModel(
-        status: json["status"],
-        message: json["message"],
-        result: List<Result>.from(
-            json["result"]?.map((x) => Result.fromJson(x)) ?? []),
-      );
+    List<Result> videos = [];
+    if (json['result'] != null && json['result']['results'] != null) {
+      videos = List<Result>.from(json['result']['results']
+          .map((videoJson) => Result.fromJson(videoJson)));
+    }
 
-  Map<String, dynamic> toJson() => {
-        "status": status,
-        "message": message,
-        "result": result == null
-            ? []
-            : List<dynamic>.from(result?.map((x) => x.toJson()) ?? []),
-      };
+    return SectionBannerModel(
+      status: json['status'] ?? 0,
+      message: json['message'] ?? '',
+      result: videos,
+      banners: banners
+    );
+  }
 }
 
 class Result {

@@ -4,6 +4,8 @@ import 'package:dtlive/model/channelsectionmodel.dart';
 import 'package:dtlive/webservice/apiservices.dart';
 import 'package:flutter/material.dart';
 
+import '../model/videobyidmodel.dart';
+
 class ChannelSectionProvider extends ChangeNotifier {
   ChannelSectionModel channelSectionModel = ChannelSectionModel();
 
@@ -29,11 +31,11 @@ class ChannelSectionProvider extends ChangeNotifier {
   }
 
   updatePrimiumPurchase() {
-    if (channelSectionModel.result != null) {
-      for (var i = 0; i < (channelSectionModel.liveUrl?.length ?? 0); i++) {
-        channelSectionModel.liveUrl?[i].isBuy = 1;
-      }
-    }
+    // if (channelSectionModel.result != null) {
+    //   for (var i = 0; i < (channelSectionModel.liveUrl?.length ?? 0); i++) {
+    //     channelSectionModel.liveUrl?[i].isBuy = 1;
+    //   }
+    // }
   }
 
   clearProvider() {

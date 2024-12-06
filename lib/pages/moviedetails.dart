@@ -40,6 +40,9 @@ import 'package:social_share/social_share.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import '../audioScreen/audio_screen.dart';
+import '../pdf/open_pdf.dart';
+
 class MovieDetails extends StatefulWidget {
   final int videoId, upcomingType, videoType, typeId;
   const MovieDetails(
@@ -275,13 +278,13 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
     }
     _port.listen((dynamic data) {
       final taskId = (data as List<dynamic>)[0] as String;
-      final status = DownloadTaskStatus(data[1] as int);
+     // final status = DownloadTaskStatus(data[1] as int);
       final progress = data[2] as int;
 
-      log(
-        'Callback on UI isolate: '
-        'task ($taskId) is in status ($status) and process ($progress)',
-      );
+      // log(
+      //   'Callback on UI isolate: '
+      //   'task ($taskId) is in status ($status) and process ($progress)',
+      // );
 
       if (downloadProvider.currentTasks != null &&
           downloadProvider.currentTasks!.isNotEmpty) {
@@ -292,16 +295,17 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
         if (progress > 0) {
           downloadProvider.setDownloadProgress(progress);
         }
-        if (status == DownloadTaskStatus.complete && progress == 100) {
-          Utils.setDownloadComplete(
-            context,
-            "Video",
-            videoDetailsProvider.sectionDetailModel.result?.id,
-            videoDetailsProvider.sectionDetailModel.result?.videoType,
-            videoDetailsProvider.sectionDetailModel.result?.typeId,
-            0,
-          );
-        }
+
+        // if (status == DownloadTaskStatus.complete && progress == 100) {
+        //   Utils.setDownloadComplete(
+        //     context,
+        //     "Video",
+        //     videoDetailsProvider.sectionDetailModel.result?.id,
+        //     videoDetailsProvider.sectionDetailModel.result?.videoType,
+        //     videoDetailsProvider.sectionDetailModel.result?.typeId,
+        //     0,
+        //   );
+        // }
       }
     });
   }
@@ -736,49 +740,44 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                             _buildRentBtn(),
                             const SizedBox(width: 5),
 
-                            /* Start Over & Trailer */
-                            Expanded(
-                              child: Consumer<VideoDetailsProvider>(
-                                builder:
-                                    (context, videoDetailsProvider, child) {
-                                  if ((videoDetailsProvider.sectionDetailModel
-                                                  .result?.stopTime ??
-                                              0) >
-                                          0 &&
-                                      videoDetailsProvider.sectionDetailModel
-                                              .result?.videoDuration !=
-                                          null) {
-                                    /* Start Over */
-                                    return InkWell(
-                                      borderRadius: BorderRadius.circular(5),
-                                      focusColor: gray.withOpacity(0.5),
-                                      onTap: () async {
-                                        openPlayer("startOver");
-                                      },
-                                      child: _buildFeatureBtn(
-                                        icon: 'ic_restart.png',
-                                        title: 'startover',
-                                        multilanguage: true,
-                                      ),
-                                    );
-                                  } else {
-                                    /* Trailer */
-                                    return InkWell(
-                                      borderRadius: BorderRadius.circular(5),
-                                      focusColor: gray.withOpacity(0.5),
-                                      onTap: () {
-                                        openPlayer("Trailer");
-                                      },
-                                      child: _buildFeatureBtn(
-                                        icon: 'ic_borderplay.png',
-                                        title: 'trailer',
-                                        multilanguage: true,
-                                      ),
-                                    );
-                                  }
-                                },
+                            if (widget.videoType != 7 && widget.videoType!=6)
+                              Expanded(
+                                child: Consumer<VideoDetailsProvider>(
+                                  builder: (context, videoDetailsProvider, child) {
+                                    if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
+                                        videoDetailsProvider.sectionDetailModel.result?.videoDuration != null) {
+                                      /* Start Over */
+                                      return InkWell(
+                                        borderRadius: BorderRadius.circular(5),
+                                        focusColor: gray.withOpacity(0.5),
+                                        onTap: () async {
+                                          openPlayer("startOver");
+                                        },
+                                        child: _buildFeatureBtn(
+                                          icon: 'ic_restart.png',
+                                          title: 'startover',
+                                          multilanguage: true,
+                                        ),
+                                      );
+                                    } else {
+                                      /* Trailer */
+                                      return InkWell(
+                                        borderRadius: BorderRadius.circular(5),
+                                        focusColor: gray.withOpacity(0.5),
+                                        onTap: () {
+                                          openPlayer("Trailer");
+                                        },
+                                        child: _buildFeatureBtn(
+                                          icon: 'ic_borderplay.png',
+                                          title: 'trailer',
+                                          multilanguage: true,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
-                            ),
+
 
                             /* Download */
                             if (!(kIsWeb || Constant.isTV))
@@ -897,30 +896,6 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 18),
-                        Row(
-                          children: [
-                            MyImage(
-                              width: 50,
-                              height: 23,
-                              imagePath: "imdb.png",
-                            ),
-                            const SizedBox(width: 5),
-                            MyText(
-                              color: otherColor,
-                              text:
-                                  "${videoDetailsProvider.sectionDetailModel.result?.imdbRating ?? 0}",
-                              textalign: TextAlign.start,
-                              fontsizeNormal: 14,
-                              fontsizeWeb: 16,
-                              fontweight: FontWeight.w600,
-                              multilanguage: false,
-                              maxline: 1,
-                              overflow: TextOverflow.ellipsis,
-                              fontstyle: FontStyle.normal,
-                            ),
-                          ],
                         ),
                         Container(
                           constraints: const BoxConstraints(minHeight: 0),
@@ -1332,13 +1307,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
             openPlayer("Trailer");
           },
           child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: MyImage(
-              fit: BoxFit.fill,
-              height: 60,
-              width: 60,
-              imagePath: "play_new.png",
-            ),
+            padding: const EdgeInsets.all(2.0)
           ),
         ),
         if (!kIsWeb)
@@ -2234,6 +2203,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   }
 
   Widget _buildWatchNow() {
+    var videoType=widget.videoType;
     if ((videoDetailsProvider.sectionDetailModel.result?.stopTime ?? 0) > 0 &&
         videoDetailsProvider.sectionDetailModel.result?.videoDuration != null) {
       return Container(
@@ -2277,9 +2247,9 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               MyText(
-                                color: white,
-                                text: "continuewatching",
-                                multilanguage: true,
+                                color: accentColor,
+                                text:   videoType == 7 ? 'Read Now' : (videoType == 6 ? 'Listen Now' : "Continue watching"),
+                                multilanguage: false,
                                 textalign: TextAlign.start,
                                 fontsizeNormal: 13,
                                 fontsizeWeb: 15,
@@ -2291,7 +2261,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                               Row(
                                 children: [
                                   MyText(
-                                    color: white,
+                                    color: accentColor,
                                     text: Utils.remainTimeInMin(
                                         ((videoDetailsProvider
                                                         .sectionDetailModel
@@ -2315,7 +2285,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                                   ),
                                   const SizedBox(width: 5),
                                   MyText(
-                                    color: white,
+                                    color: accentColor,
                                     text: "left",
                                     textalign: TextAlign.start,
                                     fontsizeNormal: 10,
@@ -2387,7 +2357,7 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  MyImage(
+                  const MyImage(
                     width: 18,
                     height: 18,
                     imagePath: "ic_play.png",
@@ -2395,9 +2365,9 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
                   const SizedBox(width: 15),
                   Expanded(
                     child: MyText(
-                      color: white,
-                      text: "watch_now",
-                      multilanguage: true,
+                      color: accentColor,
+                      text: videoType == 7 ? "Read Now" : (videoType == 6 ? "Listen Now" : "Watch Now"),
+                      multilanguage: false,
                       textalign: TextAlign.start,
                       fontsizeNormal: 15,
                       fontweight: FontWeight.w600,
@@ -2543,6 +2513,9 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
   }
 
   Widget _buildTabs() {
+    if(widget.videoType==7 || widget.videoType==6){
+      return Container();
+    }
     return Column(
       children: [
         Container(
@@ -3603,6 +3576,46 @@ class MovieDetailsState extends State<MovieDetails> with RouteAware {
 
   /* ========= Open Player ========= */
   openPlayer(String playType) async {
+    if(widget.videoType==6){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return AudioScreen(
+              Bhajan(
+                url: '',
+                title: '',
+                description: '',
+                thumbnail: '',
+                id: widget.videoId,
+                upcomingType: widget.upcomingType,
+                videoType: widget.videoType,
+                typeId: widget.typeId,
+              ),
+            );
+          },
+        ),
+      );
+      return;
+    }
+    if(widget.videoType==7){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PDFScreen(
+              Ebook(
+                id:widget.videoId ,
+                upcomingType: widget.upcomingType,
+                videoType: widget.videoType,
+                typeId: widget.typeId
+              ),
+            );
+          },
+        ),
+      );
+      return;
+    }
     /* CHECK SUBSCRIPTION */
     if (playType != "Trailer") {
       bool? isPrimiumUser = await _checkSubsRentLogin();

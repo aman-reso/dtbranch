@@ -9,6 +9,7 @@ import 'package:dtlive/pages/player_better.dart';
 import 'package:dtlive/pages/player_vimeo.dart';
 import 'package:dtlive/pages/player_youtube.dart';
 import 'package:dtlive/pages/showdetails.dart';
+import 'package:dtlive/pdf/open_pdf.dart';
 import 'package:dtlive/provider/showdetailsprovider.dart';
 import 'package:dtlive/provider/videodetailsprovider.dart';
 import 'package:dtlive/subscription/allpayment.dart';
@@ -37,6 +38,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screen_protector/screen_protector.dart';
+
+import '../audioScreen/audio_screen.dart';
 
 class Utils {
   static void enableScreenCapture() async {
@@ -71,6 +74,64 @@ class Utils {
     debugPrint("openDetails upcomingType ===> $upcomingType");
     debugPrint("openDetails videoType ======> $videoType");
     debugPrint("openDetails typeId =========> $typeId");
+    if (videoType == 6) {
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return MovieDetails(
+          videoId,
+          upcomingType,
+          videoType,
+          typeId,
+        );
+      }));
+      return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return AudioScreen(
+              Bhajan(
+                url: '',
+                title: '',
+                description: '',
+                thumbnail: '',
+                id: videoId,
+                upcomingType: upcomingType,
+                videoType: videoType,
+                typeId: typeId,
+              ),
+            );
+          },
+        ),
+      );
+    }
+    if (videoType == 7) {
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return PDFScreen(
+      //         Ebook(
+      //           id: videoId,
+      //           upcomingType: upcomingType,
+      //           videoType: videoType,
+      //           typeId: typeId,
+      //         ),
+      //       );
+      //     },
+      //   ),
+      // );
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return MovieDetails(
+          videoId,
+          upcomingType,
+          videoType,
+          typeId,
+        );
+      }));
+      return;
+    }
     if (videoType == 5) {
       if (upcomingType == 1) {
         if (!(context.mounted)) return;
@@ -392,6 +453,7 @@ class Utils {
     log("isContinue ===> $isContinue");
     return isContinue;
   }
+
   /* ========= Open Player ========= */
 
   /* ========= Set-up Quality URL START ========= */
@@ -421,6 +483,7 @@ class Utils {
     debugPrint(
         "resolutionsUrls ==========> ${Constant.resolutionsUrls.length}");
   }
+
   /* ========= Set-up Quality URL END =========== */
 
   static void clearQualitySubtitle() {
@@ -457,6 +520,7 @@ class Utils {
         .toList();
     debugPrint("subtitleUrls ==========> ${Constant.subtitleUrls.length}");
   }
+
   /* ========= Set-up Subtitle URL END =========== */
 
   static void getCurrencySymbol() async {
@@ -637,8 +701,8 @@ class Utils {
       onTap: () {
         Navigator.pop(context);
       },
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
+      child: const Padding(
+        padding: EdgeInsets.all(5.0),
         child: MyImage(
           height: 17,
           width: 17,
@@ -651,8 +715,8 @@ class Utils {
   }
 
   static Widget buildBackBtnDesign(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
+    return const Padding(
+      padding: EdgeInsets.all(5.0),
       child: MyImage(
         height: 17,
         width: 17,
@@ -771,11 +835,11 @@ class Utils {
       ),
       maxProgress: 100,
       progressTextStyle: const TextStyle(
-        color: Colors.black,
+        color: Colors.white,
         fontSize: 13,
         fontWeight: FontWeight.w400,
       ),
-      backgroundColor: white,
+      backgroundColor: accentColor,
       insetAnimCurve: Curves.easeInOut,
       messageTextStyle: const TextStyle(
         color: black,
@@ -1096,6 +1160,7 @@ class Utils {
 
     return finalOID;
   }
+
   /* ***************** generate Unique OrderID END ***************** */
 
   /* ***************** Download ***************** */
@@ -1220,5 +1285,5 @@ class Utils {
       );
     }
   }
-  /* ***************** Download ***************** */
+/* ***************** Download ***************** */
 }

@@ -1,17 +1,16 @@
 import 'package:dtlive/model/subtitlemodel.dart';
 
 class Constant {
-  static const String baseurl =
-      'http://demo.divinetechs.com/apps/dtlive/public/api/';
+  static const String baseurl = 'http://159.65.148.219/public/api/';
 
-  static String? appName = "DTLive";
+  static String? appName = "Sant Mehi";
   static String? appPackageName = "com.divinetechs.dtlive";
   static String? appleAppId = "6449380090";
   static String? appVersion = "1";
   static String? appBuildNumber = "1.0";
 
   /* OneSignal App ID */
-  static const String oneSignalAppId = "08e33367-9a65-431f-a995-bbe95a0f0769";
+  static const String oneSignalAppId = "";
 
   /* Constant for TV check */
   static bool isTV = false;

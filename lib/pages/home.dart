@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dtlive/model/banner.dart';
+import 'package:dtlive/pages/book_satsang.dart';
 import 'package:dtlive/pages/videosbyid.dart';
 import 'package:dtlive/provider/generalprovider.dart';
 import 'package:dtlive/shimmer/shimmerutils.dart';
+import 'package:dtlive/subscription/subscription.dart';
 import 'package:dtlive/utils/sharedpre.dart';
 import 'package:dtlive/webwidget/commonappbar.dart';
 import 'package:dtlive/webwidget/footerweb.dart';
@@ -25,14 +28,22 @@ import 'package:dtlive/widget/mynetworkimg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../model/genresmodel.dart';
+import '../webservice/apiservices.dart';
+import 'donation_page.dart';
+import 'loginsocial.dart';
+import 'mywatchlist.dart';
+
 class Home extends StatefulWidget {
   final String? pageName;
+
   const Home({Key? key, required this.pageName}) : super(key: key);
 
   @override
@@ -55,6 +66,8 @@ class HomeState extends State<Home> {
       termsConditionUrl,
       refundPolicyUrl,
       mSearchText;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GenresModel? genresModel;
 
   _onItemTapped(String page) async {
     debugPrint("_onItemTapped -----------------> $page");
@@ -81,6 +94,8 @@ class HomeState extends State<Home> {
     if (!kIsWeb) {
       OneSignal.shared.setNotificationOpenedHandler(_handleNotificationOpened);
     }
+    getGenres();
+    getUserData();
   }
 
   // What to do when the user opens/taps on a notification
@@ -216,8 +231,100 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: appBgColor,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          backgroundColor: whiteLight1,
+          foregroundColor: whiteLight1,
+          centerTitle: false,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.menu, color: primaryColor),
+            onPressed: () {
+              _scaffoldKey.currentState?.openDrawer();
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.bookmark, color: primaryColor),
+              onPressed: () {
+                if (Constant.userID != null) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const MyWatchlist()),
+                  );
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const LoginSocial(),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+      drawer: SizedBox(
+        width: size.width * 0.6,
+        child: Drawer(
+          backgroundColor: whiteLight1,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: primaryColor,
+                ),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/images/appicon.png',
+                      fit: BoxFit.fill,
+                      width: 100,
+                      height: 100,
+                    )
+                  ],
+                ),
+              ),
+              if (genresModel != null && genresModel?.result != null)
+                ...?genresModel?.result?.map((item) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return VideosByID(
+                              item.id ?? 0,
+                              0,
+                              item.name ?? "",
+                              "ByCategory",
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      title: Text(item.name ?? ''),
+                    ),
+                  );
+                }).toList(),
+              if (Constant.userID != null)
+                ListTile(
+                  title: const Text("Logout"),
+                  onTap: () {
+                    logoutConfirmDialog();
+                  },
+                )
+            ],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: (kIsWeb || Constant.isTV)
             ? _webAppBarWithDetails()
@@ -235,10 +342,10 @@ class HomeState extends State<Home> {
             sliver: SliverAppBar(
               automaticallyImplyLeading: false,
               backgroundColor: appBgColor,
-              toolbarHeight: 65,
+              toolbarHeight: 0,
               title: Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                height: 0,
                 alignment: Alignment.center,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(8),
@@ -247,10 +354,9 @@ class HomeState extends State<Home> {
                   onTap: () async {
                     await getTabData(0, homeProvider.sectionTypeModel.result);
                   },
-                  child:
-                      MyImage(width: 80, height: 80, imagePath: "appicon.png"),
                 ),
-              ), // This is the title in the app bar.
+              ),
+              // This is the title in the app bar.
               pinned: false,
               expandedHeight: 0,
               forceElevated: innerBoxIsScrolled,
@@ -263,18 +369,14 @@ class HomeState extends State<Home> {
           : (homeProvider.sectionTypeModel.status == 200)
               ? (homeProvider.sectionTypeModel.result != null ||
                       (homeProvider.sectionTypeModel.result?.length ?? 0) > 0)
-                  ? Stack(
-                      children: [
-                        tabItem(homeProvider.sectionTypeModel.result),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: Dimens.homeTabHeight,
-                          padding: const EdgeInsets.only(top: 8, bottom: 8),
-                          color: black.withOpacity(0.8),
-                          child: tabTitle(homeProvider.sectionTypeModel.result),
-                        ),
-                      ],
-                    )
+                  ? Stack(children: [
+                      tabItem(homeProvider.sectionTypeModel.result),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 0,
+                        padding: const EdgeInsets.only(top: 8, bottom: 8),
+                      ),
+                    ])
                   : const NoData(title: '', subTitle: '')
               : const NoData(title: '', subTitle: ''),
     );
@@ -333,7 +435,7 @@ class HomeState extends State<Home> {
                   constraints: const BoxConstraints(maxHeight: 32),
                   decoration: Utils.setBackground(
                     homeProvider.selectedIndex == index
-                        ? white
+                        ? primaryColor
                         : transparentColor,
                     20,
                   ),
@@ -373,8 +475,6 @@ class HomeState extends State<Home> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            SizedBox(height: Dimens.homeTabHeight),
-
             /* Banner */
             Consumer<SectionDataProvider>(
               builder: (context, sectionDataProvider, child) {
@@ -412,6 +512,12 @@ class HomeState extends State<Home> {
                   if (sectionDataProvider.sectionListModel.status == 200) {
                     return Column(
                       children: [
+                        const SizedBox(height: 16),
+                        buildDonateAndBookSatsang(
+                            getBannerBasedOnType(
+                                sectionDataProvider.sectionBannerModel.banners,
+                                'Subscription'),
+                            'Subscription'),
                         /* Continue Watching */
                         (sectionDataProvider
                                     .sectionListModel.continueWatching !=
@@ -425,6 +531,20 @@ class HomeState extends State<Home> {
                             ? setSectionByType(
                                 sectionDataProvider.sectionListModel.result)
                             : const SizedBox.shrink(),
+                        const SizedBox(height: 16),
+
+                        buildDonateAndBookSatsang(
+                            getBannerBasedOnType(
+                                sectionDataProvider.sectionBannerModel.banners,
+                                'Donation'),
+                            'Donation'),
+                        const SizedBox(height: 16),
+
+                        buildDonateAndBookSatsang(
+                            getBannerBasedOnType(
+                                sectionDataProvider.sectionBannerModel.banners,
+                                'Book_Satsang'),
+                            'Book_Satsang')
                       ],
                     );
                   } else {
@@ -891,7 +1011,7 @@ class HomeState extends State<Home> {
                 );
               },
             ),
-          ),
+          )
         ],
       );
     } else {
@@ -1320,44 +1440,13 @@ class HomeState extends State<Home> {
                           fit: BoxFit.fill,
                           imgHeight: MediaQuery.of(context).size.height,
                           imgWidth: MediaQuery.of(context).size.width,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(0),
-                        width: MediaQuery.of(context).size.width,
-                        height: Dimens.heightLangGen,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.center,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              transparentColor,
-                              transparentColor,
-                              appBgColor,
-                            ],
-                          ),
+                          circular: true,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(3),
-                child: MyText(
-                  color: white,
-                  text: sectionDataList?[index].name.toString() ?? "",
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 14,
-                  fontweight: FontWeight.w600,
-                  fontsizeWeb: 15,
-                  multilanguage: false,
-                  maxline: 1,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ),
+              )
             ],
           );
         },
@@ -1400,5 +1489,505 @@ class HomeState extends State<Home> {
       });
     }
   }
-  /* ========= Open Player ========= */
+
+  Widget buildDonateAndBookSatsang(List<String>? banners, String bannerType) {
+    if (banners == null || banners.isEmpty) {
+      return Container();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: SizedBox(
+        height: 160, // Fixed height for container
+        child: banners.length > 1
+            ? _homePageHorizontalBanner(banners, bannerType)
+            : GestureDetector(
+                onTap: () {
+                  handleBookSatsangAndDonateClick(banners.first, bannerType);
+                },
+                child: SizedBox(
+                  height: 150, // Fixed height for image
+                  width: MediaQuery.of(context).size.width, // Full width
+                  child: Image.network(
+                    banners.first,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+      ),
+    );
+  }
+
+  void handleBookSatsangAndDonateClick(String url, String type) {
+    if (type == 'Book_Satsang') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return BookSatsangPage();
+          },
+        ),
+      );
+    }
+    if (type == 'Donation') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return DonationPage(url);
+          },
+        ),
+      );
+    }
+    if (type == 'Subscription') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const Subscription();
+          },
+        ),
+      );
+    }
+  }
+
+  Future<void> getGenres() async {
+    ApiService().genres().then((value) => {
+          setState(() {
+            genresModel = value;
+          })
+        });
+  }
+
+  getUserData() async {
+    String? userName = await sharedPref.read("username");
+    String? userType = await sharedPref.read("usertype");
+    String? userMobileNo = await sharedPref.read("usermobile");
+    log('getUserData userName ==> $userName');
+    log('getUserData userType ==> $userType');
+    log('getUserData userMobileNo ==> $userMobileNo');
+    Future.delayed(Duration.zero).then((value) {
+      if (!mounted) return;
+      setState(() {});
+    });
+  }
+
+  deleteConfirmDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              color: lightBlack,
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "confirm_delete_account",
+                          multilanguage: true,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 16,
+                          fontweight: FontWeight.bold,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(height: 3),
+                        MyText(
+                          color: white,
+                          text: "delete_account_msg",
+                          multilanguage: true,
+                          textalign: TextAlign.center,
+                          fontsizeNormal: 12,
+                          fontweight: FontWeight.w500,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: otherColor,
+                                width: .5,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: MyText(
+                              color: white,
+                              text: "cancel",
+                              multilanguage: true,
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        InkWell(
+                          onTap: () async {
+                            final homeProvider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
+                            final sectionDataProvider =
+                                Provider.of<SectionDataProvider>(context,
+                                    listen: false);
+                            await homeProvider.setSelectedTab(0);
+                            await sectionDataProvider.clearProvider();
+                            // Firebase Signout
+                            await auth.signOut();
+                            await GoogleSignIn().signOut();
+                            await Utils.setUserId(null);
+                            sectionDataProvider.getSectionBanner("0", "1");
+                            sectionDataProvider.getSectionList("0", "1");
+                            getUserData();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            if (!mounted) return;
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const LoginSocial(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: primaryLight,
+                              borderRadius: BorderRadius.circular(5),
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: MyText(
+                              color: black,
+                              text: "delete",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              multilanguage: true,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  logoutConfirmDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: lightBlack,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(23),
+              color: lightBlack,
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(
+                          color: white,
+                          text: "confirmsognout",
+                          multilanguage: true,
+                          textalign: TextAlign.start,
+                          fontsizeNormal: 16,
+                          fontweight: FontWeight.bold,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        ),
+                        const SizedBox(height: 3),
+                        MyText(
+                          color: white,
+                          text: "areyousurewanrtosignout",
+                          multilanguage: true,
+                          textalign: TextAlign.start,
+                          fontsizeNormal: 12,
+                          fontweight: FontWeight.w500,
+                          maxline: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fontstyle: FontStyle.normal,
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: otherColor,
+                                width: .5,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: MyText(
+                              color: white,
+                              text: "cancel",
+                              multilanguage: true,
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        InkWell(
+                          onTap: () async {
+                            final homeProvider = Provider.of<HomeProvider>(
+                                context,
+                                listen: false);
+                            final sectionDataProvider =
+                                Provider.of<SectionDataProvider>(context,
+                                    listen: false);
+                            await homeProvider.setSelectedTab(0);
+                            await sectionDataProvider.clearProvider();
+                            // Firebase Signout
+                            await auth.signOut();
+                            await GoogleSignIn().signOut();
+                            await Utils.setUserId(null);
+                            sectionDataProvider.getSectionBanner("0", "1");
+                            sectionDataProvider.getSectionList("0", "1");
+                            getUserData();
+                            if (!mounted) return;
+                            Navigator.pop(context);
+                            if (!mounted) return;
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const LoginSocial(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 75,
+                            ),
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: primaryLight,
+                              borderRadius: BorderRadius.circular(5),
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: MyText(
+                              color: black,
+                              text: "sign_out",
+                              textalign: TextAlign.center,
+                              fontsizeNormal: 16,
+                              multilanguage: true,
+                              maxline: 1,
+                              overflow: TextOverflow.ellipsis,
+                              fontweight: FontWeight.w500,
+                              fontstyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _homePageHorizontalBanner(
+      List<String> sectionBannerList, String bannerType) {
+    if ((sectionBannerList.length ?? 0) > 0) {
+      return Stack(
+        alignment: AlignmentDirectional.bottomCenter,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: Dimens.homeBanner,
+            child: CarouselSlider.builder(
+              itemCount: (sectionBannerList.length ?? 0),
+              carouselController: carouselController,
+              options: CarouselOptions(
+                initialPage: 0,
+                height: Dimens.homeBanner,
+                enlargeCenterPage: false,
+                autoPlay: true,
+                autoPlayCurve: Curves.linear,
+                enableInfiniteScroll: true,
+                autoPlayInterval:
+                    Duration(milliseconds: Constant.bannerDuration),
+                autoPlayAnimationDuration:
+                    Duration(milliseconds: Constant.animationDuration),
+                viewportFraction: 1.0,
+                onPageChanged: (val, _) async {
+                  await sectionDataProvider.setCurrentBanner(val);
+                },
+              ),
+              itemBuilder:
+                  (BuildContext context, int index, int pageViewIndex) {
+                return InkWell(
+                  focusColor: white,
+                  borderRadius: BorderRadius.circular(0),
+                  onTap: () {
+                    handleBookSatsangAndDonateClick(
+                        sectionBannerList[index], bannerType);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeBanner,
+                          child: MyNetworkImage(
+                            imageUrl: sectionBannerList[index] ?? "",
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(0),
+                          width: MediaQuery.of(context).size.width,
+                          height: Dimens.homeBanner,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.center,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                transparentColor,
+                                transparentColor,
+                                appBgColor,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Consumer<SectionDataProvider>(
+              builder: (context, sectionDataProvider, child) {
+                return AnimatedSmoothIndicator(
+                  count: (sectionBannerList.length ?? 0),
+                  activeIndex: sectionDataProvider.cBannerIndex ?? 0,
+                  effect: const ScrollingDotsEffect(
+                    spacing: 8,
+                    radius: 4,
+                    activeDotColor: dotsActiveColor,
+                    dotColor: dotsDefaultColor,
+                    dotHeight: 8,
+                    dotWidth: 8,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  List<String> getBannerBasedOnType(
+      List<AppBanner>? banners, String bannerType) {
+    if (banners == null) {
+      return List.empty();
+    }
+    List<String> donationBannerUrls = banners
+        .firstWhere((banner) => banner.bannerType == bannerType,
+            orElse: () => AppBanner(bannerType: '', bannerUrls: []))
+        .bannerUrls;
+    return donationBannerUrls;
+  }
 }

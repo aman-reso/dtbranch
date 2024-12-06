@@ -254,16 +254,16 @@ class ShowDetailsState extends State<ShowDetails> with RouteAware {
     }
     _port.listen((dynamic data) {
       final taskId = (data as List<dynamic>)[0] as String;
-      final status = DownloadTaskStatus(data[1] as int);
+      //final status = DownloadTaskStatus(data[1] as int);
       final progress = data[2] as int;
 
-      log(
-        'Callback on UI isolate: '
-        'task ($taskId) is in status ($status) and process ($progress)',
-      );
+      // log(
+      //   'Callback on UI isolate: '
+      //   'task ($taskId) is in status ($status) and process ($progress)',
+      // );
 
       if (progress > 0) {
-        downloadProvider.setDownloadProgress(progress, status);
+        //downloadProvider.setDownloadProgress(progress, status);
       }
     });
   }

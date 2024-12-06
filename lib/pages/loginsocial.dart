@@ -11,6 +11,7 @@ import 'package:dtlive/provider/sectiondataprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';
 import 'package:dtlive/utils/strings.dart';
+import 'package:dtlive/webservice/apiservices.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:dtlive/widget/mytext.dart';
 import 'package:dtlive/utils/utils.dart';
@@ -36,7 +37,7 @@ class LoginSocialState extends State<LoginSocial> {
   late GeneralProvider generalProvider;
 
   final numberController = TextEditingController();
-  String? mobileNumber, email, userName, strType, strPrivacyAndTNC;
+  String? mobileNumber, email, userName, strType;
   File? mProfileImg;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -74,13 +75,6 @@ class LoginSocialState extends State<LoginSocial> {
     }
     debugPrint('privacyUrl ==> $privacyUrl');
     debugPrint('termsConditionUrl ==> $termsConditionUrl');
-
-    strPrivacyAndTNC = await Utils.getPrivacyTandCText(
-        privacyUrl ?? "", termsConditionUrl ?? "");
-    Future.delayed(Duration.zero).then((value) {
-      if (!mounted) return;
-      setState(() {});
-    });
   }
 
   @override
@@ -101,22 +95,24 @@ class LoginSocialState extends State<LoginSocial> {
           margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 170,
-                height: 60,
-                alignment: Alignment.centerLeft,
-                child: MyImage(
-                  fit: BoxFit.fill,
+                width: 140,
+                height: 140,
+                alignment: Alignment.center,
+                child: const MyImage(
+                  fit: BoxFit.contain,
                   imagePath: "appicon.png",
+                  width: 140,
+                  height: 140,
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 0),
               MyText(
                 color: white,
                 text: "welcomeback",
-                fontsizeNormal: 20,
+                fontsizeNormal: 12,
                 fontsizeWeb: 25,
                 multilanguage: true,
                 fontweight: FontWeight.bold,
@@ -125,20 +121,7 @@ class LoginSocialState extends State<LoginSocial> {
                 textalign: TextAlign.center,
                 fontstyle: FontStyle.normal,
               ),
-              const SizedBox(height: 7),
-              MyText(
-                color: otherColor,
-                text: "login_with_mobile_note",
-                fontsizeNormal: 14,
-                fontsizeWeb: 15,
-                multilanguage: true,
-                fontweight: FontWeight.w500,
-                maxline: 2,
-                overflow: TextOverflow.ellipsis,
-                textalign: TextAlign.center,
-                fontstyle: FontStyle.normal,
-              ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
               /* Enter Mobile Number */
               Container(
@@ -149,7 +132,7 @@ class LoginSocialState extends State<LoginSocial> {
                     color: primaryColor,
                     width: 0.7,
                   ),
-                  color: edtBG,
+                  color: Colors.blueGrey, // Change the background color here
                   borderRadius: const BorderRadius.all(
                     Radius.circular(5),
                   ),
@@ -164,7 +147,7 @@ class LoginSocialState extends State<LoginSocial> {
                   showDropdownIcon: false,
                   initialCountryCode: 'IN',
                   dropdownTextStyle: GoogleFonts.montserrat(
-                    color: white,
+                    color: accentColor,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -174,7 +157,7 @@ class LoginSocialState extends State<LoginSocial> {
                     border: InputBorder.none,
                     filled: false,
                     hintStyle: GoogleFonts.montserrat(
-                      color: otherColor,
+                      color: accentColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -192,6 +175,7 @@ class LoginSocialState extends State<LoginSocial> {
                   },
                 ),
               ),
+
               const SizedBox(height: 25),
 
               /* Login Button */
@@ -244,41 +228,8 @@ class LoginSocialState extends State<LoginSocial> {
               ),
               const SizedBox(height: 10),
 
-              /* Privacy & TermsCondition link */
-              if (strPrivacyAndTNC != null) Utils.htmlTexts(strPrivacyAndTNC),
               const SizedBox(height: 10),
 
-              /* Or */
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 80,
-                    height: 1,
-                    color: accentColor,
-                  ),
-                  const SizedBox(width: 15),
-                  MyText(
-                    color: otherColor,
-                    text: "or",
-                    multilanguage: true,
-                    fontsizeNormal: 14,
-                    fontsizeWeb: 16,
-                    fontweight: FontWeight.w500,
-                    maxline: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textalign: TextAlign.center,
-                    fontstyle: FontStyle.normal,
-                  ),
-                  const SizedBox(width: 15),
-                  Container(
-                    width: 80,
-                    height: 1,
-                    color: accentColor,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 25),
 
               /* Google Login Button */
               Container(
@@ -287,8 +238,9 @@ class LoginSocialState extends State<LoginSocial> {
                 padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
                 margin: const EdgeInsets.only(bottom: 15),
                 decoration: BoxDecoration(
-                  color: white,
+                  color: accentColor,
                   borderRadius: BorderRadius.circular(26),
+                  border: Border.all(color: Colors.blue)
                 ),
                 alignment: Alignment.center,
                 child: InkWell(

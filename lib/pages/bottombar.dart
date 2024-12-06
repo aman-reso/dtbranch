@@ -26,7 +26,7 @@ class BottombarState extends State<Bottombar> {
   static List<Widget> widgetOptions = <Widget>[
     const Home(pageName: ""),
     const Find(),
-    const Channels(),
+    // const Channels(),
     const RentStore(),
     const Setting(),
   ];
@@ -48,9 +48,9 @@ class BottombarState extends State<Bottombar> {
         bottomNavigationBar: Container(
           height: Platform.isIOS ? 92 : 70,
           alignment: Alignment.center,
-          color: black,
+          color: accentColor,
           child: BottomNavigationBar(
-            backgroundColor: black,
+            backgroundColor: whiteLight1,
             selectedLabelStyle: GoogleFonts.montserrat(
               fontSize: 10,
               fontStyle: FontStyle.normal,
@@ -72,29 +72,29 @@ class BottombarState extends State<Bottombar> {
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(
-                backgroundColor: black,
+                backgroundColor: accentColor,
                 label: bottomView1,
                 activeIcon: _buildBottomNavIcon(
                     iconName: 'ic_home', iconColor: primaryColor),
                 icon: _buildBottomNavIcon(iconName: 'ic_home', iconColor: gray),
               ),
               BottomNavigationBarItem(
-                backgroundColor: black,
+                backgroundColor: accentColor,
                 label: bottomView2,
                 activeIcon: _buildBottomNavIcon(
                     iconName: 'ic_find', iconColor: primaryColor),
                 icon: _buildBottomNavIcon(iconName: 'ic_find', iconColor: gray),
               ),
+              // BottomNavigationBarItem(
+              //   backgroundColor: accentColor,
+              //   label: bottomView3,
+              //   activeIcon: _buildBottomNavIcon(
+              //       iconName: 'ic_channels', iconColor: primaryColor),
+              //   icon: _buildBottomNavIcon(
+              //       iconName: 'ic_channels', iconColor: gray),
+              // ),
               BottomNavigationBarItem(
-                backgroundColor: black,
-                label: bottomView3,
-                activeIcon: _buildBottomNavIcon(
-                    iconName: 'ic_channels', iconColor: primaryColor),
-                icon: _buildBottomNavIcon(
-                    iconName: 'ic_channels', iconColor: gray),
-              ),
-              BottomNavigationBarItem(
-                backgroundColor: black,
+                backgroundColor: accentColor,
                 label: bottomView4,
                 activeIcon: _buildBottomNavIcon(
                     iconName: 'ic_store', iconColor: primaryColor),
@@ -102,7 +102,7 @@ class BottombarState extends State<Bottombar> {
                     _buildBottomNavIcon(iconName: 'ic_store', iconColor: gray),
               ),
               BottomNavigationBarItem(
-                backgroundColor: black,
+                backgroundColor: accentColor,
                 label: bottomView5,
                 activeIcon: _buildBottomNavIcon(
                     iconName: 'ic_stuff', iconColor: primaryColor),

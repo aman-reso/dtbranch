@@ -56,7 +56,7 @@ class RentStoreState extends State<RentStore> {
     } else {
       return Scaffold(
         backgroundColor: appBgColor,
-        appBar: Utils.myAppBar(context, "stor", true),
+        appBar: Utils.myAppBar(context, 'Ebooks', false),
         body: SafeArea(
           child: _buildRentStore(),
         ),
@@ -99,81 +99,6 @@ class RentStoreState extends State<RentStore> {
     if (rentStoreProvider.rentModel.video != null) {
       return Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            constraints: const BoxConstraints(minHeight: 30),
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                FittedBox(
-                  child: Container(
-                    constraints:
-                        const BoxConstraints(minHeight: 20, minWidth: 20),
-                    padding: const EdgeInsets.all(3),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: complimentryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: MyText(
-                      color: white,
-                      text: Constant.currencySymbol,
-                      textalign: TextAlign.center,
-                      fontsizeNormal: 11,
-                      fontsizeWeb: 12,
-                      multilanguage: false,
-                      maxline: 1,
-                      fontweight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                MyText(
-                  color: white,
-                  text: "rentvideo",
-                  multilanguage: true,
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 14,
-                  fontsizeWeb: 16,
-                  maxline: 1,
-                  fontweight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: otherColor,
-                  text: "(${(rentStoreProvider.rentModel.video?.length ?? 0)}",
-                  textalign: TextAlign.center,
-                  multilanguage: false,
-                  fontsizeNormal: 11,
-                  fontsizeWeb: 12,
-                  maxline: 1,
-                  fontweight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: otherColor,
-                  text: (rentStoreProvider.rentModel.video?.length ?? 0) <= 1
-                      ? "video)"
-                      : "videos)",
-                  multilanguage: false,
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 11,
-                  fontsizeWeb: 12,
-                  maxline: 1,
-                  fontweight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: 12),
           SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -252,38 +177,7 @@ class RentStoreState extends State<RentStore> {
                                   imgWidth: MediaQuery.of(context).size.width,
                                 ),
                               ),
-                            ),
-                            FittedBox(
-                              child: Container(
-                                constraints: const BoxConstraints(
-                                  minHeight: 15,
-                                  minWidth: 30,
-                                ),
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(3),
-                                      topRight: Radius.circular(4),
-                                      bottomLeft: Radius.circular(8),
-                                      bottomRight: Radius.circular(3)),
-                                ),
-                                child: MyText(
-                                  color: black,
-                                  text:
-                                      "${Constant.currencySymbol} ${rentStoreProvider.rentModel.video?[position].rentPrice.toString() ?? "0"}",
-                                  textalign: TextAlign.center,
-                                  fontsizeNormal: 10,
-                                  fontsizeWeb: 12,
-                                  fontweight: FontWeight.w700,
-                                  maxline: 1,
-                                  multilanguage: false,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -306,82 +200,6 @@ class RentStoreState extends State<RentStore> {
     if (rentStoreProvider.rentModel.tvshow != null) {
       return Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            constraints: const BoxConstraints(minHeight: 30),
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                FittedBox(
-                  child: Container(
-                    constraints:
-                        const BoxConstraints(minHeight: 20, minWidth: 20),
-                    padding: const EdgeInsets.all(3),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: complimentryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: MyText(
-                      color: white,
-                      text: Constant.currencySymbol,
-                      textalign: TextAlign.center,
-                      multilanguage: false,
-                      fontsizeNormal: 11,
-                      fontsizeWeb: 12,
-                      maxline: 1,
-                      fontweight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
-                      fontstyle: FontStyle.normal,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                MyText(
-                  color: white,
-                  text: "rentshow",
-                  textalign: TextAlign.center,
-                  multilanguage: true,
-                  fontsizeNormal: 14,
-                  fontsizeWeb: 16,
-                  maxline: 1,
-                  fontweight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: otherColor,
-                  text: "(${(rentStoreProvider.rentModel.tvshow?.length ?? 0)}",
-                  textalign: TextAlign.center,
-                  fontsizeNormal: 11,
-                  fontsizeWeb: 12,
-                  maxline: 1,
-                  multilanguage: false,
-                  fontweight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-                const SizedBox(width: 5),
-                MyText(
-                  color: otherColor,
-                  text: (rentStoreProvider.rentModel.video?.length ?? 0) <= 1
-                      ? "show)"
-                      : "shows)",
-                  textalign: TextAlign.center,
-                  multilanguage: false,
-                  fontsizeNormal: 11,
-                  fontsizeWeb: 12,
-                  maxline: 1,
-                  fontweight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                  fontstyle: FontStyle.normal,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
           SizedBox(
             width: MediaQuery.of(context).size.width,
             height: (rentStoreProvider.rentModel.tvshow?.length ?? 0) == 1

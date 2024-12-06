@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -47,30 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCJ7G3BQmwI6koeECdtn5Wl21BceZk_oyQ',
-    appId: '1:346606981660:web:455544c2a46ec6152fc5d9',
-    messagingSenderId: '346606981660',
-    projectId: 'primevideoapp-43bf6',
-    authDomain: 'primevideoapp-43bf6.firebaseapp.com',
-    storageBucket: 'primevideoapp-43bf6.appspot.com',
+    apiKey: 'AIzaSyABVHTQQZsE1jXmY8ksI82NIVQcF_pd8xg',
+    appId: '1:175751455675:web:0802b6aac68685fcaeda9e',
+    messagingSenderId: '175751455675',
+    projectId: 'mehibaba-7fec5',
+    authDomain: 'mehibaba-7fec5.firebaseapp.com',
+    storageBucket: 'mehibaba-7fec5.appspot.com',
+    measurementId: 'G-2TV4ZVWHXY',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBt2kWDmwynM9rdN6tuvGaEJyvgERjm5bQ',
-    appId: '1:346606981660:android:200f87933ac5b8d02fc5d9',
-    messagingSenderId: '346606981660',
-    projectId: 'primevideoapp-43bf6',
-    storageBucket: 'primevideoapp-43bf6.appspot.com',
+    apiKey: 'AIzaSyD66pm54JChJbMNwGOLNzzzGpHRkbu591A',
+    appId: '1:175751455675:android:ca3c1245b9bc6bc7aeda9e',
+    messagingSenderId: '175751455675',
+    projectId: 'mehibaba-7fec5',
+    storageBucket: 'mehibaba-7fec5.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB0KoOQEiQixmNx7PJfO6hjhuXhxxvYCds',
-    appId: '1:346606981660:ios:ceb6dbea2605e8d82fc5d9',
-    messagingSenderId: '346606981660',
-    projectId: 'primevideoapp-43bf6',
-    storageBucket: 'primevideoapp-43bf6.appspot.com',
-    androidClientId: '346606981660-150eiiccap50sdco81aaj0av5lgn59us.apps.googleusercontent.com',
-    iosClientId: '346606981660-rcf3siicukjvl2nlqtafb26ufs6mumc5.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBNIDl4WEH1Ud7EjCEUvrN2OLZn7CQIns0',
+    appId: '1:175751455675:ios:d05bb641af6ae4e4aeda9e',
+    messagingSenderId: '175751455675',
+    projectId: 'mehibaba-7fec5',
+    storageBucket: 'mehibaba-7fec5.appspot.com',
+    iosBundleId: 'com.divinetechs.dtliveapp',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBNIDl4WEH1Ud7EjCEUvrN2OLZn7CQIns0',
+    appId: '1:175751455675:ios:d05bb641af6ae4e4aeda9e',
+    messagingSenderId: '175751455675',
+    projectId: 'mehibaba-7fec5',
+    storageBucket: 'mehibaba-7fec5.appspot.com',
     iosBundleId: 'com.divinetechs.dtliveapp',
   );
 }

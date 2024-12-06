@@ -153,83 +153,6 @@ class FindState extends State<Find> {
                           return Column(
                             children: [
                               /* Browse by START */
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                padding:
-                                    const EdgeInsets.only(left: 20, right: 20),
-                                alignment: Alignment.centerLeft,
-                                child: MyText(
-                                  color: white,
-                                  text: "browsby",
-                                  multilanguage: true,
-                                  textalign: TextAlign.center,
-                                  fontsizeNormal: 15,
-                                  fontsizeWeb: 16,
-                                  maxline: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontweight: FontWeight.w600,
-                                  fontstyle: FontStyle.normal,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              AlignedGridView.count(
-                                shrinkWrap: true,
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
-                                itemCount: (findProvider
-                                        .sectionTypeModel.result?.length ??
-                                    0),
-                                padding:
-                                    const EdgeInsets.only(left: 20, right: 20),
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder:
-                                    (BuildContext context, int position) {
-                                  return InkWell(
-                                    borderRadius: BorderRadius.circular(4),
-                                    onTap: () {
-                                      log("Item Clicked! => $position");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => SectionByType(
-                                              findProvider.sectionTypeModel
-                                                      .result?[position].id ??
-                                                  0,
-                                              findProvider.sectionTypeModel
-                                                      .result?[position].name ??
-                                                  "",
-                                              "2"),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      height: 65,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 0, 10, 0),
-                                      decoration: BoxDecoration(
-                                        color: primaryDarkColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: MyText(
-                                        color: white,
-                                        text: findProvider.sectionTypeModel
-                                                .result?[position].name ??
-                                            "",
-                                        textalign: TextAlign.center,
-                                        fontstyle: FontStyle.normal,
-                                        multilanguage: false,
-                                        fontsizeNormal: 14,
-                                        fontsizeWeb: 14,
-                                        fontweight: FontWeight.w600,
-                                        maxline: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              /* Browse by END */
                               const SizedBox(height: 22),
 
                               /* Genres START */
@@ -545,7 +468,7 @@ class FindState extends State<Find> {
       height: 55,
       margin: const EdgeInsets.fromLTRB(20, 5, 20, 5),
       decoration: BoxDecoration(
-        color: primaryDarkColor,
+        color: primaryColor,
         border: Border.all(
           color: primaryLight,
           width: 0.5,
@@ -618,78 +541,7 @@ class FindState extends State<Find> {
                 ),
               ),
             ),
-          ),
-          Consumer<FindProvider>(
-            builder: (context, findProvider, child) {
-              if (searchController.text.toString().isNotEmpty) {
-                return InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: () async {
-                    debugPrint("Click on Clear!");
-                    searchController.clear();
-                    setState(() {});
-                  },
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    padding: const EdgeInsets.all(15),
-                    alignment: Alignment.center,
-                    child: MyImage(
-                      imagePath: "ic_close.png",
-                      color: white,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                );
-              } else {
-                return InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: () async {
-                    debugPrint("Click on Microphone!");
-                    _startListening();
-                  },
-                  child: _isListening
-                      ? AvatarGlow(
-                          glowColor: primaryColor,
-                          endRadius: 25,
-                          duration: const Duration(milliseconds: 2000),
-                          repeat: true,
-                          showTwoGlows: true,
-                          repeatPauseDuration:
-                              const Duration(milliseconds: 100),
-                          child: Material(
-                            elevation: 5,
-                            color: transparentColor,
-                            shape: const CircleBorder(),
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              color: transparentColor,
-                              padding: const EdgeInsets.all(15),
-                              alignment: Alignment.center,
-                              child: MyImage(
-                                imagePath: "ic_voice.png",
-                                color: white,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(
-                          width: 50,
-                          height: 50,
-                          padding: const EdgeInsets.all(15),
-                          alignment: Alignment.center,
-                          child: MyImage(
-                            imagePath: "ic_voice.png",
-                            color: white,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                );
-              }
-            },
-          ),
+          )
         ],
       ),
     );

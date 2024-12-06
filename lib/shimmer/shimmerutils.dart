@@ -48,7 +48,7 @@ class ShimmerUtils {
           width: MediaQuery.of(context).size.width,
           height: Dimens.homeTabHeight,
           padding: const EdgeInsets.only(top: 8, bottom: 8),
-          color: black.withOpacity(0.8),
+          color: whiteLight1,
           child: ListView.separated(
             itemCount: 5,
             shrinkWrap: true,
@@ -65,7 +65,7 @@ class ShimmerUtils {
                 child: const ShimmerWidget.roundrectborder(
                   height: 15,
                   width: 80,
-                  shimmerBgColor: black,
+                  shimmerBgColor: whiteLight,
                   shapeBorder: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5))),
                 ),
@@ -657,7 +657,7 @@ class ShimmerUtils {
                   padding: EdgeInsets.all(3),
                   child: ShimmerWidget.roundrectborder(
                     height: 10,
-                    shimmerBgColor: black,
+                    shimmerBgColor: whiteLight1,
                     shapeBorder: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(2))),
                   ),
